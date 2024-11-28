@@ -1,0 +1,213 @@
+/* Gradient Background */
+.about-bg {
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: white;
+  animation: fadeIn 2s ease-in-out;
+}
+
+/* Heading Animation */
+.animate-heading {
+  animation: slideDown 1s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Paragraph Animation */
+.animate-paragraph {
+  animation: fadeIn 2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Sliding Animation Section */
+.about-us-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f4f4f4;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  padding: 0 15px; /* Added padding for small screens */
+  margin-bottom: 80px; /* Added margin-bottom to give space for controls */
+
+}
+
+/* Each slide */
+.slide {
+  position: absolute;
+  width: 80%;
+  max-width: 800px;
+  padding: 20px;
+  background: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  text-align: center;
+  opacity: 0;
+  display: none; /* Hide non-active slides */
+  transition: opacity 1s ease-in-out;
+  pointer-events: none; /* Prevent interaction when inactive */
+  animation-play-state: running; /* Default to running */
+}
+
+/* Active slide that will be shown */
+.active {
+  opacity: 1;
+  display: block; /* Show active slide */
+  pointer-events: auto; /* Enable interaction for active slide */
+}
+
+/* Slide Animations */
+.slide-left {
+  animation-name: slideInLeft;
+  animation-duration: 3s;
+  animation-fill-mode: forwards;
+}
+
+.slide-bottom {
+  animation-name: slideInBottom;
+  animation-duration: 3s;
+  animation-fill-mode: forwards;
+}
+
+.slide-right {
+  animation-name: slideInRight;
+  animation-duration: 3s;
+  animation-fill-mode: forwards;
+}
+
+/* Animations for slides coming from different directions */
+@keyframes slideInLeft {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  50% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+@keyframes slideInBottom {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes slideInRight {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  50% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/* Controls */
+.controls {
+  display: flex;
+  justify-content: center;
+  margin-top: 30%;
+  width: 100%;
+  position: relative; /* Ensures buttons are positioned below the slides */
+  padding: 0 15px; /* Added padding for small screens */
+}
+
+.controls button {
+  padding: 10px 20px;
+  margin: 0 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.controls button:hover {
+  background-color: #0056b3;
+}
+
+/* Responsive Styles */
+
+/* For medium screens like tablets */
+@media (max-width: 1024px) {
+  .about-us-container {
+    height: auto;
+    padding: 20px;
+    position: relative; /* Added relative positioning */
+  }
+  .slide {
+    width: 90%;
+    position: relative; /* Ensures no overlap */
+  }
+  .controls button {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+}
+
+/* For small screens like mobile devices */
+@media (max-width: 768px) {
+  .about-us-container {
+    height: auto;
+    padding: 20px;
+    position: relative; /* Added relative positioning */
+    margin-bottom: 120px; /* Give more space for controls */
+  }
+  .slide {
+    width: 100%; /* Make the slides fit the screen */
+    padding: 10px;
+    position: relative; /* Added relative positioning to avoid overlap */
+    margin-bottom: 20px; /* Added margin to prevent overlap with content */
+  }
+  .controls button {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+}
+
+/* For very small mobile screens */
+@media (max-width: 320px) {
+  .controls button {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+}

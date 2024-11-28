@@ -1,0 +1,113 @@
+/* Container for the entire chat widget */
+.chat-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+  }
+  
+  /* Button for the WhatsApp icon */
+  .whatsapp-icon {
+    background-color: #25d366; /* WhatsApp green */
+    border: none;
+    border-radius: 50%;
+    padding: 10px;
+    cursor: pointer;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .whatsapp-icon img {
+    width: 40px;
+    height: 40px;
+  }
+  
+  /* Chat box container */
+  .chat-box {
+    background-color: #ffffff; /* White background */
+    border: 1px solid #ddd; /* Light gray border */
+    border-radius: 12px; /* Rounded corners */
+    padding: 15px;
+    width: 320px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    position: absolute;
+    bottom: 70px;
+    right: 0;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Chat box header */
+  .chat-box h4 {
+    margin: 0 0 10px;
+    font-size: 16px;
+    color: #333; /* Dark text */
+  }
+  
+  /* Chat box text */
+  .chat-box p {
+    font-size: 14px;
+    color: #555;
+    margin: 0 0 10px;
+  }
+  
+  /* Textarea for typing messages */
+  .chat-box textarea {
+    width: 100%;
+    height: 60px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #333;
+    resize: none;
+    margin-bottom: 10px;
+  }
+  
+  /* Send button inside the chat box */
+  .chat-box .send-button {
+    background-color: #25d366; /* WhatsApp green */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    width: 100%;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .chat-box .send-button:hover {
+    background-color: #20b858; /* Slightly darker green on hover */
+  }
+  
+  /* Instant answers section */
+  .chat-box .instant-answers {
+    margin-top: 10px;
+  }
+  
+  .chat-box .instant-answers p {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+  }
+  
+  .chat-box .instant-answers button {
+    display: block;
+    width: 100%;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 8px;
+    margin-bottom: 5px;
+    border-radius: 6px;
+    text-align: left;
+    font-size: 14px;
+    color: #555;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .chat-box .instant-answers button:hover {
+    background-color: #f0f0f0;
+  }
+  

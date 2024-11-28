@@ -1,0 +1,109 @@
+
+
+.trb-section-title {
+  text-align: center;
+  color: #257e81;
+  font-family: "Arial", sans-serif;
+  font-weight: bold;
+}
+
+.trb-section-title span {
+  color: #34a3a7;
+}
+
+/* Grid Layout for Cards */
+.trb-technology-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 50px; /* Increased space between the cards */
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* Card Styles */
+.trb-card {
+  flex: 0 0 calc(45% - 20px); /* Reduced width (45% of the container width) */
+  background: linear-gradient(90deg, #00c6ff, #0072ff);
+  background-size: 200% 100%;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.6s ease, box-shadow 0.6s ease;
+  position: relative;
+  cursor: pointer;
+  height: 230px; /* Increased height */
+  display: flex; /* For vertical alignment */
+  flex-direction: column; /* For proper alignment */
+  justify-content: center; /* Center content vertically */
+  align-items: center; /* Center content horizontally */
+  justify-content: space-between;
+}
+
+
+/* Hover Effect */
+.trb-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.trb-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: white;
+  z-index: 0;
+  transition: left 1s ease;
+}
+
+.trb-card:hover::before {
+  left: 0;
+}
+
+.trb-card-body {
+  position: relative;
+  z-index: 1;
+  text-align: left;
+  padding: 20px;
+}
+
+/* Card Content */
+.trb-count-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.trb-tech-image {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.trb-tech-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+}
+
+.trb-tech-description {
+  font-size: 14px;
+  color: white;
+  line-height: 1.5;
+}
+
+/* Hover Content Styles */
+.trb-card:hover .trb-tech-title,
+.trb-card:hover .trb-tech-description {
+  color: #257e81; /* Switch text color to the initial gradient color */
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .trb-card {
+    flex: 0 0 100%; /* Single column on small screens */
+  }
+}

@@ -1,0 +1,148 @@
+
+.navbar {
+  background-color: black !important; 
+}
+
+
+.dropdown-submenu {
+  position: relative;
+}
+
+
+.navbar-nav .dropdown-submenu .dropdown-menu {
+  left: 100%; 
+  top: 0;
+  margin-top: -1px; 
+}
+
+
+.dropdown-menu-end .dropdown-submenu .dropdown-menu {
+  left: -100%; 
+  right: auto;
+  top: 0;
+  margin-top: -1px; 
+}
+
+
+.dropdown-submenu:hover .dropdown-menu {
+  display: block;
+}
+
+
+.dropdown-menu > .dropdown-submenu > .dropdown-item::after {
+  content: '\f0da'; 
+  float: right;
+  margin-left: 10px;
+  font-family: "FontAwesome";
+}
+
+
+.nav-link {
+  color: white !important; 
+}
+
+.nav-link:hover {
+  color: #17a2b8 !important; 
+}
+
+
+.form-control {
+  border-radius: 5px; 
+}
+
+.btn-outline-success {
+  border-radius: 20px; 
+}
+
+
+.dropdown-menu {
+  background-color: #343a40; 
+  border: none; 
+}
+
+.dropdown-item {
+  color: white; 
+}
+
+.dropdown-item:hover {
+  background-color: #495057; 
+  color: #ffffff; 
+}
+
+
+@media (max-width: 768px) {
+  .navbar-nav {
+    margin: 0; 
+  }
+}
+
+
+.dropdown-menu {
+  z-index: 1000; 
+}
+
+
+body {
+  background-color: #fbfbfb;
+}
+
+@media (min-width: 991.98px) {
+  main {
+    padding-left: 240px;
+  }
+}
+
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  padding: 58px 0 0; /* Height of navbar */
+  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);
+  z-index: 600;
+}
+
+@media (max-width: 991.98px) {
+  .sidebar {
+    width: 100%;
+  }
+}
+.sidebar .active {
+  border-radius: 5px;
+  background-color: #eaeff4;
+  color: #000000;
+}
+
+.sidebar .list-group-item {
+  font-weight: 600;
+  color: #000000;
+}
+
+.sidebar .list-group-item:hover {
+  background-color: #eaeff4;
+}
+
+a[aria-expanded="false"] .rotate-icon {
+  transform: rotate(0deg);
+}
+
+a[aria-expanded="true"] .rotate-icon {
+  transform: rotate(180deg);
+}
+
+.navbar {
+  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);
+}
+
+.navbar .breadcrumb-item a {
+  color: #5f6368;
+}
+
+.navbar .breadcrumb-item a:hover {
+  color: #000000;
+}
+
+.bg-custom {
+  background-color: #4f46e5;
+}

@@ -1,0 +1,62 @@
+.img-hover-effect {
+    transition: transform 0.3s ease; 
+}
+
+.img-hover-effect:hover {
+    transform: scale(1.05); 
+}
+
+
+.mulch-container {
+    margin-left: 115px;
+}
+
+
+@media (max-width: 992px) and (min-width: 769px) {
+    .mulch-container {
+        margin-left: 0 !important;
+        padding: 15px;
+    }
+
+    .img-fluid {
+        width: 90% !important;
+        margin-left: 0 !important;
+    }
+
+    .mulch-container .row .col-md-6 {
+        margin-top: 20px;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .mulch-container {
+        margin-left: 0 !important;
+        padding: 10px;
+    }
+
+    .img-fluid {
+        width: 100% !important;
+        margin-left: 0 !important;
+    }
+
+    .mulch-container .row .col-md-6 {
+        margin-top: 20px;
+    }
+}
+
+@media (max-width: 1300px) {
+
+.container{
+    max-width: 80% !important;
+}
+}
+
+@media (max-width: 600px) {
+
+    .container{
+        max-width: 100% !important;
+    }
+    }
+    
+

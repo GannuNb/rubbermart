@@ -1,0 +1,6 @@
+/* For iPad (Landscape) and iPad Air (Landscape) only */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+    .py-5 {
+        margin-left: 12%; /* Adjust margin or other styles as needed */
+    }
+}

@@ -1,0 +1,242 @@
+/* Main layout */
+.tyre-scrap-layout {
+    background-color: #f8f9fa; /* Light gray background */
+    min-height: 100vh;
+    padding: 40px 20px; /* Add padding around the content */
+    margin-left: 15%; /* Move the page slightly to the right */
+    margin-top: 8% !important;
+}
+
+/* Heading styling */
+.tyre-scrap-heading {
+    text-align: center;
+    font-size: 2rem;
+    
+    margin-bottom: 40px; /* Increased spacing below the heading */
+    color: #0072ff;
+    font-family: Algerian, sans-serif;
+    margin-top: 5%;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+   
+}
+
+/* Grid for cards */
+.tyre-scrap-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Exactly three cards in a row for larger screens */
+    gap: 30px; /* Add space between cards */
+    justify-items: center;
+    padding: 10px; /* Add padding around the grid */
+}
+
+/* Responsive layout for tablets */
+@media (max-width: 992px) { 
+    .tyre-scrap-grid {
+        grid-template-columns: repeat(2, 1fr); /* Two cards in a row */
+        gap: 20px;
+    }
+}
+
+/* Responsive layout for mobile screens */
+@media (max-width: 600px) { 
+    .tyre-scrap-layout {
+        padding: 20px 10px; /* Adjust padding for smaller screens */
+        margin-left: 0; /* Remove left margin */
+    }
+
+    .tyre-scrap-grid {
+        grid-template-columns: 1fr; /* One card in a row */
+        gap: 15px;
+    }
+
+    .tyre-card {
+        width: 90%; /* Reduce card width for better fit on smaller screens */
+    }
+}
+
+/* Card styling */
+.tyre-card {
+    background-color: #ebf3fa; /* Light blue background */
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 100%;
+    border: 2px solid #98c1d5;
+}
+
+.tyre-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    background-color: #abd1fa; /* Slightly darker blue on hover */
+}
+
+/* Image styling */
+.tyre-image {
+    height: 200px;
+    object-fit: cover;
+    width: 100%;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Card body styling */
+.tyre-card-body {
+    padding: 20px; /* Increased padding for better spacing */
+    text-align: center;
+}
+
+.tyre-card-title {
+    font-size: 1.3rem; /* Slightly larger font size */
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.tyre-card-text {
+    color: #555;
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+
+/* Button styling */
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(90deg, #ff6a00, #ee0979);
+    transform: scale(1.05);
+}
+
+/* Description styling */
+.tyre-scrap-description {
+    text-align:justify;
+    font-size: 1.1rem;
+    margin-bottom: 25px; /* Add spacing below the description */
+    color: #555; /* Neutral text color */
+    line-height: 1.6; /* Improve readability */
+    max-width: 850px; /* Limit width for better alignment */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Animation keyframes */
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInLeft {
+    0% {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Heading animation */
+.animated-heading {
+    animation: fadeInUp 1.2s ease-in-out;
+}
+
+/* Description animation */
+.animated-description {
+    animation: fadeInLeft 1.5s ease-in-out;
+}
+
+/* Card animation */
+.animated-card {
+    opacity: 0;
+    transform: scale(0.9);
+    animation: fadeInUp 0.8s ease-in-out forwards;
+    animation-delay: calc(0.2s * var(--card-index));
+}
+
+/* Apply index-based delay dynamically */
+.tyre-card {
+    --card-index: 0;
+}
+
+.tyre-card:nth-child(2) {
+    --card-index: 1;
+}
+
+.tyre-card:nth-child(3) {
+    --card-index: 2;
+}
+
+@media(min-width:600px) and (max-width:1100px){
+    .tyre-scrap-layout{
+        margin-left: 0%;
+    }
+}
+
+
+.custom-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2rem;
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.custom-arrow-next {
+    right: 10px;
+}
+
+.custom-arrow-prev {
+    left: 10px;
+}
+
+.custom-arrow:hover {
+    background-color: #007bff;
+    color: #fff;
+}

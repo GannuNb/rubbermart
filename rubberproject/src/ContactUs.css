@@ -1,0 +1,27 @@
+.contact-us-page h2 {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  
+  .map-container {
+    width: 100%;
+    height: 250px;
+  }
+  
+  .social-icons i {
+    color: #333;
+    transition: color 0.3s ease;
+  }
+  
+  .social-icons i:hover {
+    color: #007bff;
+  }
+  
+  .accordion-button {
+    background-color: #f8f9fa;
+  }
+  
+  .accordion-button:focus {
+    box-shadow: none; /* Removes the focus outline */
+  }
+  

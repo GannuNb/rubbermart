@@ -1,0 +1,46 @@
+/* Footer.css */
+.social-icon {
+    color: #fff; /* Default icon color (white) */
+    transition: transform 0.3s ease, color 0.3s ease; /* Smooth transition for hover effects */
+    font-size: 24px; /* Set a larger default size for icons */
+  }
+  
+  .social-icon:hover {
+    color: #007bff; /* Change color to blue on hover */
+    transform: scale(1.2); /* Increase size on hover (scale up to 1.2) */
+  }
+  
+  /* Styles for Quick Links */
+  .quick-links {
+    padding: 0; /* Remove default padding */
+    list-style: none; /* Remove bullet points */
+    text-align: center; /* Center-align list items */
+  margin: 0.5rem 0; /* Add some space between items */
+  margin-left: 32%;
+  }
+  
+  .quick-links li {
+    margin-bottom: 10px; /* Space between links */
+  }
+  
+  .quick-links a {
+    text-decoration: none; /* Remove underline */
+    color: #fff; /* Change link color to white */
+    transition: color 0.3s; /* Smooth transition for color change */
+  }
+  
+  .quick-links a:hover {
+    color: #007bff !important; /* Change link color to blue on hover with !important */
+  }
+
+  @media(min-width:300px) and (max-width:600px){
+    .quick-links{
+      margin-left: 0%;
+    }
+  }
+  .quick-links h5 {
+    white-space: nowrap; /* Prevent the heading from wrapping to the next line */
+    overflow: hidden; /* Hide overflow text */
+    text-overflow: ellipsis; /* Show ellipsis for overflow text */
+  }
+  

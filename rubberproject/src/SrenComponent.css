@@ -1,0 +1,111 @@
+.sren-heading {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    color: #333;
+  }
+  
+  .sren-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px;
+    flex-wrap: wrap; /* Allows wrapping of cards */
+  }
+  
+  .sren-card {
+    position: relative;
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    width: 25%; /* Default to 4 cards per row */
+    overflow: hidden;
+    transition: transform 0.3s, background-color 0.3s;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .sren-card:hover {
+    background-color: #4ed4fe;
+    color: #fff;
+    transform: translateY(-10px);
+  }
+  
+  .sren-card:hover .sren-underline {
+    width: 50px;
+    background-color: #fff;
+  }
+  
+  .sren-icon {
+    font-size: 40px;
+    color: #ff5722;
+    z-index: 2; /* Foreground icon stays above */
+    position: relative;
+  }
+  
+  .sren-card:hover .sren-icon {
+    color: #fff;
+  }
+  
+  .sren-bg-icon-wrapper {
+    position: absolute;
+    top: 58%; /* Centered vertically */
+    left: 50%; /* Centered horizontally */
+    transform: translate(-50%, -50%) scale(1.2); /* Proper scaling for icon */
+    z-index: 1; /* Below all other content */
+    opacity: 0.1; /* Transparent */
+    pointer-events: none; /* Ignore hover effects */
+    width: 100%; /* Contain it within card */
+    height: 100%; /* Contain it within card */
+  }
+  
+  .sren-bg-icon {
+    font-size: 150px; /* Adjust size to fit within card */
+    color: inherit; /* Matches card background */
+  }
+  
+  .sren-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    z-index: 2;
+    position: relative;
+  }
+  
+  .sren-underline {
+    width: 0;
+    height: 2px;
+    margin: 10px auto;
+    background-color: #ff5722;
+    transition: width 0.3s;
+    z-index: 2;
+    position: relative;
+  }
+  
+  .sren-description {
+    font-size: 14px;
+    color: #666;
+    z-index: 2;
+    position: relative;
+    text-align: justify;
+  }
+  
+  .sren-card:hover .sren-description {
+    color: #fff;
+  }
+  
+  /* Media Query for Smaller Screens */
+  @media (max-width: 768px) {
+    .sren-card {
+      width: 100%; /* One card per row on smaller screens */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .sren-heading {
+      font-size: 20px; /* Adjust heading size for very small screens */
+    }
+  }
+  

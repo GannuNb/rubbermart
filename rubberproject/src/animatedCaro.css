@@ -1,0 +1,53 @@
+/* Custom animations */
+.carousel-item {
+    transition: transform 1s ease, opacity 1s ease;
+  }
+  
+  .zoom-in {
+    animation: zoomInAnimation 1s ease-in-out;
+  }
+  
+  @keyframes zoomInAnimation {
+    0% {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.05);
+      opacity: 0.7;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
+  /* Slide In Effect */
+  .carousel-item-next,
+  .carousel-item-prev,
+  .carousel-item.active {
+    transform: translateX(0);
+  }
+  
+  .carousel-item-next,
+  .carousel-item-prev {
+    opacity: 0;
+  }
+  
+  .carousel-item-next.carousel-item-left,
+  .carousel-item-prev.carousel-item-right {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  
+  /* Add smooth fade transition */
+  .carousel-fade .carousel-item {
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+  }
+  
+  .carousel-fade .carousel-item-next,
+  .carousel-fade .carousel-item-prev {
+    opacity: 1;
+  }
+  

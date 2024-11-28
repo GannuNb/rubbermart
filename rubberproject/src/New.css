@@ -1,0 +1,62 @@
+.slider .single-slider {
+    height: 600px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  
+  .slider .single-slider .text {
+    margin-top: 120px;
+  }
+  
+  .slider .single-slider h1 {
+    color: #2C2D3F;
+    font-size: 38px;
+    font-weight: 700;
+  }
+  
+  .slider .single-slider h1 span {
+    color: #1a76d1;
+  }
+  
+  .slider .single-slider p {
+    color: #2C2D3F;
+    margin-top: 27px;
+    font-weight: 400;
+  }
+  
+  .slider .single-slider .btn {
+    background: #1a76d1;
+    color: #fff;
+    margin-right: 10px;
+  }
+  
+  .slider .single-slider .btn.primary {
+    background: #2C2D3F;
+  }
+  
+  .schedule .single-schedule {
+    background: #1A76D1;
+    padding: 30px;
+    color: white;
+  }
+  
+  .schedule .single-schedule h4 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 13px;
+  }
+  
+  .schedule .single-schedule ul {
+    margin-top: 17px;
+  }
+  
+  .schedule .single-schedule li {
+    margin-bottom: 3px;
+  }
+  
+  .schedule .single-schedule a {
+    color: white;
+    text-decoration: none;
+  }
+  
