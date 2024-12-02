@@ -6,9 +6,24 @@ import RubberGranulesImage from './images/RubberGranules.jpeg';
 import ShreddsImage from './images/Shredds.jpeg';
 import MultipleBaledTyresPCRImage from './images/MultipleBaledTyresPCR.jpeg';
 import BaledTyresTBRImage from './images/BaledTyresTBR.jpeg';
+import BaledTyresTBRImage2 from './images/BaledTyresTBR2.png';
 import ThreePiecePCRImage from './images/ThreePiecePCR.jpeg';
 import ThreePieceTBRImage from './images/ThreePieceTBR.jpeg';
+import ThreePieceTBRImage2 from './images/ThreePieceTBR2.webp';
 import mulchImage from './images/mulch.jpeg';
+import mulchImage2 from './images/mulch1.jpg';
+import rubbercrumimg1 from "./images/rubbercrumbtw3.jpg"
+import rubbercrumimg2 from "./images/rubbercrumbtw4.jpg"
+import baledtrespcrimg1 from "./images/baledtrespcr2.jpg"
+import baledtrespcrimg2 from "./images/baledtrespcr3.jpg"
+
+
+
+
+
+
+
+
 import './TyreScrap.css';
 
 const TyreScrap = () => {
@@ -17,13 +32,13 @@ const TyreScrap = () => {
 
     // Map product names to their corresponding image arrays
     const imagesMap = {
-        "Rubber Granules/Crum": [RubberGranulesImage, mulchImage],
-        "Shredds": [ShreddsImage, RubberGranulesImage],
-        "Multiple Baled Tyres PCR": [MultipleBaledTyresPCRImage, ThreePiecePCRImage],
-        "Baled Tyres TBR": [BaledTyresTBRImage, ThreePieceTBRImage],
-        "Three Piece PCR": [ThreePiecePCRImage, MultipleBaledTyresPCRImage],
-        "Three Piece TBR": [ThreePieceTBRImage, BaledTyresTBRImage],
-        "Mulch": [mulchImage, RubberGranulesImage],
+        "Rubber Granules/Crum": [rubbercrumimg1, rubbercrumimg2],
+        "Shredds": [ShreddsImage, ShreddsImage],
+        "Multiple Baled Tyres PCR": [baledtrespcrimg1, baledtrespcrimg2],
+        "Baled Tyres TBR": [BaledTyresTBRImage,BaledTyresTBRImage2 ],
+        "Three Piece PCR": [ThreePiecePCRImage, ThreePieceTBRImage2],
+        "Three Piece TBR": [ThreePieceTBRImage, ThreePieceTBRImage2],
+        "Mulch": [mulchImage,mulchImage2],
     };
     useEffect(() => {
         window.scrollTo(0, 0);

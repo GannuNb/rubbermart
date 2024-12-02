@@ -127,7 +127,7 @@ const Uploaded = () => {
     if (error) return <div className="text-center mt-5 text-danger">Error: {error}</div>;
 
     return (
-        <div className='setter'>
+        <>
             <div className="container my-5">
                 <h2 className="text-center mb-4">Uploaded Scrap Items</h2>
                 {scrapItems.length === 0 ? (
@@ -170,7 +170,7 @@ const Uploaded = () => {
                     </table>
                 )}
             </div>
-        </div>
+            </>
     );
 };
 

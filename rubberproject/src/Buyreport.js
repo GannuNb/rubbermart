@@ -89,6 +89,7 @@ const BuyReport = () => {
     }
 
     setFilteredOrders(filtered);
+    alert("filters applied")
   };
 
   const numberToWords = (num) => {

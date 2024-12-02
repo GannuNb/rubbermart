@@ -55,14 +55,14 @@ const ThreePieceTBR = () => {
     };
 
     return (
-        <div className=" mulch-container" style={{ padding: '20px', marginTop: '20px' , marginLeft: '115px'}}> {/* Keep original desktop layout */}
+        <div className=" mulch-container" style={{ padding: '20px', marginTop: '20px' , marginLeft: '180px'}}> {/* Keep original desktop layout */}
             <div className="row align-items-center mt-5">
                 <div className="col-md-6">
                     <img 
                         src={ThreePieceTBRImage} 
                         alt="Mulch" 
                         className="img-fluid img-hover-effect" // Add img-hover-effect class
-                        style={{ borderRadius: '8px', width: '80%', marginLeft: '20px',height :'300px' }} 
+                        style={{ borderRadius: '8px', width: '72%', marginLeft: '20px' }} 
                     />
                 </div>
                 <div className="col-md-6">

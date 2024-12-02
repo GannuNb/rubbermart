@@ -4,6 +4,7 @@ import MultipleBaledTyresPCRImage from './images/MultipleBaledTyresPCR.jpeg'; //
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 import { useNavigate } from 'react-router-dom'; // useNavigate instead of useHistory
 import './Mulch.css'; // Import your CSS file
+import baledtrespcrimg1 from "./images/baledtrespcr2.jpg"
 
 const Multiple_Baled_Tyres_PCR = () => {
     const [scrapItems, setScrapItems] = useState([]);
@@ -56,14 +57,14 @@ const Multiple_Baled_Tyres_PCR = () => {
     
 
     return (
-        <div className=" mulch-container" style={{ padding: '20px', marginTop: '20px' , marginLeft: '115px'}} >
+        <div className=" mulch-container" style={{ padding: '20px', marginTop: '20px' , marginLeft: '180px'}} >
             <div className="row align-items-center mt-5">
                 <div className="col-md-6">
                     <img 
-                        src={MultipleBaledTyresPCRImage} 
+                        src={baledtrespcrimg1} 
                         alt="Multiple Baled Tyres PCR" 
                         className="img-fluid img-hover-effect" // Add img-hover-effect class
-                        style={{ borderRadius: '8px', width: '80%', marginLeft: '20px' }} 
+                        style={{ borderRadius: '8px', width: '85%', marginLeft: '20px' }} 
                     />
                 </div>
                 <div className="col-md-6">

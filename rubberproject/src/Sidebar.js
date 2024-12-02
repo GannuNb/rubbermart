@@ -341,6 +341,58 @@ function Sidebar() {
 </div>
 
 
+
+<div className='disp' style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+  <Link to ="/Productspage">
+    <button 
+        style={{
+            padding: '10px 20px',
+            width: '100%', // Increased width
+            fontSize: '16px',
+            backgroundColor: '#28c699',
+            color: 'white',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease', // Smooth transition for hover effect
+        }}
+        onMouseEnter={(e) => {
+            e.target.style.backgroundColor = '#28c699'; // Darker green on hover
+            e.target.style.transform = 'scale(1.05)'; // Slightly enlarge
+        }}
+        onMouseLeave={(e) => {
+            e.target.style.backgroundColor = '#28c699'; // Reset to original color
+            e.target.style.transform = 'scale(1)'; // Reset size
+        }}
+    >
+        BUY
+    </button></Link>
+    <Link to ="/Sell">
+    <button 
+        style={{
+            padding: '10px 20px',
+            width: '100%', // Increased width
+            fontSize: '16px',
+            backgroundColor: '#12a0e6',
+            color: 'white',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease', // Smooth transition for hover effect
+        }}
+        onMouseEnter={(e) => {
+            e.target.style.backgroundColor = 'darkred'; // Darker red on hover
+            e.target.style.transform = 'scale(1.05)'; // Slightly enlarge
+        }}
+        onMouseLeave={(e) => {
+            e.target.style.backgroundColor = '#12a0e6'; // Reset to original color
+            e.target.style.transform = 'scale(1)'; // Reset size
+        }}
+    >
+        SELL
+    </button></Link>
+</div>
+
           {/* Social Icons and User Actions */}
           <ul className="navbar-nav ms-auto d-flex flex-row align-items-center dis">
             {/* Social Icons */}

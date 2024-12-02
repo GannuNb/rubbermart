@@ -10,6 +10,8 @@ const authenticateToken = require('../middleware/authenticateToken');
 const User = require('../models/User');
 const nodemailer = require('nodemailer');
 
+
+
 router.post('/uploadscrap', [
     authenticateToken,
     body('material').isIn(['Tyre scrap', 'pyro oil', 'Tyre steel scrap']).withMessage('Invalid material type'),
@@ -43,7 +45,41 @@ router.post('/uploadscrap', [
         });
 
         await newScrap.save();
-        res.status(201).json({ success: true, message: 'Scrap details uploaded successfully', scrap: newScrap });
+
+        // Send email to admin
+ // Send email to admin
+const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: process.env.ADMIN_EMAIL,
+    subject: 'New Scrap Submission Received',
+    text: `Dear Admin,
+
+We have received a new scrap submission. Below are the details:
+
+- Material Type: ${material}
+- Application: ${application}
+- Quantity: ${quantity}
+- Company Name: ${companyName}
+- Contact Number: ${phoneNumber}
+- Email Address: ${email}
+
+Please log in to the admin portal to review and process this submission.
+
+Best regards,  
+The Scrap Management Team`
+};
+
+
+
+
+        transporter.sendMail(mailOptions, (err, info) => {
+            if (err) {
+                console.error('Error sending email:', err);
+                return res.status(500).json({ success: false, message: 'Scrap uploaded but failed to send email.' });
+            }
+            console.log('Email sent:', info.response);
+            res.status(201).json({ success: true, message: 'Scrap details uploaded successfully and email sent.', scrap: newScrap });
+        });
     } catch (error) {
         console.error('Error uploading scrap details:', error);
         res.status(500).json({ success: false, message: 'Internal Server Error' });
@@ -51,9 +87,7 @@ router.post('/uploadscrap', [
 });
 
 
-// @route   GET /api/getuploadedscrap
-// @desc    Get all uploaded scrap details
-// @access  Private (Authenticated users)
+
 router.get('/getuploadedscrap', authenticateToken, async (req, res) => {
     try {
         const uploadedScrapItems = await Uploadscrap.find()

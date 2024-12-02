@@ -35,6 +35,10 @@ import ScrollToTop from './Components/ScrollToTop.js';
 import Alert from './Components/Alert.js';
 import ForgotPassword from './ForgotPassword.js';
 import ResetPassword from './Reset Password.js';
+import Productspage from './Productspage.js';
+
+
+
 
 function App() {
   const location = useLocation();
@@ -54,6 +58,7 @@ function App() {
           <Route exact path="/Uploaded" element={<Uploaded />} />
           <Route exact path="/Login" element={<Login />} />
           <Route exact path="/Signup" element={<Signup />} />
+          <Route exact path="/Productspage" element={<Productspage/>} />
           <Route exact path="/Contact" element={<ContactUs />} />
           <Route exact path="/Sell" element={<Sell />} />
           <Route exact path="/BusinessProfile" element={<BusinessProfile />} /> 

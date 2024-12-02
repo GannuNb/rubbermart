@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import tyreScrap from './images/tyre_scrap.jpeg'; 
-import pyroOil from './images/pyro_oil.jpeg'; 
+import pyroOil from './images/pyro_oil2.jpeg'; 
 import istock from './images/istockphoto.webp';
 import './Home.css'; 
 import axios from 'axios';
@@ -65,10 +65,31 @@ const Home = () => {
 
         
             <div  className='abt'>
+            <div className='setter'>
+            <div className='head'
+    style={{
+        textAlign: 'center',
+        margin: '20px',
+        padding: '10px',
+        fontSize: '24px',
+        fontWeight: 'bold',
+        color: 'black', // Set text color to black
+        border: '2px solid #ccc',
+        borderRadius: '5px',
+        backgroundColor: '#f9f9f9',
+        width : '90%'
+    }}
+>
+    India's Exclusive Marketplace for Rubber-Derived Products
+</div>
+</div>
+                
             <div className="bg-container-home">
+
+                
             <div className="image-container d-flex justify-content-center align-items-center gap-3">
     <img src={car1} alt="Car 2" className="bg-image img-fluid rounded" style={{ height: '300px', width: '300px' }} />
-    <img src={car2} alt="Car 3" className="bg-image img-fluid rounded" style={{ height: '300px', width: '300px' }} />
+    <img src={pyroOil} alt="Car 3" className="bg-image img-fluid rounded" style={{ height: '300px', width: '300px' }} />
     <img src={car3} alt="Car 4" className="bg-image img-fluid rounded" style={{ height: '300px', width: '300px' }} />
     <div className="overlay-text text-center mt-3">
         BUY & SELL YOUR PRODUCTS

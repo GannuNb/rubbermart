@@ -3,7 +3,9 @@ import axios from 'axios';
 import Slider from "react-slick";
 import { useNavigate } from 'react-router-dom';
 import PyroSteelImage from './images/PyroSteel.jpeg';
+import PyroSteelImage2 from './images/PyroSteel2.webp';
 import RubberCrumSteelImage from './images/RubberCrumSteel.jpeg';
+import RubberCrumSteelImage1 from './images/RubberCrumSteel1.jpg';
 
 const Tyresteelscrap = () => {
     const [tyreSteelScrapItems, setTyreSteelScrapItems] = useState([]);
@@ -11,8 +13,8 @@ const Tyresteelscrap = () => {
     const isLoggedIn = localStorage.getItem('token');
 
     const imagesMap = {
-        "Rubber Crum Steel": [RubberCrumSteelImage, PyroSteelImage], // Add multiple images per product here
-        "Pyro Steel": [PyroSteelImage, RubberCrumSteelImage], // Replace with real images
+        "Rubber Crum Steel": [RubberCrumSteelImage, RubberCrumSteelImage1], // Add multiple images per product here
+        "Pyro Steel": [PyroSteelImage, PyroSteelImage2], // Replace with real images
     };
     useEffect(() => {
         window.scrollTo(0, 0);

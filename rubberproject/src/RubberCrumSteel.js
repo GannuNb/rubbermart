@@ -4,6 +4,7 @@ import RubberCrumSteelImage from './images/RubberCrumSteel.jpeg'; // Ensure to h
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 import { useNavigate } from 'react-router-dom'; // useNavigate instead of useHistory
 import './Mulch.css'; // Import your CSS file
+import RubberCrumSteelImage1 from './images/RubberCrumSteel1.jpg';
 
 const RubberCrumSteel = () => {
     const [scrapItems, setScrapItems] = useState([]);
@@ -55,11 +56,11 @@ const RubberCrumSteel = () => {
     };
 
     return (
-        <div className="mulch-container" style={{ padding: '20px', marginTop: '20px' , marginLeft: '115px'}} >
+        <div className="mulch-container" style={{ padding: '20px', marginTop: '20px' , marginLeft: '180px'}} >
             <div className="row align-items-center mt-5">
                 <div className="col-md-6">
                     <img 
-                        src={RubberCrumSteelImage} 
+                        src={RubberCrumSteelImage1} 
                         alt="Rubber Crum Steel" 
                         className="img-fluid img-hover-effect" // Add img-hover-effect class
                         style={{ borderRadius: '8px', width: '80%', marginLeft: '20px',height :'300px' }} 

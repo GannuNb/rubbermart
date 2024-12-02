@@ -464,7 +464,7 @@ const renderOrderSummary = () => {
         // Handle successful response and proceed as needed
         if (emailResponse.status === 200) {
           alert('Order placed successfully, and invoice emailed!');
-          navigate('/Buyreport'); 
+          navigate('/Getorders'); 
         } else {
           alert('Failed to send invoice email.');
         }

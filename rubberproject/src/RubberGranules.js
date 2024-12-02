@@ -4,6 +4,9 @@ import RubberGranulesImage from './images/RubberGranules.jpeg'; // Ensure to hav
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 import { useNavigate } from 'react-router-dom'; // useNavigate instead of useHistory
 import './Mulch.css'; // Import your CSS file
+import rubbercrumimg1 from "./images/rubbercrumbtw3.jpg"
+
+
 
 const RubberGranules = () => {
     const [scrapItems, setScrapItems] = useState([]);
@@ -55,11 +58,11 @@ const RubberGranules = () => {
     };
 
     return (
-        <div className=" mulch-container"style={{ padding: '20px', marginTop: '20px' , marginLeft: '115px'}} >
+        <div className=" mulch-container"style={{ padding: '20px', marginTop: '20px' , marginLeft: '180px'}} >
             <div className="row align-items-center mt-5">
                 <div className="col-md-6">
                     <img 
-                        src={RubberGranulesImage} 
+                        src={rubbercrumimg1} 
                         alt="Rubber Granules" 
                         className="img-fluid img-hover-effect" // Add img-hover-effect class
                         style={{ borderRadius: '8px', width: '80%', marginLeft: '20px' }} 

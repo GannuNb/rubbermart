@@ -104,7 +104,7 @@ function BusinessProfile() {
         <div className="setter">
           <div className="container">
             <div className="business-profile-container">
-              <h2 className="text-center mb-4  tyre-scrap-heading ">Your Business Profile</h2>
+              <h2 className="text-center mb-4  tyre-scrap-heading mr-5 ">Your Business Profile</h2>
               <div className="row">
                 <div className="col-12 col-md-6 mb-3 text-black">
                   <p><strong>Company Name:</strong> {profile.companyName}</p>

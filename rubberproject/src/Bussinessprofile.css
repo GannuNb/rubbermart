@@ -74,6 +74,7 @@ h2.text-center {
     border-radius: 8px;
     color: white;
     transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+    margin-right: 2%;
   }
   
   .business-profile-container:hover {
