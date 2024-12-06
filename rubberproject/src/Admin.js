@@ -3,7 +3,8 @@ import axios from 'axios';
 import { Modal, Button, Form } from 'react-bootstrap';
 import './Admin.css';
 import './Sell.css';
-import Uploaded from './Uploaded';
+
+import Adminnav from './Adminnav';
 
 const AdminPage = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -228,9 +229,11 @@ const AdminPage = () => {
     if (error) return <div className="container mt-5"><p className="text-danger">{error}</p></div>;
 
     return (
+        <>
+        <Adminnav/>
 
         <div>
-        <div className="container mt-5">
+        <div className=" mt-5">
             <h2 className="mb-4">Admin Dashboard</h2>
 
          
@@ -373,8 +376,8 @@ const AdminPage = () => {
 
 
         </div>
-        <Uploaded/>
-        </div>
+   
+        </div></>
     );
 };
 

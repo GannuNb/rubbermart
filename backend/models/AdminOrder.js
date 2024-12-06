@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const OrderItemSchema = new mongoose.Schema({
+const AdminOrderItemSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -19,14 +19,14 @@ const OrderItemSchema = new mongoose.Schema({
   },
 });
 
-const OrderSchema = new mongoose.Schema(
+const AdminOrderSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: true,
     },
-    items: [OrderItemSchema], // Array of items
+    items: [AdminOrderItemSchema], // Array of items
     subtotal: {
       type: Number,
       required: true,
@@ -53,4 +53,4 @@ const OrderSchema = new mongoose.Schema(
 );
 
 
-module.exports = mongoose.model('Order', OrderSchema);
+module.exports = mongoose.model('Adminorder', AdminOrderSchema);

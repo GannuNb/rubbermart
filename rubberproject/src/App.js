@@ -36,15 +36,15 @@ import Alert from './Components/Alert.js';
 import ForgotPassword from './ForgotPassword.js';
 import ResetPassword from './Reset Password.js';
 import Productspage from './Productspage.js';
-
-
-
+import Adminshipping from './Adminshipping.js';
+import ShippingDetails from './Shippingdetails.js';
+import Ship from './Ship.js';
 
 function App() {
   const location = useLocation();
 
   // Check if the current path is "/Admin" or "/Uploaded", case-insensitive
-  const isSidebarHidden = /^\/(admin|uploaded)$/i.test(location.pathname);
+  const isSidebarHidden = /^\/(admin|uploaded|Adminshipping)$/i.test(location.pathname);
 
   return (
     <>
@@ -56,6 +56,11 @@ function App() {
           <Route exact path="/new" element={<New />} />
           <Route exact path="/Admin" element={<Admin />} />
           <Route exact path="/Uploaded" element={<Uploaded />} />
+          <Route exact path="/Adminshipping" element={<Adminshipping />} />
+          <Route exact path="/Shippingdetails" element={<ShippingDetails />} />
+          <Route exact path="/Ship" element={<Ship />} />
+
+
           <Route exact path="/Login" element={<Login />} />
           <Route exact path="/Signup" element={<Signup />} />
           <Route exact path="/Productspage" element={<Productspage/>} />

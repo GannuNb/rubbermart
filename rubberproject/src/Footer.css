@@ -37,10 +37,20 @@
     .quick-links{
       margin-left: 0%;
     }
+    .fw-bolds{
+      margin-left: 34%;
+    }
   }
+
+
   .quick-links h5 {
     white-space: nowrap; /* Prevent the heading from wrapping to the next line */
     overflow: hidden; /* Hide overflow text */
     text-overflow: ellipsis; /* Show ellipsis for overflow text */
   }
   
+  @media(min-width:600px) and (max-width:1100px){
+    .fw-bolds{
+      margin-left: 34%;
+    }
+  }

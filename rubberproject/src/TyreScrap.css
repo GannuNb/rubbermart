@@ -135,8 +135,8 @@
 }
 
 .btn-primary:hover {
-    background: linear-gradient(90deg, #ff6a00, #ee0979);
-    transform: scale(1.05);
+    background: linear-gradient(90deg, #05ee29, #061ee3);
+    transform: scale(1.05);
 }
 
 /* Description styling */

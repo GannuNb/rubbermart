@@ -111,10 +111,9 @@ body {
 }
 .navbar-brand img {
   height: 50px;
-  width: 130%;
-  margin-right: 0;
+  width: 185%;
+  margin-right: 0;
 }
-
 
 .btn-outline-success {
   display: flex;

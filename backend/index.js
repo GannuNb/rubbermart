@@ -11,6 +11,7 @@ const app = express();
 const port = process.env.PORT || 4000;
 const BusinessProfile = require('./models/BusinessProfile');
 const User = require('./models/User');
+const shippingRoutes = require('./Routes/shippingRoutes');
 
 
 const allowedOrigins = process.env.CLIENT_URL?.split(',') || [];
@@ -143,6 +144,7 @@ app.use('/api', contactRoute);
 app.use('/api', mailRoutes);
 app.use('/api', uploadscrapRoute);
 app.use('/api', createUserRoute);
+app.use('/api', shippingRoutes);
 
 app.get('/', (req, res) => {
     res.send('Hello World!');

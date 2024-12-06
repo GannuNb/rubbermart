@@ -5,7 +5,9 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const Order = require('../models/Order');
 const User = require('../models/User');
-const ScrapItem = require('../models/ScrapItem'); // Updated import
+const ScrapItem = require('../models/ScrapItem'); 
+const Adminorder = require('../models/AdminOrder');
+
 
 // Middleware to authenticate and attach user to request
 const authenticate = (req, res, next) => {
@@ -130,6 +132,114 @@ router.get('/orders', authenticate, async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
+
+
+
+
+
+
+router.post('/Adminorder', authenticate, async (req, res) => {
+  console.log('Received order request:', req.body);
+  try {
+    const items = req.body.items;
+
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      console.log('Validation failed: Missing or invalid items array');
+      return res.status(400).json({ message: 'Items array must be provided' });
+    }
+
+    let totalSubtotal = 0;
+    let totalGST = 0;
+    let totalPrice = 0;
+
+    const processedItems = [];
+
+    for (const item of items) {
+      const { name: itemName, quantity: requiredQuantity } = item;
+
+      if (!itemName || !requiredQuantity) {
+        console.log('Validation failed: Missing itemName or requiredQuantity');
+        return res.status(400).json({ message: 'Each item must have a name and required quantity' });
+      }
+
+      const scrapItem = await ScrapItem.findOne({ name: itemName });
+      if (!scrapItem) {
+        console.log(`Scrap item not found: ${itemName}`);
+        return res.status(404).json({ message: `Scrap item not found: ${itemName}` });
+      }
+
+      console.log(`Scrap item found: ${scrapItem.name}, Available: ${scrapItem.available_quantity}`);
+
+      if (scrapItem.available_quantity < requiredQuantity) {
+        console.log(`Insufficient quantity for ${itemName}: Requested ${requiredQuantity}, Available ${scrapItem.available_quantity}`);
+        return res.status(400).json({ message: `Insufficient quantity available for ${itemName}` });
+      }
+
+      const pricePerTon = scrapItem.price;
+      const subtotal = pricePerTon * requiredQuantity;
+      const gst = subtotal * 0.18;
+      const itemTotalPrice = subtotal + gst;
+
+      console.log(`Order Calculation for ${itemName} - Subtotal: ${subtotal}, GST: ${gst}, Total: ${itemTotalPrice}`);
+
+      totalSubtotal += subtotal;
+      totalGST += gst;
+      totalPrice += itemTotalPrice;
+
+      processedItems.push({
+        name: itemName,
+        price: pricePerTon,
+        quantity: requiredQuantity,
+        total: itemTotalPrice,
+        remainingQuantity: scrapItem.available_quantity, // Store remaining quantity
+      });
+    }
+
+    const newOrder = new Adminorder({
+      user: req.user.id,
+      items: processedItems,
+      subtotal: totalSubtotal,
+      gst: totalGST,
+      totalPrice: totalPrice,
+    });
+
+    await newOrder.save();
+    console.log('Order saved successfully:', newOrder);
+
+    res.status(200).json({
+      message: 'Order placed successfully',
+      remainingQuantities: processedItems.map(item => ({
+        name: item.name,
+        remainingQuantity: item.remainingQuantity, // Correctly access the remaining quantity
+      })),
+      order: newOrder,
+    });
+  } catch (error) {
+    console.error('Error placing order:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+
+
+
+
+
+
+router.get('/admin/orders', async (req, res) => {
+  try {
+    // Retrieve all orders
+    const orders = await Adminorder.find().populate('user', 'email');
+    res.status(200).json(orders);
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+
+
 
 
   

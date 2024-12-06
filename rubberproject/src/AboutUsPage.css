@@ -66,6 +66,7 @@
   transition: opacity 1s ease-in-out;
   pointer-events: none; /* Prevent interaction when inactive */
   animation-play-state: running; /* Default to running */
+  padding: 3%;
 }
 
 /* Active slide that will be shown */

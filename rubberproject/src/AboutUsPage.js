@@ -55,9 +55,10 @@ export default function AboutUsPage() {
         {/* Gradient Background Section */}
         <div className="about-bg py-5">
           <div className="container text-center">
-            <h2 className="display-4 fw-bold mb-3 text-primary products-heading animate-heading">
-              About Us
-            </h2>
+          <h2
+  style={{ color: "rgb(28, 219, 102)" }}
+  className="display-4 fw-bold mb-3 products-heading animate-heading"
+>About Us</h2>
 
             <p
               className="lead text-light mb-4 about-text animate-paragraph"

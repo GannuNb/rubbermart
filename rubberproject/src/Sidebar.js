@@ -149,6 +149,7 @@ function Sidebar() {
                     <Link className="list-group-item list-group-item-action py-2 ripple" to="/MultipleBaledTyresPcr" onClick={closeSidebar}>
                       Multiple Baled Tyres PCR
                     </Link>
+                    
                     <Link className="list-group-item list-group-item-action py-2 ripple" to="/ThreePiecePcr" onClick={closeSidebar}>
                       Three Piece PCR
                     </Link>
@@ -292,26 +293,28 @@ function Sidebar() {
 
 
 {/* Search Form */}
-<div
-  className="position-relative d-inline-block w-100 px-2 px-md-3 dis"
+<div className="position-relative d-inline-block w-100 px-2 px-md-3 dis" style={{ width: '100%' }}>
+<form
+  className="d-flex align-items-center input-group my-auto justify-content-end w-100"
+  onSubmit={(e) => e.preventDefault()}
+  style={{ width: '100%' }} // Ensure form takes up full width of the parent
 >
-  <form
-    className="d-flex align-items-center input-group my-auto justify-content-end"
-    onSubmit={(e) => e.preventDefault()}
-  >
-    <input
-      type="search"
-      className="form-control rounded"
-      placeholder="Search Products"
-      value={searchQuery}
-      onChange={handleSearchChange}
-      style={{
-        flexGrow: 1,
-        minWidth: '0', // Prevents input from shrinking awkwardly
-      }}
-    />
-    
-  </form>
+  <input 
+    type="search"
+    className="form-control rounded"
+    placeholder="Search Products"
+    value={searchQuery}
+    onChange={handleSearchChange}
+    style={{
+      flexGrow: 1,          // Allows the input to take up available space
+      minWidth: '0',        // Prevents shrinking
+      width: '100%',        // Makes the input 100% of the form width
+      maxWidth: '600px',    // Prevents the search input from becoming too large
+      marginRight: '250px',  // Creates a small gap between the search bar and the next element (Buy/Sell button)
+    }}
+  />
+</form>
+
 
   {/* Suggestions Dropdown */}
   {suggestions.length > 0 && (
@@ -320,7 +323,7 @@ function Sidebar() {
       style={{
         top: 'calc(100% + 5px)', // Position just below the search bar
         left: 0,
-        width: '100%',
+        width: '70%',
         zIndex: 1000,
       }}
     >
@@ -337,61 +340,76 @@ function Sidebar() {
         </li>
       ))}
     </ul>
-  )}
+  )}
 </div>
 
 
-
-<div className='disp' style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-  <Link to ="/Productspage">
-    <button 
-        style={{
-            padding: '10px 20px',
-            width: '100%', // Increased width
-            fontSize: '16px',
-            backgroundColor: '#28c699',
-            color: 'white',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer',
-            transition: 'all 0.3s ease', // Smooth transition for hover effect
-        }}
-        onMouseEnter={(e) => {
-            e.target.style.backgroundColor = '#28c699'; // Darker green on hover
-            e.target.style.transform = 'scale(1.05)'; // Slightly enlarge
-        }}
-        onMouseLeave={(e) => {
-            e.target.style.backgroundColor = '#28c699'; // Reset to original color
-            e.target.style.transform = 'scale(1)'; // Reset size
-        }}
-    >
-        BUY
-    </button></Link>
-    <Link to ="/Sell">
-    <button 
-        style={{
-            padding: '10px 20px',
-            width: '100%', // Increased width
-            fontSize: '16px',
-            backgroundColor: '#12a0e6',
-            color: 'white',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer',
-            transition: 'all 0.3s ease', // Smooth transition for hover effect
-        }}
-        onMouseEnter={(e) => {
-            e.target.style.backgroundColor = 'darkred'; // Darker red on hover
-            e.target.style.transform = 'scale(1.05)'; // Slightly enlarge
-        }}
-        onMouseLeave={(e) => {
-            e.target.style.backgroundColor = '#12a0e6'; // Reset to original color
-            e.target.style.transform = 'scale(1)'; // Reset size
-        }}
-    >
-        SELL
-    </button></Link>
-</div>
+<div className='disp' style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        gap: '10px',
+        width: '100%',  // Make container take full width
+        maxWidth: '1200px',  // Optional: Prevent the container from growing too large
+        flexWrap: 'wrap',  // Ensure buttons wrap on smaller screens
+        margin: '0 auto'  // Center the container horizontally
+      }}>
+      <Link to="/Productspage">
+        <button 
+            style={{
+                padding: '10px 20px',
+                flex: '1',  // Allow buttons to take equal space in flex container
+                fontSize: '16px',
+                backgroundColor: '#28c699',
+                color: 'white',
+                border: 'none',
+                borderRadius: '5px',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                minWidth: '150px',  // Prevent buttons from shrinking too small
+                maxWidth: '300px',  // Prevent buttons from growing too large
+                marginLeft: '25%'
+            }}
+            onMouseEnter={(e) => {
+                e.target.style.backgroundColor = '#218a79';
+                e.target.style.transform = 'scale(1.05)';
+            }}
+            onMouseLeave={(e) => {
+                e.target.style.backgroundColor = '#28c699';
+                e.target.style.transform = 'scale(1)';
+            }}
+        >
+            BUY
+        </button>
+      </Link>
+      <Link to="/Sell">
+        <button 
+            style={{
+                padding: '10px 20px',
+                flex: '1',  // Allow buttons to take equal space in flex container
+                fontSize: '16px',
+                backgroundColor: '#12a0e6',
+                color: 'white',
+                border: 'none',
+                borderRadius: '5px',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                minWidth: '150px',  // Prevent buttons from shrinking too small
+                maxWidth: '300px',  // Prevent buttons from growing too large
+                marginLeft: '11%'  // Adjust margin to prevent overlap
+            }}
+            onMouseEnter={(e) => {
+                e.target.style.backgroundColor = 'navyblue';
+                e.target.style.transform = 'scale(1.05)';
+            }}
+            onMouseLeave={(e) => {
+                e.target.style.backgroundColor = '#12a0e6';
+                e.target.style.transform = 'scale(1)';
+            }}
+        >
+            SELL
+        </button>
+      </Link>
+    </div>
 
           {/* Social Icons and User Actions */}
           <ul className="navbar-nav ms-auto d-flex flex-row align-items-center dis">

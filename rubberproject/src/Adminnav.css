@@ -1,0 +1,51 @@
+
+.logo{
+    height: 60px;
+  }
+  
+  @media (min-width:300px)and (max-width:600px){
+    .logo{
+      height: 30px;
+    }
+    
+  
+  }
+  @media (min-width:600px)and (max-width:1000px){
+    .logo{
+      height: 65px;
+    }
+    
+  
+  }
+  
+  
+  
+  /* Hover color effect for navbar links */
+  .nav-hover {
+      color: #333; /* Initial color */
+      transition: color 0.3s ease;
+    }
+    
+    .nav-hover:hover {
+      color: #33cf9f; /* Change this to the hover color you want */
+      text-decoration: none;
+    }
+    
+    /* Add spacing between navbar items */
+    .navbar-nav .nav-item {
+      margin-right: 15px; /* Adjust the space as needed */
+    }
+    
+    /* Dropdown item styling */
+    .dropdown-item {
+      color: #333;
+      transition: color 0.3s ease;
+    }
+    
+    .dropdown-item:hover {
+      color: #007bff;
+      background-color: #9ef0e5; /* Light background on hover */
+    }
+    
+
+    

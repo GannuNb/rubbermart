@@ -21,7 +21,7 @@ const Footer = () => {
           {/* Column 2: Quick Links */}
           <Col xs={12} md={2} lg={2} className="mb-4 text-left"> {/* Centered for small screens, adjust for medium and larger screens */}
             <div className="text-left text-lg-end"> {/* Center text on small screens, right align on medium and larger screens */}
-              <h5 className="fw-bold">Quick Links</h5>
+              <h5 className="fw-bolds">Quick Links</h5>
               <ul className="quick-links list-unstyled"> {/* Center the list items */}
   <li><Link to ="/"><a >Home</a></Link></li>
   <li><Link to ="/AboutUsPage"><a >About Us</a></Link></li>

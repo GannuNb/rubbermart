@@ -45,7 +45,7 @@ const ThreePieceTBR = () => {
         // Navigate to the Order page with the mulch data and required quantity
         navigate('/Order', {
             state: {
-                name: 'Mulch',
+                name: 'Three Piece TBR',
                 available_quantity: mulchData.available_quantity,
                 price: mulchData.price,
                 required_quantity: requiredQuantity,

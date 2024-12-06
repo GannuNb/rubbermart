@@ -14,6 +14,7 @@ const ThreePiecePCR = () => {
         window.scrollTo(0, 0);
     }, []);
     
+    
     useEffect(() => {
         const fetchData = async () => {
             try {
