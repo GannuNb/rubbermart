@@ -15,9 +15,7 @@
 /* Large Tablets and Small Desktops (991px to 1350px) */
 @media (max-width: 1350px) {
     .bg-container-home {
-        margin-left: 10%; /* Reduce margin */
-        padding: 15px; /* Adjust padding */
-    }
+        height: 100vh !important;    }
 
     .bg-title {
         font-size: 2.2rem; /* Slightly reduce font size */
@@ -27,13 +25,18 @@
         font-size: 1.3rem; /* Adjust subtitle size */
     }
 }
+@media (max-width: 600px) {
+    .bg-container-home {
+        height: 480px !important;
+    }
+}
 
 /* Tablets and Large Phones (768px to 990px) */
 @media (max-width: 990px) {
     .bg-container-home {
         margin-left: 5% !important;  /* Further reduce margin */
         padding: 10px;
-        height: 400px !important;
+        height: 480px !important;
     }
 
     .bg-title {
@@ -444,7 +447,7 @@ margin-left: 0.5%;
         width: 40%; /* Overlay spans across all images */
     }
     .head{
-        margin-top: 8% !important;
+        margin-top: 1% !important;
         margin-left: 4% !important;
     }
     
@@ -453,7 +456,7 @@ margin-left: 0.5%;
     .bg-container-home {
         width: 90%; /* Adjust width for mobile to make sure it fits within screen */
         margin: 8% auto 0; /* Add margin-top of 10% and center horizontally */
-        height: 100vh !important; /* Keep the height for mobile */
+        height: 1300px !important; /* Keep the height for mobile */
         padding: 20px; /* Add padding inside */
         display: flex;
         flex-direction: column;
@@ -470,11 +473,9 @@ margin-left: 0.5%;
         width: 100%; /* Ensure it uses full width */
         position: relative; /* Allow for the overlay text */
         max-height: 100%; /* Prevent images from overflowing the container */
+        margin-top: 5%;
     }
-.head{
-    margin-top: 28% !important;
-}
-    .bg-image {
+  .bg-image {
         width: 80%; /* Decrease image size to fit within the bg */
         max-width: 100%; /* Ensure image does not exceed container width */
         height: auto; /* Maintain aspect ratio */

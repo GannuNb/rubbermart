@@ -107,13 +107,14 @@ body {
 
 .logoset{
         width: 100%;
-        height: -1px;
+        
 }
 .navbar-brand img {
   height: 50px;
-  width: 185%;
+  width: 300%;
   margin-right: 0;
 }
+
 
 .btn-outline-success {
   display: flex;
@@ -186,10 +187,10 @@ body {
     width: 40%;
   }
   .navbar-brand img {
-  height: 36px;
-  width: 100%;
-  margin-right: 0;
-  margin-left: -38%;
+    height: 38px;
+    width: 91%;
+    margin-right: 0;
+    margin-left: -3%;
   
   }
   .dis{
@@ -212,7 +213,7 @@ body {
   height: 36px;
   width: 100%;
   margin-right: 0;
-  margin-left: -270%;
+  margin-left: 20%;
   
   }
   .dis{
@@ -225,8 +226,137 @@ body {
  
 }
 
-@media (min-width:300px) and (max-width:950px){
+/* @media (min-width:300px) and (max-width:950px){
 .disp{
   display: none !important;
 }
+} */
+
+
+
+.btstop {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  max-width: 1200px;
+  flex-wrap: wrap;
+  margin: 0 auto;
+}
+
+.bttop {
+  padding: 10px 20px;
+  flex: 1;
+  font-size: 16px;
+  background-color: #28c699;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 150px;
+  max-width: 300px;
+  margin-left: 25%;
+}
+
+
+
+@media (min-width:300px) and (max-width:600px){
+
+  .btstop {
+    display: flex;
+    justify-content: space-between;
+  
+    width: 42%;
+    max-width: 1200px;
+    flex-wrap: wrap;
+   margin-top: 9%;
+   margin-left: -7%;
+  }
+  
+  .bttop {
+    padding: 4px 20px;
+    flex: 1 1;
+    font-size: 16px;
+    background-color: #28c699;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    transition-property: all;
+    transition-duration: 0.3s;
+    transition-timing-function: ease;
+    transition-delay: 0s;
+    transition-behavior: normal;
+    min-width: 67px;
+    max-width: 250px;
+    margin-left: 24%;
+  }
+  .tpheight{
+    height: 93px;
+    margin-top: -5% !important;
+
+  }
+  .ftop{
+    margin-top: -3%;
+  }
+}
+@media (min-width:600px) and (max-width:1000px){
+
+  .mt-4 {
+    font-size: 1.8rem !important;
+  }
+
+  .btstop {
+    display: flex;
+    justify-content: space-between;
+  
+    width: 42%;
+    max-width: 1200px;
+    flex-wrap: wrap;
+   margin-top: 0%;
+   margin-left: 18%;
+  }
+  
+  .bttop {
+    padding: 4px 20px;
+    flex: 1 1;
+    font-size: 16px;
+    background-color: #28c699;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    transition-property: all;
+    transition-duration: 0.3s;
+    transition-timing-function: ease;
+    transition-delay: 0s;
+    transition-behavior: normal;
+    min-width: 67px;
+    max-width: 250px;
+    margin-left: 24%;
+  }
+ 
+}
+
+
+
+
+/* Base styles */
+.logout-button {
+  display: flex;
+  align-items: center;
+}
+
+.logout-text {
+  margin-left: 5px;
+}
+
+/* Hide logout text on mobile screens */
+@media (max-width: 768px) {
+  .logout-text {
+    display: none;
+  }
 }

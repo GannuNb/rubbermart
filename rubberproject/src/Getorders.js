@@ -4,7 +4,7 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useLocation } from 'react-router-dom';
 import logo from './images/logo.png';
 
 const Getorders = () => {
@@ -18,16 +18,19 @@ const Getorders = () => {
   const [profile, setProfile] = useState(null);
   const navigate = useNavigate();
 
+  const location = useLocation();
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
-      setTimeout(() => {
-        alert('Please log in to view Buy reports');
-        navigate('/Login');
-      }, 0);
-      return;
+        setTimeout(() => {
+            alert("Please log in to view Orders.");
+            navigate('/Login', { state: { from: location.pathname } }); // Navigate to login if no token
+        }, 0);
+        return;
     }
-  }, [navigate]);
+  }, [navigate,location]);
+
 
   useEffect(() => {
     window.scrollTo(0, 0);

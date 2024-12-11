@@ -7,12 +7,12 @@ import logo from './images/logo.png';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 
-
 function ShippingDetails() {
   const [shippingDetails, setShippingDetails] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [profile, setProfile] = useState(null);
+  const [pdfUrls, setPdfUrls] = useState([]);
 
   const navigate = useNavigate();
 
@@ -32,12 +32,24 @@ function ShippingDetails() {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/shippinguser`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+
         if (response.data.shippingDetails) {
           setShippingDetails(response.data.shippingDetails);
+
+          // Generate PDF URLs for all records
+          const urls = response.data.shippingDetails.map((record) => {
+            if (record.pdf?.data) {
+              const binary = new Uint8Array(record.pdf.data.data);
+              const blob = new Blob([binary], { type: record.pdf.contentType });
+              return URL.createObjectURL(blob);
+            }
+            return null;
+          });
+
+          setPdfUrls(urls);
         }
       } catch (error) {
-        console.error("Error fetching shipping details:", error);
-        setError('Failed to fetch shipping details');
+        console.error('Error fetching shipping details:', error);
       } finally {
         setLoading(false);
       }
@@ -45,6 +57,7 @@ function ShippingDetails() {
 
     fetchShippingDetails();
   }, []);
+
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -239,14 +252,12 @@ shipAddressLines.forEach((line, index) => {
     doc.save(`Invoice_${order._id}.pdf`);
   };
 
-  
-
   const downloadOrderPDFs = async (orderId) => {
     const zip = new JSZip();
-    
+
     // Filter the details for the specific Order ID
     const orderDetails = shippingDetails.filter(detail => detail.orderId._id === orderId);
-    
+
     // Create an array of promises to generate PDFs
     const pdfPromises = orderDetails.map(async (detail) => {
       try {
@@ -256,10 +267,10 @@ shipAddressLines.forEach((line, index) => {
         console.error(`Error generating PDF for order ${detail._id}:`, error);
       }
     });
-  
+
     // Wait for all PDFs to be generated and added to the ZIP
     await Promise.all(pdfPromises);
-  
+
     // After all PDFs are added to the ZIP, generate the ZIP file and trigger download
     try {
       const zipContent = await zip.generateAsync({ type: 'blob' });
@@ -302,66 +313,134 @@ shipAddressLines.forEach((line, index) => {
           <div>
             {Object.keys(groupedByOrder).map((orderId) => (
               <div key={orderId} className="order-group">
-               
                 <button
                   className="btn btn-success mb-4"
                   onClick={() => downloadOrderPDFs(orderId)}
                 >
                   Download All PDFs for this Order
                 </button>
-                <table className="table table-striped table-bordered table-hover">
-                  <thead>
-                    <tr>
-                      <th>Order ID</th>
-                      <th>Vehicle Number</th>
-                      <th>Product</th>
-                      <th>Quantity</th>
-                      <th>Email</th>
-                      <th>Item Prices</th>
-                      <th>Subtotal</th>
-                      <th>GST</th>
-                      <th>Total Price</th>
-                      <th>Shipping Date</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {groupedByOrder[orderId].map((detail) => (
-                      <tr key={detail._id}>
-                        <td>{detail.orderId ? detail.orderId._id : 'N/A'}</td>
-                        <td>{detail.vehicleNumber}</td>
-                        <td>{detail.selectedProduct}</td>
-                        <td>{detail.quantity}</td>
-                        <td>{detail.email}</td>
-                        <td>
-                          {detail.itemDetails && detail.itemDetails.length > 0 ? (
-                            detail.itemDetails
-                              .filter((item) => item.name === detail.selectedProduct)
-                              .map((item, index) => (
-                                <div key={index}>
-                                  ₹{item.price.toFixed(2)}
-                                </div>
-                              ))
-                          ) : (
-                            <span>No items</span>
-                          )}
-                        </td>
-                        <td>₹{detail.subtotal.toFixed(2)}</td>
-                        <td>₹{detail.gst.toFixed(2)}</td>
-                        <td>₹{detail.totalPrice.toFixed(2)}</td>
-                        <td>{new Date(detail.shippingDate).toLocaleDateString()}</td>
-                        <td>
-                          <button
-                            className="btn btn-primary"
-                            onClick={() => generatePDF(detail)}
-                          >
-                            Download PDF
-                          </button>
-                        </td>
+                <div className="table-responsive">
+                  <table className="table table-striped table-bordered table-hover">
+                    <thead>
+                      <tr>
+                        <th>Order ID</th>
+                        <th>Vehicle Number</th>
+                        <th>Product</th>
+                        <th> Shipped Quantity</th>
+                        <th>Req quantity</th>
+                        <th>Remaining Quantity</th>
+                        <th>Email</th>
+                        <th>Item Prices</th>
+                        
+                        <th>Subtotal</th>
+                        <th>GST</th>
+                        <th>Total Price</th>
+                        <th>Shipping Date</th>
+                        <th>Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+  {groupedByOrder[orderId].map((detail, index) => (
+    <tr key={detail._id}>
+      <td>{detail.orderId ? detail.orderId._id : 'N/A'}</td>
+      <td>{detail.vehicleNumber}</td>
+      <td>{detail.selectedProduct}</td>
+      <td>{detail.quantity}</td>
+      <td>
+        {detail.itemDetails && detail.itemDetails.length > 0 ? (
+          detail.itemDetails
+            .filter((item) => item.name === detail.selectedProduct)
+            .map((item, index) => (
+              <div key={index}>
+                {item.quantity}
+              </div>
+            ))
+        ) : (
+          <span>No items</span>
+        )}
+      </td>
+      <td>
+        {detail.itemDetails && detail.itemDetails.length > 0 ? (
+          detail.itemDetails
+            .filter((item) => item.name === detail.selectedProduct)
+            .map((item, index) => (
+              <div key={index}>
+                {item.quantity-detail.quantity}
+              </div>
+            ))
+        ) : (
+          <span>No items</span>
+        )}
+      </td>
+      
+      <td>{detail.email}</td>
+      <td>
+        {detail.itemDetails && detail.itemDetails.length > 0 ? (
+          detail.itemDetails
+            .filter((item) => item.name === detail.selectedProduct)
+            .map((item, index) => (
+              <div key={index}>
+                ₹{item.price.toFixed(2)}
+              </div>
+            ))
+        ) : (
+          <span>No items</span>
+        )}
+      </td>
+
+      <td>₹{detail.subtotal.toFixed(2)}</td>
+      <td>₹{detail.gst.toFixed(2)}</td>
+      <td>₹{detail.totalPrice.toFixed(2)}</td>
+      <td>{new Date(detail.shippingDate).toLocaleDateString()}</td>
+      <td>
+  {/* Bill PDF */}
+  {detail.billPdf && detail.billPdf.base64 ? (
+    <button
+      className="btn btn-info"
+      onClick={() => {
+        const link = document.createElement('a');
+        link.href = `data:${detail.billPdf.contentType};base64,${detail.billPdf.base64}`;
+        link.download = `bill_${index}.pdf`;
+        link.click();
+      }}
+    >
+      E-WAY Bill PDF
+    </button>
+  ) : (
+    <p>No Bill PDF</p>
+  )}
+  
+  {/* Invoice PDF */}
+  {detail.invoicePdf && detail.invoicePdf.base64 ? (
+    <button
+      className="btn btn-primary mx-3"
+      onClick={() => {
+        const link = document.createElement('a');
+        link.href = `data:${detail.invoicePdf.contentType};base64,${detail.invoicePdf.base64}`;
+        link.download = `invoice_${index}.pdf`;
+        link.click();
+      }}
+    >
+      Invoice PDF
+    </button>
+  ) : (
+    <p>No Invoice PDF</p>
+  )}
+   <button
+    className="btn btn-primary mx-3"
+    onClick={() => generatePDF(detail)}
+  >
+    Generate Invoice
+  </button>
+</td>
+
+    </tr>
+  ))}
+</tbody>
+
+
+                  </table>
+                </div>
               </div>
             ))}
           </div>
@@ -369,6 +448,7 @@ shipAddressLines.forEach((line, index) => {
       </div>
     </div>
   );
-};
+  
+}
 
 export default ShippingDetails;

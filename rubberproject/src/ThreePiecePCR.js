@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ThreePiecePCRImage from './images/ThreePiecePCR.jpeg'; // Ensure to have an image for Three Piece PCR
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
-import { useNavigate } from 'react-router-dom'; // useNavigate instead of useHistory
+import { useNavigate,useLocation } from 'react-router-dom'; // useNavigate instead of useHistory
 import './Mulch.css'; // Import your CSS file
 
 const ThreePiecePCR = () => {
@@ -10,6 +10,9 @@ const ThreePiecePCR = () => {
     const [threePiecePCRData, setThreePiecePCRData] = useState({ available_quantity: 0, price: 0 }); // Store the Three Piece PCR data
     const [requiredQuantity, setRequiredQuantity] = useState(1); // Default required quantity to 1
     const navigate = useNavigate(); // Use useNavigate instead of useHistory
+    const location = useLocation();
+
+
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
@@ -43,8 +46,31 @@ const ThreePiecePCR = () => {
     }, []);
 
     const handleOrder = () => {
-        // Navigate to the Order page with the Three Piece PCR data and required quantity
-        navigate('/Order', {
+        const token = localStorage.getItem('token'); // Replace 'authToken' with your token key
+    
+ 
+        if (!token) {
+            // If user isn't logged in, navigate to the login page
+            setTimeout(() => {
+                alert("Please log in to proceed");
+                navigate('/login', { 
+                    state: { 
+                        from: location.pathname, // Pass the current path to return after login
+                        threePiecePCRData: {
+                            name: 'Three Piece PCR',
+                available_quantity: threePiecePCRData.available_quantity,
+                price: threePiecePCRData.price,
+                required_quantity: requiredQuantity,
+                hsn: threePiecePCRData.hsn,
+                        }
+                    }
+                });
+            }, 0);
+            
+        }
+        else{
+
+          navigate('/Order', {
             state: {
                 name: 'Three Piece PCR',
                 available_quantity: threePiecePCRData.available_quantity,
@@ -53,6 +79,7 @@ const ThreePiecePCR = () => {
                 hsn: threePiecePCRData.hsn,
             },
         });
+    }
     };
 
     return (

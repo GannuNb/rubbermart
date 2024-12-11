@@ -52,5 +52,5 @@ const AdminOrderSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-
-module.exports = mongoose.model('Adminorder', AdminOrderSchema);
+// Check if the model is already compiled, and use the existing model if so
+module.exports = mongoose.models.Adminorder || mongoose.model('Adminorder', AdminOrderSchema);

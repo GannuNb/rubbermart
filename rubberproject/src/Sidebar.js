@@ -265,7 +265,7 @@ function Sidebar() {
       </nav>
 
       {/* Top Navbar */}
-      <nav id="main-navbar" className="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+      <nav id="main-navbar" className="navbar navbar-expand-lg navbar-light bg-white fixed-top tpheight ftop">
         <div className="container-fluid">
           {/* Sidebar Toggle Button */}
           <button
@@ -295,7 +295,7 @@ function Sidebar() {
 {/* Search Form */}
 <div className="position-relative d-inline-block w-100 px-2 px-md-3 dis" style={{ width: '100%' }}>
 <form
-  className="d-flex align-items-center input-group my-auto justify-content-end w-100"
+  className="d-flex align-items-center input-group my-auto justify-content-end w-100 dis"
   onSubmit={(e) => e.preventDefault()}
   style={{ width: '100%' }} // Ensure form takes up full width of the parent
 >
@@ -314,6 +314,7 @@ function Sidebar() {
     }}
   />
 </form>
+
 
 
   {/* Suggestions Dropdown */}
@@ -344,31 +345,10 @@ function Sidebar() {
 </div>
 
 
-<div className='disp' style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        gap: '10px',
-        width: '100%',  // Make container take full width
-        maxWidth: '1200px',  // Optional: Prevent the container from growing too large
-        flexWrap: 'wrap',  // Ensure buttons wrap on smaller screens
-        margin: '0 auto'  // Center the container horizontally
-      }}>
+<div className='btstop'>
       <Link to="/Productspage">
         <button 
-            style={{
-                padding: '10px 20px',
-                flex: '1',  // Allow buttons to take equal space in flex container
-                fontSize: '16px',
-                backgroundColor: '#28c699',
-                color: 'white',
-                border: 'none',
-                borderRadius: '5px',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                minWidth: '150px',  // Prevent buttons from shrinking too small
-                maxWidth: '300px',  // Prevent buttons from growing too large
-                marginLeft: '25%'
-            }}
+           className='bttop'
             onMouseEnter={(e) => {
                 e.target.style.backgroundColor = '#218a79';
                 e.target.style.transform = 'scale(1.05)';
@@ -383,20 +363,8 @@ function Sidebar() {
       </Link>
       <Link to="/Sell">
         <button 
-            style={{
-                padding: '10px 20px',
-                flex: '1',  // Allow buttons to take equal space in flex container
-                fontSize: '16px',
-                backgroundColor: '#12a0e6',
-                color: 'white',
-                border: 'none',
-                borderRadius: '5px',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                minWidth: '150px',  // Prevent buttons from shrinking too small
-                maxWidth: '300px',  // Prevent buttons from growing too large
-                marginLeft: '11%'  // Adjust margin to prevent overlap
-            }}
+            className='bttop'
+         
             onMouseEnter={(e) => {
                 e.target.style.backgroundColor = 'navyblue';
                 e.target.style.transform = 'scale(1.05)';
@@ -435,24 +403,27 @@ function Sidebar() {
               </Link>
             </li>
             </ul>
-            <div className='logodis'>
 
-            {!localStorage.getItem("token") ? (
-  <Dropdown>
-    <Dropdown.Toggle id="dropdown-basic">
-      Login/Signup
-    </Dropdown.Toggle>
-    <Dropdown.Menu>
-      <Dropdown.Item as={Link} to="/login">Login</Dropdown.Item>
-      <Dropdown.Item as={Link} to="/signup">Signup</Dropdown.Item>
-    </Dropdown.Menu>
-  </Dropdown>
-) : (
-  <button onClick={handleLogout} className="btn btn-outline-success ms-3 ">
-    <i className="fas fa-sign-out-alt"></i> Logout
-  </button>
-)}
+
+            <div className='logodis'>
+  {!localStorage.getItem("token") ? (
+    <Dropdown>
+      <Dropdown.Toggle id="dropdown-basic">
+        Login/Signup
+      </Dropdown.Toggle>
+      <Dropdown.Menu>
+        <Dropdown.Item as={Link} to="/login">Login</Dropdown.Item>
+        <Dropdown.Item as={Link} to="/signup">Signup</Dropdown.Item>
+      </Dropdown.Menu>
+    </Dropdown>
+  ) : (
+    <button onClick={handleLogout} className="btn btn-outline-success ms-3 logout-button">
+      <i className="fas fa-sign-out-alt"></i> 
+      <span className="logout-text">Logout</span>
+    </button>
+  )}
 </div>
+
 
           
         </div>

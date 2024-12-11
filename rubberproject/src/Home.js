@@ -66,6 +66,10 @@ const Home = () => {
         
             <div  className='abt'>
             <div className='setter'>
+
+</div>
+                
+            <div className="bg-container-home">
             <div className='head'
     style={{
         textAlign: 'center',
@@ -82,9 +86,6 @@ const Home = () => {
 >
     India's Exclusive Marketplace for Rubber-Derived Products
 </div>
-</div>
-                
-            <div className="bg-container-home">
 
                 
             <div className="image-container d-flex justify-content-center align-items-center gap-3">

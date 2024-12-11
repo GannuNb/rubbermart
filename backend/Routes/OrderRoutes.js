@@ -227,10 +227,11 @@ router.post('/Adminorder', authenticate, async (req, res) => {
 
 
 
+
 router.get('/admin/orders', async (req, res) => {
   try {
-    // Retrieve all orders
-    const orders = await Adminorder.find().populate('user', 'email');
+    // Retrieve all orders with user details
+    const orders = await Adminorder.find().populate('user', 'name email');
     res.status(200).json(orders);
   } catch (error) {
     console.error('Error fetching orders:', error);

@@ -5,6 +5,7 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import './Sell.css';
 import logo from "./images/logo.png"
+import "./Order.css";
 
 
 
@@ -28,7 +29,7 @@ const Order = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [additionalQuantity, setAdditionalQuantity] = useState('');
   const [additionalItems, setAdditionalItems] = useState([]);
-
+ 
   useEffect(() => {
     window.scrollTo(0, 0);
 }, []);
@@ -106,59 +107,142 @@ const renderOrderSummary = () => {
   const total = subtotal + gst;
 
   return (
-    <div className="border p-4 rounded bg-white mt-4">
-      <h4>Order Details</h4>
-      <table className="table table-bordered">
-        <thead>
-          <tr>
-            <th>Item</th>
-            <th>Price/Ton</th>
-            <th>HSN</th>
-            <th>Quantity</th>
-            <th>Subtotal</th>
+<div className="border p-4 rounded bg-white mt-4">
+  <h4>Order Details</h4>
+  <div
+    className="table-responsive"
+    style={{
+      overflowX: "scroll", // Enables the scrollbar
+      display: "block", // Ensures the scrollbar container is block-level
+      whiteSpace: "nowrap", // Prevents table wrapping
+    }}
+  >
+    <table className="table table-bordered">
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Price/Ton</th>
+          <th>HSN</th>
+          <th>Quantity</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        {allItems.map((item, index) => (
+          <tr key={index}>
+            <td>{item.name}</td>
+            <td>₹{item.price}</td>
+            <td>{item.hsn}</td>
+            <td>{item.quantity} tons</td>
+            <td>₹{item.total.toFixed(2)}</td>
           </tr>
-        </thead>
-        <tbody>
-          {allItems.map((item, index) => (
-            <tr key={index}>
-              <td>{item.name}</td>
-              <td>₹{item.price}</td>
-              <td>{item.hsn}</td>
-              <td>{item.quantity} tons</td>
-              <td>₹{item.total.toFixed(2)}</td>
-            </tr>
-          ))}
-        </tbody>
-        <tfoot>
-          <tr>
-            <td colSpan="3" className="text-right"><strong>Subtotal:</strong></td>
-            <td>₹{subtotal.toFixed(2)}</td>
-          </tr>
-          <tr>
-            <td colSpan="3" className="text-right"><strong>GST (18%):</strong></td>
-            <td>₹{gst.toFixed(2)}</td>
-          </tr>
-          <tr>
-            <td colSpan="3" className="text-right"><strong>Total:</strong></td>
-            <td>₹{total.toFixed(2)}</td>
-          </tr>
-        </tfoot>
-      </table>
+        ))}
+      </tbody>
+      <tfoot>
+
+
+{/* Additional Items Section */}
+<div className="additional-items mt-4">
+  <button
+    className="add-button mb-3"
+    onClick={handleAddClick}
+  >
+    + {/* Large plus sign */}
+  </button>
+
+  {showDropdown && (
+    <div className="dropdown-container p-4 border rounded shadow-lg bg-light">
+      <h5 className="mb-3">Select Category & Product</h5>
+
+      {/* Category Dropdown */}
+      <div className="mb-3">
+        <label className="form-label">Select Category</label>
+        <select
+          className="form-select"
+          onChange={(e) => handleCategorySelect(e.target.value)}
+          value={selectedCategory}
+        >
+          <option value="">Choose Category</option>
+          <option value="Tyre scrap">Tyre Scrap</option>
+          <option value="Tyre steel scrap">Tyre Steel Scrap</option>
+        </select>
+      </div>
+
+      {/* Product Dropdown (Based on Selected Category) */}
+      {selectedCategory && (
+        <div className="mb-3">
+          <label className="form-label">Select Product</label>
+          <select
+            className="form-select"
+            onChange={(e) => handleProductSelect(JSON.parse(e.target.value))}
+          >
+            <option value="">Select a product</option>
+            {(selectedCategory === 'Tyre scrap' ? tyreScrapItems : tyreSteelScrapItems).map((product) => (
+              <option key={product.id} value={JSON.stringify(product)}>
+                {product.name} - ₹{product.price}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
+      {/* Quantity Input and Add Button */}
+      {selectedProduct && (
+        <>
+          <h5 className="mt-4">Enter Quantity</h5>
+          <div className="mb-3">
+            <input
+              type="number"
+              className="form-control"
+              placeholder="Quantity (tons)"
+              value={additionalQuantity}
+              onChange={handleQuantityChange}
+            />
+          </div>
+
+          <button className="btn btn-success" onClick={addToOrder} style={{ width: '100%' }}>
+            Add to Order
+          </button>
+        </>
+      )}
     </div>
+  )}
+</div>
+<tr>
+    <td colSpan="4" className="text-right"><strong>Subtotal:</strong></td>
+    <td>₹{subtotal.toFixed(2)}</td>
+  </tr>
+  <tr>
+    <td colSpan="4" className="text-right"><strong>GST (18%):</strong></td>
+    <td>₹{gst.toFixed(2)}</td>
+  </tr>
+  <tr>
+    <td colSpan="4" className="text-right"><strong>Total:</strong></td>
+    <td>₹{total.toFixed(2)}</td>
+  </tr>
+
+      </tfoot>
+    </table>
+  </div>
+</div>
+
+
   );
 };
 
-  // Redirect to Login if no token is present
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
+
+
+useEffect(() => {
+  const token = localStorage.getItem('token');
+  if (!token) {
       setTimeout(() => {
-        alert("Please log in to order");
-        navigate('/Login'); // Navigate to login if no token
+          alert("Please log in to Order");
+          navigate('/Login', { state: { from: location.pathname } }); // Navigate to login if no token
       }, 0);
       return;
-    }
-  }, [navigate]);
+  }
+}, [navigate,location]);
+
 
   // Redirect to home if required data is missing
   useEffect(() => {
@@ -563,70 +647,7 @@ const renderOrderSummary = () => {
             {loadingButton ? 'Placing Order...' : 'Place Order'}
           </button>
 
-          {/* Additional Items Section */}
-          <div className="additional-items mt-4">
-            <button
-              className="btn btn-primary mb-3"
-              onClick={handleAddClick}
-              style={{ width: '100%' }}
-            >
-              Add More Items
-            </button>
 
-            {showDropdown && (
-              <div className="dropdown-container p-4 border rounded shadow-lg bg-light">
-                <h5 className="mb-3">Select Category</h5>
-                <div className="d-flex flex-column">
-                  <button
-                    className="btn btn-outline-secondary mb-2"
-                    onClick={() => handleCategorySelect('Tyre scrap')}
-                  >
-                    Tyre Scrap
-                  </button>
-                  <button
-                    className="btn btn-outline-secondary mb-2"
-                    onClick={() => handleCategorySelect('Tyre steel scrap')}
-                  >
-                    Tyre Steel Scrap
-                  </button>
-                </div>
-
-                {filteredProducts.length > 0 && (
-                  <div>
-                    <h5 className="mb-3">Select Product</h5>
-                    <div className="mb-3">
-                      <select
-                        className="form-select"
-                        onChange={(e) => handleProductSelect(JSON.parse(e.target.value))}
-                        value={selectedProduct ? JSON.stringify(selectedProduct) : ''}
-                      >
-                        <option value="">Select a product</option>
-                        {filteredProducts.map((product) => (
-                          <option key={product.id} value={JSON.stringify(product)}>
-                            {product.name} - ₹{product.price}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="mb-3">
-                      <input
-                        type="number"
-                        className="form-control"
-                        placeholder="Quantity (tons)"
-                        value={additionalQuantity}
-                        onChange={handleQuantityChange}
-                      />
-                    </div>
-
-                    <button className="btn btn-success" onClick={addToOrder} style={{ width: '100%' }}>
-                      Add to Order
-                    </button>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
         </div>
       )}
     </div>

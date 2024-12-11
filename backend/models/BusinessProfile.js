@@ -17,7 +17,8 @@ const BusinessProfileSchema = new Schema({
         unique: true
     },
    
-        gstNumber: { type: String, required: true },          // New Field
+        gstNumber: { type: String, required: true },
+        pan: { type: String, required: true },           // New Field
    billAddress: { type: String, required: true },        // New Field
      shipAddress: { type: String, required: true },
 });

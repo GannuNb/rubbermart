@@ -12,13 +12,13 @@ import ThreePieceTBRImage from './images/ThreePieceTBR.jpeg';
 import ThreePieceTBRImage2 from './images/ThreePieceTBR2.webp';
 import mulchImage from './images/mulch.jpeg';
 import mulchImage2 from './images/mulch1.jpg';
-import rubbercrumimg1 from "./images/rubbercrumbtw3.jpg"
 import rubbercrumimg2 from "./images/rubbercrumbtw4.jpg"
 import baledtrespcrimg1 from "./images/baledtrespcr2.jpg"
 import baledtrespcrimg2 from "./images/baledtrespcr3.jpg"
-
-
-
+import RubberCrumSteelImage1 from './images/RubberCrumSteel1.jpg';
+import RubberGranuelsimg2 from './images/RubberGranules2.jpeg';
+import pcr2 from './images/3piecepcr2.jpg'
+import tbr2 from './images/3piecetbr2.jpg'
 
 
 
@@ -32,12 +32,12 @@ const TyreScrap = () => {
 
     // Map product names to their corresponding image arrays
     const imagesMap = {
-        "Rubber Granules/Crum": [rubbercrumimg1, rubbercrumimg2],
+        "Rubber Granules/Crum": [RubberCrumSteelImage1,RubberGranuelsimg2],
         "Shredds": [ShreddsImage, ShreddsImage],
         "Multiple Baled Tyres PCR": [baledtrespcrimg1, baledtrespcrimg2],
         "Baled Tyres TBR": [BaledTyresTBRImage,BaledTyresTBRImage2 ],
-        "Three Piece PCR": [ThreePiecePCRImage, ThreePieceTBRImage2],
-        "Three Piece TBR": [ThreePieceTBRImage, ThreePieceTBRImage2],
+        "Three Piece PCR": [ThreePiecePCRImage,pcr2],
+        "Three Piece TBR": [ThreePieceTBRImage,tbr2],
         "Mulch": [mulchImage,mulchImage2],
     };
     useEffect(() => {

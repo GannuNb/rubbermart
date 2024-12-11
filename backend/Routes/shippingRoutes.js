@@ -1,42 +1,47 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const Shipping = require('../models/Shipping'); // Adjust the path as needed
-const AdminOrder = require('../models/AdminOrder'); // Adjust the path as needed
+const AdminOrder = require('../models/Adminorder'); // Adjust the path as needed
 const User = require('../models/User');
-
 const router = express.Router();
+const multer = require('multer');
 
-router.post('/shipping', async (req, res) => {
+
+
+// Multer configuration for PDF file uploads
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
+
+router.post('/shipping', upload.fields([{ name: 'billPdf' }, { name: 'invoicePdf' }]), async (req, res) => {
   const { vehicleNumber, quantity, selectedProduct, orderId } = req.body;
+  const billPdfFile = req.files?.billPdf?.[0];
+  const invoicePdfFile = req.files?.invoicePdf?.[0];
 
-  // Validate required fields
+  // Validate input fields
   if (!vehicleNumber || !quantity || !selectedProduct || !orderId) {
     return res.status(400).json({ message: 'All fields are required.' });
   }
 
   try {
-    // Find the order by ID and populate user details
     const order = await AdminOrder.findById(orderId).populate('user', 'email');
     if (!order) {
       return res.status(404).json({ message: 'Order not found.' });
     }
 
-    // Find the selected product in the order
     const item = order.items.find((item) => item.name === selectedProduct);
     if (!item) {
       return res.status(400).json({ message: 'Selected product does not exist in the order.' });
     }
 
-    // Ensure quantity is valid
     if (quantity > item.quantity) {
       return res.status(400).json({ message: 'Quantity exceeds available order quantity.' });
     }
 
-    // Prepare shipping data
     const shippingData = {
       orderId: order._id,
       vehicleNumber,
-      quantity,
+      quantity: parseInt(quantity, 10),
       selectedProduct,
       userId: order.user._id,
       email: order.user.email,
@@ -51,11 +56,28 @@ router.post('/shipping', async (req, res) => {
       totalPrice: order.totalPrice,
     };
 
-    // Save shipping information
+    // Attach PDF files if they exist
+    if (billPdfFile) {
+      shippingData.billPdf = {
+        data: billPdfFile.buffer,
+        contentType: billPdfFile.mimetype,
+      };
+    }
+
+    if (invoicePdfFile) {
+      shippingData.invoicePdf = {
+        data: invoicePdfFile.buffer,
+        contentType: invoicePdfFile.mimetype,
+      };
+    }
+
     const newShipping = new Shipping(shippingData);
     await newShipping.save();
 
-    res.status(201).json({ message: 'Shipping information saved successfully.', data: newShipping });
+    res.status(201).json({
+      message: 'Shipping information saved successfully.',
+      data: newShipping,
+    });
   } catch (error) {
     console.error('Error saving shipping information:', error.message);
     res.status(500).json({ message: 'Internal Server Error. Please try again later.' });
@@ -63,11 +85,15 @@ router.post('/shipping', async (req, res) => {
 });
 
 
+
+
+
+
 router.get('/shipping/:orderId', async (req, res) => {
   const { orderId } = req.params;
 
   try {
-    const shippingData = await Shipping.find({ orderId }).select('quantity selectedProduct');
+    const shippingData = await Shipping.find({ orderId }).select('quantity selectedProduct vehicleNumber');
     res.status(200).json(shippingData);
   } catch (error) {
     console.error('Error fetching shipping data:', error.message);
@@ -80,35 +106,57 @@ router.get('/shipping/:orderId', async (req, res) => {
 
 
 
+
+
+
 router.get('/shippinguser', async (req, res) => {
   try {
-    // Get the authorization header
     const authHeader = req.headers.authorization;
-    
+
     if (!authHeader) {
       return res.status(401).json({ message: 'Authorization header missing' });
     }
 
-    // Extract token from the header
     const token = authHeader.split(' ')[1];
-    
-    // Verify the token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Adjust with your secret key
-    const userId = decoded.user.id; // Assuming the token contains user.id
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.user.id;
 
-    // Fetch shipping details specific to the user, including itemDetails
+    // Fetch shipping details for the user
     const shippingDetails = await Shipping.find({ userId })
-      .populate('orderId') // Populate the Order reference (AdminOrder)
-      .populate('userId', 'email') // Populate the email from the User model (if necessary)
-      .select('orderId vehicleNumber selectedProduct quantity subtotal gst totalPrice shippingDate userId email itemDetails'); // Include itemDetails in the select fields
+      .populate('orderId') // Populate the order reference
+      .populate('userId', 'email') // Populate the user's email
+      .select(
+        'orderId vehicleNumber selectedProduct quantity subtotal gst totalPrice shippingDate userId email itemDetails billPdf invoicePdf'
+      );
 
-    // If no shipping details are found, return an empty array
     if (!shippingDetails || shippingDetails.length === 0) {
-      return res.status(200).json({ shippingDetails: [] });
+      return res.status(404).json({ message: 'No shipping details found for this user' });
     }
 
-    // Return the populated shipping details
-    return res.status(200).json({ shippingDetails });
+    // Process details, converting PDFs to Base64
+    const processedShippingDetails = shippingDetails.map((detail) => {
+      const billPdf = detail.billPdf?.data
+        ? {
+            contentType: detail.billPdf.contentType,
+            base64: detail.billPdf.data.toString('base64'),
+          }
+        : null;
+
+      const invoicePdf = detail.invoicePdf?.data
+        ? {
+            contentType: detail.invoicePdf.contentType,
+            base64: detail.invoicePdf.data.toString('base64'),
+          }
+        : null;
+
+      return {
+        ...detail.toObject(),
+        billPdf,
+        invoicePdf,
+      };
+    });
+
+    return res.status(200).json({ shippingDetails: processedShippingDetails });
   } catch (error) {
     console.error('Error fetching shipping details:', error);
     return res.status(500).json({ message: 'Internal Server Error' });
@@ -116,5 +164,10 @@ router.get('/shippinguser', async (req, res) => {
 });
 
 
+
+
+
+
+  
 
 module.exports = router;

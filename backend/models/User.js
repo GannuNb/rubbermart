@@ -20,10 +20,12 @@ const UserSchema = new mongoose.Schema({
     },
     businessProfiles: [
         {
+            registeredgst:{ type: String, required: true },
             companyName: { type: String, required: true },
             phoneNumber: { type: String, required: true },
             email: { type: String, required: true },
-            gstNumber: { type: String, required: true }, // New Field
+            gstNumber: { type: String, required: true },
+            pan: { type: String, required: true }, // New Field
             billAddress: { type: String, required: true }, // New Field
             shipAddress: { type: String, required: true },
         }

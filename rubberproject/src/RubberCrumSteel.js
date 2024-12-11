@@ -2,15 +2,19 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import RubberCrumSteelImage from './images/RubberCrumSteel.jpeg'; // Ensure to have an image for Rubber Crum Steel
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
-import { useNavigate } from 'react-router-dom'; // useNavigate instead of useHistory
+import { useNavigate ,useLocation} from 'react-router-dom'; // useNavigate instead of useHistory
 import './Mulch.css'; // Import your CSS file
 import RubberCrumSteelImage1 from './images/RubberCrumSteel1.jpg';
+import rubbercrumimg1 from "./images/rubbercrumbtw3.jpg"
 
 const RubberCrumSteel = () => {
     const [scrapItems, setScrapItems] = useState([]);
     const [rubberData, setRubberData] = useState({ available_quantity: 0, price: 0 }); // Store the rubber data
     const [requiredQuantity, setRequiredQuantity] = useState(1); // Default required quantity to 1
     const navigate = useNavigate(); // Use useNavigate instead of useHistory
+    const location = useLocation();
+
+
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
@@ -43,8 +47,29 @@ const RubberCrumSteel = () => {
     }, []);
 
     const handleOrder = () => {
-        // Navigate to the Order page with the rubber data and required quantity
-        navigate('/Order', {
+ const token = localStorage.getItem('token'); // Replace 'authToken' with your token key
+    
+ 
+        if (!token) {
+            // If user isn't logged in, navigate to the login page
+            setTimeout(() => {
+                alert("Please log in to proceed");
+                navigate('/login', { 
+                    state: { 
+                        from: location.pathname, // Pass the current path to return after login
+                        rubberData: {
+                            name: 'Rubber Crum Steel',
+                available_quantity: rubberData.available_quantity,
+                price: rubberData.price,
+                required_quantity: requiredQuantity,
+                hsn: rubberData.hsn,
+                        }
+                    }
+                });
+            }, 0);
+            
+        } else {
+                    navigate('/Order', {
             state: {
                 name: 'Rubber Crum Steel',
                 available_quantity: rubberData.available_quantity,
@@ -53,14 +78,16 @@ const RubberCrumSteel = () => {
                 hsn: rubberData.hsn,
             },
         });
+    }
     };
+
 
     return (
         <div className="mulch-container" style={{ padding: '20px', marginTop: '20px' , marginLeft: '180px'}} >
             <div className="row align-items-center mt-5">
                 <div className="col-md-6">
                     <img 
-                        src={RubberCrumSteelImage1} 
+                        src={rubbercrumimg1} 
                         alt="Rubber Crum Steel" 
                         className="img-fluid img-hover-effect" // Add img-hover-effect class
                         style={{ borderRadius: '8px', width: '80%', marginLeft: '20px',height :'300px' }} 

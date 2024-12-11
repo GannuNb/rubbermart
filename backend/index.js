@@ -81,7 +81,7 @@ app.get('/business-profile', async (req, res) => {
 
 app.post('/business-profile', async (req, res) => {
     try {
-        const { companyName, phoneNumber, email, gstNumber, billAddress, shipAddress } = req.body;
+        const {registeredgst, companyName, phoneNumber, email, gstNumber,pan, billAddress, shipAddress } = req.body;
 
         const token = req.headers.authorization.split(' ')[1];
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -98,10 +98,12 @@ app.post('/business-profile', async (req, res) => {
         }
 
         const newProfile = {
+            registeredgst,
             companyName,
             phoneNumber,
             email,
             gstNumber,
+            pan,
             billAddress,
             shipAddress,
         };

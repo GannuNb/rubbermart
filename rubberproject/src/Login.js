@@ -1,49 +1,51 @@
 import React, { useEffect,useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 export default function Login() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
-  let navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-  
-    try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email: credentials.email, password: credentials.password }),
-      });
-  
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
+      e.preventDefault();
+      setLoading(true);
+      setError(null);
+
+      try {
+          const response = await fetch(`${process.env.REACT_APP_API_URL}/api/login`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email: credentials.email, password: credentials.password }),
+          });
+
+          if (!response.ok) throw new Error("Network response was not ok");
+
+          const json = await response.json();
+
+          if (json.success) {
+              localStorage.setItem('userEmail', credentials.email);
+              localStorage.setItem('token', json.authToken);
+
+           
+
+              const redirectPath = location.state?.from || '/'; // Defaults to home if 'from' is undefined
+navigate(redirectPath, { state: location.state }); // Pass state forward to retain shreddsData
+
+          } else {
+              setError("Invalid credentials. Please try again.");
+          }
+      } catch (err) {
+          console.error("An error occurred during login:", err);
+          setError("An error occurred. Please try again later.");
+      } finally {
+          setLoading(false);
       }
-  
-      const json = await response.json();
-      console.log(json);
-  
-      if (json.success) {
-        localStorage.setItem('userEmail', credentials.email);
-        localStorage.setItem('token', json.authToken);
-        navigate("/");
-      } else {
-        setError("Invalid credentials. Please try again.");
-      }
-    } catch (err) {
-      console.error("An error occurred during login:", err);
-      setError("An error occurred. Please try again later.");
-    } finally {
-      setLoading(false);
-    }
   };
-  
+
 
   const onChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });

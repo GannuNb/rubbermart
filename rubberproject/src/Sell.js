@@ -21,6 +21,10 @@ const Sell = () => {
     const navigate = useNavigate();
     const location = useLocation(); // Get current route location
 
+
+
+    
+
     // Scroll to the top whenever the location changes
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -32,11 +36,14 @@ const Sell = () => {
         if (!token) {
             setTimeout(() => {
                 alert("Please log in to sell");
-                navigate('/Login'); // Navigate to login if no token
+                navigate('/Login', { state: { from: location.pathname } }); // Pass current path as state
             }, 0);
             return;
         }
-    }, [navigate]);
+    }, [navigate, location]);
+    
+
+
     useEffect(() => {
         if (material === 'Tyre scrap') {
             setApplications([

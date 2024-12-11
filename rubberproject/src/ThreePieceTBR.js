@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ThreePieceTBRImage from './images/ThreePieceTBR.jpeg'; // Ensure to have an image for mulch
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
-import { useNavigate } from 'react-router-dom'; // useNavigate instead of useHistory
+import { useNavigate , useLocation } from 'react-router-dom'; // useNavigate instead of useHistory
 import './Mulch.css'; // Import your CSS file
 
 const ThreePieceTBR = () => {
@@ -10,6 +10,8 @@ const ThreePieceTBR = () => {
     const [mulchData, setMulchData] = useState({ available_quantity: 0, price: 0 }); // Store the mulch data
     const [requiredQuantity, setRequiredQuantity] = useState(1); // Default required quantity to 1
     const navigate = useNavigate(); // Use useNavigate instead of useHistory
+    const location = useLocation();
+
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
@@ -42,7 +44,28 @@ const ThreePieceTBR = () => {
     }, []);
 
     const handleOrder = () => {
-        // Navigate to the Order page with the mulch data and required quantity
+        const token = localStorage.getItem('token'); // Replace 'authToken' with your token key
+    
+ 
+        if (!token) {
+            // If user isn't logged in, navigate to the login page
+            setTimeout(() => {
+                alert("Please log in to proceed");
+                navigate('/login', { 
+                    state: { 
+                        from: location.pathname, // Pass the current path to return after login
+                        mulchData: {
+                            name: 'Three Piece TBR',
+                            available_quantity: mulchData.available_quantity,
+                            price: mulchData.price,
+                            required_quantity: requiredQuantity,
+                            hsn: mulchData.hsn,
+                        }
+                    }
+                });
+            }, 0);
+        }
+        else{
         navigate('/Order', {
             state: {
                 name: 'Three Piece TBR',
@@ -52,6 +75,7 @@ const ThreePieceTBR = () => {
                 hsn: mulchData.hsn,
             },
         });
+    }
     };
 
     return (

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ShreddsImage from './images/Shredds.jpeg'; // Ensure to have an image for Shredds
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
-import { useNavigate } from 'react-router-dom'; // useNavigate instead of useHistory
+import { useNavigate,useLocation } from 'react-router-dom'; // useNavigate instead of useHistory
 import './Mulch.css'; // Import your CSS file
 
 const Shredds = () => {
@@ -10,6 +10,8 @@ const Shredds = () => {
     const [shreddsData, setShreddsData] = useState({ available_quantity: 0, price: 0 }); // Store the shredds data
     const [requiredQuantity, setRequiredQuantity] = useState(1); // Default required quantity to 1
     const navigate = useNavigate(); // Use useNavigate instead of useHistory
+    const location = useLocation();
+    
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
@@ -42,17 +44,41 @@ const Shredds = () => {
     }, []);
 
     const handleOrder = () => {
-        // Navigate to the Order page with the shredds data and required quantity
-        navigate('/Order', {
-            state: {
-                name: 'Shredds',
-                available_quantity: shreddsData.available_quantity,
-                price: shreddsData.price,
-                required_quantity: requiredQuantity,
-                hsn: shreddsData.hsn,
-            },
-        });
+        const token = localStorage.getItem('token'); // Replace 'authToken' with your token key
+    
+ 
+        if (!token) {
+            // If user isn't logged in, navigate to the login page
+            setTimeout(() => {
+                alert("Please log in to proceed");
+                navigate('/login', { 
+                    state: { 
+                        from: location.pathname, // Pass the current path to return after login
+                        shreddsData: {
+                            name: 'Shredds',
+                            available_quantity: shreddsData.available_quantity,
+                            price: shreddsData.price,
+                            required_quantity: requiredQuantity,
+                            hsn: shreddsData.hsn,
+                        }
+                    }
+                });
+            }, 0);
+            
+        } else {
+            // Navigate to the Order page with the shredds data and required quantity
+            navigate('/Order', {
+                state: {
+                    name: 'Shredds',
+                    available_quantity: shreddsData.available_quantity,
+                    price: shreddsData.price,
+                    required_quantity: requiredQuantity,
+                    hsn: shreddsData.hsn,
+                },
+            });
+        }
     };
+    
 
     return (
         <div className="mulch-container" style={{ padding: '20px', marginTop: '20px' , marginLeft: '180px'}} >

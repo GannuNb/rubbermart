@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import MultipleBaledTyresPCRImage from './images/MultipleBaledTyresPCR.jpeg'; // Ensure to have an image for multiple baled tyres
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
-import { useNavigate } from 'react-router-dom'; // useNavigate instead of useHistory
+import { useNavigate ,useLocation} from 'react-router-dom'; // useNavigate instead of useHistory
 import './Mulch.css'; // Import your CSS file
 import baledtrespcrimg1 from "./images/baledtrespcr2.jpg"
 
@@ -11,6 +11,8 @@ const Multiple_Baled_Tyres_PCR = () => {
     const [tyreData, setTyreData] = useState({ available_quantity: 0, price: 0 }); // Store the tyre data
     const [requiredQuantity, setRequiredQuantity] = useState(1); // Default required quantity to 1
     const navigate = useNavigate(); // Use useNavigate instead of useHistory
+    const location = useLocation();
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -40,8 +42,29 @@ const Multiple_Baled_Tyres_PCR = () => {
     }, []);
 
     const handleOrder = () => {
-        // Navigate to the Order page with the tyre data and required quantity
-        navigate('/Order', {
+        const token = localStorage.getItem('token'); // Replace 'authToken' with your token key
+    
+ 
+        if (!token) {
+            // If user isn't logged in, navigate to the login page
+            setTimeout(() => {
+                alert("Please log in to proceed");
+                navigate('/login', { 
+                    state: { 
+                        from: location.pathname, // Pass the current path to return after login
+                        tyreData: {
+                            name: 'Multiple Baled Tyres PCR',
+                available_quantity: tyreData.available_quantity,
+                price: tyreData.price,
+                required_quantity: requiredQuantity,
+                hsn: tyreData.hsn,
+                        }
+                    }
+                });
+            }, 0);
+            
+        } else {
+                    navigate('/Order', {
             state: {
                 name: 'Multiple Baled Tyres PCR',
                 available_quantity: tyreData.available_quantity,
@@ -50,6 +73,7 @@ const Multiple_Baled_Tyres_PCR = () => {
                 hsn: tyreData.hsn,
             },
         });
+    }
     };
     useEffect(() => {
         window.scrollTo(0, 0);

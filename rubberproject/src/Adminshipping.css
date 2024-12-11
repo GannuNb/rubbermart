@@ -1,0 +1,30 @@
+.vehicle-input {
+    width: 100%;
+    min-width: 200px;
+    max-width: 300px;
+  }
+  
+  .quantity-input {
+    width: 100%;
+    min-width: 150px;
+    max-width: 250px;
+  }
+  
+  .product-select {
+    width: 100%;
+    min-width: 180px;
+    max-width: 280px;
+  }
+  
+  .file-input {
+    width: 100%;
+    min-width: 200px;
+    max-width: 300px;
+  }
+  
+  .ship-button {
+    width: 100%;
+    min-width: 150px;
+    max-width: 200px;
+  }
+  
