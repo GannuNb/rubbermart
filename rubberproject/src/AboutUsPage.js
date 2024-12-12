@@ -72,7 +72,7 @@ export default function AboutUsPage() {
               At <span className="brand-name">Vikah Rubber</span>, We are committed to being a leading provider of high-quality
               rubber products that meet the diverse needs of our customers. Our focus on innovation and sustainability drives
               us to develop solutions that not only enhance performance but also minimize environmental impact. With a team of
-              experienced professionals and a dedication to excellence, we strive to exceed customer expectations through
+              experienced professionals and a dedication to excellence, We strive to exceed customer expectations through
               reliable service and superior products. Join us on our journey to a greener, more sustainable future.
 
             </p>
