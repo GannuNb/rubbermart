@@ -15,6 +15,19 @@ function Sidebar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768); // Adjust breakpoint as needed
+    };
+
+    handleResize(); // Check on initial load
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
 
   const routes = {
     mulch: '/Mulch',
@@ -404,25 +417,31 @@ function Sidebar() {
             </li>
             </ul>
 
-
-            <div className='logodis'>
-  {!localStorage.getItem("token") ? (
-    <Dropdown>
-      <Dropdown.Toggle id="dropdown-basic">
-        Login/Signup
-      </Dropdown.Toggle>
-      <Dropdown.Menu>
-        <Dropdown.Item as={Link} to="/login">Login</Dropdown.Item>
-        <Dropdown.Item as={Link} to="/signup">Signup</Dropdown.Item>
-      </Dropdown.Menu>
-    </Dropdown>
-  ) : (
-    <button onClick={handleLogout} className="btn btn-outline-success ms-3 logout-button">
-      <i className="fas fa-sign-out-alt"></i> 
-      <span className="logout-text">Logout</span>
-    </button>
-  )}
-</div>
+            <div className="logodis">
+      {!localStorage.getItem('token') ? (
+        <Dropdown>
+          <Dropdown.Toggle id="dropdown-basic" className="toggle-btn">
+            {isMobile ? (
+              <i className="fas fa-user-circle"></i> // Icon for mobile
+            ) : (
+              'Login/Signup'
+            )}
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            <Dropdown.Item as={Link} to="/login">Login</Dropdown.Item>
+            <Dropdown.Item as={Link} to="/signup">Signup</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+      ) : (
+        <button
+          onClick={handleLogout}
+          className="btn btn-outline-success ms-3 logout-button"
+        >
+          <i className="fas fa-sign-out-alt"></i>
+          <span className="logout-text">Logout</span>
+        </button>
+      )}
+      </div>
 
 
           
