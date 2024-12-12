@@ -1,7 +1,7 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const Shipping = require('../models/Shipping'); // Adjust the path as needed
-const AdminOrder = require('../models/Adminorder'); // Adjust the path as needed
+const AdminOrder = require('../models/AdminOrder'); // Adjust the path as needed
 const User = require('../models/User');
 const router = express.Router();
 const multer = require('multer');

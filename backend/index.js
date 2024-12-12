@@ -149,7 +149,7 @@ app.use('/api', createUserRoute);
 app.use('/api', shippingRoutes);
 
 app.get('/', (req, res) => {
-    res.send('Hello World!');
+    res.send('Hello Worldd!');
 });
 
 app.listen(port, () => {
