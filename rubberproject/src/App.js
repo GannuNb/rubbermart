@@ -39,8 +39,7 @@ import Productspage from './Productspage.js';
 import Adminshipping from './Adminshipping.js';
 import ShippingDetails from './Shippingdetails.js';
 import Ship from './Ship.js';
-import Gst from './gst.js';
-import GstDetails from './GstDetails.js';
+
 import Registeredgst from './Registeredgst.js';
 import Unregisteredgst from './Unregistered.js';
 
@@ -57,8 +56,7 @@ function App() {
       <div className="container">
         <Routes>
           <Route exact path="/" element={<Home />} />
-          <Route exact path="/gst" element={<Gst />} />
-          <Route exact path="/gstdetails" element={<GstDetails />} />
+
           <Route exact path="/registered" element={<Registeredgst />} />
           <Route exact path="/unregistered" element={<Unregisteredgst />} />
 

@@ -65,11 +65,17 @@ const BusinessProfile = () => {
 
 
   return (
+    <>
+    <div className='setter'>
+    
     <div className="container mt-5">
       {profile === null ? (
         // If no profile exists, show buttons
         <div className="text-center">
-          <h4 className="mb-4">No Profile Found</h4>
+          <h4 style={{marginTop: "10% "}} className="mb-4 tyre-scrap-heading animated-heading ">
+  Create your business profile with
+</h4>
+
           <div className="d-flex justify-content-center gap-3">
             <button onClick={handleRegisteredGSTClick} className="btn btn-success btn-lg">
               Registered GST
@@ -89,6 +95,8 @@ const BusinessProfile = () => {
         </div>
       )}
     </div>
+    </div>
+    </>
   );
   
 };
