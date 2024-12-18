@@ -10,6 +10,7 @@ function Adminshipping() {
   const [inputValues, setInputValues] = useState({});
   const [selectedFiles, setSelectedFiles] = useState({});
 
+  
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -84,6 +85,7 @@ function Adminshipping() {
         shippingData.append('invoicePdf', selectedFiles[orderId].invoice);
       }
     }
+    
 
     try {
       const response = await axios.post(
@@ -124,8 +126,8 @@ function Adminshipping() {
                 <th>Vehicle Number</th>
                 <th>Quantity</th>
                 <th>Product</th>
-                <th>Bill PDF</th>
-                <th>Invoice PDF</th>
+                <th>E-way bill and invoice</th>
+                
                 <th>Ship</th>
               </tr>
             </thead>
@@ -185,15 +187,7 @@ function Adminshipping() {
                         className="form-control file-input"
                       />
                     </td>
-                    <td>
-                      <input
-                        type="file"
-                        name="invoice"
-                        accept="application/pdf"
-                        onChange={(e) => handleFileChange(order._id, e)}
-                        className="form-control file-input"
-                      />
-                    </td>
+                  
                     <td>
                       <button
                         onClick={() => handleShip(order._id)}

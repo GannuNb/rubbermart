@@ -271,6 +271,10 @@ function Sidebar() {
               <i className="fas fa-shopping-cart fa-fw me-3"></i><span>Orders</span>
             </Link>
            
+            <Link to="/getpay" className="list-group-item list-group-item-action py-2 ripple" onClick={closeSidebar}>
+                <i className="fas fa-wallet fa-fw me-3"></i><span>Payment History</span>
+            </Link>
+
 
 
           </div>

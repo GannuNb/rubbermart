@@ -39,9 +39,12 @@ import Productspage from './Productspage.js';
 import Adminshipping from './Adminshipping.js';
 import ShippingDetails from './Shippingdetails.js';
 import Ship from './Ship.js';
-
 import Registeredgst from './Registeredgst.js';
 import Unregisteredgst from './Unregistered.js';
+import GetPay from './getpay.js';
+import AdminPayment from './Adminpayment.js';
+
+
 
 function App() {
   const location = useLocation();
@@ -56,9 +59,13 @@ function App() {
       <div className="container">
         <Routes>
           <Route exact path="/" element={<Home />} />
+          
+
 
           <Route exact path="/registered" element={<Registeredgst />} />
           <Route exact path="/unregistered" element={<Unregisteredgst />} />
+          <Route exact path="/getpay" element={<GetPay />} />
+          <Route exact path="/adminpayment" element={<AdminPayment />} />
 
        
           <Route exact path="/new" element={<New />} />

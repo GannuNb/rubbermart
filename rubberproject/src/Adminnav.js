@@ -52,6 +52,12 @@ function Adminnav() {
                 Uploadedscrsap
               </Link>
             </li>
+
+            <li className="nav-item mx-2">
+              <Link className="nav-link nav-hover" to="/adminpayment" onClick={() => setIsNavbarCollapsed(true)}>
+                Payments
+              </Link>
+            </li>
             
           </ul>
         </div>

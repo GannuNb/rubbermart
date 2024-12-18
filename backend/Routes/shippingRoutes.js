@@ -1,30 +1,26 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const Shipping = require('../models/Shipping'); // Adjust the path as needed
-const AdminOrder = require('../models/AdminOrder'); // Adjust the path as needed
+const Shipping = require('../models/Shipping');
+const adminorder = require('../models/AdminOrder');
 const User = require('../models/User');
 const router = express.Router();
 const multer = require('multer');
-
-
 
 // Multer configuration for PDF file uploads
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-
-router.post('/shipping', upload.fields([{ name: 'billPdf' }, { name: 'invoicePdf' }]), async (req, res) => {
+// Endpoint to save shipping data
+router.post('/shipping', upload.fields([{ name: 'billPdf' }]), async (req, res) => {
   const { vehicleNumber, quantity, selectedProduct, orderId } = req.body;
   const billPdfFile = req.files?.billPdf?.[0];
-  const invoicePdfFile = req.files?.invoicePdf?.[0];
 
-  // Validate input fields
   if (!vehicleNumber || !quantity || !selectedProduct || !orderId) {
     return res.status(400).json({ message: 'All fields are required.' });
   }
 
   try {
-    const order = await AdminOrder.findById(orderId).populate('user', 'email');
+    const order = await adminorder.findById(orderId).populate('user', 'email');
     if (!order) {
       return res.status(404).json({ message: 'Order not found.' });
     }
@@ -39,7 +35,7 @@ router.post('/shipping', upload.fields([{ name: 'billPdf' }, { name: 'invoicePdf
     }
 
     const shippingData = {
-      orderId: order._id,
+      orderId, // Custom ID of AdminOrder
       vehicleNumber,
       quantity: parseInt(quantity, 10),
       selectedProduct,
@@ -54,20 +50,13 @@ router.post('/shipping', upload.fields([{ name: 'billPdf' }, { name: 'invoicePdf
       subtotal: order.subtotal,
       gst: order.gst,
       totalPrice: order.totalPrice,
+      shippingDate: new Date(),
     };
 
-    // Attach PDF files if they exist
     if (billPdfFile) {
       shippingData.billPdf = {
         data: billPdfFile.buffer,
         contentType: billPdfFile.mimetype,
-      };
-    }
-
-    if (invoicePdfFile) {
-      shippingData.invoicePdf = {
-        data: invoicePdfFile.buffer,
-        contentType: invoicePdfFile.mimetype,
       };
     }
 
@@ -84,16 +73,14 @@ router.post('/shipping', upload.fields([{ name: 'billPdf' }, { name: 'invoicePdf
   }
 });
 
-
-
-
-
-
+// Fetch shipping data by orderId
 router.get('/shipping/:orderId', async (req, res) => {
   const { orderId } = req.params;
 
   try {
-    const shippingData = await Shipping.find({ orderId }).select('quantity selectedProduct vehicleNumber');
+    const shippingData = await Shipping.find({ orderId }).select(
+      'quantity selectedProduct vehicleNumber'
+    );
     res.status(200).json(shippingData);
   } catch (error) {
     console.error('Error fetching shipping data:', error.message);
@@ -101,14 +88,7 @@ router.get('/shipping/:orderId', async (req, res) => {
   }
 });
 
-
-
-
-
-
-
-
-
+// Fetch shipping data for a user
 router.get('/shippinguser', async (req, res) => {
   try {
     const authHeader = req.headers.authorization;
@@ -121,19 +101,19 @@ router.get('/shippinguser', async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const userId = decoded.user.id;
 
-    // Fetch shipping details for the user
     const shippingDetails = await Shipping.find({ userId })
-      .populate('orderId') // Populate the order reference
-      .populate('userId', 'email') // Populate the user's email
+      .populate({
+        path: 'orderId',
+        select: '_id items subtotal gst totalPrice',
+      })
       .select(
-        'orderId vehicleNumber selectedProduct quantity subtotal gst totalPrice shippingDate userId email itemDetails billPdf invoicePdf'
+        'orderId vehicleNumber selectedProduct quantity subtotal gst totalPrice shippingDate userId email itemDetails billPdf'
       );
 
     if (!shippingDetails || shippingDetails.length === 0) {
       return res.status(404).json({ message: 'No shipping details found for this user' });
     }
 
-    // Process details, converting PDFs to Base64
     const processedShippingDetails = shippingDetails.map((detail) => {
       const billPdf = detail.billPdf?.data
         ? {
@@ -142,32 +122,17 @@ router.get('/shippinguser', async (req, res) => {
           }
         : null;
 
-      const invoicePdf = detail.invoicePdf?.data
-        ? {
-            contentType: detail.invoicePdf.contentType,
-            base64: detail.invoicePdf.data.toString('base64'),
-          }
-        : null;
-
       return {
         ...detail.toObject(),
         billPdf,
-        invoicePdf,
       };
     });
 
-    return res.status(200).json({ shippingDetails: processedShippingDetails });
+    res.status(200).json({ shippingDetails: processedShippingDetails });
   } catch (error) {
-    console.error('Error fetching shipping details:', error);
-    return res.status(500).json({ message: 'Internal Server Error' });
+    console.error('Error fetching shipping details:', error.message);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 });
-
-
-
-
-
-
-  
 
 module.exports = router;

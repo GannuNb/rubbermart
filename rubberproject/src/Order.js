@@ -525,47 +525,35 @@ useEffect(() => {
         return;
       }
   
-      // Send combined items (base + additional) to the first backend API to place the order
-      const orderResponse = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/place-order`,
+      // Send combined items to the new API endpoint
+      const storeInAnotherDbResponse = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/Adminorder`,
         { items: allItems },
         { headers: { Authorization: `Bearer ${token}` } }
       );
   
-      if (orderResponse.status === 200) {
-        // Now call another API to store the order data in a different database
-        const storeInAnotherDbResponse = await axios.post(
-          `${process.env.REACT_APP_API_URL}/api/Adminorder`,  // new API endpoint
-          { items: allItems },
-          { headers: { Authorization: `Bearer ${token}` } }
+      // Check if the API call was successful
+      if (storeInAnotherDbResponse.status === 200) {
+        const pdfBlob = generatePDF();
+  
+        const formData = new FormData();
+        formData.append('pdf', pdfBlob, 'order-summary.pdf');
+        formData.append('userEmail', profile?.email);
+  
+        const emailResponse = await axios.post(
+          `${process.env.REACT_APP_API_URL}/api/upload-pdf`,
+          formData,
+          { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' } }
         );
   
-        // Check if the second API call was successful
-        if (storeInAnotherDbResponse.status === 200) {
-          const pdfBlob = generatePDF();
-  
-          const formData = new FormData();
-          formData.append('pdf', pdfBlob, 'order-summary.pdf');
-          formData.append('userEmail', profile?.email);
-  
-          const emailResponse = await axios.post(
-            `${process.env.REACT_APP_API_URL}/api/upload-pdf`,
-            formData,
-            { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' } }
-          );
-  
-          // Handle successful response and proceed as needed
-          if (emailResponse.status === 200) {
-            alert('Order placed successfully, and invoice emailed!');
-            navigate('/Getorders'); 
-          } else {
-            alert('Failed to send invoice email.');
-          }
+        if (emailResponse.status === 200) {
+          alert('Order placed successfully, and invoice emailed!');
+          navigate('/Getorders');
         } else {
-          alert('Failed to store order in another database.');
+          alert('Failed to send invoice email.');
         }
       } else {
-        alert('Failed to place order.');
+        alert('Failed to store order in the database.');
       }
     } catch (err) {
       console.error('Error placing order:', err);

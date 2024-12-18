@@ -1,5 +1,12 @@
 const mongoose = require('mongoose');
 
+// Custom ID generator
+const generateCustomId = () => {
+  const prefix = 'vk'; // Prefix for your custom ID
+  const randomNum = Math.floor(Math.random() * 1000000000); // Generate a random number (up to 1 billion)
+  return prefix + randomNum;
+};
+
 const AdminOrderItemSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -21,6 +28,10 @@ const AdminOrderItemSchema = new mongoose.Schema({
 
 const AdminOrderSchema = new mongoose.Schema(
   {
+    _id: {
+      type: String, // Overriding default _id to be a string
+      default: generateCustomId, // Set custom ID when creating a new document
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -53,4 +64,4 @@ const AdminOrderSchema = new mongoose.Schema(
 );
 
 // Check if the model is already compiled, and use the existing model if so
-module.exports = mongoose.models.Adminorder || mongoose.model('Adminorder', AdminOrderSchema);
+module.exports = mongoose.models.adminorder || mongoose.model('adminorder', AdminOrderSchema);

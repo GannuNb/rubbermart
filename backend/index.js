@@ -133,6 +133,8 @@ app.get('/scrap', (req, res) => {
 // Import and use routes
 const uploadscrapRoute = require('./Routes/Uploadscrap');
 const createUserRoute = require('./Routes/CreateUser');
+const PaymentRoutes = require('./Routes/Payment');
+app.use('/payment', PaymentRoutes);
 
 const adminRoutes = require('./Routes/AdminRoutes'); // Corrected variable name
 app.use('/api', require('./Routes/OrderRoutes'));
@@ -147,6 +149,8 @@ app.use('/api', mailRoutes);
 app.use('/api', uploadscrapRoute);
 app.use('/api', createUserRoute);
 app.use('/api', shippingRoutes);
+const userDetailsRoute = require('./Routes/userdetails'); // Import the route
+app.use('/api', userDetailsRoute);
 
 app.get('/', (req, res) => {
     res.send('Hello Welcome to Mart!');

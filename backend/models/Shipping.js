@@ -1,9 +1,12 @@
 const mongoose = require('mongoose');
 
-
 const ShippingSchema = new mongoose.Schema(
   {
-    orderId: { type: mongoose.Schema.Types.ObjectId, ref: 'Adminorder', required: true },
+    orderId: {
+      type: String, // Match custom ID type
+      ref: 'adminorder',
+      required: true,
+    },
     vehicleNumber: { type: String, required: true },
     quantity: { type: Number, required: true },
     selectedProduct: { type: String, required: true },
@@ -14,24 +17,19 @@ const ShippingSchema = new mongoose.Schema(
         name: { type: String, required: true },
         price: { type: Number, required: true },
         quantity: { type: Number, required: true },
-        total: { type: Number, required: true },
       },
     ],
     subtotal: { type: Number, required: true },
     gst: { type: Number, required: true },
     totalPrice: { type: Number, required: true },
-    shippingDate: { type: Date, default: Date.now },
+    shippingDate: { type: Date, required: true },
     billPdf: {
-      data: Buffer,
-      contentType: String,
-    },
-    invoicePdf: {
-      data: Buffer,
-      contentType: String,
+      contentType: { type: String },
+      data: { type: Buffer },
     },
   },
   { timestamps: true }
 );
 
-
-module.exports = mongoose.model('Shipping', ShippingSchema);
+const Shipping = mongoose.model('Shipping', ShippingSchema);
+module.exports = Shipping;

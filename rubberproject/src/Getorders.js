@@ -17,6 +17,12 @@ const Getorders = () => {
   const [itemNameFilter, setItemNameFilter] = useState('');
   const [profile, setProfile] = useState(null);
   const navigate = useNavigate();
+  const [files, setFiles] = useState({}); // to store uploaded file data
+
+
+
+  
+
 
   const location = useLocation();
 
@@ -40,7 +46,7 @@ const Getorders = () => {
     const fetchOrders = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders`, {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/adminorders`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -286,144 +292,147 @@ shipAddressLines.forEach((line, index) => {
     doc.save(`Invoice_${order._id}.pdf`);
   };
 
+  
+
+
+  const handleFileChange = (orderId, e) => {
+    const newFiles = { ...files };
+    newFiles[orderId] = { file: e.target.files[0], fileName: e.target.files[0]?.name };
+    setFiles(newFiles);
+  };
+
+
+  
+  const handleFileUpload = async (orderId) => {
+    const file = files[orderId]?.file;
+  
+    if (file) {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('orderId', orderId);  // Pass orderId to the backend
+  
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          alert('No authentication token found');
+          return;
+        }
+        const response = await axios.post(`${process.env.REACT_APP_API_URL}/payment/upload`, formData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+  
+        const { fileUrl, orderId: uploadedOrderId } = response.data;
+        const newFiles = { ...files };
+        newFiles[uploadedOrderId] = { fileUrl };  // Store the file URL with order ID
+  
+        setFiles(newFiles);  // Update state with the uploaded file URL
+  
+        alert('File uploaded successfully');
+      } catch (err) {
+        console.error('Error uploading file:', err.response ? err.response.data : err.message);
+        alert('Error uploading file');
+      }
+    } else {
+      alert('Please select a file to upload');
+    }
+  };
+  
+  
+
+  
+
+  
   return (
-    <>
-    <div className='setter'>
-<div className='container'>
+    <div className="setter">
+      <div className="container">
+        <h2>ALL ORDERS</h2>
+        <div className="table-responsive">
+          <table className="table table-striped table-bordered table-hover">
+            <thead className="thead-dark">
+              <tr>
+                <th>Order ID</th>
+                <th>Item Name</th>
+                <th>Required Quantity (tons)</th>
+                <th>Price Per Ton (₹)</th>
+                <th>Subtotal (₹)</th>
+                <th>GST (₹)</th>
+                <th>Total Price (₹)</th>
+                <th>Order Date</th>
+                <th>Action</th>
+                <th>Upload Payment Receipt</th>
 
-      <h2>ALL ORDERS</h2>
-      <div className="row mb-4">
-    <div className="col-md-3">
-      <DatePicker
-        selected={startDate}
-        onChange={(date) => setStartDate(date)}
-        selectsStart
-        startDate={startDate}
-        endDate={endDate}
-        placeholderText="Start Date"
-        className="form-control"
-      />
+              </tr>
+            </thead>
+            <tbody>
+              {filteredOrders.map((order) => (
+                <>
+                  {order.items.map((item, index) => {
+                    const itemSubtotal = item.quantity * item.price;
+                    const itemGST = itemSubtotal * 0.18;
+                    const itemTotal = itemSubtotal + itemGST;
+  
+                    return (
+                      <tr key={item._id}>
+                        {index === 0 && (
+                          <td rowSpan={order.items.length}>{order._id}</td>
+                        )}
+                        <td>{item.name}</td>
+                        <td>{item.quantity} tons</td>
+                        <td>₹{item.price.toFixed(2)}</td>
+                        <td>₹{itemSubtotal.toFixed(2)}</td>
+                        <td>₹{itemGST.toFixed(2)}</td>
+                        <td>₹{itemTotal.toFixed(2)}</td>
+                        {index === 0 && (
+                          <td rowSpan={order.items.length}>
+                            {new Date(order.orderDate).toLocaleDateString()}
+                          </td>
+                        )}
+                        {index === 0 && (
+                          <td rowSpan={order.items.length}>
+                            <button
+                              className="btn btn-sm btn-primary"
+                              onClick={() => generatePDF(order)}
+                            >
+                              <i className="bi bi-download"></i> Download Invoice
+                            </button>
+                          </td>
+                        )}
+                        {/* File Upload Section */}
+                        {index === 0 && (
+                          <td rowSpan={order.items.length}>
+                            <input
+                              type="file"
+                              onChange={(e) => handleFileChange(order._id, e)}
+                              className="form-control"
+                              accept="image/jpeg, image/png, application/pdf"
+                            />
+                            {files[order._id] && files[order._id].fileName && (
+                              <div>{files[order._id].fileName}</div>
+                            )}
+                            <button
+                              className="btn btn-sm btn-success mt-2"
+                              onClick={() => handleFileUpload(order._id)}
+                            >
+                              Upload File
+                            </button>
+                          </td>
+                        )}
+
+                      </tr>
+                    );
+                  })}
+                </>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
-    <div className="col-md-3">
-      <DatePicker
-        selected={endDate}
-        onChange={(date) => setEndDate(date)}
-        selectsEnd
-        startDate={startDate}
-        endDate={endDate}
-        placeholderText="End Date"
-        className="form-control"
-      />
-    </div>
-    <div className="col-md-3">
-      <input
-        type="text"
-        placeholder="Filter by Item Name"
-        value={itemNameFilter}
-        onChange={(e) => setItemNameFilter(e.target.value)}
-        className="form-control"
-      />
-    </div>
-    <div className="col-md-3 d-flex align-items-end">
-      <button
-        className="btn btn-primary w-100"
-        onClick={filterOrders}
-      >
-        Apply Filters
-      </button>
-    </div>
-  </div>
-
-
-      {loading ? (
-        <p>Loading...</p>
-      ) : error ? (
-        <p>{error}</p>
-      ) : (
-<div className="table-responsive">
-<table className="table table-striped table-bordered table-hover">
-  <thead className="thead-dark">
-    <tr>
-      <th>Order ID</th>
-      <th>Item Name</th>
-      <th>Required Quantity (tons)</th>
-      <th>Price Per Ton (₹)</th>
-      <th>Subtotal (₹)</th>
-      <th>GST (₹)</th>
-      <th>Total Price (₹)</th>
-      <th>Order Date</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    {filteredOrders.map(order => (
-      <>
-        {order.items.map((item, index) => {
-          // Calculate totals for each item separately
-          const itemSubtotal = item.quantity * item.price;
-          const itemGST = itemSubtotal * 0.18; // Assuming 18% GST
-          const itemTotal = itemSubtotal + itemGST;
-
-          return (
-            <tr key={item._id}>
-              {/* Show Order ID for the first item only, with rowSpan equal to the number of items */}
-              {index === 0 && (
-                <td rowSpan={order.items.length}>{order._id}</td>
-              )}
-
-              {/* Display Item Name */}
-              <td>{item.name}</td>
-              
-              {/* Display Required Quantity for each item */}
-              <td>{item.quantity} tons</td>
-              
-              {/* Display Price Per Ton */}
-              <td>₹{item.price.toFixed(2)}</td>
-              
-              {/* Display Subtotal for each item */}
-              <td>₹{itemSubtotal.toFixed(2)}</td>
-              
-              {/* Display GST for each item */}
-              <td>₹{itemGST.toFixed(2)}</td>
-              
-              {/* Display Total Price for each item */}
-              <td>₹{itemTotal.toFixed(2)}</td>
-              
-              {/* Show Order Date for the first item only */}
-              {index === 0 && (
-                <td rowSpan={order.items.length}>{new Date(order.orderDate).toLocaleDateString()}</td>
-              )}
-
-              {/* Show the Download Invoice button for the first item only */}
-              {index === 0 && (
-                <td rowSpan={order.items.length}>
-                  <button
-                    className="btn btn-sm btn-primary"
-                    onClick={() => generatePDF(order)}
-                  >
-                    <i className="bi bi-download"></i> Download Invoice
-                  </button>
-                </td>
-              )}
-            </tr>
-          );
-        })}
-      </>
-    ))}
-  </tbody>
-</table>
-</div>
-
-
-
-
-
-
-      )}
-  </div>
-     </div></>
   );
-};
+}
 
 
 export default Getorders;

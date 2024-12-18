@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const Order = require('../models/Order');
 const User = require('../models/User');
 const ScrapItem = require('../models/ScrapItem'); 
+const AdminOrder = require('../models/AdminOrder');
 const Adminorder = require('../models/AdminOrder');
 
 
@@ -121,11 +122,11 @@ router.post('/place-order', authenticate, async (req, res) => {
 
 
 
-router.get('/orders', authenticate, async (req, res) => {
+router.get('/adminorders', authenticate, async (req, res) => {
   try {
     const userId = req.user.id;
     // Find orders for the logged-in user
-    const orders = await Order.find({ user: userId }).populate('user', 'email');
+    const orders = await AdminOrder.find({ user: userId }).populate('user', 'email');
     res.status(200).json(orders); // Return the orders
   } catch (error) {
     console.error('Error fetching orders:', error);
@@ -187,15 +188,20 @@ router.post('/Adminorder', authenticate, async (req, res) => {
       totalGST += gst;
       totalPrice += itemTotalPrice;
 
+      // Update the remaining quantity in ScrapItem
+      scrapItem.available_quantity -= requiredQuantity;
+      await scrapItem.save();
+
       processedItems.push({
         name: itemName,
         price: pricePerTon,
         quantity: requiredQuantity,
         total: itemTotalPrice,
-        remainingQuantity: scrapItem.available_quantity, // Store remaining quantity
+        remainingQuantity: scrapItem.available_quantity, // Store updated remaining quantity
       });
     }
 
+    // Create a new order in Adminorder collection
     const newOrder = new Adminorder({
       user: req.user.id,
       items: processedItems,
@@ -211,7 +217,7 @@ router.post('/Adminorder', authenticate, async (req, res) => {
       message: 'Order placed successfully',
       remainingQuantities: processedItems.map(item => ({
         name: item.name,
-        remainingQuantity: item.remainingQuantity, // Correctly access the remaining quantity
+        remainingQuantity: item.remainingQuantity,
       })),
       order: newOrder,
     });
@@ -220,6 +226,7 @@ router.post('/Adminorder', authenticate, async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
 
 
 
