@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+
 function GetPay() {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -69,10 +70,12 @@ function GetPay() {
 
   if (loading) {
     return (
+      <div className='setter'>
       <div className="text-center my-5">
         <div className="spinner-border" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
+      </div>
       </div>
     );
   }
@@ -82,9 +85,12 @@ function GetPay() {
   }
 
   return (
-    <><div className='setter'>
+    <>
+ 
+    <div className='setter'>
     <div className="container mt-5">
       <h2 className="text-center mb-4">Uploaded Payment Proof</h2>
+      <div className="table-responsive">
       <table className="table table-striped table-bordered">
         <thead>
           <tr>
@@ -127,6 +133,7 @@ function GetPay() {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
     </div></>
   );

@@ -28,3 +28,7 @@
     max-width: 200px;
   }
   
+
+.contmax{
+  max-width: 100% !important;
+}

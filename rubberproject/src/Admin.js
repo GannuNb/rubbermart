@@ -3,7 +3,6 @@ import axios from 'axios';
 import { Modal, Button, Form } from 'react-bootstrap';
 import './Admin.css';
 import './Sell.css';
-
 import Adminnav from './Adminnav';
 
 const AdminPage = () => {

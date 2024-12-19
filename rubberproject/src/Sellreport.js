@@ -138,6 +138,7 @@ const Sellreport = () => {
             {approvedScrap.length === 0 ? (
                 <p className="text-center">No approved scrap items found.</p>
             ) : (
+                <div className="table-responsive">
                 <table className="table table-striped table-bordered table-hover">
                     <thead className="thead-dark">
                         <tr>
@@ -147,7 +148,7 @@ const Sellreport = () => {
                             <th>Company Name</th>
                             <th>Email</th>
                             <th>Approved At</th>
-                            <th>Actions</th>
+                            <th>Sell report</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -164,13 +165,14 @@ const Sellreport = () => {
                                         className="btn btn-sm btn-primary"
                                         onClick={() => generatePDF(scrap)}
                                     >
-                                        Download PDF
+                                        Pdf
                                     </button>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
+                </div>
             )}
         </div>
         </div></>

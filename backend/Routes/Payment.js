@@ -19,6 +19,7 @@ const authenticate = (req, res, next) => {
     return res.status(401).json({ message: 'Authorization header missing' });
   }
 
+
   const token = authHeader.split(' ')[1];
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -165,12 +166,34 @@ router.post('/approve/:paymentId', authenticate, async (req, res) => {
       },
     });
 
-    const mailOptions = {
+const mailOptions = {
       from: process.env.EMAIL_USERNAME,
       to: user.email,
-      subject: 'Payment Approved',
-      text: `Your payment for order ID ${payment.order} has been approved. Approval Notes: ${approvalNotes}`,
-    };
+      subject: 'Payment Approval Confirmation for Your Order',
+      text: `
+        Dear ${user.name},
+        
+        We are pleased to inform you that your payment for order ID ${payment.order} has been successfully approved. Below are the details for your reference:
+        
+        Order ID: ${payment.order}
+        Approval Notes: ${approvalNotes}
+        Approval Date: ${new Date(payment.approval.approvalDate).toLocaleString()}
+        
+        If you have any questions regarding your payment approval or order, please do not hesitate to contact us at vikahrubber@gmail.com or reply to this email.
+        
+        Thank you for your continued trust and support.
+        
+        Best regards,  
+        Vikah Rubber
+      `,
+      attachments: [
+        {
+          filename: payment.fileName,
+          content: payment.file,
+          encoding: 'base64',
+        }
+      ],
+};
 
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {

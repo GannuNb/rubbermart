@@ -361,7 +361,7 @@ shipAddressLines.forEach((line, index) => {
                 <th>GST (₹)</th>
                 <th>Total Price (₹)</th>
                 <th>Order Date</th>
-                <th>Action</th>
+                <th>Invoice</th>
                 <th>Upload Payment Receipt</th>
 
               </tr>
@@ -396,7 +396,7 @@ shipAddressLines.forEach((line, index) => {
                               className="btn btn-sm btn-primary"
                               onClick={() => generatePDF(order)}
                             >
-                              <i className="bi bi-download"></i> Download Invoice
+                              <i className="bi bi-download"></i> Invoice
                             </button>
                           </td>
                         )}

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Adminnav from './Adminnav';
 import './Adminshipping.css'; // Import CSS for custom styles
+import { jsPDF } from 'jspdf'; // Import jsPDF
+
 
 function Adminshipping() {
   const [orders, setOrders] = useState([]);
@@ -103,6 +105,77 @@ function Adminshipping() {
     }
   };
 
+  const generatePDF = (order) => {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+  
+    // Title Section
+    doc.setFontSize(16);
+    doc.setFont("helvetica", "bold");
+    doc.text("Shipping Details Report", pageWidth / 2, 15, { align: "center" });
+  
+    // Order Information
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "normal");
+    doc.text(`Order ID: ${order._id}`, 10, 30);
+    doc.text(`Customer Name: ${order.user?.name || "N/A"}`, 10, 40);
+    doc.text(`Customer Email: ${order.user?.email || "N/A"}`, 10, 50);
+  
+    // Table Header
+    let y = 60;
+    doc.setFont("helvetica", "bold");
+    doc.text("Product", 10, y);
+    doc.text("Quantity", 60, y);
+    doc.text("Shipped Details", 100, y);
+  
+    // Horizontal line
+    y += 5;
+    doc.line(10, y, pageWidth - 10, y);
+  
+    // Table Content
+    y += 10;
+    doc.setFont("helvetica", "normal");
+  
+    order.items.forEach((item, index) => {
+      const shippedDetails = order.shippingDetails.filter(
+        (shipping) => shipping.selectedProduct === item.name
+      );
+  
+      doc.text(`${index + 1}. ${item.name}`, 10, y);
+      doc.text(`${item.quantity}`, 60, y);
+  
+      if (shippedDetails.length > 0) {
+        shippedDetails.forEach((shipping, idx) => {
+          doc.text(
+            `Vehicle: ${shipping.vehicleNumber} - Qty: ${shipping.quantity}`,
+            100,
+            y
+          );
+          y += 10;
+        });
+      } else {
+        doc.text("No shipment details available.", 100, y);
+        y += 10;
+      }
+  
+      y += 5; // Extra spacing between products
+    });
+  
+    // Footer
+    if (y > 270) {
+      doc.addPage();
+      y = 10;
+    }
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "italic");
+    doc.text("Generated on: " + new Date().toLocaleString(), 10, y + 20);
+  
+    doc.save(`Order_${order._id}_ShippingDetails.pdf`);
+  };
+  
+  
+
+
   if (loading) return <p>Loading orders...</p>;
   if (error) return <p>{error}</p>;
 
@@ -143,6 +216,7 @@ function Adminshipping() {
                     <td>{order.totalPrice}</td>
                     <td>{order.status}</td>
                     <td>{new Date(order.orderDate).toLocaleString()}</td>
+                    
                     <td>
                       <input
                         type="text"
@@ -199,14 +273,17 @@ function Adminshipping() {
                   </tr>
                   <tr>
   <td colSpan="13">
-    <table className="table table-bordered mt-2">
+  <table className="table table-bordered mt-2">
       <thead>
         <tr className="table-light">
           <th>Item Name</th>
           <th>Quantity</th>
           <th>Shipped Quantity</th>
           <th>Remaining Quantity</th> {/* Added Remaining Quantity column */}
-          <th>Vehicle Number</th>
+          <th>Vehicle Numbers</th>
+          <th>Shipping Details</th>
+
+
         </tr>
       </thead>
       <tbody>
@@ -225,17 +302,22 @@ function Adminshipping() {
               <td>{shippedQuantity}</td>
               <td>{remainingQuantity}</td> {/* Display Remaining Quantity */}
               <td>
-                {shippedDetails.map((shipping, idx) => (
-                  <small key={idx} className="text-muted">
-                    {shipping.vehicleNumber}
-                  </small>
-                ))}
-              </td>
+  <small className="text-muted">
+    {shippedDetails.map((shipping) => shipping.vehicleNumber).join(", ")}
+  </small>
+</td>
+
+              <td>
+
+              <button onClick={() => generatePDF(order)} className="btn btn-primary ms-2">
+          Download PDF
+        </button>
+        </td>
             </tr>
           );
         })}
       </tbody>
-    </table>
+    </table>
   </td>
 </tr>
 

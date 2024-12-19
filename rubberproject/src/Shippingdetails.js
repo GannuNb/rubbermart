@@ -62,10 +62,13 @@ function ShippingDetails() {
 
   if (loading) {
     return (
+      <div className='setter'>
       <div className="text-center">
         <div className="spinner-border" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
+      </div>
+
       </div>
     );
   }
@@ -114,7 +117,7 @@ function ShippingDetails() {
                         <th>GST</th>
                         <th>Total Price</th>
                         <th>Shipping Date</th>
-                        <th>Actions</th>
+                        <th>E-Way Bill</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -158,7 +161,7 @@ function ShippingDetails() {
                                   link.click();
                                 }}
                               >
-                                E-Way Bill
+                                pdf
                               </button>
                             ) : (
                               <p>No Bill PDF</p>

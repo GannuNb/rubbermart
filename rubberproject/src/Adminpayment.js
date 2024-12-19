@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Adminnav from './Adminnav';
+import './Adminshipping.css';
 
 function AdminPayment() {
   const [files, setFiles] = useState([]);
@@ -11,7 +13,6 @@ function AdminPayment() {
   const fetchFiles = async () => {
     try {
       const token = localStorage.getItem('token');
-      
       if (!token) {
         setError('No authentication token found');
         setLoading(false);
@@ -82,7 +83,6 @@ function AdminPayment() {
 
   const handleDownload = async (fileId, fileName) => {
     const token = localStorage.getItem('token');
-    
     if (!token) {
       alert('No authentication token found');
       return;
@@ -128,8 +128,10 @@ function AdminPayment() {
   }
 
   return (
-    <div className='setter'>
-      <div className="container mt-5">
+    <>
+      <Adminnav />
+      <div className="container mt-5 contmax">
+
         <h2 className="text-center mb-4">All Uploaded Payment Proofs</h2>
 
         {/* Scrollable Table Container */}
@@ -190,16 +192,21 @@ function AdminPayment() {
                         }))
                       }
                       placeholder="Enter approval notes"
+                      disabled={file.approval?.approved} // Disable if the payment is approved
                     />
                   </td>
                   <td>
-                    <button
-                      className="btn btn-success btn-sm"
-                      onClick={() => handleApproval(file._id)}
-                    >
-                      Approve
-                    </button>
-                  </td>
+  <button
+    className={`btn btn-sm ${
+      file.approval?.approved ? 'btn-danger' : 'btn-success'
+    }`}
+    onClick={() => handleApproval(file._id)}
+    disabled={file.approval?.approved} // Disable if the payment is approved
+  >
+    {file.approval?.approved ? 'Approved' : 'Approve'}
+  </button>
+</td>
+
                   <td>
                     {/* Display approval details if available */}
                     {file.approval && (
@@ -216,7 +223,7 @@ function AdminPayment() {
           </table>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

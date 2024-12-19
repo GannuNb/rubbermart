@@ -50,7 +50,7 @@ function App() {
   const location = useLocation();
 
   // Check if the current path is "/Admin" or "/Uploaded", case-insensitive
-  const isSidebarHidden = /^\/(admin|uploaded|Adminshipping)$/i.test(location.pathname);
+  const isSidebarHidden = /^\/(admin|uploaded|Adminshipping|adminpayment)$/i.test(location.pathname);
 
   return (
     <>
