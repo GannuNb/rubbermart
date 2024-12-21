@@ -4,6 +4,7 @@ import mulchImage from './images/mulch.jpeg';
 import 'bootstrap/dist/css/bootstrap.min.css'; 
 import { useNavigate,useLocation } from 'react-router-dom';
 import './Mulch.css'; 
+import logo1 from './images/logo.png';
 
 const Mulch = () => {
     const [scrapItems, setScrapItems] = useState([]);
@@ -47,22 +48,48 @@ const Mulch = () => {
         if (!token) {
             // If user isn't logged in, navigate to the login page
             setTimeout(() => {
-                alert("Please log in to proceed");
+                // Create a custom alert with inline styling or a class
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'custom-alert';
+        
+                // Create an image element for the logo
+                const logoImg = document.createElement('img');
+                logoImg.src = logo1;  // Use the imported logo here
+                logoImg.alt = 'Company Logo';
+                logoImg.className = 'alert-logo';  // Add a class for logo styling
+        
+                // Create a text message for the alert
+                const alertMessage = document.createElement('span');
+                alertMessage.textContent = 'Please log in to proceed';
+                alertMessage.className = 'alert-message';  // Class for message styling
+        
+                // Append logo and message to the alert div
+                alertDiv.appendChild(logoImg);
+                alertDiv.appendChild(alertMessage);
+        
+                // Append alert div to the body
+                document.body.appendChild(alertDiv);
+        
+                // Remove the alert after 5 seconds
+                setTimeout(() => {
+                    alertDiv.remove();
+                }, 5000);
+        
                 navigate('/login', { 
                     state: { 
                         from: location.pathname, // Pass the current path to return after login
                         mulchData: {
                             name: 'Mulch',
-                available_quantity: mulchData.available_quantity,
-                price: mulchData.price,
-                required_quantity: requiredQuantity,
-                hsn: mulchData.hsn,
+                            available_quantity: mulchData.available_quantity,
+                            price: mulchData.price,
+                            required_quantity: requiredQuantity,
+                            hsn: mulchData.hsn,
                         }
                     }
                 });
             }, 0);
-            
-        } else {
+            
+        }else {
                     navigate('/Order', {
             state: {
                 name: 'Mulch',

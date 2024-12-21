@@ -12,22 +12,35 @@ function Adminshipping() {
   const [inputValues, setInputValues] = useState({});
   const [selectedFiles, setSelectedFiles] = useState({});
 
-  
   useEffect(() => {
-    const fetchOrders = async () => {
+    const fetchOrdersWithShipping = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/admin/orders`);
+        // Fetch all orders
+        const ordersResponse = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/admin/orders`
+        );
+
+        // Fetch shipping details for each order concurrently
         const ordersWithShipping = await Promise.all(
-          response.data.map(async (order) => {
-            const shippingResponse = await axios.get(
-              `${process.env.REACT_APP_API_URL}/api/shipping/${order._id}`
-            );
-            return {
-              ...order,
-              shippingDetails: shippingResponse.data,
-            };
+          ordersResponse.data.map(async (order) => {
+            try {
+              const shippingResponse = await axios.get(
+                `${process.env.REACT_APP_API_URL}/api/shipping/${order._id}`
+              );
+              return {
+                ...order,
+                shippingDetails: shippingResponse.data,
+              };
+            } catch (err) {
+              console.error(`Error fetching shipping details for order ${order._id}:`, err);
+              return {
+                ...order,
+                shippingDetails: [], // Default to empty array if shipping details fail to load
+              };
+            }
           })
         );
+
         setOrders(ordersWithShipping);
       } catch (err) {
         console.error('Error fetching orders:', err);
@@ -37,7 +50,7 @@ function Adminshipping() {
       }
     };
 
-    fetchOrders();
+    fetchOrdersWithShipping();
   }, []);
 
   const handleInputChange = (orderId, e) => {

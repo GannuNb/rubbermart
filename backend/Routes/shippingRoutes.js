@@ -107,7 +107,7 @@ router.get('/shippinguser', async (req, res) => {
         select: '_id items subtotal gst totalPrice',
       })
       .select(
-        'orderId vehicleNumber selectedProduct quantity subtotal gst totalPrice shippingDate userId email itemDetails billPdf'
+        'orderId invoiceId vehicleNumber selectedProduct quantity subtotal gst totalPrice shippingDate userId email itemDetails billPdf'
       );
 
     if (!shippingDetails || shippingDetails.length === 0) {

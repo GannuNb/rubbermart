@@ -19,7 +19,6 @@ const authenticate = (req, res, next) => {
     return res.status(401).json({ message: 'Authorization header missing' });
   }
 
-
   const token = authHeader.split(' ')[1];
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -109,101 +108,93 @@ router.get('/getpayment/:paymentId', authenticate, async (req, res) => {
   }
 });
 
-// Get all uploaded files (admin route)
 router.get('/getallfiles', authenticate, async (req, res) => {
   try {
-    const payments = await Payment.find().populate({
-      path: 'order',
-      populate: {
-        path: 'items',
-        select: 'name quantity total',
-      },
-    }).populate({
-      path: 'user',
-      select: 'name email',
-    });
+    const payments = await Payment.find()
+      .populate({
+        path: 'order',
+        populate: {
+          path: 'items',
+          select: 'name quantity total',
+        },
+      })
+      .populate({
+        path: 'user',
+        select: 'name email',
+      });
 
     if (!payments || payments.length === 0) {
       return res.status(404).json({ message: 'No files found' });
     }
 
+    const groupedOrders = payments.reduce((acc, payment) => {
+      const orderId = payment.order._id;
+      if (!acc[orderId]) {
+        acc[orderId] = {
+          user: payment.user,
+          order: payment.order,
+          totalPaid: 0,
+          files: [],
+        };
+      }
+      const fileUrl = `${process.env.REACT_APP_API_URL}/payment/getpayment/${payment._id}`;
+      acc[orderId].files.push({
+        _id: payment._id,
+        fileName: payment.fileName,
+        fileUrl, // Add file URL for frontend to access
+        fileType: payment.fileType,
+        paid: parseFloat(payment.paid || 0),
+        approval: payment.approval,
+      });
+      acc[orderId].totalPaid += parseFloat(payment.paid || 0);
+      return acc;
+    }, {});
+
     res.status(200).json({
       message: 'Files fetched successfully',
-      data: payments,
+      data: Object.values(groupedOrders),
     });
   } catch (err) {
     res.status(500).json({ message: 'Error fetching files', error: err.message });
   }
 });
 
-// Approve a payment
+
 router.post('/approve/:paymentId', authenticate, async (req, res) => {
-  const { approvalNotes } = req.body;
+  const { approvalNotes, paid } = req.body;
+
   try {
-    const payment = await Payment.findById(req.params.paymentId).populate('user');
+    const payment = await Payment.findById(req.params.paymentId).populate('order');
     if (!payment) {
       return res.status(404).json({ message: 'Payment not found' });
     }
 
+    const totalOrderPrice = payment.order.items.reduce((sum, item) => sum + item.total, 0);
+    const totalPaid = parseFloat(payment.paid || 0) + parseFloat(paid || 0);
+
+    payment.paid = totalPaid; // Update the paid amount for this payment
     payment.approval = {
-      approved: true,
+      approved: totalPaid >= totalOrderPrice, // Fully approve only if fully paid
       approvalDate: new Date(),
       approvalNotes,
     };
 
     await payment.save();
 
-    const user = payment.user;
-    if (!user || !user.email) {
-      return res.status(400).json({ message: 'User email not found' });
-    }
+    // Recalculate total paid amount for the entire order
+    const allPayments = await Payment.find({ order: payment.order._id });
+    const updatedTotalPaid = allPayments.reduce((sum, p) => sum + parseFloat(p.paid || 0), 0);
 
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
-const mailOptions = {
-      from: process.env.EMAIL_USERNAME,
-      to: user.email,
-      subject: 'Payment Approval Confirmation for Your Order',
-      text: `
-        Dear ${user.name},
-        
-        We are pleased to inform you that your payment for order ID ${payment.order} has been successfully approved. Below are the details for your reference:
-        
-        Order ID: ${payment.order}
-        Approval Notes: ${approvalNotes}
-        Approval Date: ${new Date(payment.approval.approvalDate).toLocaleString()}
-        
-        If you have any questions regarding your payment approval or order, please do not hesitate to contact us at vikahrubber@gmail.com or reply to this email.
-        
-        Thank you for your continued trust and support.
-        
-        Best regards,  
-        Vikah Rubber
-      `,
-      attachments: [
-        {
-          filename: payment.fileName,
-          content: payment.file,
-          encoding: 'base64',
-        }
-      ],
-};
-
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        return res.status(500).json({ message: 'Error sending email', error: error.message });
-      }
-      res.status(200).json({ message: 'Payment approved and email sent successfully' });
+    res.status(200).json({
+      message: totalPaid >= totalOrderPrice
+        ? 'Payment fully paid and approved'
+        : 'Partial payment recorded',
+      updatedTotalPaid,
     });
   } catch (err) {
     res.status(500).json({ message: 'Error approving payment', error: err.message });
   }
 });
+
 
 module.exports = router;

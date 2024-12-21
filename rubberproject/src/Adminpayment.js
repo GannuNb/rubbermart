@@ -9,7 +9,7 @@ function AdminPayment() {
   const [error, setError] = useState(null);
   const [approvalNotes, setApprovalNotes] = useState({});
 
-  // Fetch the files
+  // Fetch payment files from the backend
   const fetchFiles = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -27,13 +27,24 @@ function AdminPayment() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch files');
+        throw new Error('Failed to fetch payment data');
       }
 
       const data = await response.json();
 
       if (data.message === 'Files fetched successfully') {
         setFiles(data.data);
+
+        // Initialize approval notes
+        const initialNotes = data.data.reduce((acc, file) => {
+          acc[file.order._id] = {
+            notes: '',
+            paid: file.totalPaid || 0, // Use total paid from backend
+            additionalPaid: 0, // Placeholder for new input value
+          };
+          return acc;
+        }, {});
+        setApprovalNotes(initialNotes);
       } else {
         setError('No files found');
       }
@@ -48,12 +59,14 @@ function AdminPayment() {
     fetchFiles();
   }, []);
 
-  const handleApproval = async (paymentId) => {
+  // Approve payment
+  const handleApproval = async (orderId) => {
     try {
       const token = localStorage.getItem('token');
-      const notes = approvalNotes[paymentId] || '';
-
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/payment/approve/${paymentId}`, {
+      const { notes, paid, additionalPaid } = approvalNotes[orderId] || {};
+      const updatedPaid = parseFloat(paid || 0) + parseFloat(additionalPaid || 0);
+  
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/payment/approve/${orderId}`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -61,26 +74,30 @@ function AdminPayment() {
         },
         body: JSON.stringify({
           approvalNotes: notes,
+          paid: updatedPaid,
         }),
       });
-
+  
       if (!response.ok) {
-        throw new Error('Failed to approve payment');
+        const errorResponse = await response.json();
+        console.error('API Error:', errorResponse);
+        throw new Error(errorResponse.message || 'Unknown error occurred');
       }
-
+  
       const data = await response.json();
-      alert(data.message); // Show success message
-
-      // Re-fetch the files to update the UI with the approved details
+      alert(data.message);
       fetchFiles();
-
-      // Reset approval notes for the payment ID
-      setApprovalNotes((prev) => ({ ...prev, [paymentId]: '' }));
+      setApprovalNotes((prev) => ({
+        ...prev,
+        [orderId]: { notes: '', paid: updatedPaid, additionalPaid: 0 },
+      }));
     } catch (err) {
       alert('Error: ' + err.message);
+      console.error('Approval Error:', err);
     }
   };
-
+  
+  // Download a file
   const handleDownload = async (fileId, fileName) => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -104,7 +121,7 @@ function AdminPayment() {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = fileName; // Use the original file name for downloading
+      link.download = fileName;
       link.click();
       window.URL.revokeObjectURL(url);
     } catch (error) {
@@ -131,10 +148,7 @@ function AdminPayment() {
     <>
       <Adminnav />
       <div className="container mt-5 contmax">
-
         <h2 className="text-center mb-4">All Uploaded Payment Proofs</h2>
-
-        {/* Scrollable Table Container */}
         <div className="table-responsive" style={{ maxHeight: '500px', overflowY: 'auto' }}>
           <table className="table table-striped table-bordered">
             <thead>
@@ -142,83 +156,101 @@ function AdminPayment() {
                 <th>User Name</th>
                 <th>User Email</th>
                 <th>Order ID</th>
-                <th>File</th> {/* File column */}
-                <th>Products</th>
+                <th>Files</th>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Total Price</th>
                 <th>Approval Notes</th>
-                <th>Status</th> {/* Status column for Approve button */}
-                <th>Approval Details</th> {/* New column for approval details */}
+                <th>Approval Date</th>
+                <th>Paid Amount</th>
+                <th>Additional Paid</th>
+                <th>Remaining Amount</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              {files.map((file) => (
-                <tr key={file._id}>
-                  <td>{file.user?.name || 'N/A'}</td>
-                  <td>{file.user?.email || 'N/A'}</td>
-                  <td>{file.order._id}</td>
-                  <td>
-                    {/* Click to trigger the download */}
-                    <button
-                      className="btn btn-link p-0"
-                      onClick={() => handleDownload(file._id, file.fileName)}
-                    >
-                      {file.fileName}
-                    </button>
-                  </td>
-                  <td>
-                    {file.order.items.map((item, index) => (
-                      <div key={index} className="mb-2">
-                        <p className="mb-1">
-                          <strong>Name:</strong> {item.name}
-                        </p>
-                        <p className="mb-1">
-                          <strong>Quantity:</strong> {item.quantity}
-                        </p>
-                        <p className="mb-1">
-                          <strong>Total Price:</strong> ₹{item.total}
-                        </p>
-                        <hr />
-                      </div>
-                    ))}
-                  </td>
-                  <td>
-                    <textarea
-                      className="form-control mb-2"
-                      rows="3"
-                      value={approvalNotes[file._id] || ''}
-                      onChange={(e) =>
-                        setApprovalNotes((prev) => ({
-                          ...prev,
-                          [file._id]: e.target.value,
-                        }))
-                      }
-                      placeholder="Enter approval notes"
-                      disabled={file.approval?.approved} // Disable if the payment is approved
-                    />
-                  </td>
-                  <td>
-  <button
-    className={`btn btn-sm ${
-      file.approval?.approved ? 'btn-danger' : 'btn-success'
-    }`}
-    onClick={() => handleApproval(file._id)}
-    disabled={file.approval?.approved} // Disable if the payment is approved
-  >
-    {file.approval?.approved ? 'Approved' : 'Approve'}
-  </button>
-</td>
+              {files.map((file) => {
+                const totalOrderPrice = file.order.items.reduce((sum, item) => sum + item.total, 0);
+                const totalPaid = approvalNotes[file.order._id]?.paid || 0;
+                const additionalPaid = approvalNotes[file.order._id]?.additionalPaid || 0;
+                const remainingAmount = totalOrderPrice - (totalPaid + additionalPaid);
 
-                  <td>
-                    {/* Display approval details if available */}
-                    {file.approval && (
-                      <div>
-                        <p><strong>Status:</strong> {file.approval.approved ? 'Approved' : 'Not Approved'}</p>
-                        <p><strong>Approval Notes:</strong> {file.approval.approvalNotes || 'N/A'}</p>
-                        <p><strong>Approval Date:</strong> {new Date(file.approval.approvalDate).toLocaleString()}</p>
-                      </div>
-                    )}
-                  </td>
-                </tr>
-              ))}
+                return (
+                  <tr key={file.order._id}>
+                    <td>{file.user?.name || 'N/A'}</td>
+                    <td>{file.user?.email || 'N/A'}</td>
+                    <td>{file.order._id}</td>
+                    <td>
+                      {file.files.map((f) => (
+                        <button
+                          key={f._id}
+                          className="btn btn-link p-0"
+                          onClick={() => handleDownload(f._id, f.fileName)}
+                        >
+                          {f.fileName}
+                        </button>
+                      ))}
+                    </td>
+                    <td>
+                      {file.order.items.map((item) => (
+                        <div key={item._id}>{item.name}</div>
+                      ))}
+                    </td>
+                    <td>
+                      {file.order.items.map((item) => (
+                        <div key={item._id}>{item.quantity}</div>
+                      ))}
+                    </td>
+                    <td>₹{totalOrderPrice.toFixed(2)}</td>
+                    <td>
+                      <textarea
+                        className="form-control"
+                        value={approvalNotes[file.order._id]?.notes || ''}
+                        onChange={(e) =>
+                          setApprovalNotes((prev) => ({
+                            ...prev,
+                            [file.order._id]: {
+                              ...prev[file.order._id],
+                              notes: e.target.value,
+                            },
+                          }))
+                        }
+                        placeholder="Enter approval notes"
+                      />
+                    </td>
+                    <td>{file.approval?.approvalDate || 'N/A'}</td>
+                    <td>₹{totalPaid.toFixed(2)}</td>
+                    <td>
+                      <input
+                        type="number"
+                        className="form-control"
+                        value={additionalPaid || ''}
+                        onChange={(e) =>
+                          setApprovalNotes((prev) => ({
+                            ...prev,
+                            [file.order._id]: {
+                              ...prev[file.order._id],
+                              additionalPaid: parseFloat(e.target.value) || 0,
+                            },
+                          }))
+                        }
+                        placeholder="Enter additional paid amount"
+                      />
+                    </td>
+                    <td>₹{remainingAmount.toFixed(2)}</td>
+                    <td>
+                      <button
+                        className={`btn btn-sm ${
+                          remainingAmount === 0 ? 'btn-success' : 'btn-primary'
+                        }`}
+                        onClick={() => handleApproval(file.order._id)}
+                      >
+                        {remainingAmount === 0 ? 'Approve' : 'Approve Payment'}
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

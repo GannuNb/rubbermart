@@ -6,6 +6,7 @@ import { useNavigate,useLocation } from 'react-router-dom'; // useNavigate inste
 import './Mulch.css'; // Import your CSS file
 import rubbercrumimg1 from "./images/rubbercrumbtw3.jpg"
 import RubberCrumSteelImage1 from './images/RubberCrumSteel1.jpg';
+import logo1 from './images/logo.png';
 
 
 
@@ -55,7 +56,33 @@ const RubberGranules = () => {
         if (!token) {
             // If user isn't logged in, navigate to the login page
             setTimeout(() => {
-                alert("Please log in to proceed");
+                // Create a custom alert with inline styling or a class
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'custom-alert';
+        
+                // Create an image element for the logo
+                const logoImg = document.createElement('img');
+                logoImg.src = logo1;  // Use the imported logo here
+                logoImg.alt = 'Company Logo';
+                logoImg.className = 'alert-logo';  // Add a class for logo styling
+        
+                // Create a text message for the alert
+                const alertMessage = document.createElement('span');
+                alertMessage.textContent = 'Please log in to proceed';
+                alertMessage.className = 'alert-message';  // Class for message styling
+        
+                // Append logo and message to the alert div
+                alertDiv.appendChild(logoImg);
+                alertDiv.appendChild(alertMessage);
+        
+                // Append alert div to the body
+                document.body.appendChild(alertDiv);
+        
+                // Remove the alert after 5 seconds
+                setTimeout(() => {
+                    alertDiv.remove();
+                }, 5000);
+        
                 navigate('/login', { 
                     state: { 
                         from: location.pathname, // Pass the current path to return after login
@@ -69,8 +96,8 @@ const RubberGranules = () => {
                     }
                 });
             }, 0);
-            
-        }else{
+            
+        }else{
                     navigate('/Order', {
             state: {
                 name: 'Rubber Granules/Crum',
