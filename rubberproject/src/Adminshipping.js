@@ -12,6 +12,7 @@ function Adminshipping() {
   const [inputValues, setInputValues] = useState({});
   const [selectedFiles, setSelectedFiles] = useState({});
 
+  
   useEffect(() => {
     const fetchOrdersWithShipping = async () => {
       try {
@@ -203,7 +204,8 @@ function Adminshipping() {
               <tr>
                 <th>Order ID</th>
                 <th>Name</th>
-                <th>User Email</th>
+                <th>Company Name</th> 
+                {/* <th>User Email</th> */}
                 <th>Subtotal</th>
                 <th>GST</th>
                 <th>Total Price</th>
@@ -223,7 +225,8 @@ function Adminshipping() {
                   <tr>
                     <td>{order._id}</td>
                     <td>{order.user?.name || 'N/A'}</td>
-                    <td>{order.user?.email || 'N/A'}</td>
+                    <td>{order.user?.businessProfiles[0]?.companyName || 'N/A'}</td>
+                    {/* <td>{order.user?.email || 'N/A'}</td> */}
                     <td>{order.subtotal}</td>
                     <td>{order.gst}</td>
                     <td>{order.totalPrice}</td>

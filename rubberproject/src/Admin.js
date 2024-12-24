@@ -20,6 +20,7 @@ const AdminPage = () => {
         type: '',
         available_quantity: '',
         price: '',
+        hsn:'',
     });
 
 
@@ -30,6 +31,7 @@ const AdminPage = () => {
         type: '',
         available_quantity: '',
         price: '',
+        hsn:""
     });
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -99,6 +101,7 @@ const AdminPage = () => {
             type: item.type,
             available_quantity: item.available_quantity,
             price: item.price,
+            hsn: item.hsn,
         });
         setShowEditModal(true);
     };
@@ -114,7 +117,7 @@ const AdminPage = () => {
     const handleCloseEditModal = () => {
         setShowEditModal(false);
         setCurrentItem(null); // Reset currentItem when closing modal
-        setFormData({ name: '', type: '', available_quantity: '', price: '' }); // Reset form data
+        setFormData({ name: '', type: '', available_quantity: '', price: '',hsn:'' }); // Reset form data
     };
 
     const handleFormSubmit = async (e) => {
@@ -127,6 +130,7 @@ const AdminPage = () => {
             type: formData.type.trim(),
             available_quantity: Number(formData.available_quantity),
             price: Number(formData.price),
+            hsn:formData.hsn.trim(),
         };
 
         if (isNaN(updatedData.available_quantity) || updatedData.available_quantity < 0 || isNaN(updatedData.price) || updatedData.price < 0) {
@@ -161,20 +165,29 @@ const AdminPage = () => {
     const handleNewItemFormSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
-
+    
+        // Ensure HSN is provided
+        if (!newItemFormData.hsn.trim()) {
+            alert('HSN is required.');
+            setIsSubmitting(false);
+            return;
+        }
+    
         const newData = {
             name: newItemFormData.name.trim(),
             type: newItemFormData.type.trim(),
             available_quantity: Number(newItemFormData.available_quantity),
             price: Number(newItemFormData.price),
+            hsn: newItemFormData.hsn.trim(),
         };
-
+    
+        // Validate other fields as well
         if (isNaN(newData.available_quantity) || newData.available_quantity < 0 || isNaN(newData.price) || newData.price < 0) {
             alert('Available Quantity and Price must be non-negative numbers.');
             setIsSubmitting(false);
             return;
         }
-
+    
         try {
             const tokenKey = `admin_token_${email}`; // Use the same unique key for the add request
             const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/admin/scrap`, newData, {
@@ -182,13 +195,14 @@ const AdminPage = () => {
             });
             setScrapItems([...scrapItems, response.data.scrap_item]);
             alert('New scrap item added successfully.');
-            setNewItemFormData({ name: '', type: '', available_quantity: '', price: '' }); // Reset after adding
+            setNewItemFormData({ name: '', type: '', available_quantity: '', price: '', hsn: '' }); // Reset after adding
         } catch (err) {
             alert('Failed to add new scrap item.');
         } finally {
             setIsSubmitting(false);
         }
     };
+    
 
     if (!isAuthenticated) {
         return (
@@ -281,6 +295,18 @@ const AdminPage = () => {
                             min="0"
                         />
                     </Form.Group>
+                     
+                    <Form.Group controlId="newHsn" className="mt-3">
+    <Form.Label>Hsn</Form.Label>
+    <Form.Control
+        type="text"
+        name="hsn"  // Fix this to 'hsn' instead of 'type'
+        value={newItemFormData.hsn}
+        onChange={handleNewItemFormChange}
+        required
+    />
+</Form.Group>
+
                     <Button variant="primary" type="submit" className="mt-3" disabled={isSubmitting}>
                         {isSubmitting ? 'Adding...' : 'Add Scrap Item'}
                     </Button>
@@ -301,6 +327,7 @@ const AdminPage = () => {
                                     <p><strong>Type:</strong> {item.type}</p>
                                     <p><strong>Available Quantity:</strong> {item.available_quantity}</p>
                                     <p><strong>Price:</strong> ${item.price}</p>
+                                    <p><strong>Hsn:</strong> ${item.hsn}</p>
                                 </div>
                                 <div className="card-footer">
                                     <Button variant="secondary" size="sm" className="me-2" onClick={() => handleEdit(item)}>
@@ -365,6 +392,18 @@ const AdminPage = () => {
                                 min="0"
                             />
                         </Form.Group>
+                        <Form.Group controlId="newHsn" className="mt-3">
+    <Form.Label>Hsn</Form.Label>
+    <Form.Control
+        type="text"
+        name="hsn"  // Fix this to 'hsn' instead of 'type'
+        value={formData.hsn}
+        onChange={handleFormChange}
+        required
+    />
+</Form.Group>
+
+                        
                         <Button variant="primary" type="submit" className="mt-3" disabled={isSubmitting}>
                             {isSubmitting ? 'Updating...' : 'Update'}
                         </Button>

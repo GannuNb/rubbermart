@@ -23,6 +23,8 @@ const Order = () => {
 
   const [tyreScrapItems, setTyreScrapItems] = useState([]);
   const [tyreSteelScrapItems, setTyreSteelScrapItems] = useState([]);
+  const [ PyrooilItem,  setPyrooilItems] = useState([]);
+
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -40,6 +42,7 @@ useEffect(() => {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/scrap`);
       setTyreScrapItems(response.data.scrap_items.filter((item) => item.type === 'Tyre scrap'));
       setTyreSteelScrapItems(response.data.scrap_items.filter((item) => item.type === 'Tyre steel scrap'));
+      setPyrooilItems(response.data.scrap_items.filter((item) => item.type === 'pyro oil'));
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -54,10 +57,20 @@ const handleAddClick = () => {
   setFilteredProducts([]);
 };
 
+
+
 const handleCategorySelect = (category) => {
   setSelectedCategory(category);
-  setFilteredProducts(category === 'Tyre scrap' ? tyreScrapItems : tyreSteelScrapItems);
+
+  setFilteredProducts(
+    category === 'Tyre scrap' ? tyreScrapItems :
+    category === 'Tyre steel scrap' ? tyreSteelScrapItems :
+    category === 'Pyro Oil' ? PyrooilItem :
+    [] // Default to an empty array if no category matches
+  );
 };
+
+
 
 const handleProductSelect = (product) => {
   setSelectedProduct(product);
@@ -155,36 +168,44 @@ const renderOrderSummary = () => {
       <h5 className="mb-3">Select Category & Product</h5>
 
       {/* Category Dropdown */}
-      <div className="mb-3">
-        <label className="form-label">Select Category</label>
-        <select
-          className="form-select"
-          onChange={(e) => handleCategorySelect(e.target.value)}
-          value={selectedCategory}
-        >
-          <option value="">Choose Category</option>
-          <option value="Tyre scrap">Tyre Scrap</option>
-          <option value="Tyre steel scrap">Tyre Steel Scrap</option>
-        </select>
-      </div>
+<div className="mb-3">
+  <label className="form-label">Select Category</label>
+  <select
+    className="form-select"
+    onChange={(e) => handleCategorySelect(e.target.value)}
+    value={selectedCategory}
+  >
+    <option value="">Choose Category</option>
+    <option value="Tyre scrap">Tyre Scrap</option>
+    <option value="Tyre steel scrap">Tyre Steel Scrap</option>
+    <option value="Pyro Oil">Pyro Oil</option>
+  </select>
+</div>
 
-      {/* Product Dropdown (Based on Selected Category) */}
-      {selectedCategory && (
-        <div className="mb-3">
-          <label className="form-label">Select Product</label>
-          <select
-            className="form-select"
-            onChange={(e) => handleProductSelect(JSON.parse(e.target.value))}
-          >
-            <option value="">Select a product</option>
-            {(selectedCategory === 'Tyre scrap' ? tyreScrapItems : tyreSteelScrapItems).map((product) => (
-              <option key={product.id} value={JSON.stringify(product)}>
-                {product.name} - ₹{product.price}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
+
+{/* Product Dropdown (Based on Selected Category) */}
+{selectedCategory && (
+  <div className="mb-3">
+    <label className="form-label">Select Product</label>
+    <select
+      className="form-select"
+      onChange={(e) => handleProductSelect(JSON.parse(e.target.value))}
+    >
+      <option value="">Select a product</option>
+
+      {/* Map through the selected category's items */}
+      {(selectedCategory === 'Tyre scrap' ? tyreScrapItems :
+        selectedCategory === 'Tyre steel scrap' ? tyreSteelScrapItems :
+        selectedCategory === 'Pyro Oil' ? PyrooilItem :
+        []).map((product) => (
+        <option key={product.id} value={JSON.stringify(product)}>
+          {product.name} - ₹{product.price}
+        </option>
+      ))}
+    </select>
+  </div>
+)}
+
 
       {/* Quantity Input and Add Button */}
       {selectedProduct && (
@@ -292,6 +313,7 @@ useEffect(() => {
         setLoading(false);
       }
     };
+    
 
     fetchProfile();
   }, [navigate]);

@@ -65,27 +65,29 @@ router.put('/admin/scrap/:id', async (req, res) => {
 });
 // POST /api/admin/scrap - Create a new scrap item
 router.post('/admin/scrap', async (req, res) => {
-    const { name, type, available_quantity, price } = req.body;
+    const { name, type, available_quantity, price, hsn } = req.body;
 
     try {
         // Validate input
-        if (!name || !type || isNaN(available_quantity) || available_quantity < 0 || isNaN(price) || price < 0) {
+        if (!name || !type || isNaN(available_quantity) || available_quantity < 0 || isNaN(price) || price < 0 || (hsn && typeof hsn !== 'string')) {
             return res.status(400).json({ message: 'Invalid input data' });
         }
-
+    
         const newScrapItem = new ScrapItem({
             name: name.trim(),
             type: type.trim(),
             available_quantity: Number(available_quantity),
             price: Number(price),
+            hsn: hsn ? hsn.trim() : '',  // If hsn is undefined, set it to an empty string
         });
-
+    
         const savedScrapItem = await newScrapItem.save();
         res.json({ message: 'Scrap item added successfully', scrap_item: savedScrapItem });
     } catch (error) {
         console.error("Error adding scrap item:", error);
         res.status(500).json({ message: 'Internal Server Error' });
     }
+    
 });
 
 router.post('/admin/login', async (req, res) => {

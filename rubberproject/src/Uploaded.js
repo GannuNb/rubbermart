@@ -77,19 +77,22 @@ const Uploaded = () => {
 
     const handleDeny = async (id) => {
         try {
-            const tokenKey = `admin_token_${email}`; // Use the same unique key for the deny request
-            const token = localStorage.getItem(tokenKey);
-            if (!token) throw new Error('No authentication token found. Please log in.');
-            const response = await axios.delete(`${process.env.REACT_APP_API_URL}/api/denyScrap/${id}`, {
-                headers: { 'Authorization': `Bearer ${token}` } // Correctly format the Bearer token
-            });
-            setScrapItems(scrapItems.filter(item => item._id !== id));
-            alert(response.data.message || 'Scrap item denied.');
+          const tokenKey = `admin_token_${email}`; // Use the same unique key for the deny request
+          const token = localStorage.getItem(tokenKey);
+          if (!token) throw new Error('No authentication token found. Please log in.');
+      
+          const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/denyScrap/${id}`, {}, {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+      
+          setScrapItems(scrapItems.filter(item => item._id !== id));
+          alert(response.data.message || 'Scrap item denied.');
         } catch (error) {
-            console.error('Error denying scrap item:', error);
-            alert(error.response?.data?.message || error.message || 'Failed to deny the scrap item.');
+          console.error('Error denying scrap item:', error);
+          alert(error.response?.data?.message || error.message || 'Failed to deny the scrap item.');
         }
-    };
+      };
+      
 
     // Render Login Form if not authenticated
     if (!isAuthenticated) {
@@ -161,7 +164,7 @@ const Uploaded = () => {
                                             Approve
                                         </button>
                                         <button className="btn btn-danger btn-custom" onClick={() => handleDeny(scrap._id)}>
-                                            Deny
+                                                                                    Deny
                                         </button>
                                     </td>
                                 </tr>

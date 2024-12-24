@@ -84,7 +84,10 @@ useEffect(() => {
             ]);
             setSelectedApplication('');
         } else if (material === 'pyro oil') {
-            setApplications([]);
+            setApplications([
+                'Pyro Oil',
+                
+            ]);
             setSelectedApplication('');
         } else if (material === 'Tyre steel scrap') {
             setApplications(['Pyro Steel', 'Rubber Crum Steel']);

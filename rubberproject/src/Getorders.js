@@ -177,6 +177,7 @@ const Getorders = () => {
   
   
 
+  
   const generatePDF = (order) => {
     const doc = new jsPDF();
     if (logo) {
@@ -384,7 +385,7 @@ shipAddressLines.forEach((line, index) => {
               <tr>
                 <th>Order ID</th>
                 <th>Item Name</th>
-                <th>Required Quantity (tons)</th>
+                <th>Total Ordered Quantity (tons)</th>
                 <th>Price Per Ton (₹)</th>
                 <th>Subtotal (₹)</th>
                 <th>GST (₹)</th>

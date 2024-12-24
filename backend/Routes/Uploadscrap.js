@@ -238,20 +238,92 @@ router.post('/approveScrap/:id', authenticateToken, async (req, res) => {
 // @route   DELETE /api/denyScrap/:id
 // @desc    Deny scrap submission
 // @access  Private (Authorized users)
-router.delete('/denyScrap/:id', authenticateToken, async (req, res) => {
+router.post('/denyScrap/:id', authenticateToken, async (req, res) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
     try {
-        // Use findByIdAndDelete instead of .remove()
-        const deletedScrap = await Uploadscrap.findByIdAndDelete(req.params.id);
-        
-        if (!deletedScrap) {
+        const uploadedScrap = await Uploadscrap.findById(req.params.id).session(session);
+        if (!uploadedScrap) {
+            await session.abortTransaction();
+            session.endSession();
             return res.status(404).json({ message: 'Scrap item not found' });
         }
 
-        res.status(200).json({ message: 'Scrap submission denied and removed.' });
+        const { material, application, quantity, email, companyName } = uploadedScrap;
+
+        // Remove the scrap item from the Uploadscrap collection
+        await Uploadscrap.findByIdAndDelete(req.params.id).session(session);
+
+        // Prepare denial email details
+        const scrapDetailsHtml = `
+            <table style="border-collapse: collapse; width: 100%; margin-top: 20px;">
+                <tr>
+                    <th style="border: 1px solid #ddd; padding: 8px; background-color: #f4f4f4;">Material</th>
+                    <th style="border: 1px solid #ddd; padding: 8px; background-color: #f4f4f4;">Application</th>
+                    <th style="border: 1px solid #ddd; padding: 8px; background-color: #f4f4f4;">Quantity</th>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 8px;">${material}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">${application}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">${quantity}</td>
+                </tr>
+            </table>
+        `;
+
+        // Send denial email
+        const mailOptions = {
+            from: process.env.ADMIN_EMAIL,
+            to: email,
+            subject: 'Scrap Product Denial Notification – Vikah Rubber',
+            html: `
+                <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                    <h2 style="color: #e53935;">Scrap Product Denial Notification</h2>
+                    <p>Dear ${companyName || 'Customer'},</p>
+                    <p>We regret to inform you that your scrap submission has been denied by our admin team.</p>
+                    <p>Below are the details of your denied scrap:</p>
+                    ${scrapDetailsHtml}
+                    <p>If you have any questions or need further clarification, feel free to contact us.</p>
+                    <p style="margin-top: 20px;">Best regards,</p>
+                    <p><strong>Vikah Rubber</strong></p>
+                    <div style="margin-top: 20px; padding: 10px; background-color: #f4f4f4; border-radius: 5px;">
+                        <p><strong>Admin Office:</strong></p>
+                        <p>#406, 4th Floor, Patel Towers,<br>
+                           Above EasyBuy, Beside Nagole RTO Office,<br>
+                           Nagole, Hyderabad, Telangana-500035</p>
+                        <p><strong>Phone:</strong> +91 4049471616</p>
+                        <p><strong>Email:</strong> <a href="mailto:vikahrubber@gmail.com" style="color: #1e88e5;">vikahrubber@gmail.com</a></p>
+                        <p><strong>Website:</strong> <a href="https://vikahrubber.com" style="color: #1e88e5;">https://vikahrubber.com</a></p>
+                    </div>
+                </div>
+            `
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error('Error sending email:', error);
+            } else {
+                console.log('Denial email sent:', info.response);
+            }
+        });
+
+        await session.commitTransaction();
+        session.endSession();
+
+        return res.status(200).json({
+            message: 'Scrap denied and email sent.',
+            deniedScrap: {
+                material,
+                application,
+                quantity,
+                companyName
+            }
+        });
     } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
         console.error('Error denying scrap item:', error);
-        res.status(500).json({ message: 'Server Error' });
-    }
+        res.status(500).json({ message: 'Server Error' });
+    }
 });
 
 router.get('/getApprovedScrap', authenticateToken, async (req, res) => {

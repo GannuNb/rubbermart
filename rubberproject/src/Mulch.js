@@ -13,6 +13,7 @@ const Mulch = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
+    
 
     useEffect(() => {
         const fetchData = async () => {

@@ -194,9 +194,8 @@ function Sidebar() {
     </div>
     {isPyroOilOpen && (
       <div className="list-group list-group-flush">
-        <div className="list-group-item list-group-item-action py-2 ripple">
-          No products available
-        </div>
+        <Link className="list-group-item list-group-item-action py-2 ripple" to="/pyrooil" onClick={closeSidebar}>
+Pyro oil          </Link>
       </div>
     )}
 

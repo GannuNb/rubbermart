@@ -43,6 +43,7 @@ import Registeredgst from './Registeredgst.js';
 import Unregisteredgst from './Unregistered.js';
 import GetPay from './getpay.js';
 import AdminPayment from './Adminpayment.js';
+import Pyrooil from './Pyrooil.js';
 
 
 
@@ -82,7 +83,8 @@ function App() {
           <Route exact path="/Contact" element={<ContactUs />} />
           <Route exact path="/Sell" element={<Sell />} />
           <Route exact path="/BusinessProfile" element={<BusinessProfile />} /> 
-          <Route exact path="/Mulch" element={<Mulch />} /> 
+          <Route exact path="/Mulch" element={<Mulch />} />
+          <Route exact path="/Pyrooil" element={<Pyrooil />} /> 
           <Route exact path="/Order" element={<Order />} /> 
           <Route exact path="/Getorders" element={<Getorders />} /> 
           <Route exact path="/MultipleBaledTyresPCR" element={<Multiple_Baled_Tyres_PCR />} /> 

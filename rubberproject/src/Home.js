@@ -167,11 +167,13 @@ const Home = () => {
                     <div className="flip-card-back">
                         <h3>Products</h3>
                         <ul className="product-list text-start">
-                            <li>No Products</li>
+                            <li>Pyro Oil</li>
                         </ul>
+                        <Link to='/pyrooil'>
                         <button className="btn btn-light btn-sm">
                             View Products
                         </button>
+                        </Link>
                     </div>
                 </div>
             </div>
