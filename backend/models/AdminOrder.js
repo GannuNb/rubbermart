@@ -1,5 +1,20 @@
 const mongoose = require('mongoose');
 
+
+// Helper function to calculate the financial year
+const getFinancialYear = () => {
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth() + 1; // Months are zero-based
+  if (currentMonth <= 3) {
+    // If it's January to March, the financial year is previous year - current year
+    return `${String(currentYear - 1).slice(2)}-${String(currentYear).slice(2)}`;
+  } else {
+    // Otherwise, it's current year - next year
+    return `${String(currentYear).slice(2)}-${String(currentYear + 1).slice(2)}`;
+  }
+};
+
 // Model to store the last used order ID
 const OrderIdCounterSchema = new mongoose.Schema({
   _id: { type: String, required: true }, // This will store a string like 'orderID'
@@ -10,7 +25,7 @@ const OrderIdCounter = mongoose.model('OrderIdCounter', OrderIdCounterSchema);
 
 // Custom ID generator
 const generateCustomId = async () => {
-  const prefix = 'VRO_24-25_';
+  const prefix = `VRO_${getFinancialYear()}_`;
   const counter = await OrderIdCounter.findOneAndUpdate(
     { _id: 'orderID' }, // The unique ID for order tracking
     { $inc: { counter: 1 } }, // Increment the counter by 1

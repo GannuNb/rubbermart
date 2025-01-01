@@ -1,24 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ThreePiecePCRImage from './images/ThreePiecePCR.jpeg'; // Ensure to have an image for Three Piece PCR
-import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
-import { useNavigate,useLocation } from 'react-router-dom'; // useNavigate instead of useHistory
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './Mulch.css'; // Import your CSS file
 import logo1 from './images/logo.png';
 
 const ThreePiecePCR = () => {
     const [scrapItems, setScrapItems] = useState([]);
-    const [threePiecePCRData, setThreePiecePCRData] = useState({ available_quantity: 0, price: 0 }); // Store the Three Piece PCR data
-    const [requiredQuantity, setRequiredQuantity] = useState(1); // Default required quantity to 1
-    const navigate = useNavigate(); // Use useNavigate instead of useHistory
+    const [threePiecePCRData, setThreePiecePCRData] = useState({
+        available_quantity: 0,
+        price: 0,
+        ex_chennai: 0,
+        ex_nhavasheva: 0,
+        ex_mundra: 0,
+        hsn: '',
+        default_price: 0,
+    });
+    const [requiredQuantity, setRequiredQuantity] = useState(1);
+    const [selectedPrice, setSelectedPrice] = useState('');
+    const navigate = useNavigate();
     const location = useLocation();
 
-
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, []);
-    
-    
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -28,16 +31,21 @@ const ThreePiecePCR = () => {
                 // Find the Three Piece PCR data
                 const threePiecePCRItem = items.find(item => item.name === 'Three Piece PCR');
 
-                // Set the Three Piece PCR data if it exists
                 if (threePiecePCRItem) {
+                    const fetchedDefaultPrice = threePiecePCRItem.default_price || threePiecePCRItem.price || threePiecePCRItem.ex_chennai;
+
                     setThreePiecePCRData({
                         available_quantity: threePiecePCRItem.available_quantity,
                         price: threePiecePCRItem.price,
+                        ex_chennai: threePiecePCRItem.ex_chennai,
+                        ex_nhavasheva: threePiecePCRItem.ex_nhavasheva,
+                        ex_mundra: threePiecePCRItem.ex_mundra,
                         hsn: threePiecePCRItem.hsn,
+                        default_price: fetchedDefaultPrice,
                     });
                 }
 
-                setScrapItems(items); // You can still store all scrap items if needed
+                setScrapItems(items);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -46,135 +54,160 @@ const ThreePiecePCR = () => {
         fetchData();
     }, []);
 
+    const handlePriceChange = (event) => {
+        const selectedOption = event.target.value;
+        setSelectedPrice(selectedOption);
+
+        if (selectedOption === 'ex_chennai') {
+            setThreePiecePCRData(prevState => ({ ...prevState, price: prevState.ex_chennai }));
+        } else if (selectedOption === 'ex_nhavasheva') {
+            setThreePiecePCRData(prevState => ({ ...prevState, price: prevState.ex_nhavasheva }));
+        } else if (selectedOption === 'ex_mundra') {
+            setThreePiecePCRData(prevState => ({ ...prevState, price: prevState.ex_mundra }));
+        } else if (selectedOption === 'default') {
+            setThreePiecePCRData(prevState => ({ ...prevState, price: prevState.default_price }));
+        }
+    };
+
     const handleOrder = () => {
-        const token = localStorage.getItem('token'); // Replace 'authToken' with your token key
-    
+        const token = localStorage.getItem('token');
+
         if (!token) {
-            // If user isn't logged in, navigate to the login page
             setTimeout(() => {
-                // Create a custom alert with inline styling or a class
                 const alertDiv = document.createElement('div');
                 alertDiv.className = 'custom-alert';
-        
-                // Create an image element for the logo
+
                 const logoImg = document.createElement('img');
-                logoImg.src = logo1;  // Use the imported logo here
+                logoImg.src = logo1;
                 logoImg.alt = 'Company Logo';
-                logoImg.className = 'alert-logo';  // Add a class for logo styling
-        
-                // Create a text message for the alert
+                logoImg.className = 'alert-logo';
+
                 const alertMessage = document.createElement('span');
                 alertMessage.textContent = 'Please log in to proceed';
-                alertMessage.className = 'alert-message';  // Class for message styling
-        
-                // Append logo and message to the alert div
+                alertMessage.className = 'alert-message';
+
                 alertDiv.appendChild(logoImg);
                 alertDiv.appendChild(alertMessage);
-        
-                // Append alert div to the body
+
                 document.body.appendChild(alertDiv);
-        
-                // Remove the alert after 5 seconds
+
                 setTimeout(() => {
                     alertDiv.remove();
                 }, 5000);
-        
-                navigate('/login', { 
-                    state: { 
-                        from: location.pathname, // Pass the current path to return after login
+
+                navigate('/login', {
+                    state: {
+                        from: location.pathname,
                         threePiecePCRData: {
                             name: 'Three Piece PCR',
-                available_quantity: threePiecePCRData.available_quantity,
-                price: threePiecePCRData.price,
-                required_quantity: requiredQuantity,
-                hsn: threePiecePCRData.hsn,
+                            available_quantity: threePiecePCRData.available_quantity,
+                            price: threePiecePCRData.price,
+                            required_quantity: requiredQuantity,
+                            hsn: threePiecePCRData.hsn,
                         }
                     }
                 });
             }, 0);
-            
-        }
-        else{ 
-
-          navigate('/Order', {
-            state: {
-                name: 'Three Piece PCR',
-                available_quantity: threePiecePCRData.available_quantity,
-                price: threePiecePCRData.price,
-                required_quantity: requiredQuantity,
-                hsn: threePiecePCRData.hsn,
-            },
-        });
-    }
+        } else {
+            navigate('/Order', {
+                state: {
+                    name: 'Three Piece PCR',
+                    available_quantity: threePiecePCRData.available_quantity,
+                    price: threePiecePCRData.price,
+                    required_quantity: requiredQuantity,
+                    hsn: threePiecePCRData.hsn,
+                },
+            });
+        }
     };
 
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     return (
-        <div className=" mulch-container" style={{ padding: '20px', marginTop: '20px' , marginLeft: '180px'}}>
+        <div className="threepiecepcr-container" style={{ padding: '20px', marginTop: '20px', marginLeft: '180px' }}>
             <div className="row align-items-center mt-5">
                 <div className="col-md-6">
-                    <img 
-                        src={ThreePiecePCRImage} 
-                        alt="Three Piece PCR" 
-                        className="img-fluid img-hover-effect" // Add img-hover-effect class
-                        style={{ borderRadius: '8px', width: '80%', marginLeft: '20px' ,height :'300px'}} 
+                    <img
+                        src={ThreePiecePCRImage}
+                        alt="Three Piece PCR"
+                        className="img-fluid img-hover-effect"
+                        style={{ borderRadius: '8px', width: '80%', marginLeft: '20px', height: '300px' }}
                     />
                 </div>
                 <div className="col-md-6">
                     <h2>Three Piece PCR</h2>
                     <p>
-                        Three Piece PCR refers to a type of processed material widely used in recycling and manufacturing. 
-                        This material is known for its durability and versatility, making it suitable for various applications, including automotive and construction industries. 
+                        Three Piece PCR refers to a type of processed material widely used in recycling and manufacturing.
+                        This material is known for its durability and versatility, making it suitable for various applications, including automotive and construction industries.
                         Utilizing high-quality Three Piece PCR can contribute to sustainable practices by reducing waste and promoting recycling efforts.
                     </p>
                 </div>
             </div>
 
-{/* Specifications Section */}
-<h3 className="specifications-title" style={{ marginTop: '40px' }}>SPECIFICATIONS</h3>
-<div className="row specifications-row" style={{ marginTop: '10px' }}>
-    <div className="col-md-6">
-    <label style={{ color: 'black', fontWeight: 'bold' }}>AVAILABLE QUANTITY IN (MT):</label>
-    <span className="d-block p-2 border rounded specification-value">
-            {threePiecePCRData.available_quantity} 
-        </span>
-    </div>
-    <div className="col-md-6">
-    <label style={{ color: 'black', fontWeight: 'bold' }}>PRICE PER (MT):</label>
-        <span className="d-block p-2 border rounded specification-value">
-            ₹{threePiecePCRData.price} 
-        </span>
-    </div>
-    <div className="col-md-6">
-        <label style={{ color: 'black', fontWeight: 'bold' }}>HSN:</label>
-        <span className="d-block p-2 border rounded" style={{ border: '1px solid #ccc' }}>
-            {threePiecePCRData.hsn}
-        </span>
-    </div>
-</div>
+            {/* Specifications Section */}
+            <div className="specifications-section">
+                <h3 className="section-title">SPECIFICATIONS</h3>
+                <div className="row specifications-row">
+                    {/* Available Quantity */}
+                    <div className="col-md-6">
+                        <label className="spec-label">AVAILABLE QUANTITY IN (MT):</label>
+                        <span className="spec-value">
+                            {threePiecePCRData.available_quantity}
+                        </span>
+                    </div>
 
-{/* Required Quantity Section */}
-<div className="mt-3">
-    <label style={{ color: 'black', fontWeight: 'bold', marginBottom: '5px', display: 'block' }}>
-        REQUIRED QUANTITY IN (MT):
-    </label>
-    <input 
-        type="number" 
-        value={requiredQuantity}
-        onChange={(e) => setRequiredQuantity(e.target.value)} 
-        placeholder="Enter required quantity" 
-        className="form-control specification-input" 
-        style={{
-            border: '1px solid #ccc',
-            padding: '8px',
-            marginTop: '5px',
-            width: '48%', /* Adjust width for a smaller field */
-        }}
-    />
-</div>
+                    {/* Price Per MT */}
+                    <div className="col-md-6">
+                        <label className="spec-label">PRICE PER (MT):</label>
+                        <span className="spec-value">
+                            ₹{threePiecePCRData.price}
+                        </span>
+                    </div>
 
-            {/* Order Button */}
-            <div className="mt-3">
-                <button className="btn btn-primary" onClick={handleOrder}>Please Proceed to Order</button>
+                    {/* HSN */}
+                    <div className="col-md-6">
+                        <label className="spec-label">HSN:</label>
+                        <span className="spec-value">
+                            {threePiecePCRData.hsn}
+                        </span>
+                    </div>
+                </div>
+
+                {/* Required Quantity Section */}
+                <div className="required-quantity-section mt-3">
+                    <label className="spec-label">REQUIRED QUANTITY IN (MT):</label>
+                    <input
+                        type="number"
+                        value={requiredQuantity}
+                        onChange={(e) => setRequiredQuantity(e.target.value)}
+                        placeholder="Enter required quantity"
+                        className="form-control required-quantity-input"
+                    />
+                </div>
+
+                {/* Price Selection Dropdown */}
+                <div className="price-dropdown mt-3">
+                    <label className="spec-label">SELECT PRICE:</label>
+                    <select
+                        className="form-control"
+                        value={selectedPrice}
+                        onChange={handlePriceChange}
+                    >
+                        <option value="default">Default Price: ₹{threePiecePCRData.default_price || 'N/A'}</option>
+                        <option value="ex_chennai">Ex-Chennai: ₹{threePiecePCRData.ex_chennai}</option>
+                        <option value="ex_nhavasheva">Ex-Nhavasheva: ₹{threePiecePCRData.ex_nhavasheva}</option>
+                        <option value="ex_mundra">Ex-Mundra: ₹{threePiecePCRData.ex_mundra}</option>
+                    </select>
+                </div>
+
+                {/* Order Button */}
+                <div className="order-button-section mt-3">
+                    <button className="btn btn-primary" onClick={handleOrder}>
+                        Please Proceed to Order
+                    </button>
+                </div>
             </div>
         </div>
     );

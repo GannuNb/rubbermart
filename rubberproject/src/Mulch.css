@@ -1,16 +1,17 @@
 .img-hover-effect {
-    transition: transform 0.3s ease; 
+    transition: transform 0.3s ease;
 }
 
 .img-hover-effect:hover {
-    transform: scale(1.05); 
+    transform: scale(1.05);
 }
 
 
 .mulch-container {
     margin-left: 115px;
 }
-.img-fluid{
+
+.img-fluid {
     height: 325px !important;
 }
 
@@ -50,16 +51,223 @@
 
 @media (max-width: 1300px) {
 
-.container{
-    max-width: 83% !important;
-}
+    .container {
+        max-width: 83% !important;
+    }
 }
 
 @media (max-width: 600px) {
 
-    .container{
+    .container {
         max-width: 100% !important;
     }
-    }
-    
+}
 
+
+/* Specifications Section */
+.specifications-section {
+    background: linear-gradient(135deg, #17a2b8, #0d6efd);
+    padding: 3rem 2%;
+    margin-top: 12px;
+width: 110%;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 1.5s ease-in-out;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Background Gradient Animation */
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.specifications-section {
+    background-size: 200% 200%;
+    animation: gradientAnimation 5s infinite alternate;
+}
+
+/* Section Title with Hover Rotation */
+.specifications-section h3 {
+    text-align: center;
+    color: white;
+    font-size: 2rem;
+    animation: bounce 2s infinite;
+    transition: transform 0.3s ease-in-out;
+    transform-origin: center center; /* Prevents distortion */
+}
+
+.specifications-section h3:hover {
+    transform: rotate(-5deg);
+}
+
+/* Bounce Animation */
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Labels with Floating Effect */
+.spec-label {
+    color: white;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+    animation: float 3s infinite ease-in-out;
+}
+
+
+/* @keyframes float {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+} */
+
+/* Specification Values with Glowing Borders */
+.spec-value {
+    display: block;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: white;
+    color: #333;
+    font-weight: 500;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.spec-value:hover {
+    transform: scale(1.05); /* Slight scale instead of large scale */
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+}
+
+/* Required Quantity Input with Focus Effect */
+.required-quantity-input {
+    width: 48%;
+    padding: 5px;
+    font-size: 0.9rem;
+    margin-top: 5px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    transition: border 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.required-quantity-input:focus {
+    border-color: #ffc107;
+    box-shadow: 0 0 15px rgba(255, 193, 7, 0.8);
+    animation: pulseFocus 1s infinite alternate;
+}
+
+/* Pulse Focus Animation */
+@keyframes pulseFocus {
+    0% {
+        border-color: #ffc107;
+    }
+    100% {
+        border-color: #ff9800;
+    }
+}
+
+/* Order Button with 3D Hover Effect */
+.order-button-section .btn-primary {
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 10px 20px;
+    background: linear-gradient(45deg, #007bff, #0d6efd);
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.order-button-section .btn-primary:hover {
+    transform: translateY(-3px); /* Reduced translateY for smaller screens */
+    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.5);
+}
+
+/* Ripple Effect on Button Click */
+.order-button-section .btn-primary:active::after {
+    content: "";
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    animation: rippleEffect 0.6s ease-out;
+}
+
+/* Ripple Animation */
+@keyframes rippleEffect {
+    to {
+        transform: translate(-50%, -50%) scale(4);
+        opacity: 0;
+    }
+}
+
+/* Glowing Border on Hover for Input & Button */
+.order-button-section .btn-primary:hover,
+.required-quantity-input:hover {
+    border: 2px solid #17a2b8;
+    box-shadow: 0 0 20px #17a2b8;
+}
+
+/* Mobile-Specific Adjustments */
+@media (max-width: 768px) {
+    .specifications-section {
+        padding: 2rem 1rem; /* Adjust padding for mobile */
+    }
+
+    .specifications-section h3 {
+        font-size: 1.5rem; /* Smaller font size on mobile */
+    }
+
+    .required-quantity-input {
+        width: 100%; /* Full width for mobile screens */
+        max-width: 400px; /* Max width for input field */
+    }
+
+    .order-button-section .btn-primary {
+        width: 100%; /* Full width for mobile */
+        max-width: 250px; /* Max width for button */
+        padding: 12px 16px;
+    }
+
+    /* Reduce hover effect for buttons and input on mobile */
+    .spec-value:hover,
+    .required-quantity-input:focus {
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+
+    /* Fix Button Hover Effect Overflow on Small Screens */
+    .order-button-section .btn-primary:hover {
+        transform: translateY(-3px); /* Reduced translateY for smaller screen */
+    }
+}

@@ -1,38 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import PyroSteelImage from './images/PyroSteel.jpeg'; // Ensure to have an image for mulch
+import PyroSteelImage from './images/PyroSteel.jpeg'; // Ensure to have an image for PyroSteel
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
-import { useNavigate ,useLocation} from 'react-router-dom'; // useNavigate instead of useHistory
+import { useNavigate, useLocation } from 'react-router-dom'; // useNavigate instead of useHistory
 import './Mulch.css'; // Import your CSS file
 import logo1 from './images/logo.png';
 
 const PyroSteel = () => {
     const [scrapItems, setScrapItems] = useState([]);
-    const [mulchData, setMulchData] = useState({ available_quantity: 0, price: 0 }); // Store the mulch data
-    const [requiredQuantity, setRequiredQuantity] = useState(1); // Default required quantity to 1
-    const navigate = useNavigate(); // Use useNavigate instead of useHistory
+    const [pyroSteelData, setPyroSteelData] = useState({
+        available_quantity: 0,
+        price: 0, // dynamic price based on selection
+        ex_chennai: 0,
+        ex_nhavasheva: 0,
+        ex_mundra: 0,
+        hsn: '',
+        default_price: 0, // Default price fetched from backend
+    });
+    const [requiredQuantity, setRequiredQuantity] = useState(1);
+    const [selectedPrice, setSelectedPrice] = useState(''); // Store selected price option (ex_chennai, ex_nhavasheva, ex_mundra)
+    const navigate = useNavigate();
     const location = useLocation();
 
-    
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, []);
-    
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios.get(`${process.env.REACT_APP_API_URL}/scrap`);
                 const items = response.data.scrap_items;
 
-                // Find the mulch data
-                const mulchItem = items.find(item => item.name === 'Pyro Steel');
+                // Find the PyroSteel data
+                const pyroSteelItem = items.find(item => item.name === 'Pyro Steel');
 
-                // Set the mulch data if it exists
-                if (mulchItem) {
-                    setMulchData({
-                        available_quantity: mulchItem.available_quantity,
-                        price: mulchItem.price,
-                        hsn: mulchItem.hsn,
+                // Ensure we have the PyroSteel item and default price
+                if (pyroSteelItem) {
+                    // If backend does not send default_price, fallback to a price (e.g., pyroSteelItem.price or ex_chennai)
+                    const fetchedDefaultPrice = pyroSteelItem.default_price || pyroSteelItem.price || pyroSteelItem.ex_chennai;
+
+                    setPyroSteelData({
+                        available_quantity: pyroSteelItem.available_quantity,
+                        price: pyroSteelItem.price, // Set initial price from 'price'
+                        ex_chennai: pyroSteelItem.ex_chennai,
+                        ex_nhavasheva: pyroSteelItem.ex_nhavasheva,
+                        ex_mundra: pyroSteelItem.ex_mundra,
+                        hsn: pyroSteelItem.hsn,
+                        default_price: fetchedDefaultPrice, // Use fetched default price or fallback
                     });
                 }
 
@@ -45,136 +56,168 @@ const PyroSteel = () => {
         fetchData();
     }, []);
 
+    const handlePriceChange = (event) => {
+        const selectedOption = event.target.value;
+        setSelectedPrice(selectedOption);
+
+        // Update the main price based on the selected dropdown option, but don't modify the constant default price
+        if (selectedOption === 'ex_chennai') {
+            setPyroSteelData(prevState => ({ ...prevState, price: prevState.ex_chennai }));
+        } else if (selectedOption === 'ex_nhavasheva') {
+            setPyroSteelData(prevState => ({ ...prevState, price: prevState.ex_nhavasheva }));
+        } else if (selectedOption === 'ex_mundra') {
+            setPyroSteelData(prevState => ({ ...prevState, price: prevState.ex_mundra }));
+        } else if (selectedOption === 'default') {
+            // If default price is selected, use the correct value
+            setPyroSteelData(prevState => ({ ...prevState, price: prevState.default_price }));
+        }
+    };
+
     const handleOrder = () => {
         const token = localStorage.getItem('token'); // Replace 'authToken' with your token key
-    
- 
+
         if (!token) {
             // If user isn't logged in, navigate to the login page
             setTimeout(() => {
-                // Create a custom alert with inline styling or a class
                 const alertDiv = document.createElement('div');
                 alertDiv.className = 'custom-alert';
-        
-                // Create an image element for the logo
+
                 const logoImg = document.createElement('img');
-                logoImg.src = logo1;  // Use the imported logo here
+                logoImg.src = logo1;
                 logoImg.alt = 'Company Logo';
-                logoImg.className = 'alert-logo';  // Add a class for logo styling
-        
-                // Create a text message for the alert
+                logoImg.className = 'alert-logo';
+
                 const alertMessage = document.createElement('span');
                 alertMessage.textContent = 'Please log in to proceed';
-                alertMessage.className = 'alert-message';  // Class for message styling
-        
-                // Append logo and message to the alert div
+                alertMessage.className = 'alert-message';
+
                 alertDiv.appendChild(logoImg);
                 alertDiv.appendChild(alertMessage);
-        
-                // Append alert div to the body
+
                 document.body.appendChild(alertDiv);
-        
-                // Remove the alert after 5 seconds
+
                 setTimeout(() => {
                     alertDiv.remove();
                 }, 5000);
-        
-                navigate('/login', { 
-                    state: { 
-                        from: location.pathname, // Pass the current path to return after login
-                        mulchData: {
+
+                navigate('/login', {
+                    state: {
+                        from: location.pathname,
+                        pyroSteelData: {
                             name: 'Pyro Steel',
-                available_quantity: mulchData.available_quantity,
-                price: mulchData.price,
-                required_quantity: requiredQuantity,
-                hsn: mulchData.hsn,
+                            available_quantity: pyroSteelData.available_quantity,
+                            price: pyroSteelData.price,
+                            required_quantity: requiredQuantity,
+                            hsn: pyroSteelData.hsn,
                         }
                     }
                 });
             }, 0);
-            
-        } else{
-                navigate('/Order', {
-            state: {
-                name: 'Pyro Steel',
-                available_quantity: mulchData.available_quantity,
-                price: mulchData.price,
-                required_quantity: requiredQuantity,
-                hsn: mulchData.hsn,
-            }, 
-        });
-    }
+
+        } else {
+            navigate('/Order', {
+                state: {
+                    name: 'Pyro Steel',
+                    available_quantity: pyroSteelData.available_quantity,
+                    price: pyroSteelData.price, // Pass the updated price
+                    required_quantity: requiredQuantity,
+                    hsn: pyroSteelData.hsn,
+                },
+            });
+        }
     };
 
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     return (
-        <div className=" mulch-container" style={{ padding: '20px', marginTop: '20px' , marginLeft: '180px'}}>
-            <div className="row align-items-center mt-5">
-                <div className="col-md-6">
-                    <img 
-                        src={PyroSteelImage} 
-                        alt="Mulch" 
-                        className="img-fluid img-hover-effect" 
-                        style={{ borderRadius: '8px', width: '80%', marginLeft:'20px',height :'300px' }} 
-                    />
+        <>
+            <div className="pyroSteel-container" style={{ padding: '20px', marginTop: '20px', marginLeft: '180px' }}>
+                <div className="row align-items-center mt-5">
+                    <div className="col-md-6">
+                        <img
+                            src={PyroSteelImage}
+                            alt="Pyro Steel"
+                            className="img-fluid img-hover-effect"
+                            style={{ borderRadius: '8px', width: '80%', marginLeft: '20px' }}
+                        />
+                    </div>
+                    <div className="col-md-6">
+                        <h2>Pyro Steel</h2>
+                        <p>
+                            Pyro Steel is a material used in various industrial applications. It serves several purposes, including enhanced durability and strength.
+                            Pyro Steel is essential for industries requiring high-performance materials.
+                        </p>
+                    </div>
                 </div>
-                <div className="col-md-6">
-                    <h2>Pyro Steel</h2>
-                    <p>
-                        Mulch is a material applied to the surface of soil. It serves several purposes, including moisture retention, temperature regulation, and weed suppression. 
-                        Organic mulches, such as wood chips, straw, and leaves, decompose over time, adding nutrients to the soil. 
-                        Utilizing mulch can enhance the aesthetic appeal of gardens while also promoting healthy plant growth.
-                    </p>
+
+                {/* Specifications Section */}
+                <div className="specifications-section">
+                    <h3 className="section-title">SPECIFICATIONS</h3>
+
+                    <div className="row specifications-row">
+                        {/* Available Quantity */}
+                        <div className="col-md-6">
+                            <label className="spec-label">AVAILABLE QUANTITY IN (MT):</label>
+                            <span className="spec-value">
+                                {pyroSteelData.available_quantity}
+                            </span>
+                        </div>
+
+                        {/* Price Per MT */}
+                        <div className="col-md-6">
+                            <label className="spec-label">PRICE PER (MT):</label>
+                            <span className="spec-value">
+                                ₹{pyroSteelData.price}
+                            </span>
+                        </div>
+
+                        {/* HSN */}
+                        <div className="col-md-6">
+                            <label className="spec-label">HSN:</label>
+                            <span className="spec-value">
+                                {pyroSteelData.hsn}
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Required Quantity Section */}
+                    <div className="required-quantity-section mt-3">
+                        <label className="spec-label">REQUIRED QUANTITY IN (MT):</label>
+                        <input
+                            type="number"
+                            value={requiredQuantity}
+                            onChange={(e) => setRequiredQuantity(e.target.value)}
+                            placeholder="Enter required quantity"
+                            className="form-control required-quantity-input"
+                        />
+                    </div>
+
+                    {/* Price Selection Dropdown */}
+                    <div className="price-dropdown mt-3">
+                        <label className="spec-label">SELECT PRICE:</label>
+                        <select
+                            className="form-control"
+                            value={selectedPrice}
+                            onChange={handlePriceChange} // Use the handler for price change
+                        >
+                            <option value="default">Default Price: ₹{pyroSteelData.default_price || 'N/A'}</option>
+                            <option value="ex_chennai">Ex-Chennai: ₹{pyroSteelData.ex_chennai}</option>
+                            <option value="ex_nhavasheva">Ex-Nhavasheva: ₹{pyroSteelData.ex_nhavasheva}</option>
+                            <option value="ex_mundra">Ex-Mundra: ₹{pyroSteelData.ex_mundra}</option>
+                        </select>
+                    </div>
+
+                    {/* Order Button */}
+                    <div className="order-button-section mt-3">
+                        <button className="btn btn-primary" onClick={handleOrder}>
+                            Please proceed to Order
+                        </button>
+                    </div>
                 </div>
             </div>
-
-{/* Specifications Section */}
-<h3 style={{ marginTop: '40px', color: 'black' }}>SPECIFICATIONS</h3>
-<div className="row" style={{ marginTop: '10px' }}>
-    <div className="col-md-6">
-        <label style={{ color: 'black', fontWeight: 'bold' }}>AVAILABLE QUANTITY IN (MT):</label>
-        <span className="d-block p-2 border rounded" style={{ border: '1px solid #ccc' }}>
-            {mulchData.available_quantity} 
-        </span>
-    </div>
-    <div className="col-md-6">
-        <label style={{ color: 'black', fontWeight: 'bold' }}>PRICE PER (MT):</label>
-        <span className="d-block p-2 border rounded" style={{ border: '1px solid #ccc' }}>
-            ₹{mulchData.price} 
-        </span>
-    </div>
-    <div className="col-md-6">
-        <label style={{ color: 'black', fontWeight: 'bold' }}>HSN:</label>
-        <span className="d-block p-2 border rounded" style={{ border: '1px solid #ccc' }}>
-            {mulchData.hsn}
-        </span>
-    </div>
-</div>
-
-{/* Required Quantity Section */}
-<div className="mt-3">
-    <label style={{ color: 'black', fontWeight: 'bold' }}>REQUIRED QUANTITY IN (MT):</label>
-    <input 
-        type="number" 
-        value={requiredQuantity}
-        onChange={(e) => setRequiredQuantity(e.target.value)} 
-        placeholder="Enter required quantity" 
-        className="form-control" 
-        style={{
-            border: '1px solid #ccc', 
-            padding: '8px',
-            marginTop: '5px',
-            width: '48%', /* Adjust width to make it smaller */
-
-        }}
-    />
-</div>
-
-
-            {/* Order Button */}
-            <div className="mt-3">
-                <button className="btn btn-primary" onClick={handleOrder}> Please Proceed to Order</button>
-            </div>
-        </div>
+        </>
     );
 };
 

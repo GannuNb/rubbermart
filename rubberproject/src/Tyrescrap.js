@@ -12,17 +12,13 @@ import ThreePieceTBRImage from './images/ThreePieceTBR.jpeg';
 import ThreePieceTBRImage2 from './images/ThreePieceTBR2.webp';
 import mulchImage from './images/mulch.jpeg';
 import mulchImage2 from './images/mulch1.jpg';
-import rubbercrumimg2 from "./images/rubbercrumbtw4.jpg"
-import baledtrespcrimg1 from "./images/baledtrespcr2.jpg"
-import baledtrespcrimg2 from "./images/baledtrespcr3.jpg"
+import rubbercrumimg2 from "./images/rubbercrumbtw4.jpg";
+import baledtrespcrimg1 from "./images/baledtrespcr2.jpg";
+import baledtrespcrimg2 from "./images/baledtrespcr3.jpg";
 import RubberCrumSteelImage1 from './images/RubberCrumSteel1.jpg';
 import RubberGranuelsimg2 from './images/RubberGranules2.jpeg';
-import pcr2 from './images/3piecepcr2.jpg'
-import tbr2 from './images/3piecetbr2.jpg'
-
-
-
-
+import pcr2 from './images/3piecepcr2.jpg';
+import tbr2 from './images/3piecetbr2.jpg';
 
 import './TyreScrap.css';
 
@@ -32,26 +28,42 @@ const TyreScrap = () => {
 
     // Map product names to their corresponding image arrays
     const imagesMap = {
-        "Rubber Granules/Crum": [RubberCrumSteelImage1,RubberGranuelsimg2],
+        "Rubber Granules/Crum": [RubberCrumSteelImage1, RubberGranuelsimg2],
         "Shredds": [ShreddsImage, ShreddsImage],
-        "Multiple Baled Tyres PCR": [baledtrespcrimg1, baledtrespcrimg2],
-        "Baled Tyres TBR": [BaledTyresTBRImage,BaledTyresTBRImage2 ],
-        "Three Piece PCR": [ThreePiecePCRImage,pcr2],
-        "Three Piece TBR": [ThreePieceTBRImage,tbr2],
-        "Mulch": [mulchImage,mulchImage2],
+        "Baled Tyres PCR": [baledtrespcrimg1, baledtrespcrimg2],
+        "Baled Tyres TBR": [BaledTyresTBRImage, BaledTyresTBRImage2],
+        "Three Piece PCR": [ThreePiecePCRImage, pcr2],
+        "Three Piece TBR": [ThreePieceTBRImage, tbr2],
+        "Mulch PCR": [mulchImage, mulchImage2],
     };
+
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
-    
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios.get(`${process.env.REACT_APP_API_URL}/scrap`);
                 const tyreScrap = response.data.scrap_items.filter(item => item.type === 'Tyre scrap');
-                setTyreScrapItems(tyreScrap);
-                console.log(tyreScrapItems);
 
+                // Define the desired order
+                const desiredOrder = [
+                    "Baled Tyres PCR",
+                    "Three Piece PCR",
+                    "Shredds",
+                    "Baled Tyres TBR",
+                    "Three Piece TBR",
+                    "Mulch PCR",
+                    "Rubber Granules/Crum"
+                ];
+
+                // Sort tyreScrap items based on the desired order
+                const sortedTyreScrap = tyreScrap.sort((a, b) => {
+                    return desiredOrder.indexOf(a.name) - desiredOrder.indexOf(b.name);
+                });
+
+                setTyreScrapItems(sortedTyreScrap);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -100,8 +112,6 @@ const TyreScrap = () => {
                 Browse through the options below and place your order hassle-free.
             </p>
 
-         
-
             <div className="tyre-scrap-grid">
                 {tyreScrapItems.map((item, index) => (
                     <div key={index} className="tyre-card animated-card">
@@ -118,10 +128,15 @@ const TyreScrap = () => {
                         </Slider>
                         <div className="tyre-card-body">
                             <h5 className="tyre-card-title">{item.name}</h5>
-                            <p className="tyre-card-text">Quantity: {item.available_quantity}</p>
+                            <p className="tyre-card-text">
+                                {item.available_quantity > 0 
+                                    ? `Quantity: ${item.available_quantity}` 
+                                    : "No Stock"}
+                            </p>
                             <button
                                 className="btn btn-primary"
                                 onClick={() => handleOrderClick(item.name)}
+                                disabled={item.available_quantity === 0}
                             >
                                 Order
                             </button>

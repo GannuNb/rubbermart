@@ -331,7 +331,7 @@ doc.text(`Date: ${formattedDate}`, 190, 30, { align: 'right' });
                     <thead>
                       <tr>
                         <th>Order ID</th>
-                        <th>Invoice id ID</th>
+                        <th>Invoice ID</th>
                         <th>Vehicle Number</th>
                         <th>Product</th>
                         <th>Shipped Quantity</th>

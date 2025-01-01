@@ -35,7 +35,7 @@ router.delete('/admin/scrap/:id', async (req, res) => {
 // PUT /api/admin/scrap/:id - Update a scrap item by ID
 router.put('/admin/scrap/:id', async (req, res) => {
     const { id } = req.params;
-    const { name, type, available_quantity, price } = req.body;
+    const { name, type, available_quantity, price,hsn,ex_mundra,ex_nhavasheva,ex_chennai } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({ message: 'Invalid ID format' });
@@ -49,6 +49,10 @@ router.put('/admin/scrap/:id', async (req, res) => {
                 type: type.trim(),
                 available_quantity: Number(available_quantity),
                 price: Number(price),
+                ex_mundra: Number(ex_mundra),
+                ex_chennai: Number(ex_chennai),
+                ex_nhavasheva: Number(ex_nhavasheva),
+                hsn:hsn.trim(),
             },
             { new: true, runValidators: true }
         );

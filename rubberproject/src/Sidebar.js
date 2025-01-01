@@ -156,11 +156,11 @@ function Sidebar() {
                 </div>
                 {isTyreScrapOpen && (
                   <div className="list-group list-group-flush ">
-                    <Link className="list-group-item list-group-item-action py-2 ripple" to="/Mulch" onClick={closeSidebar}>
-                      Mulch
+                    <Link className="list-group-item list-group-item-action py-2 ripple" to="/MulchPCR" onClick={closeSidebar}>
+                      Mulch pcr
                     </Link>
-                    <Link className="list-group-item list-group-item-action py-2 ripple" to="/MultipleBaledTyresPcr" onClick={closeSidebar}>
-                      Multiple Baled Tyres PCR
+                    <Link className="list-group-item list-group-item-action py-2 ripple" to="/BaledTyresPcr" onClick={closeSidebar}>
+                      Baled Tyres PCR
                     </Link>
                     
                     <Link className="list-group-item list-group-item-action py-2 ripple" to="/ThreePiecePcr" onClick={closeSidebar}>

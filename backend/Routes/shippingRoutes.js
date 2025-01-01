@@ -8,9 +8,14 @@ const multer = require('multer');
 
 // Multer configuration for PDF file uploads
 const storage = multer.memoryStorage();
-const upload = multer({ storage });
 
-// Endpoint to save shipping data
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB limit
+});
+
+
 router.post('/shipping', upload.fields([{ name: 'billPdf' }]), async (req, res) => {
   const { vehicleNumber, quantity, selectedProduct, orderId } = req.body;
   const billPdfFile = req.files?.billPdf?.[0];
@@ -35,7 +40,7 @@ router.post('/shipping', upload.fields([{ name: 'billPdf' }]), async (req, res) 
     }
 
     const shippingData = {
-      orderId, // Custom ID of AdminOrder
+      orderId,
       vehicleNumber,
       quantity: parseInt(quantity, 10),
       selectedProduct,
@@ -68,10 +73,15 @@ router.post('/shipping', upload.fields([{ name: 'billPdf' }]), async (req, res) 
       data: newShipping,
     });
   } catch (error) {
-    console.error('Error saving shipping information:', error.message);
-    res.status(500).json({ message: 'Internal Server Error. Please try again later.' });
+    if (error.code === 'LIMIT_FILE_SIZE') {
+      res.status(400).json({ message: 'File size should not exceed 5 MB.' });
+    } else {
+      console.error('Error saving shipping information:', error.message);
+      res.status(500).json({ message: 'Internal Server Error. Please try again later.' });
+    }
   }
 });
+
 
 // Fetch shipping data by orderId
 router.get('/shipping/:orderId', async (req, res) => {

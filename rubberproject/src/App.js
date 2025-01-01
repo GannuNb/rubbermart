@@ -83,11 +83,11 @@ function App() {
           <Route exact path="/Contact" element={<ContactUs />} />
           <Route exact path="/Sell" element={<Sell />} />
           <Route exact path="/BusinessProfile" element={<BusinessProfile />} /> 
-          <Route exact path="/Mulch" element={<Mulch />} />
+          <Route exact path="/MulchPCR" element={<Mulch />} />
           <Route exact path="/Pyrooil" element={<Pyrooil />} /> 
           <Route exact path="/Order" element={<Order />} /> 
           <Route exact path="/Getorders" element={<Getorders />} /> 
-          <Route exact path="/MultipleBaledTyresPCR" element={<Multiple_Baled_Tyres_PCR />} /> 
+          <Route exact path="/BaledTyresPCR" element={<Multiple_Baled_Tyres_PCR />} /> 
           <Route exact path="/ThreePieceTBR" element={<ThreePieceTBR />} /> 
           <Route exact path="/ThreePiecePCR" element={<ThreePiecePCR />} /> 
           <Route exact path="/RubberGranules/crum" element={<RubberGranules />} />

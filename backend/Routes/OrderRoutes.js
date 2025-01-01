@@ -157,13 +157,15 @@ router.post('/Adminorder', authenticate, async (req, res) => {
     const processedItems = [];
 
     for (const item of items) {
-      const { name: itemName, quantity: requiredQuantity } = item;
+      const { name: itemName, quantity: requiredQuantity, price: pricePerTon } = item;
 
-      if (!itemName || !requiredQuantity) {
-        console.log('Validation failed: Missing itemName or requiredQuantity');
-        return res.status(400).json({ message: 'Each item must have a name and required quantity' });
+      // Validate that price and quantity are present
+      if (!itemName || !requiredQuantity || !pricePerTon) {
+        console.log('Validation failed: Missing itemName, requiredQuantity, or price');
+        return res.status(400).json({ message: 'Each item must have a name, required quantity, and price' });
       }
 
+      // Find the scrap item from the database for validation of availability
       const scrapItem = await ScrapItem.findOne({ name: itemName });
       if (!scrapItem) {
         console.log(`Scrap item not found: ${itemName}`);
@@ -172,12 +174,13 @@ router.post('/Adminorder', authenticate, async (req, res) => {
 
       console.log(`Scrap item found: ${scrapItem.name}, Available: ${scrapItem.available_quantity}`);
 
+      // Check if there's enough quantity available
       if (scrapItem.available_quantity < requiredQuantity) {
         console.log(`Insufficient quantity for ${itemName}: Requested ${requiredQuantity}, Available ${scrapItem.available_quantity}`);
         return res.status(400).json({ message: `Insufficient quantity available for ${itemName}` });
       }
 
-      const pricePerTon = scrapItem.price;
+      // Calculate the subtotal, GST, and total price using the provided price
       const subtotal = pricePerTon * requiredQuantity;
       const gst = subtotal * 0.18;
       const itemTotalPrice = subtotal + gst;
@@ -192,6 +195,7 @@ router.post('/Adminorder', authenticate, async (req, res) => {
       scrapItem.available_quantity -= requiredQuantity;
       await scrapItem.save();
 
+      // Add the item to processed items list
       processedItems.push({
         name: itemName,
         price: pricePerTon,
@@ -226,6 +230,7 @@ router.post('/Adminorder', authenticate, async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
 
 
 

@@ -146,7 +146,22 @@ router.post('/forgot-password', async (req, res) => {
             from: process.env.EMAIL,
             to: email,
             subject: 'Password Reset Request',
-            html: `<p>You requested a password reset. Click <a href="${resetUrl}">here</a> to reset your password. This link will expire in 1 hour.</p>`,
+            html: `
+                <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+                    <h2>Password Reset Request</h2>
+                    <p>Dear User,</p>
+                    <p>We received a request to reset your password. If you did not make this request, please ignore this email.</p>
+                    <p>To reset your password, please click the link below:</p>
+                    <p style="text-align: center;">
+                        <a href="${resetUrl}" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Reset My Password</a>
+                    </p>
+                    <p>This link will expire in 1 hour. If you have any issues, please contact our support team.</p>
+                    <br>
+                    <p>Kind regards,</p>
+                    <p><strong>Vikahrubber Team</strong></p>
+                    <p>For assistance, feel free to contact us at <a href="mailto:support@vikahrubber.com">support@vikahrubber.com</a></p>
+                </div>
+            `,
         };
 
         await transporter.sendMail(mailOptions);

@@ -1,5 +1,19 @@
 const mongoose = require('mongoose');
 
+// Helper function to calculate the financial year
+const getFinancialYear = () => {
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth() + 1; // Months are zero-based
+  if (currentMonth <= 3) {
+    // If it's January to March, the financial year is previous year - current year
+    return `${String(currentYear - 1).slice(2)}-${String(currentYear).slice(2)}`;
+  } else {
+    // Otherwise, it's current year - next year
+    return `${String(currentYear).slice(2)}-${String(currentYear + 1).slice(2)}`;
+  }
+};
+
 // Schema to store the last used invoice ID counter
 const InvoiceIdCounterSchema = new mongoose.Schema({
   _id: { type: String, required: true }, // This will store a string like 'invoiceId'
@@ -10,13 +24,13 @@ const InvoiceIdCounter = mongoose.model('InvoiceIdCounter', InvoiceIdCounterSche
 
 // Function to generate a new `invoiceId`
 const generateInvoiceId = async () => {
-  const prefix = 'VRI_24-25_';
+  const prefix = `VRI_${getFinancialYear()}_`;
   const counter = await InvoiceIdCounter.findOneAndUpdate(
     { _id: 'invoiceId' },
     { $inc: { counter: 1 } },
     { new: true, upsert: true } // Create the counter if it doesn't exist
   );
-  return prefix + String(counter.counter).padStart(2, '0'); // Format as VRI_24-25_01
+  return prefix + String(counter.counter).padStart(2, '0'); // Format as VRI_XX-XX_01
 };
 
 // Define the Shipping Schema
@@ -66,3 +80,4 @@ ShippingSchema.pre('save', async function (next) {
 const Shipping = mongoose.model('Shipping', ShippingSchema);
 
 module.exports = Shipping;
+

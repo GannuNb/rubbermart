@@ -1,14 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import pyrooilImage from './images/pyro_oil2.jpeg'; 
+import pyrooilImage from './images/pyro_oil2.jpeg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import logo1 from './images/logo.png';
+import './Mulch.css';
 
 const Pyrooil = () => {
     const [scrapItems, setScrapItems] = useState([]);
-    const [pyrooilData, setPyrooilData] = useState({ available_quantity: 0, price: 0 });
+    const [pyrooilData, setPyrooilData] = useState({
+        available_quantity: 0,
+        price: 0, // dynamic price based on selection
+        ex_chennai: 0,
+        ex_nhavasheva: 0,
+        ex_mundra: 0,
+        hsn: '',
+        default_price: 0,
+    });
     const [requiredQuantity, setRequiredQuantity] = useState(1);
+    const [selectedPrice, setSelectedPrice] = useState(''); // Store selected price option
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -21,16 +31,21 @@ const Pyrooil = () => {
                 // Find the Pyrooil data
                 const pyrooilItem = items.find(item => item.name === 'Pyro Oil');
 
-                // Set the Pyrooil data if it exists
                 if (pyrooilItem) {
+                    const fetchedDefaultPrice = pyrooilItem.default_price || pyrooilItem.price || pyrooilItem.ex_chennai;
+
                     setPyrooilData({
                         available_quantity: pyrooilItem.available_quantity,
-                        price: pyrooilItem.price,
+                        price: pyrooilItem.price, // Initial price
+                        ex_chennai: pyrooilItem.ex_chennai,
+                        ex_nhavasheva: pyrooilItem.ex_nhavasheva,
+                        ex_mundra: pyrooilItem.ex_mundra,
                         hsn: pyrooilItem.hsn,
+                        default_price: fetchedDefaultPrice,
                     });
                 }
 
-                setScrapItems(items); // You can still store all scrap items if needed
+                setScrapItems(items);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -39,17 +54,31 @@ const Pyrooil = () => {
         fetchData();
     }, []);
 
+    const handlePriceChange = (event) => {
+        const selectedOption = event.target.value;
+        setSelectedPrice(selectedOption);
+
+        if (selectedOption === 'ex_chennai') {
+            setPyrooilData(prevState => ({ ...prevState, price: prevState.ex_chennai }));
+        } else if (selectedOption === 'ex_nhavasheva') {
+            setPyrooilData(prevState => ({ ...prevState, price: prevState.ex_nhavasheva }));
+        } else if (selectedOption === 'ex_mundra') {
+            setPyrooilData(prevState => ({ ...prevState, price: prevState.ex_mundra }));
+        } else if (selectedOption === 'default') {
+            setPyrooilData(prevState => ({ ...prevState, price: prevState.default_price }));
+        }
+    };
+
     const handleOrder = () => {
-        const token = localStorage.getItem('token'); // Replace 'authToken' with your token key
+        const token = localStorage.getItem('token');
 
         if (!token) {
-            // If user isn't logged in, navigate to the login page
             setTimeout(() => {
                 const alertDiv = document.createElement('div');
                 alertDiv.className = 'custom-alert';
 
                 const logoImg = document.createElement('img');
-                logoImg.src = logo1; // Use the imported logo here
+                logoImg.src = logo1;
                 logoImg.alt = 'Company Logo';
                 logoImg.className = 'alert-logo';
 
@@ -68,7 +97,7 @@ const Pyrooil = () => {
 
                 navigate('/login', {
                     state: {
-                        from: location.pathname, // Pass the current path to return after login
+                        from: location.pathname,
                         pyrooilData: {
                             name: 'Pyro Oil',
                             available_quantity: pyrooilData.available_quantity,
@@ -98,72 +127,84 @@ const Pyrooil = () => {
 
     return (
         <>
-        <div className="pyrooil-container" style={{ padding: '20px', marginTop: '20px', marginLeft: '180px' }}>
-            <div className="row align-items-center mt-5">
-                <div className="col-md-6">
-                    <img 
-                        src={pyrooilImage} 
-                        alt="Pyrooil" 
-                        className="img-fluid img-hover-effect" 
-                        style={{ borderRadius: '8px', width: '80%', marginLeft: '20px' }} 
-                    />
+            <div className="pyrooil-container" style={{ padding: '20px', marginTop: '20px', marginLeft: '180px' }}>
+                <div className="row align-items-center mt-5">
+                    <div className="col-md-6">
+                        <img
+                            src={pyrooilImage}
+                            alt="Pyrooil"
+                            className="img-fluid img-hover-effect"
+                            style={{ borderRadius: '8px', width: '80%', marginLeft: '20px' }}
+                        />
+                    </div>
+                    <div className="col-md-6">
+                        <h2>Pyro Oil</h2>
+                        <p>
+                            Pyrooil is a by-product of pyrolysis, used for fuel, lubricants, and chemical processing. 
+                            It offers a sustainable alternative to traditional fuels and contributes to effective waste management.
+                        </p>
+                    </div>
                 </div>
-                <div className="col-md-6">
-                    <h2>Pyro oil</h2>
-                    <p>
-                        Pyrooil is a by-product of pyrolysis, a chemical process that breaks down organic material in the absence of oxygen. 
-                        It is an oil-like substance that can be used for various applications, such as fuel, lubricants, and even as a base for 
-                        other chemical products. Pyrooil offers a sustainable alternative to fossil fuels and can contribute to waste management.
-                    </p>
-                </div>
-            </div>
 
-            {/* Specifications Section */}
-            <h3 style={{ marginTop: '40px' }}>SPECIFICATIONS</h3>
-            <div className="row" style={{ marginTop: '10px' }}>
-                <div className="col-md-6">
-                    <label style={{ color: 'black', fontWeight: 'bold' }}>AVAILABLE QUANTITY IN (MT):</label>
-                    <span className="d-block p-2 border rounded" style={{ border: '1px solid #ccc' }}>
-                        {pyrooilData.available_quantity}
-                    </span>
-                </div>
-                <div className="col-md-6">
-                    <label style={{ color: 'black', fontWeight: 'bold' }}>PRICE PER (MT):</label>
-                    <span className="d-block p-2 border rounded" style={{ border: '1px solid #ccc' }}>
-                        ₹{pyrooilData.price}
-                    </span>
-                </div>
-                <div className="col-md-6">
-                    <label style={{ color: 'black', fontWeight: 'bold' }}>HSN:</label>
-                    <span className="d-block p-2 border rounded" style={{ border: '1px solid #ccc' }}>
-                        {pyrooilData.hsn}
-                    </span>
-                </div>
-            </div>
+                {/* Specifications Section */}
+                <div className="specifications-section mt-4">
+                    <h3>SPECIFICATIONS</h3>
 
-            {/* Required Quantity Section */}
-            <div className="mt-3">
-                <label style={{ color: 'black', fontWeight: 'bold' }}>REQUIRED QUANTITY IN (MT):</label>
-                <input 
-                    type="number" 
-                    value={requiredQuantity}
-                    onChange={(e) => setRequiredQuantity(e.target.value)} 
-                    placeholder="Enter required quantity" 
-                    className="form-control" 
-                    style={{
-                        width: '48%', /* Adjust width to make it smaller */
-                        padding: '5px', /* Decrease padding */
-                        fontSize: '0.9rem', /* Reduce font size */
-                        marginTop: '5px' /* Add some space between label and input */
-                    }} 
-                />
-            </div>
+                    <div className="row">
+                        {/* Available Quantity */}
+                        <div className="col-md-6">
+                            <label>AVAILABLE QUANTITY IN (MT):</label>
+                            <span className="d-block p-2 border rounded">{pyrooilData.available_quantity}</span>
+                        </div>
 
-            {/* Order Button */}
-            <div className="mt-3">
-                <button className="btn btn-primary" onClick={handleOrder}>Please proceed to Order</button>
+                        {/* Price Per MT */}
+                        <div className="col-md-6">
+                            <label>PRICE PER (MT):</label>
+                            <span className="d-block p-2 border rounded">₹{pyrooilData.price}</span>
+                        </div>
+
+                        {/* HSN */}
+                        <div className="col-md-6">
+                            <label>HSN:</label>
+                            <span className="d-block p-2 border rounded">{pyrooilData.hsn}</span>
+                        </div>
+                    </div>
+
+                    {/* Required Quantity */}
+                    <div className="mt-3">
+                        <label>REQUIRED QUANTITY IN (MT):</label>
+                        <input
+                            type="number"
+                            value={requiredQuantity}
+                            onChange={(e) => setRequiredQuantity(e.target.value)}
+                            placeholder="Enter required quantity"
+                            className="form-control"
+                        />
+                    </div>
+
+                    {/* Price Selection Dropdown */}
+                    <div className="mt-3">
+                        <label>SELECT PRICE:</label>
+                        <select
+                            className="form-control"
+                            value={selectedPrice}
+                            onChange={handlePriceChange}
+                        >
+                            <option value="default">Default Price: ₹{pyrooilData.default_price || 'N/A'}</option>
+                            <option value="ex_chennai">Ex-Chennai: ₹{pyrooilData.ex_chennai}</option>
+                            <option value="ex_nhavasheva">Ex-Nhavasheva: ₹{pyrooilData.ex_nhavasheva}</option>
+                            <option value="ex_mundra">Ex-Mundra: ₹{pyrooilData.ex_mundra}</option>
+                        </select>
+                    </div>
+
+                    {/* Order Button */}
+                    <div className="mt-3">
+                        <button className="btn btn-primary" onClick={handleOrder}>
+                            Please proceed to Order
+                        </button>
+                    </div>
+                </div>
             </div>
-        </div>
         </>
     );
 };

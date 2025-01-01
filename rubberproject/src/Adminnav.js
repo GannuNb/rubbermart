@@ -21,6 +21,9 @@ function Adminnav() {
     <div>
     <nav className="navbar navbar-expand-lg navbar-light bg-light p-2">
       <div className="container">
+      <Link className="navbar-brand" to="/" onClick={() => setIsNavbarCollapsed(true)}>
+      <img style={{ width: "100%" }} className="logo" src={logo} alt="LG Industry Logo" />
+        </Link>
        
         <button
           className="navbar-toggler"

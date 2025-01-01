@@ -4,6 +4,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import logo from './images/logo.png';
+import logo1 from './images/logo.png';
+
 
 function GetPay() {
   const [files, setFiles] = useState([]);
@@ -12,15 +14,42 @@ function GetPay() {
   const navigate = useNavigate();
   const location = useLocation();
 
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
-      setTimeout(() => {
-        alert('Please log in to access payment files.');
-        navigate('/Login', { state: { from: location.pathname } });
-      }, 0);
-      return;
-    }
+            setTimeout(() => {
+                // Create a custom alert with inline styling or a class
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'custom-alert';
+    
+                // Create an image element for the logo
+                const logoImg = document.createElement('img');
+                logoImg.src = logo1;  // Use the imported logo here
+                logoImg.alt = 'Company Logo';
+                logoImg.className = 'alert-logo';  // Add a class for logo styling
+    
+                // Create a text message for the alert
+                const alertMessage = document.createElement('span');
+                alertMessage.textContent = 'Please log in to access payment details.';
+                alertMessage.className = 'alert-message';  // Class for message styling
+    
+                // Append logo and message to the alert div
+                alertDiv.appendChild(logoImg);
+                alertDiv.appendChild(alertMessage);
+    
+                // Append alert div to the body
+                document.body.appendChild(alertDiv);
+    
+                // Remove the alert after 5 seconds
+                setTimeout(() => {
+                    alertDiv.remove();
+                }, 5000);
+    
+                navigate('/Login', { state: { from: location.pathname } }); // Navigate to login if no token
+            }, 0);
+            return;
+        }
   }, [navigate, location]);
 
   useEffect(() => {
@@ -213,8 +242,8 @@ function GetPay() {
                 <th>Total Price</th>
                 <th>Paid Amount</th>
                 <th>Remaining Amount</th>
-                <th>Payment Receipts</th>
-                <th>Payment History</th>
+               
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -253,14 +282,11 @@ function GetPay() {
                           {file.fileName || 'File'}
                         </button>
                       ))}
-                     
-                    </td>
-                    <td>
-                    <button
+                      <button
                         className="btn btn-info btn-sm"
                         onClick={() => generatePDFForUser(payment)}
                       >
-                        PDF
+                        Generate PDF
                       </button>
                     </td>
                   </tr>

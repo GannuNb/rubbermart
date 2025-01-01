@@ -1,19 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import MultipleBaledTyresPCRImage from './images/MultipleBaledTyresPCR.jpeg'; // Ensure to have an image for multiple baled tyres
-import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
-import { useNavigate ,useLocation} from 'react-router-dom'; // useNavigate instead of useHistory
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './Mulch.css'; // Import your CSS file
-import baledtrespcrimg1 from "./images/baledtrespcr2.jpg"
 import logo1 from './images/logo.png';
 
 const Multiple_Baled_Tyres_PCR = () => {
     const [scrapItems, setScrapItems] = useState([]);
-    const [tyreData, setTyreData] = useState({ available_quantity: 0, price: 0 }); // Store the tyre data
-    const [requiredQuantity, setRequiredQuantity] = useState(1); // Default required quantity to 1
-    const navigate = useNavigate(); // Use useNavigate instead of useHistory
+    const [tyreData, setTyreData] = useState({
+        available_quantity: 0,
+        price: 0,
+        ex_chennai: 0,
+        ex_nhavasheva: 0,
+        ex_mundra: 0,
+        hsn: '',
+        default_price: 0,
+    });
+    const [requiredQuantity, setRequiredQuantity] = useState(1);
+    const [selectedPrice, setSelectedPrice] = useState(''); // Store selected price option
+    const navigate = useNavigate();
     const location = useLocation();
-
 
     useEffect(() => {
         const fetchData = async () => {
@@ -21,19 +28,25 @@ const Multiple_Baled_Tyres_PCR = () => {
                 const response = await axios.get(`${process.env.REACT_APP_API_URL}/scrap`);
                 const items = response.data.scrap_items;
 
-                // Find the tyre data
-                const tyreItem = items.find(item => item.name === 'Multiple Baled Tyres PCR');
+                // Find the Baled Tyres PCR data
+                const tyreItem = items.find(item => item.name === 'Baled Tyres PCR');
 
-                // Set the tyre data if it exists
+                // Ensure we have the tyre item and default price
                 if (tyreItem) {
+                    const fetchedDefaultPrice = tyreItem.default_price || tyreItem.price || tyreItem.ex_chennai;
+
                     setTyreData({
                         available_quantity: tyreItem.available_quantity,
                         price: tyreItem.price,
+                        ex_chennai: tyreItem.ex_chennai,
+                        ex_nhavasheva: tyreItem.ex_nhavasheva,
+                        ex_mundra: tyreItem.ex_mundra,
                         hsn: tyreItem.hsn,
+                        default_price: fetchedDefaultPrice,
                     });
                 }
 
-                setScrapItems(items); // You can still store all scrap items if needed
+                setScrapItems(items);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -42,138 +55,161 @@ const Multiple_Baled_Tyres_PCR = () => {
         fetchData();
     }, []);
 
+    const handlePriceChange = (event) => {
+        const selectedOption = event.target.value;
+        setSelectedPrice(selectedOption);
+
+        if (selectedOption === 'ex_chennai') {
+            setTyreData(prevState => ({ ...prevState, price: prevState.ex_chennai }));
+        } else if (selectedOption === 'ex_nhavasheva') {
+            setTyreData(prevState => ({ ...prevState, price: prevState.ex_nhavasheva }));
+        } else if (selectedOption === 'ex_mundra') {
+            setTyreData(prevState => ({ ...prevState, price: prevState.ex_mundra }));
+        } else if (selectedOption === 'default') {
+            setTyreData(prevState => ({ ...prevState, price: prevState.default_price }));
+        }
+    };
+
     const handleOrder = () => {
-        const token = localStorage.getItem('token'); // Replace 'authToken' with your token key
-    
- 
+        const token = localStorage.getItem('token');
+
         if (!token) {
             // If user isn't logged in, navigate to the login page
             setTimeout(() => {
-                // Create a custom alert with inline styling or a class
                 const alertDiv = document.createElement('div');
                 alertDiv.className = 'custom-alert';
-        
-                // Create an image element for the logo
+
                 const logoImg = document.createElement('img');
-                logoImg.src = logo1;  // Use the imported logo here
+                logoImg.src = logo1;
                 logoImg.alt = 'Company Logo';
-                logoImg.className = 'alert-logo';  // Add a class for logo styling
-        
-                // Create a text message for the alert
+                logoImg.className = 'alert-logo';
+
                 const alertMessage = document.createElement('span');
                 alertMessage.textContent = 'Please log in to proceed';
-                alertMessage.className = 'alert-message';  // Class for message styling
-        
-                // Append logo and message to the alert div
+                alertMessage.className = 'alert-message';
+
                 alertDiv.appendChild(logoImg);
                 alertDiv.appendChild(alertMessage);
-        
-                // Append alert div to the body
+
                 document.body.appendChild(alertDiv);
-        
-                // Remove the alert after 5 seconds
+
                 setTimeout(() => {
                     alertDiv.remove();
                 }, 5000);
-        
-                navigate('/login', { 
-                    state: { 
-                        from: location.pathname, // Pass the current path to return after login
+
+                navigate('/login', {
+                    state: {
+                        from: location.pathname,
                         tyreData: {
-                            name: 'Multiple Baled Tyres PCR',
-                available_quantity: tyreData.available_quantity,
-                price: tyreData.price,
-                required_quantity: requiredQuantity,
-                hsn: tyreData.hsn,
-                        }
-                    }
+                            name: 'Baled Tyres PCR',
+                            available_quantity: tyreData.available_quantity,
+                            price: tyreData.price,
+                            required_quantity: requiredQuantity,
+                            hsn: tyreData.hsn,
+                        },
+                    },
                 });
             }, 0);
-            
-        } else {
-                    navigate('/Order', {
-            state: {
-                name: 'Multiple Baled Tyres PCR',
-                available_quantity: tyreData.available_quantity,
-                price: tyreData.price,
-                required_quantity: requiredQuantity,
-                hsn: tyreData.hsn,
-            },
-        });
-    }
+        } else {
+            navigate('/Order', {
+                state: {
+                    name: 'Baled Tyres PCR',
+                    available_quantity: tyreData.available_quantity,
+                    price: tyreData.price,
+                    required_quantity: requiredQuantity,
+                    hsn: tyreData.hsn,
+                },
+            });
+        }
     };
+
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
-    
 
     return (
-        <div className=" mulch-container" style={{ padding: '20px', marginTop: '20px' , marginLeft: '180px'}} >
+        <div className="mulch-container" style={{ padding: '20px', marginTop: '20px', marginLeft: '180px' }}>
             <div className="row align-items-center mt-5">
                 <div className="col-md-6">
-                    <img 
-                        src={baledtrespcrimg1} 
-                        alt="Multiple Baled Tyres PCR" 
-                        className="img-fluid img-hover-effect" // Add img-hover-effect class
-                        style={{ borderRadius: '8px', width: '85%', marginLeft: '20px' }} 
+                    <img
+                        src={MultipleBaledTyresPCRImage}
+                        alt="Baled Tyres PCR"
+                        className="img-fluid img-hover-effect"
+                        style={{ borderRadius: '8px', width: '80%', marginLeft: '20px' }}
                     />
                 </div>
                 <div className="col-md-6">
-                    <h2>Multiple Baled Tyres PCR</h2>
+                    <h2>Baled Tyres PCR</h2>
                     <p>
-                        Multiple Baled Tyres PCR are a vital component in the recycling process. 
-                        They help in various applications, including energy recovery and raw material sourcing. 
-                        Proper disposal and recycling of these tyres can significantly reduce environmental impact.
+                        Baled Tyres PCR are used in various recycling applications, such as energy recovery and raw material sourcing.
+                        Proper disposal of tyres can significantly reduce the environmental impact.
                     </p>
                 </div>
             </div>
 
-{/* Specifications Section */}
-<h3 style={{ marginTop: '40px', color: 'black' }}>SPECIFICATIONS</h3>
-<div className="row" style={{ marginTop: '10px' }}>
-    <div className="col-md-6">
-        <label style={{ color: 'black', fontWeight: 'bold' }}>AVAILABLE QUANTITY IN (MT):</label>
-        <span className="d-block p-2 border rounded" style={{ border: '1px solid #ccc' }}>
-            {tyreData.available_quantity} 
-        </span>
-    </div>
-    <div className="col-md-6">
-        <label style={{ color: 'black', fontWeight: 'bold' }}>PRICE PER (MT):</label>
-        <span className="d-block p-2 border rounded" style={{ border: '1px solid #ccc' }}>
-            ₹{tyreData.price} 
-        </span>
-    </div>
-    <div className="col-md-6">
-        <label style={{ color: 'black', fontWeight: 'bold' }}>HSN:</label>
-        <span className="d-block p-2 border rounded" style={{ border: '1px solid #ccc' }}>
-            {tyreData.hsn}
-        </span>
-    </div>
-</div>
+            {/* Specifications Section */}
+            <div className="specifications-section">
+                <h3 className="section-title">SPECIFICATIONS</h3>
 
-{/* Required Quantity Section */}
-<div className="mt-3">
-    <label style={{ color: 'black', fontWeight: 'bold' }}>REQUIRED QUANTITY IN (MT)</label>
-    <input 
-        type="number" 
-        value={requiredQuantity}
-        onChange={(e) => setRequiredQuantity(e.target.value)} 
-        placeholder="Enter required quantity" 
-        className="form-control" 
-        style={{
-            border: '1px solid #ccc', 
-            padding: '8px',
-            marginTop: '5px',
-            width: '48%', /* Adjust width to make it smaller */
+                <div className="row specifications-row">
+                    {/* Available Quantity */}
+                    <div className="col-md-6">
+                        <label className="spec-label">AVAILABLE QUANTITY IN (MT):</label>
+                        <span className="spec-value">
+                            {tyreData.available_quantity}
+                        </span>
+                    </div>
 
-        }}
-    />
-</div>
+                    {/* Price Per MT */}
+                    <div className="col-md-6">
+                        <label className="spec-label">PRICE PER (MT):</label>
+                        <span className="spec-value">
+                            ₹{tyreData.price}
+                        </span>
+                    </div>
 
+                    {/* HSN */}
+                    <div className="col-md-6">
+                        <label className="spec-label">HSN:</label>
+                        <span className="spec-value">
+                            {tyreData.hsn}
+                        </span>
+                    </div>
+                </div>
 
-            {/* Order Button */}
-            <div className="mt-3">
-                <button className="btn btn-primary" onClick={handleOrder}>Please Proceed to Order</button>
+                {/* Required Quantity Section */}
+                <div className="required-quantity-section mt-3">
+                    <label className="spec-label">REQUIRED QUANTITY IN (MT):</label>
+                    <input
+                        type="number"
+                        value={requiredQuantity}
+                        onChange={(e) => setRequiredQuantity(e.target.value)}
+                        placeholder="Enter required quantity"
+                        className="form-control required-quantity-input"
+                    />
+                </div>
+
+                {/* Price Selection Dropdown */}
+                <div className="price-dropdown mt-3">
+                    <label className="spec-label">SELECT PRICE:</label>
+                    <select
+                        className="form-control"
+                        value={selectedPrice}
+                        onChange={handlePriceChange}
+                    >
+                        <option value="default">Default Price: ₹{tyreData.default_price || 'N/A'}</option>
+                        <option value="ex_chennai">Ex-Chennai: ₹{tyreData.ex_chennai}</option>
+                        <option value="ex_nhavasheva">Ex-Nhavasheva: ₹{tyreData.ex_nhavasheva}</option>
+                        <option value="ex_mundra">Ex-Mundra: ₹{tyreData.ex_mundra}</option>
+                    </select>
+                </div>
+
+                {/* Order Button */}
+                <div className="order-button-section mt-3">
+                    <button className="btn btn-primary" onClick={handleOrder}>
+                        Please proceed to Order
+                    </button>
+                </div>
             </div>
         </div>
     );

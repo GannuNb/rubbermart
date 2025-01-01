@@ -394,7 +394,7 @@ margin-left: 0.5%;
 
 
       .bg-container-home {
-        height: 70vh; /* Adjust height */
+        height: 500px !important; /* Adjust height */
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -456,7 +456,7 @@ margin-left: 0.5%;
     .bg-container-home {
         width: 90%; /* Adjust width for mobile to make sure it fits within screen */
         margin: 8% auto 0; /* Add margin-top of 10% and center horizontally */
-        height: 1300px !important; /* Keep the height for mobile */
+        height: 1000 !important; /* Keep the height for mobile */
         padding: 20px; /* Add padding inside */
         display: flex;
         flex-direction: column;
@@ -500,3 +500,76 @@ margin-left: 0.5%;
         width: 100%;
     }
 }
+
+.image-container {
+    position: relative;
+    width: 100%;
+    max-width: 900px; /* Adjust the width as needed */
+    height: 300px; /* Adjust height according to your design */
+    overflow: hidden; /* Hide the overflow of images */
+    margin: 0 auto; /* Center the container */
+  }
+  
+  .slider {
+    display: flex;
+    width: 100%; /* Width of one cycle */
+    animation: slide 18s linear infinite; /* Controls the speed of the loop */
+  }
+  
+  .slider-image {
+    width: 300px; /* Keep the image width as is */
+    height: 100%; /* Maintain the height of the images */
+    object-fit: cover; /* Ensure images are displayed correctly */
+    border-radius: 10px; /* Optional: round the corners */
+  }
+  
+  .overlay-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+  
+  @keyframes slide {
+    0% {
+      transform: translateX(0); /* Start from the first image */
+    }
+    16.66% {
+      transform: translateX(-33.33%); /* Move the first image out */
+    }
+    33.33% {
+      transform: translateX(-66.66%); /* Move the second image out */
+    }
+    50% {
+      transform: translateX(-100%); /* Move the third image out */
+    }
+    66.66% {
+      transform: translateX(-133.33%); /* Move the fourth image (which is a repeat of the first) */
+    }
+    83.33% {
+      transform: translateX(-166.66%); /* Move the fifth image (which is a repeat of the second) */
+    }
+    100% {
+      transform: translateX(-200%); /* Move the sixth image (which is a repeat of the third) */
+    }
+  }
+  
+  /* Create the loop by resetting after 100% */
+  @keyframes slideInfinite {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+  
+  /* Ensure that the loop appears seamless */
+  .slider {
+    animation: slideInfinite 15s infinite linear;
+  }
+  
