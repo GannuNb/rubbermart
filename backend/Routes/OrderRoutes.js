@@ -232,15 +232,6 @@ router.post('/Adminorder', authenticate, async (req, res) => {
 });
 
 
-
-
-
-
-
-
-
-
-
 router.get('/admin/orders', async (req, res) => {
   try {
     // Retrieve all orders with user and business profile details

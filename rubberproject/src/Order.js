@@ -6,6 +6,8 @@ import 'jspdf-autotable';
 import './Sell.css';
 import logo from "./images/logo.png"
 import "./Order.css";
+import logo1 from "./images/logo.png"
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 
@@ -29,7 +31,7 @@ const Order = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [additionalQuantity, setAdditionalQuantity] = useState(0);
+  const [additionalQuantity, setAdditionalQuantity] = useState();
   const [additionalItems, setAdditionalItems] = useState([]);
   const [selectedProductPrice, setSelectedProductPrice] = useState('');
   const [orderItems, setOrderItems] = useState([]);
@@ -82,13 +84,14 @@ const Order = () => {
 
   const handleProductPriceChange = (event) => {
     const priceOption = event.target.value;
-    console.log('Price option selected:', priceOption); // Debugging
     if (priceOption === 'default') {
-      setSelectedProductPrice(selectedProduct.price); // Set the default price
+      setSelectedProductPrice(selectedProduct.price); // Set the default price if available
     } else {
-      setSelectedProductPrice(Number(selectedProduct[priceOption])); // Convert price to number and set
+      const priceValue = selectedProduct[priceOption];
+      setSelectedProductPrice(priceValue ? Number(priceValue) : null); // Convert to number or null if not valid
     }
   };
+
 
 
 
@@ -101,11 +104,22 @@ const Order = () => {
   };
   const addToOrder = () => {
     if (selectedProduct && additionalQuantity > 0 && selectedProductPrice) {
+      // Resolve the price based on the selected option
+      const resolvedPrice =
+        selectedProductPrice === 'default'
+          ? selectedProduct.price // Use the default price
+          : selectedProduct[selectedProductPrice]; // Use the selected price option
+
+      if (!resolvedPrice) {
+        displayAlert('Invalid price selected.', 'danger');
+        return;
+      }
+
       const newItem = {
         name: selectedProduct.name,
-        price: selectedProductPrice, // Use the selected price
+        price: resolvedPrice, // Ensure numeric price
         quantity: additionalQuantity,
-        total: selectedProductPrice * additionalQuantity, // Calculate total
+        total: resolvedPrice * additionalQuantity, // Correct multiplication
         hsn: selectedProduct.hsn,
       };
 
@@ -115,11 +129,14 @@ const Order = () => {
       setShowDropdown(false);
       resetForm();
 
-      alert(`Added ${newItem.name} with quantity ${newItem.quantity} tons to the order.`);
+      displayAlert(`Added ${newItem.name} with quantity ${newItem.quantity} tons to the order.`, 'success');
     } else {
-      alert('Please select a product, price, and enter a valid quantity.');
+      displayAlert('Please select a valid product, price, and enter a valid quantity.', 'danger');
     }
   };
+
+
+
 
 
 
@@ -171,7 +188,7 @@ const Order = () => {
               {allItems.map((item, index) => (
                 <tr key={index}>
                   <td>{item.name}</td>
-                  <td>₹{item.price}</td>
+                  <td>₹{item.price.toFixed(2)}</td> {/* Correctly display the price */}
                   <td>{item.hsn}</td>
                   <td>{item.quantity} tons</td>
                   <td>₹{item.total.toFixed(2)}</td>
@@ -179,8 +196,6 @@ const Order = () => {
               ))}
             </tbody>
             <tfoot>
-
-
               {/* Additional Items Section */}
               <div className="additional-items mt-4">
                 <button
@@ -210,43 +225,45 @@ const Order = () => {
                     </div>
 
                     {selectedCategory && (
-  <div className="mb-3">
-    <label className="form-label">Select Product</label>
-    <select
-      className="form-select"
-      onChange={(e) => {
-        const product = JSON.parse(e.target.value);
-        handleProductSelect(product);
-      }}
-    >
-      <option value="">Select a product</option>
-      {(selectedCategory === 'Tyre scrap' ? tyreScrapItems :
-        selectedCategory === 'Tyre steel scrap' ? tyreSteelScrapItems :
-          selectedCategory === 'Pyro Oil' ? PyrooilItem :
-            []).map((product) => (
-        <option 
-          key={product.id} 
-          value={JSON.stringify(product)} 
-          disabled={product.quantity === 0}
-        >
-          {product.name} {product.quantity === 0 ? '(Out of stock)' : ''}
-        </option>
-      ))}
-    </select>
-  </div>
-)}
+                      <div className="mb-3">
+                        <label className="form-label">Select Product</label>
+                        <select
+                          className="form-select"
+                          onChange={(e) => {
+                            const product = JSON.parse(e.target.value);
+                            handleProductSelect(product);
+                          }}
+                        >
+                          <option value="">Select a product</option>
+                          {(selectedCategory === 'Tyre scrap' ? tyreScrapItems :
+                            selectedCategory === 'Tyre steel scrap' ? tyreSteelScrapItems :
+                              selectedCategory === 'Pyro Oil' ? PyrooilItem :
+                                []).map((product) => (
+                                  <option
+                                    key={product.id}
+                                    value={JSON.stringify(product)}
+                                    disabled={product.quantity === 0}
+                                  >
+                                    {product.name} {product.quantity === 0 ? '(Out of stock)' : ''}
+                                  </option>
+                                ))}
+                        </select>
+                      </div>
+                    )}
 
 
                     {selectedProduct && (
                       <div className="mb-3">
-                        <label className="form-label">Select Price</label>
+                        <label className="form-label">
+                          Select Price:
+                        </label>
                         <select
                           className="form-select"
-                          value={selectedProductPrice || 'default'} // Default to "default" if no price is selected
-                          onChange={handleProductPriceChange} // Call this function on selection change
+                          value={selectedProductPrice || 'default'}
+                          onChange={(e) => setSelectedProductPrice(e.target.value)}
                         >
                           <option value="default">
-                            Default Price: ₹{selectedProduct.price || 'Price not available'}
+                            Default Price: ₹{selectedProduct.price || 'Not available'}
                           </option>
                           {selectedProduct.ex_chennai && (
                             <option value="ex_chennai">Ex-Chennai: ₹{selectedProduct.ex_chennai}</option>
@@ -260,10 +277,14 @@ const Order = () => {
                         </select>
 
                         <div className="mt-2">
-                          <strong>Selected Price: ₹{selectedProductPrice || 'Please select a price'}</strong>
+                          <strong>
+                            Selected Price: ₹
+                            {selectedProductPrice && selectedProduct[selectedProductPrice]
+                              ? selectedProduct[selectedProductPrice]
+                              : selectedProduct.price || 'Please select a price'}
+                          </strong>
                         </div>
                       </div>
-
                     )}
 
                     {/* Quantity Input and Add Button */}
@@ -324,8 +345,6 @@ const Order = () => {
 
     );
   };
-
-
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -584,21 +603,17 @@ const Order = () => {
 
 
 
-
-
-
   const handleOrder = async () => {
     try {
       setLoadingButton(true);
 
       const token = localStorage.getItem('token');
       if (!token) {
-        alert('User not authenticated.');
+        displayAlert('User not authenticated.', 'danger');
         navigate('/', { replace: true });
         return;
       }
 
-      // Base item (main product) to be added to the order
       const baseItem = {
         name,
         price,
@@ -607,28 +622,24 @@ const Order = () => {
         total: price * required_quantity,
       };
 
-      // Combine base item with additional items
       const allItems = [baseItem, ...additionalItems];
 
-      // Validate each item to ensure required fields are present
       const isValidOrder = allItems.every(item =>
         item.name && item.quantity && item.total && item.price && item.hsn
       );
 
       if (!isValidOrder) {
-        alert('Order validation failed: Missing required fields in some items.');
+        displayAlert('Order validation failed: Missing required fields in some items.', 'danger');
         setLoadingButton(false);
         return;
       }
 
-      // Send combined items to the new API endpoint
       const storeInAnotherDbResponse = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/Adminorder`,
         { items: allItems },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      // Check if the API call was successful
       if (storeInAnotherDbResponse.status === 200) {
         const pdfBlob = generatePDF();
 
@@ -643,19 +654,39 @@ const Order = () => {
         );
 
         if (emailResponse.status === 200) {
-          alert('Order placed successfully, and invoice emailed!');
+          displayAlert('Order placed successfully, and invoice emailed!', 'success');
+          setTimeout(() => {
+            const alertContainer = document.getElementById('alert-container');
+            if (alertContainer) {
+              alertContainer.innerHTML = '';
+            }
+          }, 5000); // Alert disappears after 5 seconds
           navigate('/Getorders');
         } else {
-          alert('Failed to send invoice email.');
+          displayAlert('Failed to send invoice email.', 'danger');
         }
       } else {
-        alert('Failed to store order in the database.');
+        displayAlert('Failed to store order in the database.', 'danger');
       }
     } catch (err) {
       console.error('Error placing order:', err);
-      alert('An error occurred while placing the order.');
+      displayAlert('An error occurred while placing the order.', 'danger');
     } finally {
       setLoadingButton(false); // Reset the button loading state
+    }
+  };
+
+  // Helper function to display alerts
+  const displayAlert = (message, type) => {
+    const alertContainer = document.getElementById('alert-container');
+    if (alertContainer) {
+      alertContainer.innerHTML = `
+        <div class="alert alert-${type} alert-dismissible fade show alert-fade" role="alert">
+          <img src="${logo1}" alt="Logo" class="mr-2" style="width: 100px;">
+          ${message}
+         
+        </div>
+      `;
     }
   };
 

@@ -37,3 +37,63 @@
     background-color: #20b2aa;  /* Blue-green color on hover */
   }
   
+  /* Styling for the custom alert box */
+.custom-alert {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  background-color: #d4edda; /* Light green background for success */
+  color: #155724; /* Dark green text for success */
+  border: 1px solid #c3e6cb; /* Border matching the background theme */
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  font-family: 'Arial', sans-serif;
+  font-size: 14px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Styling for the text message */
+.alert-message {
+  text-align: left;
+  line-height: 1.5;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#alert-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1050;
+  width: 300px; /* Adjust width as needed */
+  text-align: center;
+}
+
+.alert-fade {
+  animation: fadeOut 5s ease-in-out forwards; /* 5-second fade-out effect */
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    display: none; /* Optional to hide the element completely */
+  }
+}
