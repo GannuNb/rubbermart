@@ -37,14 +37,15 @@ const Mulch = () => {
                     const fetchedDefaultPrice = mulchItem.default_price || mulchItem.price || mulchItem.ex_chennai;
 
                     setMulchData({
-                        available_quantity: mulchItem.available_quantity,
-                        price: mulchItem.price, // Set initial price from 'price'
+                        available_quantity: Number(mulchItem.available_quantity),
+                        price: mulchItem.price,
                         ex_chennai: mulchItem.ex_chennai,
                         ex_nhavasheva: mulchItem.ex_nhavasheva,
                         ex_mundra: mulchItem.ex_mundra,
                         hsn: mulchItem.hsn,
-                        default_price: fetchedDefaultPrice, // Use fetched default price or fallback
+                        default_price: fetchedDefaultPrice,
                     });
+                    
                 }
 
                 setScrapItems(items); // You can still store all scrap items if needed
@@ -162,8 +163,9 @@ const Mulch = () => {
                         <div className="col-md-6">
                             <label className="spec-label">AVAILABLE QUANTITY IN (MT):</label>
                             <span className="spec-value">
-                                {mulchData.available_quantity}
-                            </span>
+    {Number(mulchData.available_quantity) > 0 ? mulchData.available_quantity : 'No Stock'}
+</span>
+
                         </div>
 
                         {/* Price Per MT */}
@@ -213,9 +215,16 @@ const Mulch = () => {
 
                     {/* Order Button */}
                     <div className="order-button-section mt-3">
-                        <button className="btn btn-primary" onClick={handleOrder}>
-                            Please proceed to Order
-                        </button>
+                    <button
+    className="btn btn-primary"
+    onClick={handleOrder}
+    disabled={Number(mulchData.available_quantity) === 0} // Ensure it's treated as a number
+>
+    {Number(mulchData.available_quantity) > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
+</button>
+
+
+
                     </div>
                 </div>
             </div>

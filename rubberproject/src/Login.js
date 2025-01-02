@@ -91,7 +91,7 @@ navigate(redirectPath, { state: location.state }); // Pass state forward to reta
                 onChange={onChange} 
                 required
               />
-              <span className="input-group-text" onClick={togglePasswordVisibility} style={{ cursor: 'pointer' }}>
+              <span className="input-group-text" onClick={togglePasswordVisibility} style={{ cursor: 'pointer',marginTop:'1.2%' }}>
                 {showPassword ? "🙉" : "🙈"} {/* Monkey emojis for toggling */}
               </span>
             </div>

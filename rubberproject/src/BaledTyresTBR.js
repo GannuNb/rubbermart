@@ -35,7 +35,7 @@ const BaledTyresTBR = () => {
                     const fetchedDefaultPrice = mulchItem.default_price || mulchItem.price || mulchItem.ex_chennai;
 
                     setMulchData({
-                        available_quantity: mulchItem.available_quantity,
+                        available_quantity: Number(mulchItem.available_quantity),
                         price: fetchedDefaultPrice,
                         ex_chennai: mulchItem.ex_chennai,
                         ex_nhavasheva: mulchItem.ex_nhavasheva,
@@ -151,7 +151,11 @@ const BaledTyresTBR = () => {
                 <div className="row specifications-row">
                     <div className="col-md-6">
                         <label className="spec-label">AVAILABLE QUANTITY (MT):</label>
-                        <span className="spec-value">{mulchData.available_quantity}</span>
+                     
+                     <span className="spec-value">
+                     {Number(mulchData.available_quantity) > 0 ? mulchData.available_quantity : 'No Stock'}                         
+                     </span>                    
+
                     </div>
                     <div className="col-md-6">
                         <label className="spec-label">PRICE PER (MT):</label>
@@ -192,9 +196,15 @@ const BaledTyresTBR = () => {
 
                 {/* Order Button */}
                 <div className="order-button-section mt-3">
-                    <button className="btn btn-primary" onClick={handleOrder}>
-                        Please Proceed to Order
-                    </button>
+                    
+                              <button
+                                className="btn btn-primary"
+                                onClick={handleOrder}
+                                disabled={Number(mulchData.available_quantity) === 0} // Ensure it's treated as a number
+                            >
+                                {Number(mulchData.available_quantity) > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
+                            </button>
+                    
                 </div>
             </div>
         </div>

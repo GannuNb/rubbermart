@@ -98,10 +98,16 @@ const Tyresteelscrap = () => {
                         </Slider>
                         <div className="tyre-card-body">
                             <h5 className="tyre-card-title">{item.name}</h5>
-                            <p className="tyre-card-text">Quantity: {item.available_quantity}</p>
+                            <p className="tyre-card-text">
+                                
+                            {item.available_quantity > 0 
+                                    ? `Quantity: ${item.available_quantity}` 
+                                    : "No Stock"}</p>
+                            
                             <button
                                 className="btn btn-primary"
                                 onClick={() => handleOrderClick(item.name)}
+                                disabled={item.available_quantity === 0}
                             >
                                 Order
                             </button>

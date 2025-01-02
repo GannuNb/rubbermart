@@ -224,32 +224,33 @@ const Order = () => {
                       </select>
                     </div>
 
-                    {selectedCategory && (
-                      <div className="mb-3">
-                        <label className="form-label">Select Product</label>
-                        <select
-                          className="form-select"
-                          onChange={(e) => {
-                            const product = JSON.parse(e.target.value);
-                            handleProductSelect(product);
-                          }}
-                        >
-                          <option value="">Select a product</option>
-                          {(selectedCategory === 'Tyre scrap' ? tyreScrapItems :
-                            selectedCategory === 'Tyre steel scrap' ? tyreSteelScrapItems :
+                                          {selectedCategory && (
+                        <div className="mb-3">
+                          <label className="form-label">Select Product</label>
+                          <select
+                            className="form-select"
+                            onChange={(e) => {
+                              const product = JSON.parse(e.target.value);
+                              handleProductSelect(product);
+                            }}
+                          >
+                            <option value="">Select a product</option>
+                            {(selectedCategory === 'Tyre scrap' ? tyreScrapItems :
+                              selectedCategory === 'Tyre steel scrap' ? tyreSteelScrapItems :
                               selectedCategory === 'Pyro Oil' ? PyrooilItem :
-                                []).map((product) => (
-                                  <option
-                                    key={product.id}
-                                    value={JSON.stringify(product)}
-                                    disabled={product.quantity === 0}
-                                  >
-                                    {product.name} {product.quantity === 0 ? '(Out of stock)' : ''}
-                                  </option>
-                                ))}
-                        </select>
-                      </div>
-                    )}
+                              []).map((product) => (
+                              <option
+                                key={product.id}
+                                value={JSON.stringify(product)}
+                                disabled={product.available_quantity === 0 || product.available_quantity === "No Stock"}
+                              >
+                                {product.name} 
+                                {product.quantity === 0 || product.quantity === "No Stock" ? ' (Out of stock)' : ''}
+                              </option>
+                            ))}
+                          </select>
+                          </div>
+                      )}
 
 
                     {selectedProduct && (

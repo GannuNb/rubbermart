@@ -35,7 +35,7 @@ const ThreePiecePCR = () => {
                     const fetchedDefaultPrice = threePiecePCRItem.default_price || threePiecePCRItem.price || threePiecePCRItem.ex_chennai;
 
                     setThreePiecePCRData({
-                        available_quantity: threePiecePCRItem.available_quantity,
+                        available_quantity: Number(threePiecePCRItem.available_quantity),
                         price: threePiecePCRItem.price,
                         ex_chennai: threePiecePCRItem.ex_chennai,
                         ex_nhavasheva: threePiecePCRItem.ex_nhavasheva,
@@ -152,9 +152,9 @@ const ThreePiecePCR = () => {
                 <div className="row specifications-row">
                     {/* Available Quantity */}
                     <div className="col-md-6">
-                        <label className="spec-label">AVAILABLE QUANTITY IN (MT):</label>
+                        <label className="spec-label">AVAILABLE QUANTITY IN (MT) :</label>
                         <span className="spec-value">
-                            {threePiecePCRData.available_quantity}
+                        {Number(threePiecePCRData.available_quantity) > 0 ? threePiecePCRData.available_quantity : 'No Stock'}                    
                         </span>
                     </div>
 
@@ -204,9 +204,13 @@ const ThreePiecePCR = () => {
 
                 {/* Order Button */}
                 <div className="order-button-section mt-3">
-                    <button className="btn btn-primary" onClick={handleOrder}>
-                        Please Proceed to Order
-                    </button>
+                <button
+    className="btn btn-primary"
+    onClick={handleOrder}
+    disabled={Number(threePiecePCRData.available_quantity) === 0} // Ensure it's treated as a number
+>
+    {Number(threePiecePCRData.available_quantity) > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
+</button>
                 </div>
             </div>
         </div>

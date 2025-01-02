@@ -116,7 +116,7 @@ const RubberGranules = () => {
             navigate('/Order', {
                 state: {
                     name: 'Rubber Granules/Crum',
-                    available_quantity: rubberData.available_quantity,
+                    available_quantity: Number(rubberData.available_quantity),
                     price: rubberData.price, // Pass the updated price
                     required_quantity: requiredQuantity,
                     hsn: rubberData.hsn,
@@ -159,8 +159,9 @@ const RubberGranules = () => {
                         <div className="col-md-6">
                             <label className="spec-label">AVAILABLE QUANTITY IN (MT):</label>
                             <span className="spec-value">
-                                {rubberData.available_quantity}
+                            {Number(rubberData.available_quantity) > 0 ? rubberData.available_quantity : 'No Stock'}
                             </span>
+
                         </div>
 
                         {/* Price Per MT */}
@@ -209,9 +210,14 @@ const RubberGranules = () => {
 
                     {/* Order Button */}
                     <div className="order-button-section mt-3">
-                        <button className="btn btn-primary" onClick={handleOrder}>
-                            Please proceed to Order
-                        </button>
+                       
+                        <button
+    className="btn btn-primary"
+    onClick={handleOrder}
+    disabled={Number(rubberData.available_quantity) === 0} // Ensure it's treated as a number
+>
+    {Number(rubberData.available_quantity) > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
+</button>
                     </div>
                 </div>
             </div>

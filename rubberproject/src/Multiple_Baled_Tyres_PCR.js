@@ -36,7 +36,7 @@ const Multiple_Baled_Tyres_PCR = () => {
                     const fetchedDefaultPrice = tyreItem.default_price || tyreItem.price || tyreItem.ex_chennai;
 
                     setTyreData({
-                        available_quantity: tyreItem.available_quantity,
+                        available_quantity: Number(tyreItem.available_quantity),
                         price: tyreItem.price,
                         ex_chennai: tyreItem.ex_chennai,
                         ex_nhavasheva: tyreItem.ex_nhavasheva,
@@ -44,6 +44,7 @@ const Multiple_Baled_Tyres_PCR = () => {
                         hsn: tyreItem.hsn,
                         default_price: fetchedDefaultPrice,
                     });
+                    
                 }
 
                 setScrapItems(items);
@@ -155,9 +156,10 @@ const Multiple_Baled_Tyres_PCR = () => {
                     {/* Available Quantity */}
                     <div className="col-md-6">
                         <label className="spec-label">AVAILABLE QUANTITY IN (MT):</label>
+                       
                         <span className="spec-value">
-                            {tyreData.available_quantity}
-                        </span>
+    {Number(tyreData.available_quantity) > 0 ? tyreData.available_quantity : 'No Stock'}
+</span>
                     </div>
 
                     {/* Price Per MT */}
@@ -204,11 +206,17 @@ const Multiple_Baled_Tyres_PCR = () => {
                     </select>
                 </div>
 
+
                 {/* Order Button */}
                 <div className="order-button-section mt-3">
-                    <button className="btn btn-primary" onClick={handleOrder}>
-                        Please proceed to Order
-                    </button>
+                   
+                    <button
+    className="btn btn-primary"
+    onClick={handleOrder}
+    disabled={Number(tyreData.available_quantity) === 0} // Ensure it's treated as a number
+>
+    {Number(tyreData.available_quantity) > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
+</button>
                 </div>
             </div>
         </div>

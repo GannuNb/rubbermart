@@ -35,7 +35,7 @@ const Pyrooil = () => {
                     const fetchedDefaultPrice = pyrooilItem.default_price || pyrooilItem.price || pyrooilItem.ex_chennai;
 
                     setPyrooilData({
-                        available_quantity: pyrooilItem.available_quantity,
+                        available_quantity: Number(pyrooilItem.available_quantity),
                         price: pyrooilItem.price, // Initial price
                         ex_chennai: pyrooilItem.ex_chennai,
                         ex_nhavasheva: pyrooilItem.ex_nhavasheva,
@@ -154,19 +154,22 @@ const Pyrooil = () => {
                         {/* Available Quantity */}
                         <div className="col-md-6">
                             <label>AVAILABLE QUANTITY IN (MT):</label>
-                            <span className="d-block p-2 border rounded">{pyrooilData.available_quantity}</span>
+
+                            <span className="spec-value">
+    {Number(pyrooilData.available_quantity) > 0 ? pyrooilData.available_quantity : 'No Stock'}
+</span>                            
                         </div>
 
                         {/* Price Per MT */}
                         <div className="col-md-6">
                             <label>PRICE PER (MT):</label>
-                            <span className="d-block p-2 border rounded">₹{pyrooilData.price}</span>
+                            <span className="d-block p-2 border rounded spec-value">₹{pyrooilData.price}</span>
                         </div>
 
                         {/* HSN */}
                         <div className="col-md-6">
                             <label>HSN:</label>
-                            <span className="d-block p-2 border rounded">{pyrooilData.hsn}</span>
+                            <span className="d-block p-2 border rounded spec-value">{pyrooilData.hsn}</span>
                         </div>
                     </div>
 
@@ -199,9 +202,14 @@ const Pyrooil = () => {
 
                     {/* Order Button */}
                     <div className="mt-3">
-                        <button className="btn btn-primary" onClick={handleOrder}>
-                            Please proceed to Order
-                        </button>
+                        
+                        <button
+    className="btn btn-primary"
+    onClick={handleOrder}
+    disabled={Number(pyrooilData.available_quantity) === 0} // Ensure it's treated as a number
+>
+    {Number(pyrooilData.available_quantity) > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
+</button>
                     </div>
                 </div>
             </div>

@@ -36,7 +36,7 @@ const Shredds = () => {
                     const fetchedDefaultPrice = shreddsItem.default_price || shreddsItem.price || shreddsItem.ex_chennai;
 
                     setShreddsData({
-                        available_quantity: shreddsItem.available_quantity,
+                        available_quantity: Number(shreddsItem.available_quantity),
                         price: shreddsItem.price,
                         ex_chennai: shreddsItem.ex_chennai,
                         ex_nhavasheva: shreddsItem.ex_nhavasheva,
@@ -156,8 +156,7 @@ const Shredds = () => {
                     <div className="col-md-6">
                         <label className="spec-label" style={{ color: 'black', fontWeight: 'bold' }}>AVAILABLE QUANTITY IN (MT):</label>
                         <span className="spec-value d-block p-2 border rounded" style={{ border: '1px solid #ccc' }}>
-                            {shreddsData.available_quantity}
-                        </span>
+                        {Number(shreddsData.available_quantity) > 0 ? shreddsData.available_quantity : 'No Stock'}                        </span>
                     </div>
 
                     {/* Price Per MT */}
@@ -212,9 +211,13 @@ const Shredds = () => {
 
                 {/* Order Button */}
                 <div className="order-button-section mt-3">
-                    <button className="btn btn-primary" onClick={handleOrder}>
-                        Please Proceed to Order
-                    </button>
+                <button
+    className="btn btn-primary"
+    onClick={handleOrder}
+    disabled={Number(shreddsData.available_quantity) === 0} // Ensure it's treated as a number
+>
+    {Number(shreddsData.available_quantity) > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
+</button>
                 </div>
             </div>
         </div>

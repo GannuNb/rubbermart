@@ -146,6 +146,7 @@ const TyreScrap = () => {
             </div>
         </div>
     );
+    
 };
 
 export default TyreScrap;

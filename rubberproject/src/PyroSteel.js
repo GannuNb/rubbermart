@@ -37,7 +37,7 @@ const PyroSteel = () => {
                     const fetchedDefaultPrice = pyroSteelItem.default_price || pyroSteelItem.price || pyroSteelItem.ex_chennai;
 
                     setPyroSteelData({
-                        available_quantity: pyroSteelItem.available_quantity,
+                        available_quantity: Number(pyroSteelItem.available_quantity),
                         price: pyroSteelItem.price, // Set initial price from 'price'
                         ex_chennai: pyroSteelItem.ex_chennai,
                         ex_nhavasheva: pyroSteelItem.ex_nhavasheva,
@@ -160,9 +160,10 @@ const PyroSteel = () => {
                         {/* Available Quantity */}
                         <div className="col-md-6">
                             <label className="spec-label">AVAILABLE QUANTITY IN (MT):</label>
+                          
                             <span className="spec-value">
-                                {pyroSteelData.available_quantity}
-                            </span>
+                     {Number(pyroSteelData.available_quantity) > 0 ? pyroSteelData.available_quantity : 'No Stock'}                         
+                     </span>   
                         </div>
 
                         {/* Price Per MT */}
@@ -211,9 +212,14 @@ const PyroSteel = () => {
 
                     {/* Order Button */}
                     <div className="order-button-section mt-3">
-                        <button className="btn btn-primary" onClick={handleOrder}>
-                            Please proceed to Order
-                        </button>
+                   
+                        <button
+                                className="btn btn-primary"
+                                onClick={handleOrder}
+                                disabled={Number(pyroSteelData.available_quantity) === 0} // Ensure it's treated as a number
+                            >
+                                {Number(pyroSteelData.available_quantity) > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
+                            </button>
                     </div>
                 </div>
             </div>
