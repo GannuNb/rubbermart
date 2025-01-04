@@ -159,14 +159,6 @@ const ThreePieceTBR = () => {
                         </span>
                     </div>
 
-                    {/* Price Per MT */}
-                    <div className="col-md-6">
-                        <label className="spec-label" style={{ color: 'black', fontWeight: 'bold' }}>PRICE PER (MT):</label>
-                        <span className="spec-value d-block p-2 border rounded">
-                            ₹{tbrData.price}
-                        </span>
-                    </div>
-
                     {/* HSN */}
                     <div className="col-md-6">
                         <label className="spec-label" style={{ color: 'black', fontWeight: 'bold' }}>HSN:</label>
@@ -198,20 +190,39 @@ const ThreePieceTBR = () => {
                     </div>
                 )}
 
-                {/* Price Selection Dropdown */}
-                <div className="price-dropdown mt-3">
-                    <label className="spec-label">SELECT PRICE:</label>
-                    <select
-                        className="form-control"
-                        value={selectedPrice}
-                        onChange={handlePriceChange}
-                    >
-                        <option value="default">Default Price: ₹{tbrData.default_price || 'N/A'}</option>
-                        <option value="ex_chennai">Ex-Chennai: ₹{tbrData.ex_chennai}</option>
-                        <option value="ex_nhavasheva">Ex-Nhavasheva: ₹{tbrData.ex_nhavasheva}</option>
-                        <option value="ex_mundra">Ex-Mundra: ₹{tbrData.ex_mundra}</option>
-                    </select>
-                </div>
+<div className="row mt-3">
+    {/* Price Selection Dropdown */}
+    <div className="price-dropdown col-md-6">
+        <label className="spec-label">SELECT PRICE:</label>
+        <select
+            className="form-control"
+            value={selectedPrice}
+            onChange={handlePriceChange}
+        >
+            {/* Placeholder option */}
+            <option value="" disabled>
+                Select a location
+            </option>
+            <option value="ex_chennai">Ex-Chennai</option>
+            <option value="ex_nhavasheva">Ex-Nhavasheva</option>
+            <option value="ex_mundra">Ex-Mundra</option>
+        </select>
+    </div>
+
+    {/* Price Per MT */}
+    <div className="col-md-6">
+        <label 
+            className="spec-label" 
+            style={{ color: 'black', fontWeight: 'bold' }}
+        >
+            PRICE PER (MT):
+        </label>
+        <span className="spec-value d-block p-2 border rounded bg-light">
+            {selectedPrice ? `₹${tbrData[selectedPrice]}` : "Select a location"}
+        </span>
+    </div>
+</div>
+
 
                 {/* Order Button */}
                 <div className="order-button-section mt-3">

@@ -18,7 +18,7 @@ const BaledTyresTBR = () => {
         default_price: 0,
     });
     const [requiredQuantity, setRequiredQuantity] = useState(1);
-    const [selectedPrice, setSelectedPrice] = useState('default');
+    const [selectedPrice, setSelectedPrice] = useState(''); // Default as empty to show "Select a location"
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -67,9 +67,9 @@ const BaledTyresTBR = () => {
             ...prevState,
             price:
                 selectedOption === 'ex_chennai' ? prevState.ex_chennai :
-                selectedOption === 'ex_nhavasheva' ? prevState.ex_nhavasheva :
-                selectedOption === 'ex_mundra' ? prevState.ex_mundra :
-                prevState.default_price
+                    selectedOption === 'ex_nhavasheva' ? prevState.ex_nhavasheva :
+                        selectedOption === 'ex_mundra' ? prevState.ex_mundra :
+                            prevState.default_price
         }));
     };
 
@@ -151,16 +151,13 @@ const BaledTyresTBR = () => {
                 <div className="row specifications-row">
                     <div className="col-md-6">
                         <label className="spec-label">AVAILABLE QUANTITY (MT):</label>
-                     
-                     <span className="spec-value">
-                     {Number(mulchData.available_quantity) > 0 ? mulchData.available_quantity : 'No Stock'}                         
-                     </span>                    
+
+                        <span className="spec-value">
+                            {Number(mulchData.available_quantity) > 0 ? mulchData.available_quantity : 'No Stock'}
+                        </span>
 
                     </div>
-                    <div className="col-md-6">
-                        <label className="spec-label">PRICE PER (MT):</label>
-                        <span className="spec-value">₹{mulchData.price}</span>
-                    </div>
+                    
                     <div className="col-md-6">
                         <label className="spec-label">HSN:</label>
                         <span className="spec-value">{mulchData.hsn}</span>
@@ -179,32 +176,43 @@ const BaledTyresTBR = () => {
                     />
                 </div>
 
-                {/* Price Selection */}
-                <div className="price-dropdown mt-3">
-                    <label className="spec-label">SELECT PRICE:</label>
-                    <select
-                        className="form-control"
-                        value={selectedPrice}
-                        onChange={handlePriceChange}
-                    >
-                        <option value="default">Default Price: ₹{mulchData.default_price}</option>
-                        <option value="ex_chennai">Ex-Chennai: ₹{mulchData.ex_chennai}</option>
-                        <option value="ex_nhavasheva">Ex-Nhavasheva: ₹{mulchData.ex_nhavasheva}</option>
-                        <option value="ex_mundra">Ex-Mundra: ₹{mulchData.ex_mundra}</option>
-                    </select>
+                <div className="row mt-3">
+                    {/* Price Selection Dropdown */}
+                    <div className="mt-1 col-md-6">
+                        <label className="spec-label">SELECT PRICE:</label>
+                        <select
+                            className="form-control"
+                            value={selectedPrice}
+                            onChange={handlePriceChange}
+                        >
+                            {/* Placeholder option */}
+                            <option value="" disabled>
+                                Select a location
+                            </option>
+                            <option value="ex_chennai">Ex-Chennai</option>
+                            <option value="ex_nhavasheva">Ex-Nhavasheva</option>
+                            <option value="ex_mundra">Ex-Mundra</option>
+                        </select>
+                    </div>
+
+                    {/* Price Per MT */}
+                    <div className="col-md-6">
+                        <label className="spec-label">PRICE PER (MT):</label>
+                        <span className="d-block p-2 border rounded spec-value">
+                            {selectedPrice ? `₹${mulchData[selectedPrice]}` : "Price"}
+                        </span>
+                    </div>
                 </div>
 
                 {/* Order Button */}
                 <div className="order-button-section mt-3">
-                    
-                              <button
-                                className="btn btn-primary"
-                                onClick={handleOrder}
-                                disabled={Number(mulchData.available_quantity) === 0} // Ensure it's treated as a number
-                            >
-                                {Number(mulchData.available_quantity) > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
-                            </button>
-                    
+                    <button
+                        className="btn btn-primary"
+                        onClick={handleOrder}
+                        disabled={Number(mulchData.available_quantity) === 0} // Ensure it's treated as a number
+                    >
+                        {Number(mulchData.available_quantity) > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
+                    </button>
                 </div>
             </div>
         </div>

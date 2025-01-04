@@ -140,7 +140,7 @@ const Pyrooil = () => {
                     <div className="col-md-6">
                         <h2>Pyro Oil</h2>
                         <p>
-                            Pyrooil is a by-product of pyrolysis, used for fuel, lubricants, and chemical processing. 
+                            Pyrooil is a by-product of pyrolysis, used for fuel, lubricants, and chemical processing.
                             It offers a sustainable alternative to traditional fuels and contributes to effective waste management.
                         </p>
                     </div>
@@ -156,14 +156,8 @@ const Pyrooil = () => {
                             <label>AVAILABLE QUANTITY IN (MT):</label>
 
                             <span className="spec-value">
-    {Number(pyrooilData.available_quantity) > 0 ? pyrooilData.available_quantity : 'No Stock'}
-</span>                            
-                        </div>
-
-                        {/* Price Per MT */}
-                        <div className="col-md-6">
-                            <label>PRICE PER (MT):</label>
-                            <span className="d-block p-2 border rounded spec-value">₹{pyrooilData.price}</span>
+                                {Number(pyrooilData.available_quantity) > 0 ? pyrooilData.available_quantity : 'No Stock'}
+                            </span>
                         </div>
 
                         {/* HSN */}
@@ -185,31 +179,44 @@ const Pyrooil = () => {
                         />
                     </div>
 
-                    {/* Price Selection Dropdown */}
-                    <div className="mt-3">
-                        <label>SELECT PRICE:</label>
-                        <select
-                            className="form-control"
-                            value={selectedPrice}
-                            onChange={handlePriceChange}
-                        >
-                            <option value="default">Default Price: ₹{pyrooilData.default_price || 'N/A'}</option>
-                            <option value="ex_chennai">Ex-Chennai: ₹{pyrooilData.ex_chennai}</option>
-                            <option value="ex_nhavasheva">Ex-Nhavasheva: ₹{pyrooilData.ex_nhavasheva}</option>
-                            <option value="ex_mundra">Ex-Mundra: ₹{pyrooilData.ex_mundra}</option>
-                        </select>
-                    </div>
+                    <div className="row mt-3">
+                        {/* Price Selection Dropdown */}
+                        <div className="mt-1 col-md-6">
+                            <label>SELECT PRICE:</label>
+                            <select
+                                className="form-control"
+                                value={selectedPrice}
+                                onChange={handlePriceChange}
+                            >
+                                {/* Placeholder option */}
+                                <option value="" disabled>
+                                    Select a location
+                                </option>                            
+                                <option value="ex_chennai">Ex-Chennai</option>
+                                <option value="ex_nhavasheva">Ex-Nhavasheva</option>
+                                <option value="ex_mundra">Ex-Mundra</option>
+                            </select>
+                        </div>
 
+                        {/* Price Per MT */}
+                        <div className="col-md-6">
+                            <label>PRICE PER (MT):</label>
+                            <span className="d-block p-2 border rounded spec-value">
+                                {selectedPrice ? `₹${pyrooilData[selectedPrice]}` : "Price"}
+
+                            </span>
+                        </div>
+                    </div>
                     {/* Order Button */}
                     <div className="mt-3">
-                        
+
                         <button
-    className="btn btn-primary"
-    onClick={handleOrder}
-    disabled={Number(pyrooilData.available_quantity) === 0} // Ensure it's treated as a number
->
-    {Number(pyrooilData.available_quantity) > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
-</button>
+                            className="btn btn-primary"
+                            onClick={handleOrder}
+                            disabled={Number(pyrooilData.available_quantity) === 0} // Ensure it's treated as a number
+                        >
+                            {Number(pyrooilData.available_quantity) > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
+                        </button>
                     </div>
                 </div>
             </div>

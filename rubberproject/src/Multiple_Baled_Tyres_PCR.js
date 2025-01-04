@@ -44,7 +44,7 @@ const Multiple_Baled_Tyres_PCR = () => {
                         hsn: tyreItem.hsn,
                         default_price: fetchedDefaultPrice,
                     });
-                    
+
                 }
 
                 setScrapItems(items);
@@ -156,17 +156,9 @@ const Multiple_Baled_Tyres_PCR = () => {
                     {/* Available Quantity */}
                     <div className="col-md-6">
                         <label className="spec-label">AVAILABLE QUANTITY IN (MT):</label>
-                       
-                        <span className="spec-value">
-    {Number(tyreData.available_quantity) > 0 ? tyreData.available_quantity : 'No Stock'}
-</span>
-                    </div>
 
-                    {/* Price Per MT */}
-                    <div className="col-md-6">
-                        <label className="spec-label">PRICE PER (MT):</label>
                         <span className="spec-value">
-                            ₹{tyreData.price}
+                            {Number(tyreData.available_quantity) > 0 ? tyreData.available_quantity : 'No Stock'}
                         </span>
                     </div>
 
@@ -191,32 +183,41 @@ const Multiple_Baled_Tyres_PCR = () => {
                     />
                 </div>
 
-                {/* Price Selection Dropdown */}
-                <div className="price-dropdown mt-3">
-                    <label className="spec-label">SELECT PRICE:</label>
-                    <select
-                        className="form-control"
-                        value={selectedPrice}
-                        onChange={handlePriceChange}
-                    >
-                        <option value="default">Default Price: ₹{tyreData.default_price || 'N/A'}</option>
-                        <option value="ex_chennai">Ex-Chennai: ₹{tyreData.ex_chennai}</option>
-                        <option value="ex_nhavasheva">Ex-Nhavasheva: ₹{tyreData.ex_nhavasheva}</option>
-                        <option value="ex_mundra">Ex-Mundra: ₹{tyreData.ex_mundra}</option>
-                    </select>
+                <div className="row mt-3">
+                    {/* Price Selection Dropdown */}
+                    <div className="price-dropdown mt-1 col-md-6">
+                        <label className="spec-label">SELECT PRICE:</label>
+                        <select
+                            className="form-control"
+                            value={selectedPrice}
+                            onChange={handlePriceChange}
+                        >
+                            {/* Placeholder option */}
+                            <option value="" disabled>
+                                Select a location
+                            </option>                         <option value="ex_chennai">Ex-Chennai: ₹{tyreData.ex_chennai}</option>
+                            <option value="ex_nhavasheva">Ex-Nhavasheva: ₹{tyreData.ex_nhavasheva}</option>
+                            <option value="ex_mundra">Ex-Mundra: ₹{tyreData.ex_mundra}</option>
+                        </select>
+                    </div>
+                    {/* Price Per MT */}
+                    <div className="col-md-6">
+                        <label className="spec-label">PRICE PER (MT):</label>
+                        <span className="spec-value">
+                            {selectedPrice ? `₹${tyreData[selectedPrice]}` : "Price"}
+                        </span>
+                    </div>
                 </div>
-
 
                 {/* Order Button */}
                 <div className="order-button-section mt-3">
-                   
                     <button
-    className="btn btn-primary"
-    onClick={handleOrder}
-    disabled={Number(tyreData.available_quantity) === 0} // Ensure it's treated as a number
->
-    {Number(tyreData.available_quantity) > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
-</button>
+                        className="btn btn-primary"
+                        onClick={handleOrder}
+                        disabled={Number(tyreData.available_quantity) === 0} // Ensure it's treated as a number
+                    >
+                        {Number(tyreData.available_quantity) > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
+                    </button>
                 </div>
             </div>
         </div>

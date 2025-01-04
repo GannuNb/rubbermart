@@ -269,19 +269,7 @@ doc.text(`Date: ${formattedDate}`, 190, 30, { align: 'right' });
     doc.text('Nagole Hyderabad, Telangana-500035', 14, addressY + 40);
     doc.text('Hyderabad.', 14, addressY + 45);
   
-    // Shipping Info Section
-    doc.setFont('helvetica', 'bold');
-    doc.text('Shipping Information', 110, addressY + 10);
-    doc.setFont('helvetica', 'normal');
-    doc.text('To:', 110, addressY + 15);
-  
-    // Split the shipping address into multiple lines (assuming it could be long)
-    const shipAddress = profile?.shipAddress || 'N/A';
-    const shipAddressLines = shipAddress.split(','); // Split address by commas to create multiple lines
-    let shipAddressY = addressY + 20;
-    shipAddressLines.forEach((line, index) => {
-      doc.text(line, 110, shipAddressY + (index * 5)); // Adjust line spacing
-    });
+    
   
     // Terms and Conditions
     const termsY = addressY + 55;

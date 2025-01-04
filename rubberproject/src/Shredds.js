@@ -159,14 +159,6 @@ const Shredds = () => {
                         {Number(shreddsData.available_quantity) > 0 ? shreddsData.available_quantity : 'No Stock'}                        </span>
                     </div>
 
-                    {/* Price Per MT */}
-                    <div className="col-md-6">
-                        <label className="spec-label" style={{ color: 'black', fontWeight: 'bold' }}>PRICE PER (MT):</label>
-                        <span className="spec-value d-block p-2 border rounded" style={{ border: '1px solid #ccc' }}>
-                            ₹{shreddsData.price}
-                        </span>
-                    </div>
-
                     {/* HSN */}
                     <div className="col-md-6">
                         <label className="spec-label" style={{ color: 'black', fontWeight: 'bold' }}>HSN:</label>
@@ -194,21 +186,33 @@ const Shredds = () => {
                     />
                 </div>
 
+                <div className="row mt-3">
                 {/* Price Selection Dropdown */}
-                <div className="price-dropdown mt-3">
+                <div className="price-dropdown mt-1 col-md-6">
                     <label className="spec-label">SELECT PRICE:</label>
                     <select
                         className="form-control"
                         value={selectedPrice}
                         onChange={handlePriceChange}
                     >
-                        <option value="default">Default Price: ₹{shreddsData.default_price || 'N/A'}</option>
-                        <option value="ex_chennai">Ex-Chennai: ₹{shreddsData.ex_chennai}</option>
-                        <option value="ex_nhavasheva">Ex-Nhavasheva: ₹{shreddsData.ex_nhavasheva}</option>
-                        <option value="ex_mundra">Ex-Mundra: ₹{shreddsData.ex_mundra}</option>
+                        {/* Placeholder option */}
+                                <option value="" disabled>
+                                    Select a location
+                                </option>                         
+                                <option value="ex_chennai">Ex-Chennai</option>
+                        <option value="ex_nhavasheva">Ex-Nhavasheva</option>
+                        <option value="ex_mundra">Ex-Mundra</option>
                     </select>
                 </div>
 
+                    {/* Price Per MT */}
+                    <div className="col-md-6">
+                        <label className="spec-label" style={{ color: 'black', fontWeight: 'bold' }}>PRICE PER (MT):</label>
+                        <span className="spec-value d-block p-2 border rounded" style={{ border: '1px solid #ccc' }}>
+                        {selectedPrice ? `₹${shreddsData[selectedPrice]}` : "Price"}
+                        </span>
+                    </div>
+</div>
                 {/* Order Button */}
                 <div className="order-button-section mt-3">
                 <button

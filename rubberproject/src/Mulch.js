@@ -45,7 +45,7 @@ const Mulch = () => {
                         hsn: mulchItem.hsn,
                         default_price: fetchedDefaultPrice,
                     });
-                    
+
                 }
 
                 setScrapItems(items); // You can still store all scrap items if needed
@@ -163,17 +163,9 @@ const Mulch = () => {
                         <div className="col-md-6">
                             <label className="spec-label">AVAILABLE QUANTITY IN (MT):</label>
                             <span className="spec-value">
-    {Number(mulchData.available_quantity) > 0 ? mulchData.available_quantity : 'No Stock'}
-</span>
-
-                        </div>
-
-                        {/* Price Per MT */}
-                        <div className="col-md-6">
-                            <label className="spec-label">PRICE PER (MT):</label>
-                            <span className="spec-value">
-                                ₹{mulchData.price}
+                                {Number(mulchData.available_quantity) > 0 ? mulchData.available_quantity : 'No Stock'}
                             </span>
+
                         </div>
 
                         {/* HSN */}
@@ -197,34 +189,45 @@ const Mulch = () => {
                         />
                     </div>
 
+                    <div className="row mt-3">
                     {/* Price Selection Dropdown */}
-                    <div className="price-dropdown mt-3">
+                    <div className="price-dropdown mt-1 col-md-6">
                         <label className="spec-label">SELECT PRICE:</label>
                         <select
                             className="form-control"
                             value={selectedPrice}
                             onChange={handlePriceChange} // Use the handler for price change
                         >
-                            {/* Allow the user to select the default price */}
-                            <option value="default">Default Price: ₹{mulchData.default_price || 'N/A'}</option>
-                            <option value="ex_chennai">Ex-Chennai: ₹{mulchData.ex_chennai}</option>
-                            <option value="ex_nhavasheva">Ex-Nhavasheva: ₹{mulchData.ex_nhavasheva}</option>
-                            <option value="ex_mundra">Ex-Mundra: ₹{mulchData.ex_mundra}</option>
+                            {/* Placeholder option */}
+                            <option value="" disabled>
+                                Select a location
+                            </option>
+                            <option value="ex_chennai">Ex-Chennai</option>
+                            <option value="ex_nhavasheva">Ex-Nhavasheva:</option>
+                            <option value="ex_mundra">Ex-Mundra:</option>
                         </select>
+                    </div>
+
+                    
+                        {/* Price Per MT */}
+                        <div className="col-md-6">
+                            <label className="spec-label">PRICE PER (MT):</label>
+                            <span className="spec-value">
+                                {selectedPrice ? `₹${mulchData[selectedPrice]}` : "Price"}
+                            </span>
+                        </div>
+
                     </div>
 
                     {/* Order Button */}
                     <div className="order-button-section mt-3">
-                    <button
-    className="btn btn-primary"
-    onClick={handleOrder}
-    disabled={Number(mulchData.available_quantity) === 0} // Ensure it's treated as a number
->
-    {Number(mulchData.available_quantity) > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
-</button>
-
-
-
+                        <button
+                            className="btn btn-primary"
+                            onClick={handleOrder}
+                            disabled={Number(mulchData.available_quantity) === 0} // Ensure it's treated as a number
+                        >
+                            {Number(mulchData.available_quantity) > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
+                        </button>
                     </div>
                 </div>
             </div>

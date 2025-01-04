@@ -40,8 +40,8 @@
   /* Styling for the custom alert box */
 .custom-alert {
   position: fixed;
-  top: 20px;
-  right: 20px;
+  top: 50%;
+  right: 30%;
   z-index: 1000;
   background-color: #d4edda; /* Light green background for success */
   color: #155724; /* Dark green text for success */

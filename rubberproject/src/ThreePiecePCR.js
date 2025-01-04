@@ -154,15 +154,7 @@ const ThreePiecePCR = () => {
                     <div className="col-md-6">
                         <label className="spec-label">AVAILABLE QUANTITY IN (MT) :</label>
                         <span className="spec-value">
-                        {Number(threePiecePCRData.available_quantity) > 0 ? threePiecePCRData.available_quantity : 'No Stock'}                    
-                        </span>
-                    </div>
-
-                    {/* Price Per MT */}
-                    <div className="col-md-6">
-                        <label className="spec-label">PRICE PER (MT):</label>
-                        <span className="spec-value">
-                            ₹{threePiecePCRData.price}
+                            {Number(threePiecePCRData.available_quantity) > 0 ? threePiecePCRData.available_quantity : 'No Stock'}
                         </span>
                     </div>
 
@@ -187,30 +179,41 @@ const ThreePiecePCR = () => {
                     />
                 </div>
 
+                <div className="row mt-3">
                 {/* Price Selection Dropdown */}
-                <div className="price-dropdown mt-3">
+                <div className="price-dropdown mt-1 col-md-6">
                     <label className="spec-label">SELECT PRICE:</label>
                     <select
                         className="form-control"
                         value={selectedPrice}
                         onChange={handlePriceChange}
-                    >
-                        <option value="default">Default Price: ₹{threePiecePCRData.default_price || 'N/A'}</option>
-                        <option value="ex_chennai">Ex-Chennai: ₹{threePiecePCRData.ex_chennai}</option>
-                        <option value="ex_nhavasheva">Ex-Nhavasheva: ₹{threePiecePCRData.ex_nhavasheva}</option>
-                        <option value="ex_mundra">Ex-Mundra: ₹{threePiecePCRData.ex_mundra}</option>
+                    ><option value="" disabled>
+                    Select a location
+                </option>
+                        <option value="ex_chennai">Ex-Chennai</option>
+                        <option value="ex_nhavasheva">Ex-Nhavasheva</option>
+                        <option value="ex_mundra">Ex-Mundra</option>
                     </select>
+                </div>
+
+                    {/* Price Per MT */}
+                    <div className="col-md-6">
+                        <label className="spec-label">PRICE PER (MT):</label>
+                        <span className="spec-value">
+                        {selectedPrice ? `₹${threePiecePCRData[selectedPrice]}` : "Select a location"}
+                        </span>
+                    </div>
                 </div>
 
                 {/* Order Button */}
                 <div className="order-button-section mt-3">
-                <button
-    className="btn btn-primary"
-    onClick={handleOrder}
-    disabled={Number(threePiecePCRData.available_quantity) === 0} // Ensure it's treated as a number
->
-    {Number(threePiecePCRData.available_quantity) > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
-</button>
+                    <button
+                        className="btn btn-primary"
+                        onClick={handleOrder}
+                        disabled={Number(threePiecePCRData.available_quantity) === 0} // Ensure it's treated as a number
+                    >
+                        {Number(threePiecePCRData.available_quantity) > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
+                    </button>
                 </div>
             </div>
         </div>

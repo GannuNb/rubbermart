@@ -62,6 +62,7 @@ const Order = () => {
     fetchData();
   }, []);
 
+
   const handleAddClick = () => {
     setShowDropdown(!showDropdown);
     setSelectedCategory('');
@@ -253,40 +254,33 @@ const Order = () => {
                       )}
 
 
-                    {selectedProduct && (
-                      <div className="mb-3">
-                        <label className="form-label">
-                          Select Price:
-                        </label>
-                        <select
-                          className="form-select"
-                          value={selectedProductPrice || 'default'}
-                          onChange={(e) => setSelectedProductPrice(e.target.value)}
-                        >
-                          <option value="default">
-                            Default Price: ₹{selectedProduct.price || 'Not available'}
-                          </option>
-                          {selectedProduct.ex_chennai && (
-                            <option value="ex_chennai">Ex-Chennai: ₹{selectedProduct.ex_chennai}</option>
-                          )}
-                          {selectedProduct.ex_nhavasheva && (
-                            <option value="ex_nhavasheva">Ex-Nhavasheva: ₹{selectedProduct.ex_nhavasheva}</option>
-                          )}
-                          {selectedProduct.ex_mundra && (
-                            <option value="ex_mundra">Ex-Mundra: ₹{selectedProduct.ex_mundra}</option>
-                          )}
-                        </select>
+        {selectedProduct && (
+          <div className="mb-3">
+            <label className="form-label">Select Price:</label>
+            <select
+              className="form-select"
+              value={selectedProductPrice || 'default'}
+              onChange={(e) => setSelectedProductPrice(e.target.value)}
+            >
+              <option value="default">Select a Location</option>
+              {selectedProduct.ex_chennai && (
+                <option value="ex_chennai">Ex-Chennai: ₹{selectedProduct.ex_chennai}</option>
+              )}
+              {selectedProduct.ex_nhavasheva && (
+                <option value="ex_nhavasheva">Ex-Nhavasheva: ₹{selectedProduct.ex_nhavasheva}</option>
+              )}
+              {selectedProduct.ex_mundra && (
+                <option value="ex_mundra">Ex-Mundra: ₹{selectedProduct.ex_mundra}</option>
+              )}
+            </select>
 
-                        <div className="mt-2">
-                          <strong>
-                            Selected Price: ₹
-                            {selectedProductPrice && selectedProduct[selectedProductPrice]
-                              ? selectedProduct[selectedProductPrice]
-                              : selectedProduct.price || 'Please select a price'}
-                          </strong>
-                        </div>
-                      </div>
-                    )}
+            {selectedProductPrice && selectedProduct[selectedProductPrice] && (
+              <div className="mt-2">
+                <strong>Selected Price: ₹{selectedProduct[selectedProductPrice]}</strong>
+              </div>
+        )}
+</div>
+)}
 
                     {/* Quantity Input and Add Button */}
                     {selectedProduct && (
@@ -460,7 +454,7 @@ const Order = () => {
 
     // Header
     doc.setFontSize(20);
-    doc.text('INVOICE', 86, 20);
+    doc.text(' PROFORMA INVOICE', 70, 20);
     doc.setFontSize(10);
     doc.text(`Invoice Date: ${new Date().toLocaleDateString()}`, 190, 20, { align: 'right' });
     doc.setDrawColor(0, 0, 0);
@@ -548,56 +542,101 @@ const Order = () => {
     // Total Amount in Numbers
     doc.text(`Total Balanace : Rs ${total.toFixed(2)}`, 14, finalY + 8);
 
-    // Address Details Section
-    doc.setFontSize(12);
-    doc.setFont('helvetica', 'bold');
-    const addressY = finalY + 15;
-    doc.text('Address Details', 14, addressY);
-    doc.setDrawColor(0, 0, 0);
-    doc.line(10, addressY + 3, 200, addressY + 3); // Underline
+// Address Details Section
+doc.setFontSize(12);
+doc.setFont('helvetica');
+const addressY = finalY + 15;
+doc.text('Address Details', 14, addressY);
+doc.setDrawColor(0, 0, 0);
+doc.line(10, addressY + 3, 200, addressY + 3); // Underline
 
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-    doc.text('From:', 14, addressY + 10);
-    doc.text('VIKAH RUBBERS', 14, addressY + 15);
-    doc.text('Hyderabad', 14, addressY + 20);
-    doc.text('Dispatch From:', 14, addressY + 25);
-    doc.text('#406, 4th Floor, Patel Towers,', 14, addressY + 30);
-    doc.text('Above EasyBuy Beside Nagole RTO Office,', 14, addressY + 35);
-    doc.text('Nagole Hyderabad, Telangana-500035', 14, addressY + 40);
-    doc.text('Hyderabad.', 14, addressY + 45);
+doc.setFontSize(10);
+doc.setFont('helvetica', 'normal');
 
-    // Shipping Info Section
-    doc.setFont('helvetica', 'bold');
-    doc.text('Shipping Information', 110, addressY + 10);
-    doc.setFont('helvetica', 'normal');
-    doc.text('To:', 110, addressY + 15);
-    doc.text(profile?.shipAddress || 'N/A', 110, addressY + 20);
+// "From" Section
+doc.text('From:', 14, addressY + 10);
+doc.text('VIKAH RUBBERS', 14, addressY + 15);
+doc.text('Hyderabad', 14, addressY + 20);
+doc.text('Dispatch From:', 14, addressY + 25);
+doc.text('#406, 4th Floor, Patel Towers,', 14, addressY + 30);
+doc.text('Above EasyBuy Beside Nagole RTO Office,', 14, addressY + 35);
+doc.text('Nagole Hyderabad, Telangana-500035', 14, addressY + 40);
+doc.text('Hyderabad.', 14, addressY + 45);
 
-    // Terms and Conditions
-    const termsY = addressY + 55;
-    doc.setFont('helvetica', 'bold');
-    doc.text('Terms and Conditions:', 14, termsY);
-    doc.setDrawColor(0, 0, 0);
-    doc.line(10, termsY + 3, 200, termsY + 3); // Underline
+// Shipping Info Section
+// doc.setFont('helvetica', 'bold');
+// doc.text('Shipping Information', 110, addressY + 10);
+// doc.setFont('helvetica', 'normal');
+// doc.text('To:', 110, addressY + 15);
 
-    doc.setFontSize(9);
-    doc.setFont('helvetica', 'normal');
-    doc.text(
-      '1. The Seller shall not be liable to the Buyer for any loss or damage.',
-      14,
-      termsY + 10
-    );
-    doc.text(
-      '2. The Seller warrants the product for one (1) year from the date of shipment.',
-      14,
-      termsY + 15
-    );
-    doc.text(
-      '3. The purchase order will be interpreted as acceptance of this offer.',
-      14,
-      termsY + 20
-    );
+// const shipAddress = profile?.shipAddress || 'N/A';
+// const shipAddressLines = shipAddress.split(',');
+// let shipAddressY = addressY + 20;
+// shipAddressLines.forEach((line, index) => {
+//   doc.text(line, 110, shipAddressY + (index * 5));
+// });
+
+// Banking Details Section in Horizontal Layout
+const bankingY = addressY + 55; // Position for Banking Section
+doc.setFontSize(11);
+doc.setFont('helvetica', 'bold');
+doc.text('Banking Details:', 14, bankingY);
+doc.setDrawColor(0, 0, 0);
+doc.line(10, bankingY + 3, 200, bankingY + 3); // Underline
+
+// Using autoTable for horizontal banking details
+doc.autoTable({
+  startY: bankingY + 10,
+  head: [['Bank Name', 'Name of Firm', 'Account Number', 'IFSC CODE', 'Account Type', 'Branch']],
+  body: [
+    [
+      'IDFC FIRST BANK',
+      'VIKAH RUBBERS',
+      '10113716761',
+      'IDFB0040132',
+      'CURRENT A/C',
+      'NERUL BRANCH'
+    ]
+  ],
+  theme: 'grid',
+  styles: { fontSize: 8, cellPadding: 2 }, // Reduced font size and padding
+  columnStyles: { 
+    0: { cellWidth: 30 }, 
+    1: { cellWidth: 35 }, 
+    2: { cellWidth: 40 }, 
+    3: { cellWidth: 30 }, 
+    4: { cellWidth: 25 }, 
+    5: { cellWidth: 30 } 
+  },
+  headStyles: { fontSize: 9, fontStyle: 'bold', fillColor: [240, 240, 240], textColor: [0, 0, 0] },
+  margin: { top: 10, left: 10, right: 10 }
+});
+
+
+// Terms and Conditions
+const termsY = bankingY + 50;
+doc.setFont('helvetica', 'bold');
+doc.text('Terms and Conditions:', 14, termsY);
+doc.setDrawColor(0, 0, 0);
+doc.line(10, termsY + 3, 200, termsY + 3); // Underline
+
+doc.setFontSize(9);
+doc.setFont('helvetica', 'normal');
+doc.text(
+  '1. The Seller shall not be liable to the Buyer for any loss or damage.',
+  14,
+  termsY + 10
+);
+doc.text(
+  '2. The Seller warrants the product for one (1) year from the date of shipment.',
+  14,
+  termsY + 15
+);
+doc.text(
+  '3. The purchase order will be interpreted as acceptance of this offer.',
+  14,
+  termsY + 20
+);
 
     return doc.output('blob');
   };

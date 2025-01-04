@@ -166,13 +166,6 @@ const PyroSteel = () => {
                      </span>   
                         </div>
 
-                        {/* Price Per MT */}
-                        <div className="col-md-6">
-                            <label className="spec-label">PRICE PER (MT):</label>
-                            <span className="spec-value">
-                                ₹{pyroSteelData.price}
-                            </span>
-                        </div>
 
                         {/* HSN */}
                         <div className="col-md-6">
@@ -195,21 +188,33 @@ const PyroSteel = () => {
                         />
                     </div>
 
+                    <div className="row mt-3">
                     {/* Price Selection Dropdown */}
-                    <div className="price-dropdown mt-3">
+                    <div className="price-dropdown mt-1 col-md-6">
                         <label className="spec-label">SELECT PRICE:</label>
                         <select
                             className="form-control"
                             value={selectedPrice}
                             onChange={handlePriceChange} // Use the handler for price change
                         >
-                            <option value="default">Default Price: ₹{pyroSteelData.default_price || 'N/A'}</option>
-                            <option value="ex_chennai">Ex-Chennai: ₹{pyroSteelData.ex_chennai}</option>
-                            <option value="ex_nhavasheva">Ex-Nhavasheva: ₹{pyroSteelData.ex_nhavasheva}</option>
-                            <option value="ex_mundra">Ex-Mundra: ₹{pyroSteelData.ex_mundra}</option>
+                            {/* Placeholder option */}
+                            <option value="" disabled>
+                                    Select a location
+                                </option>
+                            <option value="ex_chennai">Ex-Chennai</option>
+                            <option value="ex_nhavasheva">Ex-Nhavasheva</option>
+                            <option value="ex_mundra">Ex-Mundra</option>
                         </select>
                     </div>
 
+                        {/* Price Per MT */}
+                        <div className="col-md-6">
+                            <label className="spec-label">PRICE PER (MT):</label>
+                            <span className="spec-value">
+                            {selectedPrice ? `₹${pyroSteelData[selectedPrice]}` : "Price"}
+                            </span>
+                        </div>
+                        </div>
                     {/* Order Button */}
                     <div className="order-button-section mt-3">
                    

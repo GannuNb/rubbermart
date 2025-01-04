@@ -186,10 +186,13 @@ const Getorders = () => {
 
     // Header
     doc.setFontSize(20);
-    doc.text('INVOICE', 86, 20);
+    doc.text('PROFORMA INVOICE', 70, 20);
     doc.setFontSize(10);
     const formattedDate = new Date(order.orderDate).toLocaleDateString();
     doc.setFontSize(10);
+
+   
+    doc.text(`PA ID: ${order._id}`, 188, 15, { align: 'right' }); // Display Order ID
     doc.text(`Invoice Date: ${formattedDate}`, 190, 20, { align: 'right' });
     doc.setDrawColor(0, 0, 0);
     doc.line(10, 25, 200, 25); // Underline
@@ -200,7 +203,7 @@ const Getorders = () => {
     doc.text('Billing Information', 14, 35);
     doc.text('Shipping Information', 110, 35);
     doc.setDrawColor(0, 0, 0);
-    doc.line(10, 38, 200, 38); // Underline
+   
 
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
@@ -256,8 +259,8 @@ doc.text(`Total Amount (in words): ${totalAmountInWords}`, 14, finalY);
 // Total Amount in Numbers
 doc.text(`Total Balanace : Rs ${total.toFixed(2)}`, 14, finalY + 8); 
 
-  
-    // Address Details Section
+
+// Address Details Section
 doc.setFontSize(12);
 doc.setFont('helvetica');
 const addressY = finalY + 15;
@@ -279,48 +282,86 @@ doc.text('Nagole Hyderabad, Telangana-500035', 14, addressY + 40);
 doc.text('Hyderabad.', 14, addressY + 45);
 
 // Shipping Info Section
-doc.setFont('helvetica', 'bold');
-doc.text('Shipping Information', 110, addressY + 10);
-doc.setFont('helvetica', 'normal');
-doc.text('To:', 110, addressY + 15);
+// doc.setFont('helvetica', 'bold');
+// doc.text('Shipping Information', 110, addressY + 10);
+// doc.setFont('helvetica', 'normal');
+// doc.text('To:', 110, addressY + 15);
 
-// Split the shipping address into multiple lines (assuming it could be long)
-const shipAddress = profile?.shipAddress || 'N/A';
-const shipAddressLines = shipAddress.split(','); // Split address by commas to create multiple lines
-let shipAddressY = addressY + 20;
-shipAddressLines.forEach((line, index) => {
-  doc.text(line, 110, shipAddressY + (index * 5)); // Adjust line spacing
+// const shipAddress = profile?.shipAddress || 'N/A';
+// const shipAddressLines = shipAddress.split(',');
+// let shipAddressY = addressY + 20;
+// shipAddressLines.forEach((line, index) => {
+//   doc.text(line, 110, shipAddressY + (index * 5));
+// });
+
+// Banking Details Section in Horizontal Layout
+const bankingY = addressY + 55; // Position for Banking Section
+doc.setFontSize(11);
+doc.setFont('helvetica', 'bold');
+doc.text('Banking Details:', 14, bankingY);
+doc.setDrawColor(0, 0, 0);
+doc.line(10, bankingY + 3, 200, bankingY + 3); // Underline
+
+// Using autoTable for horizontal banking details
+doc.autoTable({
+  startY: bankingY + 10,
+  head: [['Bank Name', 'Name of Firm', 'Account Number', 'IFSC CODE', 'Account Type', 'Branch']],
+  body: [
+    [
+      'IDFC FIRST BANK',
+      'VIKAH RUBBERS',
+      '10113716761',
+      'IDFB0040132',
+      'CURRENT A/C',
+      'NERUL BRANCH'
+    ]
+  ],
+  theme: 'grid',
+  styles: { fontSize: 8, cellPadding: 2 }, // Reduced font size and padding
+  columnStyles: { 
+    0: { cellWidth: 30 }, 
+    1: { cellWidth: 35 }, 
+    2: { cellWidth: 40 }, 
+    3: { cellWidth: 30 }, 
+    4: { cellWidth: 25 }, 
+    5: { cellWidth: 30 } 
+  },
+  headStyles: { fontSize: 9, fontStyle: 'bold', fillColor: [240, 240, 240], textColor: [0, 0, 0] },
+  margin: { top: 10, left: 10, right: 10 }
 });
 
 
-        // Terms and Conditions
-        const termsY = addressY + 55;
-        doc.setFont('helvetica', 'bold');
-        doc.text('Terms and Conditions:', 14, termsY);
-        doc.setDrawColor(0, 0, 0);
-        doc.line(10, termsY + 3, 200, termsY + 3); // Underline
-      
-        doc.setFontSize(9);
-        doc.setFont('helvetica', 'normal');
-        doc.text(
-          '1. The Seller shall not be liable to the Buyer for any loss or damage.',
-          14,
-          termsY + 10
-        );
-        doc.text(
-          '2. The Seller warrants the product for one (1) year from the date of shipment.',
-          14,
-          termsY + 15
-        );
-        doc.text(
-          '3. The purchase order will be interpreted as acceptance of this offer.',
-          14,
-          termsY + 20
-        );
+// Terms and Conditions
+const termsY = bankingY + 50;
+doc.setFont('helvetica', 'bold');
+doc.text('Terms and Conditions:', 14, termsY);
+doc.setDrawColor(0, 0, 0);
+doc.line(10, termsY + 3, 200, termsY + 3); // Underline
 
-    // Save the PDF
-    doc.save(`Invoice_${order._id}.pdf`);
-  };
+doc.setFontSize(9);
+doc.setFont('helvetica', 'normal');
+doc.text(
+  '1. The Seller shall not be liable to the Buyer for any loss or damage.',
+  14,
+  termsY + 10
+);
+doc.text(
+  '2. The Seller warrants the product for one (1) year from the date of shipment.',
+  14,
+  termsY + 15
+);
+doc.text(
+  '3. The purchase order will be interpreted as acceptance of this offer.',
+  14,
+  termsY + 20
+);
+
+// Save the PDF
+doc.save(`Invoice_${order._id}.pdf`);
+
+
+ 
+};
 
   
 
@@ -339,14 +380,15 @@ shipAddressLines.forEach((line, index) => {
     if (file) {
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('orderId', orderId);  // Pass orderId to the backend
+      formData.append('orderId', orderId); // Pass orderId to the backend
   
       try {
         const token = localStorage.getItem('token');
         if (!token) {
-          alert('No authentication token found');
+          displayAlert('No authentication token found', 'danger');
           return;
         }
+        
         const response = await axios.post(`${process.env.REACT_APP_API_URL}/payment/upload`, formData, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -356,19 +398,37 @@ shipAddressLines.forEach((line, index) => {
   
         const { fileUrl, orderId: uploadedOrderId } = response.data;
         const newFiles = { ...files };
-        newFiles[uploadedOrderId] = { fileUrl };  // Store the file URL with order ID
+        newFiles[uploadedOrderId] = { fileUrl }; // Store the file URL with order ID
   
-        setFiles(newFiles);  // Update state with the uploaded file URL
+        setFiles(newFiles); // Update state with the uploaded file URL
   
-        alert('File uploaded successfully');
+        displayAlert('File uploaded successfully', 'success');
       } catch (err) {
         console.error('Error uploading file:', err.response ? err.response.data : err.message);
-        alert('Error uploading file');
+        displayAlert('Error uploading file', 'danger');
       }
     } else {
-      alert('Please select a file to upload');
+      displayAlert('Please select a file to upload', 'warning');
     }
   };
+  
+  // Helper function to display alerts
+  const displayAlert = (message, type) => {
+    const alertContainer = document.getElementById('alert-container');
+    if (alertContainer) {
+      alertContainer.innerHTML = `
+        <div class="alert alert-${type} alert-dismissible fade show alert-fade" role="alert">
+          <img src="${logo1}" alt="Logo" class="mr-2" style="width: 100px;">
+          ${message}
+        </div>
+      `;
+      setTimeout(() => {
+        alertContainer.innerHTML = '';
+      }, 5000); // Alert disappears after 5 seconds
+    }
+  };
+  
+  
   
   
 

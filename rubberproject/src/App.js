@@ -44,6 +44,7 @@ import Unregisteredgst from './Unregistered.js';
 import GetPay from './getpay.js';
 import AdminPayment from './Adminpayment.js';
 import Pyrooil from './Pyrooil.js';
+import ForgetMailPass from './forgetmailpass.js';
 
 
 
@@ -79,6 +80,7 @@ function App() {
 
           <Route exact path="/Login" element={<Login />} />
           <Route exact path="/Signup" element={<Signup />} />
+          <Route exact path="/ForgetMailPass" element={<ForgetMailPass />} />
           <Route exact path="/Productspage" element={<Productspage/>} />
           <Route exact path="/Contact" element={<ContactUs />} />
           <Route exact path="/Sell" element={<Sell />} />
