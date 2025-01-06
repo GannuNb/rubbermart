@@ -797,54 +797,57 @@ doc.text(
             </div>
           </div>
 
-    {/* Business Profile Details */}
-    <h4 className="text-center mb-4 text-secondary font-weight-semibold">Business Profile Details</h4>
-          <div className="row">
+{/* Business Profile Details and Shipping Address Section in a Row */}
+<div className="row">
+            {/* Left Column (Business Profile Details) */}
             <div className="col-md-6">
-              <p><strong>Company Name:</strong> {profile?.companyName || "N/A"}</p>
-              <p><strong>Phone:</strong> {profile?.phoneNumber || "N/A"}</p>
-              <p><strong>Email:</strong> {profile?.email || "N/A"}</p>
-              <p><strong>GST:</strong> {profile?.gstNumber || "N/A"}</p>
-              <p><strong>Billing Address:</strong> {profile?.billAddress || "N/A"}</p>
+              <h4 className="text-center mb-4 text-secondary font-weight-semibold">Business Profile Details</h4>
+              <div className="row">
+                <div className="col-md-12">
+                  <p><strong>Company Name:</strong> {profile?.companyName || "N/A"}</p>
+                  <p><strong>Phone:</strong> {profile?.phoneNumber || "N/A"}</p>
+                  <p><strong>Email:</strong> {profile?.email || "N/A"}</p>
+                  <p><strong>GST:</strong> {profile?.gstNumber || "N/A"}</p>
+                  <p><strong>Billing Address:</strong> {profile?.billAddress || "N/A"}</p>
+                </div>
+              </div>
             </div>
-          </div>
 
+            {/* Right Column (Shipping Address Section) */}
+            <div className="col-md-6">
+              <hr className="my-4" />
+              <h5 className="mb-3">Shipping Details</h5>
 
+              {/* Checkbox Section with Heading */}
+              <div className="mb-3">
+                <h6 className="mb-2">Same as Billing Address</h6>
+                <div className="form-check">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    id="sameAsBilling"
+                    checked={isSameAsBilling}
+                    onChange={handleCheckboxChange}
+                  />
+                  <label className="form-check-label" htmlFor="sameAsBilling"></label>
+                </div>
+              </div>
 
-{/* Shipping Address Section */}
-<hr className="my-4" />
-<h5 className="mb-3">Shipping Details</h5>
-
-{/* Checkbox Section with Heading */}
-<div className="mb-3">
-  <h6 className="mb-2">Same as Billing Address</h6>
-  <div className="form-check">
-    <input
-      type="checkbox"
-      className="form-check-input"
-      id="sameAsBilling"
-      checked={isSameAsBilling}
-      onChange={handleCheckboxChange}
-    />
-    <label className="form-check-label" htmlFor="sameAsBilling"></label>
-  </div>
+              {/* Shipping Address Input */}
+              <div className="mb-3">
+                <label htmlFor="shippingAddress" className="form-label">Shipping Address</label>
+                <textarea
+                  id="shippingAddress"
+                  className="form-control"
+                  rows="3"
+                  value={shippingAddress}
+                  onChange={handleShippingAddressChange}
+                  placeholder="Enter Shipping Address"
+                  disabled={isSameAsBilling}
+                ></textarea>
+              </div>
+            </div>
 </div>
-
-{/* Shipping Address Input */}
-<div className="mb-3">
-  <label htmlFor="shippingAddress" className="form-label">Shipping Address</label>
-  <textarea
-    id="shippingAddress"
-    className="form-control"
-    rows="3"
-    value={shippingAddress}
-    onChange={handleShippingAddressChange}
-    placeholder="Enter Shipping Address"
-    disabled={isSameAsBilling}
-  ></textarea>
-</div>
-
-
 
           <hr className="my-4" />
 
