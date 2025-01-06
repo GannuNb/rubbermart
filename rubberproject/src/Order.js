@@ -9,12 +9,9 @@ import "./Order.css";
 import logo1 from "./images/logo.png"
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-
-
 const Order = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
   const { name, available_quantity, price, required_quantity, hsn } = location.state || {};
   const [totalPrice, setTotalPrice] = useState(0);
   const [profile, setProfile] = useState(null);
@@ -22,11 +19,9 @@ const Order = () => {
   const [error, setError] = useState(null);
   const [currentAvailable, setCurrentAvailable] = useState(available_quantity);
   const [loadingButton, setLoadingButton] = useState(false); // Loading state for button
-
   const [tyreScrapItems, setTyreScrapItems] = useState([]);
   const [tyreSteelScrapItems, setTyreSteelScrapItems] = useState([]);
   const [PyrooilItem, setPyrooilItems] = useState([]);
-
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -38,7 +33,6 @@ const Order = () => {
   const [isSameAsBilling, setIsSameAsBilling] = useState(false); // Checkbox state
   const [shippingAddress, setShippingAddress] = useState(''); // Manual inp
   const [billingAddress, setBillingAddress] = useState('');
-
 
   // Reset the selected price when the product is deselected
   const resetForm = () => {
@@ -66,7 +60,6 @@ const Order = () => {
     fetchData();
   }, []);
 
-
   const handleCheckboxChange = () => {
     setIsSameAsBilling(!isSameAsBilling);
     if (!isSameAsBilling) {
@@ -75,21 +68,17 @@ const Order = () => {
       setShippingAddress(''); // Clear input if unchecked
     }
   };
-  
 
   // Handle manual shipping address input
   const handleShippingAddressChange = (e) => {
     setShippingAddress(e.target.value);
   };
 
-
   const handleAddClick = () => {
     setShowDropdown(!showDropdown);
     setSelectedCategory('');
     setFilteredProducts([]);
   };
-
-
 
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
@@ -102,7 +91,6 @@ const Order = () => {
     );
   };
 
-
   const handleProductPriceChange = (event) => {
     const priceOption = event.target.value;
     if (priceOption === 'default') {
@@ -112,9 +100,6 @@ const Order = () => {
       setSelectedProductPrice(priceValue ? Number(priceValue) : null); // Convert to number or null if not valid
     }
   };
-
-
-
 
   const handleProductSelect = (product) => {
     setSelectedProduct(product);
@@ -156,13 +141,6 @@ const Order = () => {
     }
   };
 
-
-
-
-
-
-
-
   // Render Order Summary
   const renderOrderSummary = () => {
     const gstRate = 0.18;
@@ -176,8 +154,6 @@ const Order = () => {
         total: price * required_quantity,
       },
     ];
-
-
 
     const allItems = [...baseItems, ...additionalItems];
     const subtotal = allItems.reduce((sum, item) => sum + item.total, 0);
@@ -217,139 +193,139 @@ const Order = () => {
               ))}
             </tbody>
             <tfoot>
-  
-  {/* Additional Items Section */}
-<div className="additional-items mt-4">
-  <button
-    className="add-button mb-3"
-    onClick={handleAddClick}
-  >
-    + {/* Large plus sign */}
-  </button>
 
-  {showDropdown && (
-    <div className="dropdown-container p-4 border rounded shadow-lg bg-light">
-      <h5 className="mb-3">Select Category & Product</h5>
+              {/* Additional Items Section */}
+              <div className="additional-items mt-4">
+                <button
+                  className="add-button mb-3"
+                  onClick={handleAddClick}
+                >
+                  + {/* Large plus sign */}
+                </button>
 
-      {/* Category Dropdown */}
-      <div className="mb-3">
-        <label className="form-label">Select Category</label>
-        <select
-          className="form-select"
-          onChange={(e) => handleCategorySelect(e.target.value)}
-          value={selectedCategory}
-        >
-          <option value="">Choose Category</option>
-          <option value="Tyre scrap">Tyre Scrap</option>
-          <option value="Tyre steel scrap">Tyre Steel Scrap</option>
-          <option value="Pyro Oil">Pyro Oil</option>
-        </select>
-      </div>
+                {showDropdown && (
+                  <div className="dropdown-container p-4 border rounded shadow-lg bg-light">
+                    <h5 className="mb-3">Select Category & Product</h5>
 
-      {selectedCategory && (
-        <div className="mb-3">
-          <label className="form-label">Select Product</label>
-          <select
-            className="form-select"
-            onChange={(e) => {
-              const product = JSON.parse(e.target.value);
-              handleProductSelect(product);
-            }}
-          >
-            <option value="">Select a product</option>
-            {(selectedCategory === 'Tyre scrap' ? tyreScrapItems :
-              selectedCategory === 'Tyre steel scrap' ? tyreSteelScrapItems :
-                selectedCategory === 'Pyro Oil' ? PyrooilItem :
-                  []).map((product) => (
-                    <option
-                      key={product.id}
-                      value={JSON.stringify(product)}
-                      disabled={product.available_quantity === 0 || product.available_quantity === "No Stock"}
-                    >
-                      {product.name}
-                      {product.quantity === 0 || product.quantity === "No Stock" ? ' (Out of stock)' : ''}
-                    </option>
-                  ))}
-          </select>
-        </div>
-      )}
+                    {/* Category Dropdown */}
+                    <div className="mb-3">
+                      <label className="form-label">Select Category</label>
+                      <select
+                        className="form-select"
+                        onChange={(e) => handleCategorySelect(e.target.value)}
+                        value={selectedCategory}
+                      >
+                        <option value="">Choose Category</option>
+                        <option value="Tyre scrap">Tyre Scrap</option>
+                        <option value="Tyre steel scrap">Tyre Steel Scrap</option>
+                        <option value="Pyro Oil">Pyro Oil</option>
+                      </select>
+                    </div>
 
-      {selectedProduct && (
-        <div className="mb-3">
-          <label className="form-label">
-            Select Price:
-          </label>
-          <select
-            className="form-select"
-            value={selectedProductPrice || 'default'}
-            onChange={(e) => setSelectedProductPrice(e.target.value)}
-          >
-            <option value="default">
-              Default Price: ₹{selectedProduct.price || 'Not available'}
-            </option>
-            {selectedProduct.ex_chennai && (
-              <option value="ex_chennai">Ex-Chennai: ₹{selectedProduct.ex_chennai}</option>
-            )}
-            {selectedProduct.ex_nhavasheva && (
-              <option value="ex_nhavasheva">Ex-Nhavasheva: ₹{selectedProduct.ex_nhavasheva}</option>
-            )}
-            {selectedProduct.ex_mundra && (
-              <option value="ex_mundra">Ex-Mundra: ₹{selectedProduct.ex_mundra}</option>
-            )}
-          </select>
+                    {selectedCategory && (
+                      <div className="mb-3">
+                        <label className="form-label">Select Product</label>
+                        <select
+                          className="form-select"
+                          onChange={(e) => {
+                            const product = JSON.parse(e.target.value);
+                            handleProductSelect(product);
+                          }}
+                        >
+                          <option value="">Select a product</option>
+                          {(selectedCategory === 'Tyre scrap' ? tyreScrapItems :
+                            selectedCategory === 'Tyre steel scrap' ? tyreSteelScrapItems :
+                              selectedCategory === 'Pyro Oil' ? PyrooilItem :
+                                []).map((product) => (
+                                  <option
+                                    key={product.id}
+                                    value={JSON.stringify(product)}
+                                    disabled={product.available_quantity === 0 || product.available_quantity === "No Stock"}
+                                  >
+                                    {product.name}
+                                    {product.quantity === 0 || product.quantity === "No Stock" ? ' (Out of stock)' : ''}
+                                  </option>
+                                ))}
+                        </select>
+                      </div>
+                    )}
 
-          <div className="mt-2">
-            <strong>
-              Selected Price: ₹
-              {selectedProductPrice && selectedProduct[selectedProductPrice]
-                ? selectedProduct[selectedProductPrice]
-                : selectedProduct.price || 'Please select a price'}
-            </strong>
-          </div>
-        </div>
-      )}
+                    {selectedProduct && (
+                      <div className="mb-3">
+                        <label className="form-label">
+                          Select Price:
+                        </label>
+                        <select
+                          className="form-select"
+                          value={selectedProductPrice || 'default'}
+                          onChange={(e) => setSelectedProductPrice(e.target.value)}
+                        >
+                          <option value="default">
+                            Default Price: ₹{selectedProduct.price || 'Not available'}
+                          </option>
+                          {selectedProduct.ex_chennai && (
+                            <option value="ex_chennai">Ex-Chennai: ₹{selectedProduct.ex_chennai}</option>
+                          )}
+                          {selectedProduct.ex_nhavasheva && (
+                            <option value="ex_nhavasheva">Ex-Nhavasheva: ₹{selectedProduct.ex_nhavasheva}</option>
+                          )}
+                          {selectedProduct.ex_mundra && (
+                            <option value="ex_mundra">Ex-Mundra: ₹{selectedProduct.ex_mundra}</option>
+                          )}
+                        </select>
 
-      {/* Quantity Input and Add Button */}
-      {selectedProduct && (
-        <>
-          <h5 className="mt-4">Enter Quantity</h5>
-          <div className="mb-3">
-            <input
-              type="number"
-              className="form-control"
-              placeholder="Quantity (tons)"
-              value={additionalQuantity}
-              onChange={handleQuantityChange}
-            />
-            {/* Show error message below input if quantity exceeds available quantity */}
-            {additionalQuantity > selectedProduct.available_quantity && (
-              <div className="text-danger mt-2">
-                Error: Entered quantity exceeds available stock. Available stock: {selectedProduct.available_quantity} tons.
+                        <div className="mt-2">
+                          <strong>
+                            Selected Price: ₹
+                            {selectedProductPrice && selectedProduct[selectedProductPrice]
+                              ? selectedProduct[selectedProductPrice]
+                              : selectedProduct.price || 'Please select a price'}
+                          </strong>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Quantity Input and Add Button */}
+                    {selectedProduct && (
+                      <>
+                        <h5 className="mt-4">Enter Quantity</h5>
+                        <div className="mb-3">
+                          <input
+                            type="number"
+                            className="form-control"
+                            placeholder="Quantity (tons)"
+                            value={additionalQuantity}
+                            onChange={handleQuantityChange}
+                          />
+                          {/* Show error message below input if quantity exceeds available quantity */}
+                          {additionalQuantity > selectedProduct.available_quantity && (
+                            <div className="text-danger mt-2">
+                              Error: Entered quantity exceeds available stock. Available stock: {selectedProduct.available_quantity} tons.
+                            </div>
+                          )}
+                        </div>
+
+                        <button
+                          className="btn btn-success"
+                          onClick={addToOrder}
+                          style={{ width: '100%' }}
+                          disabled={additionalQuantity > selectedProduct.available_quantity}  // Disable button if quantity exceeds available stock
+                        >
+                          Add to Order
+                        </button>
+
+                        <div style={{ marginTop: '20px' }}>
+                          {orderItems.map((item, index) => (
+                            <div key={index}>
+                              {item.product.name} - Quantity: {item.quantity} - Price: {item.price}
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-
-          <button
-            className="btn btn-success"
-            onClick={addToOrder}
-            style={{ width: '100%' }}
-            disabled={additionalQuantity > selectedProduct.available_quantity}  // Disable button if quantity exceeds available stock
-          >
-            Add to Order
-          </button>
-
-          <div style={{ marginTop: '20px' }}>
-            {orderItems.map((item, index) => (
-              <div key={index}>
-                {item.product.name} - Quantity: {item.quantity} - Price: {item.price}
-              </div>
-            ))}
-          </div>
-        </>
-      )}
-    </div>
-  )}
-</div>
               <tr>
                 <td colSpan="4" className="text-right"><strong>Subtotal:</strong></td>
                 <td>₹{subtotal.toFixed(2)}</td>
@@ -515,7 +491,7 @@ const Order = () => {
       } else {
         finalShippingAddress = shippingAddress || 'N/A'; // Use manual shipping address
       }
-    
+
       doc.text(`Address: ${finalShippingAddress}`, 110, 45);
     }
 
@@ -580,106 +556,101 @@ const Order = () => {
     // Total Amount in Numbers
     doc.text(`Total Balanace : Rs ${total.toFixed(2)}`, 14, finalY + 8);
 
-// Address Details Section
-doc.setFontSize(12);
-doc.setFont('helvetica');
-const addressY = finalY + 15;
-doc.text('Address Details', 14, addressY);
-doc.setDrawColor(0, 0, 0);
-doc.line(10, addressY + 3, 200, addressY + 3); // Underline
+    // Address Details Section
+    doc.setFontSize(12);
+    doc.setFont('helvetica');
+    const addressY = finalY + 15;
+    doc.text('Address Details', 14, addressY);
+    doc.setDrawColor(0, 0, 0);
+    doc.line(10, addressY + 3, 200, addressY + 3); // Underline
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
 
-doc.setFontSize(10);
-doc.setFont('helvetica', 'normal');
+    // "From" Section
+    doc.text('From:', 14, addressY + 10);
+    doc.text('VIKAH RUBBERS', 14, addressY + 15);
+    doc.text('Hyderabad', 14, addressY + 20);
+    doc.text('Dispatch From:', 14, addressY + 25);
+    doc.text('#406, 4th Floor, Patel Towers,', 14, addressY + 30);
+    doc.text('Above EasyBuy Beside Nagole RTO Office,', 14, addressY + 35);
+    doc.text('Nagole Hyderabad, Telangana-500035', 14, addressY + 40);
+    doc.text('Hyderabad.', 14, addressY + 45);
 
-// "From" Section
-doc.text('From:', 14, addressY + 10);
-doc.text('VIKAH RUBBERS', 14, addressY + 15);
-doc.text('Hyderabad', 14, addressY + 20);
-doc.text('Dispatch From:', 14, addressY + 25);
-doc.text('#406, 4th Floor, Patel Towers,', 14, addressY + 30);
-doc.text('Above EasyBuy Beside Nagole RTO Office,', 14, addressY + 35);
-doc.text('Nagole Hyderabad, Telangana-500035', 14, addressY + 40);
-doc.text('Hyderabad.', 14, addressY + 45);
+    // Banking Details Section in Horizontal Layout
+    const bankingY = addressY + 55; // Position for Banking Section
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Banking Details:', 14, bankingY);
+    doc.setDrawColor(0, 0, 0);
+    doc.line(10, bankingY + 3, 200, bankingY + 3); // Underline
 
+    // Using autoTable for horizontal banking details
+    doc.autoTable({
+      startY: bankingY + 10,
+      head: [['Bank Name', 'Name of Firm', 'Account Number', 'IFSC CODE', 'Account Type', 'Branch']],
+      body: [
+        [
+          'IDFC FIRST BANK',
+          'VIKAH RUBBERS',
+          '10113716761',
+          'IDFB0040132',
+          'CURRENT A/C',
+          'NERUL BRANCH'
+        ]
+      ],
+      theme: 'grid',
+      styles: { fontSize: 8, cellPadding: 2 }, // Reduced font size and padding
+      columnStyles: {
+        0: { cellWidth: 30 },
+        1: { cellWidth: 35 },
+        2: { cellWidth: 40 },
+        3: { cellWidth: 30 },
+        4: { cellWidth: 25 },
+        5: { cellWidth: 30 }
+      },
+      headStyles: { fontSize: 9, fontStyle: 'bold', fillColor: [240, 240, 240], textColor: [0, 0, 0] },
+      margin: { top: 10, left: 10, right: 10 }
+    });
 
-// Banking Details Section in Horizontal Layout
-const bankingY = addressY + 55; // Position for Banking Section
-doc.setFontSize(11);
-doc.setFont('helvetica', 'bold');
-doc.text('Banking Details:', 14, bankingY);
-doc.setDrawColor(0, 0, 0);
-doc.line(10, bankingY + 3, 200, bankingY + 3); // Underline
+    // Terms and Conditions
+    const termsY = bankingY + 50;
+    doc.setFont('helvetica', 'bold');
+    doc.text('Terms and Conditions:', 14, termsY);
+    doc.setDrawColor(0, 0, 0);
+    doc.line(10, termsY + 3, 200, termsY + 3); // Underline
 
-// Using autoTable for horizontal banking details
-doc.autoTable({
-  startY: bankingY + 10,
-  head: [['Bank Name', 'Name of Firm', 'Account Number', 'IFSC CODE', 'Account Type', 'Branch']],
-  body: [
-    [
-      'IDFC FIRST BANK',
-      'VIKAH RUBBERS',
-      '10113716761',
-      'IDFB0040132',
-      'CURRENT A/C',
-      'NERUL BRANCH'
-    ]
-  ],
-  theme: 'grid',
-  styles: { fontSize: 8, cellPadding: 2 }, // Reduced font size and padding
-  columnStyles: { 
-    0: { cellWidth: 30 }, 
-    1: { cellWidth: 35 }, 
-    2: { cellWidth: 40 }, 
-    3: { cellWidth: 30 }, 
-    4: { cellWidth: 25 }, 
-    5: { cellWidth: 30 } 
-  },
-  headStyles: { fontSize: 9, fontStyle: 'bold', fillColor: [240, 240, 240], textColor: [0, 0, 0] },
-  margin: { top: 10, left: 10, right: 10 }
-});
-
-
-// Terms and Conditions
-const termsY = bankingY + 50;
-doc.setFont('helvetica', 'bold');
-doc.text('Terms and Conditions:', 14, termsY);
-doc.setDrawColor(0, 0, 0);
-doc.line(10, termsY + 3, 200, termsY + 3); // Underline
-
-doc.setFontSize(9);
-doc.setFont('helvetica', 'normal');
-doc.text(
-  '1. The Seller shall not be liable to the Buyer for any loss or damage.',
-  14,
-  termsY + 10
-);
-doc.text(
-  '2. The Seller warrants the product for one (1) year from the date of shipment.',
-  14,
-  termsY + 15
-);
-doc.text(
-  '3. The purchase order will be interpreted as acceptance of this offer.',
-  14,
-  termsY + 20
-);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.text(
+      '1. The Seller shall not be liable to the Buyer for any loss or damage.',
+      14,
+      termsY + 10
+    );
+    doc.text(
+      '2. The Seller warrants the product for one (1) year from the date of shipment.',
+      14,
+      termsY + 15
+    );
+    doc.text(
+      '3. The purchase order will be interpreted as acceptance of this offer.',
+      14,
+      termsY + 20
+    );
 
     return doc.output('blob');
   };
 
-
-
   const handleOrder = async () => {
     try {
       setLoadingButton(true);
-  
+
       const token = localStorage.getItem('token');
       if (!token) {
         displayAlert('User not authenticated.', 'danger');
         navigate('/', { replace: true });
         return;
       }
-  
+
       // Declare baseItem properly
       const baseItem = {
         name,
@@ -688,19 +659,19 @@ doc.text(
         quantity: required_quantity,
         total: price * required_quantity,
       };
-  
+
       const allItems = [baseItem, ...additionalItems];
-  
+
       const isValidOrder = allItems.every(item =>
         item.name && item.quantity && item.total && item.price && item.hsn
       );
-  
+
       if (!isValidOrder) {
         displayAlert('Order validation failed: Missing required fields in some items.', 'danger');
         setLoadingButton(false);
         return;
       }
-  
+
       // Include shipping address
       const orderData = {
         items: allItems,
@@ -708,30 +679,30 @@ doc.text(
         shippingAddress: isSameAsBilling ? (profile?.billAddress || '') : shippingAddress,
         isSameAsBilling,
       };
-  
+
       console.log('Order Data:', orderData); // Verify data in console
-  
+
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/Adminorder`,
         orderData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-  
+
       if (response.status === 200) {
         // Generate PDF after successful order creation
         const pdfBlob = generatePDF();
-  
+
         const formData = new FormData();
         formData.append('pdf', pdfBlob, 'order-summary.pdf');
         formData.append('userEmail', profile?.email);
-  
+
         // Call the second API to send the PDF to the backend
         const emailResponse = await axios.post(
           `${process.env.REACT_APP_API_URL}/api/upload-pdf`,
           formData,
           { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' } }
         );
-  
+
         if (emailResponse.status === 200) {
           displayAlert('Order placed successfully, and invoice emailed!', 'success');
           setTimeout(() => {
@@ -754,12 +725,7 @@ doc.text(
       setLoadingButton(false);
     }
   };
-  
-  
-  
-  
-  
-  
+
 
   // Helper function to display alerts
   const displayAlert = (message, type) => {
@@ -775,13 +741,8 @@ doc.text(
     }
   };
 
-
-
-
   if (loading) return <div className="text-center mt-5">Loading...</div>;
   if (error) return <div className="alert alert-danger text-center mt-5">{error}</div>;
-
-
 
   return (
     <div className="setter">
@@ -797,57 +758,60 @@ doc.text(
             </div>
           </div>
 
-{/* Business Profile Details and Shipping Address Section in a Row */}
-<div className="row">
-            {/* Left Column (Business Profile Details) */}
-            <div className="col-md-6">
-              <h4 className="text-center mb-4 text-secondary font-weight-semibold">Business Profile Details</h4>
-              <div className="row">
-                <div className="col-md-12">
-                  <p><strong>Company Name:</strong> {profile?.companyName || "N/A"}</p>
-                  <p><strong>Phone:</strong> {profile?.phoneNumber || "N/A"}</p>
-                  <p><strong>Email:</strong> {profile?.email || "N/A"}</p>
-                  <p><strong>GST:</strong> {profile?.gstNumber || "N/A"}</p>
-                  <p><strong>Billing Address:</strong> {profile?.billAddress || "N/A"}</p>
-                </div>
-              </div>
-            </div>
+          <div className="row">
+  {/* Full-width Column for Heading */}
+  <div className="col-12 text-center mb-4">
+    <h4 className="text-secondary font-weight-semibold">Business Profile Details</h4>
+  </div>
 
-            {/* Right Column (Shipping Address Section) */}
-            <div className="col-md-6">
-              <hr className="my-4" />
-              <h5 className="mb-3">Shipping Details</h5>
+  {/* Left Column (Business Profile Details) */}
+  <div className="col-md-6">
+    <div className="row">
+      <div className="col-md-12">
+        <p><strong>Company Name:</strong> {profile?.companyName || "N/A"}</p>
+        <p><strong>Phone:</strong> {profile?.phoneNumber || "N/A"}</p>
+        <p><strong>Email:</strong> {profile?.email || "N/A"}</p>
+        <p><strong>GST:</strong> {profile?.gstNumber || "N/A"}</p>
+        <p><strong>Billing Address:</strong> {profile?.billAddress || "N/A"}</p>
+      </div>
+    </div>
+  </div>
 
-              {/* Checkbox Section with Heading */}
-              <div className="mb-3">
-                <h6 className="mb-2">Same as Billing Address</h6>
-                <div className="form-check">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    id="sameAsBilling"
-                    checked={isSameAsBilling}
-                    onChange={handleCheckboxChange}
-                  />
-                  <label className="form-check-label" htmlFor="sameAsBilling"></label>
-                </div>
-              </div>
+  {/* Right Column (Shipping Address Section) */}
+  <div className="col-md-6 mb-3">
+    <h5 className="mb-3">Shipping Details</h5>
 
-              {/* Shipping Address Input */}
-              <div className="mb-3">
-                <label htmlFor="shippingAddress" className="form-label">Shipping Address</label>
-                <textarea
-                  id="shippingAddress"
-                  className="form-control"
-                  rows="3"
-                  value={shippingAddress}
-                  onChange={handleShippingAddressChange}
-                  placeholder="Enter Shipping Address"
-                  disabled={isSameAsBilling}
-                ></textarea>
-              </div>
-            </div>
+    {/* Checkbox Section with Heading */}
+    <div className="mb-3">
+      <h6 className="mb-2">Same as Billing Address</h6>
+      <div className="form-check">
+        <input
+          type="checkbox"
+          className="form-check-input"
+          id="sameAsBilling"
+          checked={isSameAsBilling}
+          onChange={handleCheckboxChange}
+        />
+        <label className="form-check-label" htmlFor="sameAsBilling"></label>
+      </div>
+    </div>
+
+    {/* Shipping Address Input */}
+    <div className="mb-3">
+      <label htmlFor="shippingAddress" className="form-label">Shipping Address</label>
+      <textarea
+        id="shippingAddress"
+        className="form-control"
+        rows="3"
+        value={shippingAddress}
+        onChange={handleShippingAddressChange}
+        placeholder="Enter Shipping Address"
+        disabled={isSameAsBilling}
+      ></textarea>
+    </div>
+  </div>
 </div>
+
 
           <hr className="my-4" />
 
@@ -868,6 +832,7 @@ doc.text(
                 disabled={loadingButton}
                 style={{ width: "100%" }}
               >
+                
                 {loadingButton ? "Placing Order..." : "Place Order"}
               </button>
             </div>
