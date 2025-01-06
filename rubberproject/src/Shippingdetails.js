@@ -58,11 +58,20 @@ function ShippingDetails() {
     const fetchShippingDetails = async () => {
       try {
         const token = localStorage.getItem('token');
+        if (!token) {
+          setTimeout(() => {
+            navigate('/Login'); // Redirect to login if no token
+          }, 0);
+          return;
+        }
+
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/api/shippinguser`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
+        
         if (response.data.shippingDetails) {
+          // Assuming the backend populates shippingAddress when fetching shipping details
           setShippingDetails(response.data.shippingDetails);
         }
       } catch (err) {
@@ -72,8 +81,10 @@ function ShippingDetails() {
         setLoading(false);
       }
     };
+
     fetchShippingDetails();
-  }, []);
+  }, [navigate]);
+
 
   // Fetch business profile
   useEffect(() => {
@@ -212,7 +223,8 @@ doc.text(`Date: ${formattedDate}`, 190, 30, { align: 'right' });
       doc.text(`Email: ${profile.email || 'N/A'}`, 14, 60);
       doc.text(`Billing Address: ${profile.billAddress || 'N/A'}`, 14, 65);
   
-      doc.text(`Shipping Address: ${profile.shipAddress || 'N/A'}`, 110, 55);
+      const shippingAddress = order.orderId.shippingAddress || 'N/A';  // Access the populated shippingAddress
+      doc.text(`Address: ${shippingAddress}`, 110, 55);
     }
   
     // Add order details table

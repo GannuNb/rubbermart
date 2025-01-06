@@ -17,8 +17,9 @@ const PyroSteel = () => {
         hsn: '',
         default_price: 0, // Default price fetched from backend
     });
-    const [requiredQuantity, setRequiredQuantity] = useState(1);
+    const [requiredQuantity, setRequiredQuantity] = useState('');
     const [selectedPrice, setSelectedPrice] = useState(''); // Store selected price option (ex_chennai, ex_nhavasheva, ex_mundra)
+    const [errors, setErrors] = useState({ requiredQuantity: '', selectedPrice: '', quantityExceeds: '' }); // Error state
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -33,7 +34,6 @@ const PyroSteel = () => {
 
                 // Ensure we have the PyroSteel item and default price
                 if (pyroSteelItem) {
-                    // If backend does not send default_price, fallback to a price (e.g., pyroSteelItem.price or ex_chennai)
                     const fetchedDefaultPrice = pyroSteelItem.default_price || pyroSteelItem.price || pyroSteelItem.ex_chennai;
 
                     setPyroSteelData({
@@ -68,16 +68,44 @@ const PyroSteel = () => {
         } else if (selectedOption === 'ex_mundra') {
             setPyroSteelData(prevState => ({ ...prevState, price: prevState.ex_mundra }));
         } else if (selectedOption === 'default') {
-            // If default price is selected, use the correct value
             setPyroSteelData(prevState => ({ ...prevState, price: prevState.default_price }));
         }
     };
 
+    // Validate form fields
+    const validateFields = () => {
+        let formIsValid = true;
+        let errors = { requiredQuantity: '', selectedPrice: '', quantityExceeds: '' };
+
+        if (!requiredQuantity || requiredQuantity <= 0) {
+            formIsValid = false;
+            errors.requiredQuantity = 'Please fill out this required field';
+        }
+
+        if (!selectedPrice) {
+            formIsValid = false;
+            errors.selectedPrice = 'Please select a price option';
+        }
+
+        // Check if required quantity exceeds available quantity
+        if (parseFloat(requiredQuantity) > parseFloat(pyroSteelData.available_quantity)) {
+            formIsValid = false;
+            errors.quantityExceeds = 'Required quantity exceeds available quantity.';
+        }
+
+        setErrors(errors);
+        return formIsValid;
+    };
+
     const handleOrder = () => {
-        const token = localStorage.getItem('token'); // Replace 'authToken' with your token key
+        if (!validateFields()) {
+            return; // Don't proceed if validation fails
+        }
+
+        const token = localStorage.getItem('token');
 
         if (!token) {
-            // If user isn't logged in, navigate to the login page
+            // Show alert and redirect to login
             setTimeout(() => {
                 const alertDiv = document.createElement('div');
                 alertDiv.className = 'custom-alert';
@@ -113,13 +141,13 @@ const PyroSteel = () => {
                     }
                 });
             }, 0);
-
         } else {
+            // Proceed to the order page with the necessary data
             navigate('/Order', {
                 state: {
                     name: 'Pyro Steel',
                     available_quantity: pyroSteelData.available_quantity,
-                    price: pyroSteelData.price, // Pass the updated price
+                    price: pyroSteelData.price,
                     required_quantity: requiredQuantity,
                     hsn: pyroSteelData.hsn,
                 },
@@ -132,63 +160,69 @@ const PyroSteel = () => {
     }, []);
 
     return (
-        <>
-            <div className="pyroSteel-container" style={{ padding: '20px', marginTop: '20px', marginLeft: '180px' }}>
-                <div className="row align-items-center mt-5">
+        <div className="pyroSteel-container" style={{ padding: '20px', marginTop: '20px', marginLeft: '180px' }}>
+            <div className="row align-items-center mt-5">
+                <div className="col-md-6">
+                    <img
+                        src={PyroSteelImage}
+                        alt="Pyro Steel"
+                        className="img-fluid img-hover-effect"
+                        style={{ borderRadius: '8px', width: '80%', marginLeft: '20px' }}
+                    />
+                </div>
+                <div className="col-md-6">
+                    <h2>Pyro Steel</h2>
+                    <p>
+                        Pyro Steel is a material used in various industrial applications. It serves several purposes, including enhanced durability and strength.
+                        Pyro Steel is essential for industries requiring high-performance materials.
+                    </p>
+                </div>
+            </div>
+
+            {/* Specifications Section */}
+            <div className="specifications-section">
+                <h3 className="specifications-title">SPECIFICATIONS</h3>
+
+                <div className="row specifications-row">
+                    {/* Available Quantity */}
                     <div className="col-md-6">
-                        <img
-                            src={PyroSteelImage}
-                            alt="Pyro Steel"
-                            className="img-fluid img-hover-effect"
-                            style={{ borderRadius: '8px', width: '80%', marginLeft: '20px' }}
-                        />
+                        <label className="spec-label">AVAILABLE QUANTITY IN (MT):</label>
+                        <span className="spec-value">
+                            {Number(pyroSteelData.available_quantity) > 0 ? pyroSteelData.available_quantity : 'No Stock'}
+                        </span>
                     </div>
+
+                    {/* HSN */}
                     <div className="col-md-6">
-                        <h2>Pyro Steel</h2>
-                        <p>
-                            Pyro Steel is a material used in various industrial applications. It serves several purposes, including enhanced durability and strength.
-                            Pyro Steel is essential for industries requiring high-performance materials.
-                        </p>
+                        <label className="spec-label">HSN:</label>
+                        <span className="spec-value">{pyroSteelData.hsn}</span>
                     </div>
                 </div>
 
-                {/* Specifications Section */}
-                <div className="specifications-section">
-                    <h3 className="section-title">SPECIFICATIONS</h3>
+                {/* Required Quantity Section */}
+                <div className="required-quantity-section mt-3">
+                    <label className="spec-label">REQUIRED QUANTITY IN (MT):</label>
+                    <input
+                        type="number"
+                        value={requiredQuantity}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            // Check if the value is a valid number and not negative
+                            if (value >= 0) {
+                                setRequiredQuantity(value);
+                            } else {
+                                setRequiredQuantity(0); // Optionally set it to 0 or any other default value
+                            }
+                        }}
+                        placeholder="Enter required quantity"
+                        className="form-control required-quantity-input"
+                    />
 
-                    <div className="row specifications-row">
-                        {/* Available Quantity */}
-                        <div className="col-md-6">
-                            <label className="spec-label">AVAILABLE QUANTITY IN (MT):</label>
-                          
-                            <span className="spec-value">
-                     {Number(pyroSteelData.available_quantity) > 0 ? pyroSteelData.available_quantity : 'No Stock'}                         
-                     </span>   
-                        </div>
+                    {errors.requiredQuantity && <small className="text-danger">{errors.requiredQuantity}</small>}
+                    {errors.quantityExceeds && <small className="text-danger">{errors.quantityExceeds}</small>}
+                </div>
 
-
-                        {/* HSN */}
-                        <div className="col-md-6">
-                            <label className="spec-label">HSN:</label>
-                            <span className="spec-value">
-                                {pyroSteelData.hsn}
-                            </span>
-                        </div>
-                    </div>
-
-                    {/* Required Quantity Section */}
-                    <div className="required-quantity-section mt-3">
-                        <label className="spec-label">REQUIRED QUANTITY IN (MT):</label>
-                        <input
-                            type="number"
-                            value={requiredQuantity}
-                            onChange={(e) => setRequiredQuantity(e.target.value)}
-                            placeholder="Enter required quantity"
-                            className="form-control required-quantity-input"
-                        />
-                    </div>
-
-                    <div className="row mt-3">
+                <div className="row mt-3">
                     {/* Price Selection Dropdown */}
                     <div className="price-dropdown mt-1 col-md-6">
                         <label className="spec-label">SELECT PRICE:</label>
@@ -198,37 +232,35 @@ const PyroSteel = () => {
                             onChange={handlePriceChange} // Use the handler for price change
                         >
                             {/* Placeholder option */}
-                            <option value="" disabled>
-                                    Select a location
-                                </option>
+                            <option value="" disabled>Select a location</option>
                             <option value="ex_chennai">Ex-Chennai</option>
                             <option value="ex_nhavasheva">Ex-Nhavasheva</option>
                             <option value="ex_mundra">Ex-Mundra</option>
                         </select>
+                        {errors.selectedPrice && <small className="text-danger">{errors.selectedPrice}</small>}
                     </div>
 
-                        {/* Price Per MT */}
-                        <div className="col-md-6">
-                            <label className="spec-label">PRICE PER (MT):</label>
-                            <span className="spec-value">
+                    {/* Price Per MT */}
+                    <div className="col-md-6">
+                        <label className="spec-label">PRICE PER (MT):</label>
+                        <span className="spec-value">
                             {selectedPrice ? `₹${pyroSteelData[selectedPrice]}` : "Price"}
-                            </span>
-                        </div>
-                        </div>
-                    {/* Order Button */}
-                    <div className="order-button-section mt-3">
-                   
-                        <button
-                                className="btn btn-primary"
-                                onClick={handleOrder}
-                                disabled={Number(pyroSteelData.available_quantity) === 0} // Ensure it's treated as a number
-                            >
-                                {Number(pyroSteelData.available_quantity) > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
-                            </button>
+                        </span>
                     </div>
                 </div>
+
+                {/* Order Button */}
+                <div className="order-button-section mt-3">
+                    <button
+                        className="btn btn-primary"
+                        onClick={handleOrder}
+                        disabled={Number(pyroSteelData.available_quantity) === 0} // Ensure it's treated as a number
+                    >
+                        {Number(pyroSteelData.available_quantity) > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
+                    </button>
+                </div>
             </div>
-        </>
+        </div>
     );
 };
 

@@ -61,23 +61,16 @@ function App() {
       <div className="container">
         <Routes>
           <Route exact path="/" element={<Home />} />
-          
-
-
           <Route exact path="/registered" element={<Registeredgst />} />
           <Route exact path="/unregistered" element={<Unregisteredgst />} />
           <Route exact path="/getpay" element={<GetPay />} />
-          <Route exact path="/adminpayment" element={<AdminPayment />} />
-
-       
+          <Route exact path="/adminpayment" element={<AdminPayment />} />       
           <Route exact path="/new" element={<New />} />
           <Route exact path="/Admin" element={<Admin />} />
           <Route exact path="/Uploaded" element={<Uploaded />} />
           <Route exact path="/Adminshipping" element={<Adminshipping />} />
           <Route exact path="/Shippingdetails" element={<ShippingDetails />} />
           <Route exact path="/Ship" element={<Ship />} />
-
-
           <Route exact path="/Login" element={<Login />} />
           <Route exact path="/Signup" element={<Signup />} />
           <Route exact path="/ForgetMailPass" element={<ForgetMailPass />} />
@@ -105,11 +98,8 @@ function App() {
           <Route exact path="/TyresteelScrap" element={<Tyresteelscrap/>} />
           <Route exact path="/AboutUsPage" element={<AboutUsPage/>} />
           <Route exact path='/Alert' element={<Alert/>}/>
-          <Route exact path='/forgot-password' element={<ForgotPassword/>}/>
-          
+          <Route exact path='/forgot-password' element={<ForgotPassword/>}/>         
           <Route path="/reset-password/:token" element={<ResetPassword />} />
-
-
         </Routes>
       </div>
       <Footer />

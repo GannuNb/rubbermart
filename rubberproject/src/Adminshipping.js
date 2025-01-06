@@ -366,7 +366,6 @@ function Adminshipping() {
                     <td>{order.totalPrice}</td>
                     <td>{order.status}</td>
                     <td>{new Date(order.orderDate).toLocaleString()}</td>
-
                     <td>
                       <input
                         type="text"

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import ThreePiecePCRImage from './images/ThreePiecePCR.jpeg'; // Ensure to have an image for Three Piece PCR
+import ThreePiecePCRImage from './images/ThreePiecePCR.jpeg'; 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate, useLocation } from 'react-router-dom';
-import './Mulch.css'; // Import your CSS file
+import './Mulch.css'; 
 import logo1 from './images/logo.png';
 
 const ThreePiecePCR = () => {
@@ -17,8 +17,9 @@ const ThreePiecePCR = () => {
         hsn: '',
         default_price: 0,
     });
-    const [requiredQuantity, setRequiredQuantity] = useState(1);
+    const [requiredQuantity, setRequiredQuantity] = useState();
     const [selectedPrice, setSelectedPrice] = useState('');
+    const [errors, setErrors] = useState({ requiredQuantity: '', selectedPrice: '', quantityExceeds: '' });
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -69,10 +70,40 @@ const ThreePiecePCR = () => {
         }
     };
 
+    const validateFields = () => {
+        let formIsValid = true;
+        let errors = { requiredQuantity: '', selectedPrice: '', quantityExceeds: '' };
+
+        if (!requiredQuantity || requiredQuantity < 1) {
+            formIsValid = false;
+            errors.requiredQuantity = 'Please fill out this required field';
+        }
+
+        if (!selectedPrice) {
+            formIsValid = false;
+            errors.selectedPrice = 'Please select a price option';
+        }
+
+        // Check if required quantity exceeds available quantity
+        if (parseFloat(requiredQuantity) > parseFloat(threePiecePCRData.available_quantity)) {
+            formIsValid = false;
+            errors.quantityExceeds = 'Required quantity exceeds available quantity.';
+        }
+
+        setErrors(errors);
+        return formIsValid;
+    };
+
     const handleOrder = () => {
-        const token = localStorage.getItem('token');
+        if (!validateFields()) {
+            return; // Don't proceed if validation fails
+        }
+
+        const token = localStorage.getItem('token'); 
+        const { available_quantity, hsn } = threePiecePCRData;
 
         if (!token) {
+            // Handle unauthenticated user
             setTimeout(() => {
                 const alertDiv = document.createElement('div');
                 alertDiv.className = 'custom-alert';
@@ -100,24 +131,34 @@ const ThreePiecePCR = () => {
                         from: location.pathname,
                         threePiecePCRData: {
                             name: 'Three Piece PCR',
-                            available_quantity: threePiecePCRData.available_quantity,
+                            available_quantity,
                             price: threePiecePCRData.price,
                             required_quantity: requiredQuantity,
-                            hsn: threePiecePCRData.hsn,
+                            hsn,
                         }
                     }
                 });
             }, 0);
         } else {
+            // Proceed to Order page
             navigate('/Order', {
                 state: {
                     name: 'Three Piece PCR',
-                    available_quantity: threePiecePCRData.available_quantity,
+                    available_quantity,
                     price: threePiecePCRData.price,
                     required_quantity: requiredQuantity,
-                    hsn: threePiecePCRData.hsn,
+                    hsn,
                 },
             });
+        }
+    };
+
+    const handleRequiredQuantityChange = (event) => {
+        const value = event.target.value;
+        if (value < 1) {
+            setRequiredQuantity(1);
+        } else {
+            setRequiredQuantity(value);
         }
     };
 
@@ -152,7 +193,7 @@ const ThreePiecePCR = () => {
                 <div className="row specifications-row">
                     {/* Available Quantity */}
                     <div className="col-md-6">
-                        <label className="spec-label">AVAILABLE QUANTITY IN (MT) :</label>
+                        <label className="spec-label">AVAILABLE QUANTITY IN (MT):</label>
                         <span className="spec-value">
                             {Number(threePiecePCRData.available_quantity) > 0 ? threePiecePCRData.available_quantity : 'No Stock'}
                         </span>
@@ -173,34 +214,44 @@ const ThreePiecePCR = () => {
                     <input
                         type="number"
                         value={requiredQuantity}
-                        onChange={(e) => setRequiredQuantity(e.target.value)}
+                        onChange={handleRequiredQuantityChange}
                         placeholder="Enter required quantity"
                         className="form-control required-quantity-input"
                     />
+                    {errors.requiredQuantity && (
+                        <small className="text-danger">{errors.requiredQuantity}</small>
+                    )}
+                    {errors.quantityExceeds && (
+                        <small className="text-danger">{errors.quantityExceeds}</small>
+                    )}
                 </div>
 
                 <div className="row mt-3">
-                {/* Price Selection Dropdown */}
-                <div className="price-dropdown mt-1 col-md-6">
-                    <label className="spec-label">SELECT PRICE:</label>
-                    <select
-                        className="form-control"
-                        value={selectedPrice}
-                        onChange={handlePriceChange}
-                    ><option value="" disabled>
-                    Select a location
-                </option>
-                        <option value="ex_chennai">Ex-Chennai</option>
-                        <option value="ex_nhavasheva">Ex-Nhavasheva</option>
-                        <option value="ex_mundra">Ex-Mundra</option>
-                    </select>
-                </div>
+                    {/* Price Selection Dropdown */}
+                    <div className="price-dropdown mt-1 col-md-6">
+                        <label className="spec-label">SELECT PRICE:</label>
+                        <select
+                            className="form-control"
+                            value={selectedPrice}
+                            onChange={handlePriceChange}
+                        >
+                            <option value="" disabled>
+                                Select a location
+                            </option>
+                            <option value="ex_chennai">Ex-Chennai</option>
+                            <option value="ex_nhavasheva">Ex-Nhavasheva</option>
+                            <option value="ex_mundra">Ex-Mundra</option>
+                        </select>
+                        {errors.selectedPrice && (
+                            <small className="text-danger">{errors.selectedPrice}</small>
+                        )}
+                    </div>
 
                     {/* Price Per MT */}
                     <div className="col-md-6">
                         <label className="spec-label">PRICE PER (MT):</label>
                         <span className="spec-value">
-                        {selectedPrice ? `₹${threePiecePCRData[selectedPrice]}` : "Select a location"}
+                            {selectedPrice ? `₹${threePiecePCRData[selectedPrice]}` : 'Select a location'}
                         </span>
                     </div>
                 </div>
@@ -210,7 +261,7 @@ const ThreePiecePCR = () => {
                     <button
                         className="btn btn-primary"
                         onClick={handleOrder}
-                        disabled={Number(threePiecePCRData.available_quantity) === 0} // Ensure it's treated as a number
+                        disabled={Number(threePiecePCRData.available_quantity) === 0}
                     >
                         {Number(threePiecePCRData.available_quantity) > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
                     </button>

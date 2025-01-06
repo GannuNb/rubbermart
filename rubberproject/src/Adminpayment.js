@@ -205,14 +205,7 @@ function AdminPayment() {
     // Save PDF
     doc.save(`approval-details-${file._id}.pdf`);
   };
-  
-  
-  
-  
-  
-  
-  
-  
+
   if (loading) {
     return (
       <div className="text-center my-5">

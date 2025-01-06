@@ -469,7 +469,6 @@ const AdminPage = () => {
                             />
                         </Form.Group>
 
-                        
                         <Form.Group controlId="formPrice" className="mt-3">
                             <Form.Label>ex_nhavasheva</Form.Label>
                             <Form.Control
@@ -503,11 +502,10 @@ const AdminPage = () => {
                 </Modal.Body>
             </Modal>
 
-
+        </div>
 
         </div>
-   
-        </div></>
+        </>
     );
 };
 

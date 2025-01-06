@@ -17,8 +17,9 @@ const BaledTyresTBR = () => {
         hsn: '',
         default_price: 0,
     });
-    const [requiredQuantity, setRequiredQuantity] = useState(1);
+    const [requiredQuantity, setRequiredQuantity] = useState();
     const [selectedPrice, setSelectedPrice] = useState(''); // Default as empty to show "Select a location"
+    const [errors, setErrors] = useState({ requiredQuantity: '', selectedPrice: '', quantityExceeds: '' }); // Error states
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -29,18 +30,18 @@ const BaledTyresTBR = () => {
                 const response = await axios.get(`${process.env.REACT_APP_API_URL}/scrap`);
                 const items = response.data.scrap_items;
 
-                const mulchItem = items.find(item => item.name === 'Baled Tyres TBR');
+                const item = items.find(item => item.name === 'Baled Tyres TBR');
 
-                if (mulchItem) {
-                    const fetchedDefaultPrice = mulchItem.default_price || mulchItem.price || mulchItem.ex_chennai;
+                if (item) {
+                    const fetchedDefaultPrice = item.default_price || item.price || item.ex_chennai;
 
                     setMulchData({
-                        available_quantity: Number(mulchItem.available_quantity),
+                        available_quantity: Number(item.available_quantity),
                         price: fetchedDefaultPrice,
-                        ex_chennai: mulchItem.ex_chennai,
-                        ex_nhavasheva: mulchItem.ex_nhavasheva,
-                        ex_mundra: mulchItem.ex_mundra,
-                        hsn: mulchItem.hsn,
+                        ex_chennai: item.ex_chennai,
+                        ex_nhavasheva: item.ex_nhavasheva,
+                        ex_mundra: item.ex_mundra,
+                        hsn: item.hsn,
                         default_price: fetchedDefaultPrice,
                     });
                 }
@@ -73,8 +74,39 @@ const BaledTyresTBR = () => {
         }));
     };
 
+    // Validation of form fields
+    const validateFields = () => {
+        let formIsValid = true;
+        let errors = { requiredQuantity: '', selectedPrice: '', quantityExceeds: '' };
+
+        // Validate required quantity
+        if (!requiredQuantity || requiredQuantity <= 0) {
+            formIsValid = false;
+            errors.requiredQuantity = 'Please fill out this required field';
+        }
+
+        // Validate selected price
+        if (!selectedPrice) {
+            formIsValid = false;
+            errors.selectedPrice = 'Please select a price option';
+        }
+
+        // Check if required quantity exceeds available quantity
+        if (parseFloat(requiredQuantity) > parseFloat(mulchData.available_quantity)) {
+            formIsValid = false;
+            errors.quantityExceeds = 'Required quantity exceeds available quantity.';
+        }
+
+        setErrors(errors);
+        return formIsValid;
+    };
+
     // Handle Order Button Click
     const handleOrder = () => {
+        if (!validateFields()) {
+            return; // Don't proceed if validation fails
+        }
+
         const token = localStorage.getItem('token');
 
         if (!token) {
@@ -165,16 +197,30 @@ const BaledTyresTBR = () => {
                 </div>
 
                 {/* Required Quantity */}
-                <div className="required-quantity-section mt-3">
-                    <label className="spec-label">REQUIRED QUANTITY (MT):</label>
-                    <input
-                        type="number"
-                        value={requiredQuantity}
-                        onChange={(e) => setRequiredQuantity(e.target.value)}
-                        placeholder="Enter required quantity"
-                        className="form-control required-quantity-input"
-                    />
-                </div>
+<div className="required-quantity-section mt-3">
+    <label className="spec-label">REQUIRED QUANTITY (MT):</label>
+    <input
+        type="number"
+        value={requiredQuantity}
+        onChange={(e) => {
+            const value = e.target.value;
+            if (value < 0) {
+                setRequiredQuantity(0); // Reset to 0 if negative
+            } else {
+                setRequiredQuantity(value); // Update with valid input
+            }
+        }}
+        placeholder="Enter required quantity"
+        className="form-control required-quantity-input"
+    />
+    {errors.requiredQuantity && (
+        <small className="text-danger">{errors.requiredQuantity}</small>
+    )}
+    {errors.quantityExceeds && (
+        <small className="text-danger">{errors.quantityExceeds}</small>
+    )}
+</div>
+
 
                 <div className="row mt-3">
                     {/* Price Selection Dropdown */}
@@ -193,6 +239,9 @@ const BaledTyresTBR = () => {
                             <option value="ex_nhavasheva">Ex-Nhavasheva</option>
                             <option value="ex_mundra">Ex-Mundra</option>
                         </select>
+                        {errors.selectedPrice && (
+                            <small className="text-danger">{errors.selectedPrice}</small>
+                        )}
                     </div>
 
                     {/* Price Per MT */}

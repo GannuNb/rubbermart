@@ -87,6 +87,10 @@ const AdminOrderSchema = new mongoose.Schema(
       enum: ['Placed', 'Confirmed', 'Shipped', 'Delivered', 'Cancelled'],
       default: 'Placed',
     },
+    shippingAddress: {  // Add a new field for the shipping address
+      type: String,
+      required: true,  // Mark as required or optional depending on your needs
+    },
   },
   { timestamps: true }
 );

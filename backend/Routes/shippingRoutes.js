@@ -114,7 +114,7 @@ router.get('/shippinguser', async (req, res) => {
     const shippingDetails = await Shipping.find({ userId })
       .populate({
         path: 'orderId',
-        select: '_id items subtotal gst totalPrice',
+        select: '_id items subtotal gst totalPrice shippingAddress', // Make sure shippingAddress is selected
       })
       .select(
         'orderId invoiceId vehicleNumber selectedProduct quantity subtotal gst totalPrice shippingDate userId email itemDetails billPdf'
@@ -144,5 +144,6 @@ router.get('/shippinguser', async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
 
 module.exports = router;

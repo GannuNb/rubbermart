@@ -214,8 +214,9 @@ const Getorders = () => {
       doc.text(`Email: ${profile.email || 'N/A'}`, 14, 50);
 
       doc.text(`Address: ${profile.billAddress || 'N/A'}`, 14, 55);
-      // Shipping Info
-      doc.text(`Address: ${profile.shipAddress || 'N/A'}`, 110, 45);
+     
+      const shippingAddress = order.shippingAddress || 'N/A'; // Extract from order object
+    doc.text(`Address: ${shippingAddress}`, 110, 45);
     }
 
     // Order Section

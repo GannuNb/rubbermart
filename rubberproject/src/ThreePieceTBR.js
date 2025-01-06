@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import ThreePieceTBRImage from './images/ThreePieceTBR.jpeg'; // Ensure to have an image
-import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
-import { useNavigate, useLocation } from 'react-router-dom'; // useNavigate instead of useHistory
-import './Mulch.css'; // Import your CSS file
+import ThreePieceTBRImage from './images/ThreePieceTBR.jpeg';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { useNavigate, useLocation } from 'react-router-dom';
+import './Mulch.css';
 import logo1 from './images/logo.png';
 
 const ThreePieceTBR = () => {
@@ -17,9 +17,10 @@ const ThreePieceTBR = () => {
         hsn: '',
         default_price: 0, // Default price fetched from backend
     });
-    const [requiredQuantity, setRequiredQuantity] = useState(1);
-    const [selectedPrice, setSelectedPrice] = useState(''); // Store selected price option (ex_chennai, ex_nhavasheva, ex_mundra)
-    const navigate = useNavigate(); // Use useNavigate instead of useHistory
+    const [requiredQuantity, setRequiredQuantity] = useState('');
+    const [selectedPrice, setSelectedPrice] = useState('');
+    const [errors, setErrors] = useState({ requiredQuantity: '', selectedPrice: '', quantityExceeds: '' }); // Updated errors for validation
+    const navigate = useNavigate();
     const location = useLocation();
 
     useEffect(() => {
@@ -32,10 +33,8 @@ const ThreePieceTBR = () => {
                 const response = await axios.get(`${process.env.REACT_APP_API_URL}/scrap`);
                 const items = response.data.scrap_items;
 
-                // Find the ThreePieceTBR data
                 const tbrItem = items.find(item => item.name === 'Three Piece TBR');
 
-                // Ensure we have the TBR item and default price
                 if (tbrItem) {
                     const fetchedDefaultPrice = tbrItem.default_price || tbrItem.price || tbrItem.ex_chennai;
 
@@ -50,7 +49,7 @@ const ThreePieceTBR = () => {
                     });
                 }
 
-                setScrapItems(items); // You can still store all scrap items if needed
+                setScrapItems(items);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -74,7 +73,38 @@ const ThreePieceTBR = () => {
         }
     };
 
+    // Validation Function
+    const validateFields = () => {
+        let formIsValid = true;
+        let errors = { requiredQuantity: '', selectedPrice: '', quantityExceeds: '' };
+
+        // Required Quantity validation
+        if (!requiredQuantity || requiredQuantity <= 0) {
+            formIsValid = false;
+            errors.requiredQuantity = 'Please fill out this required field';
+        }
+
+        // Price selection validation
+        if (!selectedPrice) {
+            formIsValid = false;
+            errors.selectedPrice = 'Please select a price option';
+        }
+
+        // Check if required quantity exceeds available quantity
+        if (parseFloat(requiredQuantity) > parseFloat(tbrData.available_quantity)) {
+            formIsValid = false;
+            errors.quantityExceeds = 'Required quantity exceeds available quantity.';
+        }
+
+        setErrors(errors);
+        return formIsValid;
+    };
+
     const handleOrder = () => {
+        if (!validateFields()) {
+            return; // Don't proceed if validation fails
+        }
+
         const token = localStorage.getItem('token');
 
         if (!token) {
@@ -109,8 +139,8 @@ const ThreePieceTBR = () => {
                             price: tbrData.price,
                             required_quantity: requiredQuantity,
                             hsn: tbrData.hsn,
-                        }
-                    }
+                        },
+                    },
                 });
             }, 0);
         } else {
@@ -175,54 +205,63 @@ const ThreePieceTBR = () => {
                             REQUIRED QUANTITY IN (MT):
                         </label>
                         <input
-                            type="number"
-                            value={requiredQuantity}
-                            onChange={(e) => setRequiredQuantity(e.target.value)}
-                            placeholder="Enter required quantity"
-                            className="form-control required-quantity-input"
-                            style={{
-                                border: '1px solid #ccc',
-                                padding: '8px',
-                                marginTop: '5px',
-                                width: '48%',
-                            }}
-                        />
+    type="number"
+    value={requiredQuantity}
+    onChange={(e) => {
+        const value = e.target.value;
+        // Ensure the value is not negative
+        if (value < 0) {
+            setRequiredQuantity(0); // Reset to 0 if negative value is entered
+        } else {
+            setRequiredQuantity(value); // Otherwise, update the value
+        }
+    }}
+    placeholder="Enter required quantity"
+    className="form-control required-quantity-input"
+    style={{
+        border: '1px solid #ccc',
+        padding: '8px',
+        marginTop: '5px',
+        width: '48%',
+    }}
+/>
+
+                        {errors.requiredQuantity && (
+                            <small className="text-danger">{errors.requiredQuantity}</small>
+                        )}
+                        {errors.quantityExceeds && (
+                            <small className="text-danger">{errors.quantityExceeds}</small>
+                        )}
                     </div>
                 )}
 
-<div className="row mt-3">
-    {/* Price Selection Dropdown */}
-    <div className="price-dropdown col-md-6">
-        <label className="spec-label">SELECT PRICE:</label>
-        <select
-            className="form-control"
-            value={selectedPrice}
-            onChange={handlePriceChange}
-        >
-            {/* Placeholder option */}
-            <option value="" disabled>
-                Select a location
-            </option>
-            <option value="ex_chennai">Ex-Chennai</option>
-            <option value="ex_nhavasheva">Ex-Nhavasheva</option>
-            <option value="ex_mundra">Ex-Mundra</option>
-        </select>
-    </div>
+                <div className="row mt-3">
+                    {/* Price Selection Dropdown */}
+                    <div className="price-dropdown col-md-6">
+                        <label className="spec-label">SELECT PRICE:</label>
+                        <select
+                            className="form-control"
+                            value={selectedPrice}
+                            onChange={handlePriceChange}
+                        >
+                            <option value="" disabled>Select a location</option>
+                            <option value="ex_chennai">Ex-Chennai</option>
+                            <option value="ex_nhavasheva">Ex-Nhavasheva</option>
+                            <option value="ex_mundra">Ex-Mundra</option>
+                        </select>
+                        {errors.selectedPrice && (
+                            <small className="text-danger">{errors.selectedPrice}</small>
+                        )}
+                    </div>
 
-    {/* Price Per MT */}
-    <div className="col-md-6">
-        <label 
-            className="spec-label" 
-            style={{ color: 'black', fontWeight: 'bold' }}
-        >
-            PRICE PER (MT):
-        </label>
-        <span className="spec-value d-block p-2 border rounded bg-light">
-            {selectedPrice ? `₹${tbrData[selectedPrice]}` : "Select a location"}
-        </span>
-    </div>
-</div>
-
+                    {/* Price Per MT */}
+                    <div className="col-md-6">
+                        <label className="spec-label" style={{ color: 'black', fontWeight: 'bold' }}>PRICE PER (MT):</label>
+                        <span className="spec-value d-block p-2 border rounded bg-light">
+                            {selectedPrice ? `₹${tbrData[selectedPrice]}` : "Select a location"}
+                        </span>
+                    </div>
+                </div>
 
                 {/* Order Button */}
                 <div className="order-button-section mt-3">

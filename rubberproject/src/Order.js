@@ -35,6 +35,10 @@ const Order = () => {
   const [additionalItems, setAdditionalItems] = useState([]);
   const [selectedProductPrice, setSelectedProductPrice] = useState('');
   const [orderItems, setOrderItems] = useState([]);
+  const [isSameAsBilling, setIsSameAsBilling] = useState(false); // Checkbox state
+  const [shippingAddress, setShippingAddress] = useState(''); // Manual inp
+  const [billingAddress, setBillingAddress] = useState('');
+
 
   // Reset the selected price when the product is deselected
   const resetForm = () => {
@@ -61,6 +65,22 @@ const Order = () => {
 
     fetchData();
   }, []);
+
+
+  const handleCheckboxChange = () => {
+    setIsSameAsBilling(!isSameAsBilling);
+    if (!isSameAsBilling) {
+      setShippingAddress(profile?.billAddress || ''); // Copy billing address to shipping address
+    } else {
+      setShippingAddress(''); // Clear input if unchecked
+    }
+  };
+  
+
+  // Handle manual shipping address input
+  const handleShippingAddressChange = (e) => {
+    setShippingAddress(e.target.value);
+  };
 
 
   const handleAddClick = () => {
@@ -197,128 +217,139 @@ const Order = () => {
               ))}
             </tbody>
             <tfoot>
-              {/* Additional Items Section */}
-              <div className="additional-items mt-4">
-                <button
-                  className="add-button mb-3"
-                  onClick={handleAddClick}
-                >
-                  + {/* Large plus sign */}
-                </button>
+  
+  {/* Additional Items Section */}
+<div className="additional-items mt-4">
+  <button
+    className="add-button mb-3"
+    onClick={handleAddClick}
+  >
+    + {/* Large plus sign */}
+  </button>
 
-                {showDropdown && (
-                  <div className="dropdown-container p-4 border rounded shadow-lg bg-light">
-                    <h5 className="mb-3">Select Category & Product</h5>
+  {showDropdown && (
+    <div className="dropdown-container p-4 border rounded shadow-lg bg-light">
+      <h5 className="mb-3">Select Category & Product</h5>
 
-                    {/* Category Dropdown */}
-                    <div className="mb-3">
-                      <label className="form-label">Select Category</label>
-                      <select
-                        className="form-select"
-                        onChange={(e) => handleCategorySelect(e.target.value)}
-                        value={selectedCategory}
-                      >
-                        <option value="">Choose Category</option>
-                        <option value="Tyre scrap">Tyre Scrap</option>
-                        <option value="Tyre steel scrap">Tyre Steel Scrap</option>
-                        <option value="Pyro Oil">Pyro Oil</option>
-                      </select>
-                    </div>
+      {/* Category Dropdown */}
+      <div className="mb-3">
+        <label className="form-label">Select Category</label>
+        <select
+          className="form-select"
+          onChange={(e) => handleCategorySelect(e.target.value)}
+          value={selectedCategory}
+        >
+          <option value="">Choose Category</option>
+          <option value="Tyre scrap">Tyre Scrap</option>
+          <option value="Tyre steel scrap">Tyre Steel Scrap</option>
+          <option value="Pyro Oil">Pyro Oil</option>
+        </select>
+      </div>
 
-                                          {selectedCategory && (
-                        <div className="mb-3">
-                          <label className="form-label">Select Product</label>
-                          <select
-                            className="form-select"
-                            onChange={(e) => {
-                              const product = JSON.parse(e.target.value);
-                              handleProductSelect(product);
-                            }}
-                          >
-                            <option value="">Select a product</option>
-                            {(selectedCategory === 'Tyre scrap' ? tyreScrapItems :
-                              selectedCategory === 'Tyre steel scrap' ? tyreSteelScrapItems :
-                              selectedCategory === 'Pyro Oil' ? PyrooilItem :
-                              []).map((product) => (
-                              <option
-                                key={product.id}
-                                value={JSON.stringify(product)}
-                                disabled={product.available_quantity === 0 || product.available_quantity === "No Stock"}
-                              >
-                                {product.name} 
-                                {product.quantity === 0 || product.quantity === "No Stock" ? ' (Out of stock)' : ''}
-                              </option>
-                            ))}
-                          </select>
-                          </div>
-                      )}
+      {selectedCategory && (
+        <div className="mb-3">
+          <label className="form-label">Select Product</label>
+          <select
+            className="form-select"
+            onChange={(e) => {
+              const product = JSON.parse(e.target.value);
+              handleProductSelect(product);
+            }}
+          >
+            <option value="">Select a product</option>
+            {(selectedCategory === 'Tyre scrap' ? tyreScrapItems :
+              selectedCategory === 'Tyre steel scrap' ? tyreSteelScrapItems :
+                selectedCategory === 'Pyro Oil' ? PyrooilItem :
+                  []).map((product) => (
+                    <option
+                      key={product.id}
+                      value={JSON.stringify(product)}
+                      disabled={product.available_quantity === 0 || product.available_quantity === "No Stock"}
+                    >
+                      {product.name}
+                      {product.quantity === 0 || product.quantity === "No Stock" ? ' (Out of stock)' : ''}
+                    </option>
+                  ))}
+          </select>
+        </div>
+      )}
 
+      {selectedProduct && (
+        <div className="mb-3">
+          <label className="form-label">
+            Select Price:
+          </label>
+          <select
+            className="form-select"
+            value={selectedProductPrice || 'default'}
+            onChange={(e) => setSelectedProductPrice(e.target.value)}
+          >
+            <option value="default">
+              Default Price: ₹{selectedProduct.price || 'Not available'}
+            </option>
+            {selectedProduct.ex_chennai && (
+              <option value="ex_chennai">Ex-Chennai: ₹{selectedProduct.ex_chennai}</option>
+            )}
+            {selectedProduct.ex_nhavasheva && (
+              <option value="ex_nhavasheva">Ex-Nhavasheva: ₹{selectedProduct.ex_nhavasheva}</option>
+            )}
+            {selectedProduct.ex_mundra && (
+              <option value="ex_mundra">Ex-Mundra: ₹{selectedProduct.ex_mundra}</option>
+            )}
+          </select>
 
-        {selectedProduct && (
+          <div className="mt-2">
+            <strong>
+              Selected Price: ₹
+              {selectedProductPrice && selectedProduct[selectedProductPrice]
+                ? selectedProduct[selectedProductPrice]
+                : selectedProduct.price || 'Please select a price'}
+            </strong>
+          </div>
+        </div>
+      )}
+
+      {/* Quantity Input and Add Button */}
+      {selectedProduct && (
+        <>
+          <h5 className="mt-4">Enter Quantity</h5>
           <div className="mb-3">
-            <label className="form-label">Select Price:</label>
-            <select
-              className="form-select"
-              value={selectedProductPrice || 'default'}
-              onChange={(e) => setSelectedProductPrice(e.target.value)}
-            >
-              <option value="default">Select a Location</option>
-              {selectedProduct.ex_chennai && (
-                <option value="ex_chennai">Ex-Chennai: ₹{selectedProduct.ex_chennai}</option>
-              )}
-              {selectedProduct.ex_nhavasheva && (
-                <option value="ex_nhavasheva">Ex-Nhavasheva: ₹{selectedProduct.ex_nhavasheva}</option>
-              )}
-              {selectedProduct.ex_mundra && (
-                <option value="ex_mundra">Ex-Mundra: ₹{selectedProduct.ex_mundra}</option>
-              )}
-            </select>
-
-            {selectedProductPrice && selectedProduct[selectedProductPrice] && (
-              <div className="mt-2">
-                <strong>Selected Price: ₹{selectedProduct[selectedProductPrice]}</strong>
+            <input
+              type="number"
+              className="form-control"
+              placeholder="Quantity (tons)"
+              value={additionalQuantity}
+              onChange={handleQuantityChange}
+            />
+            {/* Show error message below input if quantity exceeds available quantity */}
+            {additionalQuantity > selectedProduct.available_quantity && (
+              <div className="text-danger mt-2">
+                Error: Entered quantity exceeds available stock. Available stock: {selectedProduct.available_quantity} tons.
               </div>
-        )}
+            )}
+          </div>
+
+          <button
+            className="btn btn-success"
+            onClick={addToOrder}
+            style={{ width: '100%' }}
+            disabled={additionalQuantity > selectedProduct.available_quantity}  // Disable button if quantity exceeds available stock
+          >
+            Add to Order
+          </button>
+
+          <div style={{ marginTop: '20px' }}>
+            {orderItems.map((item, index) => (
+              <div key={index}>
+                {item.product.name} - Quantity: {item.quantity} - Price: {item.price}
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  )}
 </div>
-)}
-
-                    {/* Quantity Input and Add Button */}
-                    {selectedProduct && (
-                      <>
-                        <h5 className="mt-4">Enter Quantity</h5>
-                        <div className="mb-3">
-                          <input
-                            type="number"
-                            className="form-control"
-                            placeholder="Quantity (tons)"
-                            value={additionalQuantity}
-                            onChange={handleQuantityChange}
-                          />
-                        </div>
-
-                        <button
-                          className="btn btn-success"
-                          onClick={addToOrder}
-                          style={{ width: '100%' }}
-                        >
-                          Add to Order
-                        </button>
-
-                        <div style={{ marginTop: '20px' }}>
-                          {orderItems.map((item, index) => (
-                            <div key={index}>
-                              {item.product.name} - Quantity: {item.quantity} - Price: {item.price}
-                            </div>
-                          ))}
-                        </div>
-
-                      </>
-                    )}
-
-                  </div>
-                )}
-              </div>
-
               <tr>
                 <td colSpan="4" className="text-right"><strong>Subtotal:</strong></td>
                 <td>₹{subtotal.toFixed(2)}</td>
@@ -477,8 +508,15 @@ const Order = () => {
       doc.text(`Address: ${profile.billAddress || 'N/A'}`, 14, 50);
 
 
-      // Shipping Info
-      doc.text(`Address: ${profile.shipAddress || 'N/A'}`, 110, 45);
+      let finalShippingAddress = '';
+
+      if (isSameAsBilling) {
+        finalShippingAddress = profile?.billAddress || 'N/A'; // If checkbox checked, use billing address
+      } else {
+        finalShippingAddress = shippingAddress || 'N/A'; // Use manual shipping address
+      }
+    
+      doc.text(`Address: ${finalShippingAddress}`, 110, 45);
     }
 
     // Products Section
@@ -563,18 +601,6 @@ doc.text('Above EasyBuy Beside Nagole RTO Office,', 14, addressY + 35);
 doc.text('Nagole Hyderabad, Telangana-500035', 14, addressY + 40);
 doc.text('Hyderabad.', 14, addressY + 45);
 
-// Shipping Info Section
-// doc.setFont('helvetica', 'bold');
-// doc.text('Shipping Information', 110, addressY + 10);
-// doc.setFont('helvetica', 'normal');
-// doc.text('To:', 110, addressY + 15);
-
-// const shipAddress = profile?.shipAddress || 'N/A';
-// const shipAddressLines = shipAddress.split(',');
-// let shipAddressY = addressY + 20;
-// shipAddressLines.forEach((line, index) => {
-//   doc.text(line, 110, shipAddressY + (index * 5));
-// });
 
 // Banking Details Section in Horizontal Layout
 const bankingY = addressY + 55; // Position for Banking Section
@@ -646,14 +672,15 @@ doc.text(
   const handleOrder = async () => {
     try {
       setLoadingButton(true);
-
+  
       const token = localStorage.getItem('token');
       if (!token) {
         displayAlert('User not authenticated.', 'danger');
         navigate('/', { replace: true });
         return;
       }
-
+  
+      // Declare baseItem properly
       const baseItem = {
         name,
         price,
@@ -661,38 +688,50 @@ doc.text(
         quantity: required_quantity,
         total: price * required_quantity,
       };
-
+  
       const allItems = [baseItem, ...additionalItems];
-
+  
       const isValidOrder = allItems.every(item =>
         item.name && item.quantity && item.total && item.price && item.hsn
       );
-
+  
       if (!isValidOrder) {
         displayAlert('Order validation failed: Missing required fields in some items.', 'danger');
         setLoadingButton(false);
         return;
       }
-
-      const storeInAnotherDbResponse = await axios.post(
+  
+      // Include shipping address
+      const orderData = {
+        items: allItems,
+        billingAddress: profile?.billAddress || '',
+        shippingAddress: isSameAsBilling ? (profile?.billAddress || '') : shippingAddress,
+        isSameAsBilling,
+      };
+  
+      console.log('Order Data:', orderData); // Verify data in console
+  
+      const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/Adminorder`,
-        { items: allItems },
+        orderData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
-      if (storeInAnotherDbResponse.status === 200) {
+  
+      if (response.status === 200) {
+        // Generate PDF after successful order creation
         const pdfBlob = generatePDF();
-
+  
         const formData = new FormData();
         formData.append('pdf', pdfBlob, 'order-summary.pdf');
         formData.append('userEmail', profile?.email);
-
+  
+        // Call the second API to send the PDF to the backend
         const emailResponse = await axios.post(
           `${process.env.REACT_APP_API_URL}/api/upload-pdf`,
           formData,
           { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' } }
         );
-
+  
         if (emailResponse.status === 200) {
           displayAlert('Order placed successfully, and invoice emailed!', 'success');
           setTimeout(() => {
@@ -712,9 +751,15 @@ doc.text(
       console.error('Error placing order:', err);
       displayAlert('An error occurred while placing the order.', 'danger');
     } finally {
-      setLoadingButton(false); // Reset the button loading state
+      setLoadingButton(false);
     }
   };
+  
+  
+  
+  
+  
+  
 
   // Helper function to display alerts
   const displayAlert = (message, type) => {
@@ -752,37 +797,54 @@ doc.text(
             </div>
           </div>
 
-          {/* Business Profile Details Heading */}
-          <h4 className="text-center mb-4 text-secondary font-weight-semibold">Business Profile Details</h4>
-
-          {/* Business Profile Details in Row */}
+    {/* Business Profile Details */}
+    <h4 className="text-center mb-4 text-secondary font-weight-semibold">Business Profile Details</h4>
           <div className="row">
-            {/* Left Aligned Content */}
             <div className="col-md-6">
-              <div className="mb-3">
-                <p><strong>Company Name:</strong> {profile?.companyName || "N/A"}</p>
-              </div>
-              <div className="mb-3">
-                <p><strong>Phone:</strong> {profile?.phoneNumber || "N/A"}</p>
-              </div>
-              <div className="mb-3">
-                <p><strong>Email:</strong> {profile?.email || "N/A"}</p>
-              </div>
-              <div className="mb-3">
-                <p><strong>GST:</strong> {profile?.gstNumber || "N/A"}</p>
-              </div>
-              <div className="mb-3">
-                <p><strong>Billing Address:</strong> {profile?.billAddress || "N/A"}</p>
-              </div>
-            </div>
-
-            {/* Shipping Address on Right */}
-            <div className="col-md-6">
-              <div className="mb-3">
-                <p><strong>Shipping Address:</strong> {profile?.shipAddress || "N/A"}</p>
-              </div>
+              <p><strong>Company Name:</strong> {profile?.companyName || "N/A"}</p>
+              <p><strong>Phone:</strong> {profile?.phoneNumber || "N/A"}</p>
+              <p><strong>Email:</strong> {profile?.email || "N/A"}</p>
+              <p><strong>GST:</strong> {profile?.gstNumber || "N/A"}</p>
+              <p><strong>Billing Address:</strong> {profile?.billAddress || "N/A"}</p>
             </div>
           </div>
+
+
+
+{/* Shipping Address Section */}
+<hr className="my-4" />
+<h5 className="mb-3">Shipping Details</h5>
+
+{/* Checkbox Section with Heading */}
+<div className="mb-3">
+  <h6 className="mb-2">Same as Billing Address</h6>
+  <div className="form-check">
+    <input
+      type="checkbox"
+      className="form-check-input"
+      id="sameAsBilling"
+      checked={isSameAsBilling}
+      onChange={handleCheckboxChange}
+    />
+    <label className="form-check-label" htmlFor="sameAsBilling"></label>
+  </div>
+</div>
+
+{/* Shipping Address Input */}
+<div className="mb-3">
+  <label htmlFor="shippingAddress" className="form-label">Shipping Address</label>
+  <textarea
+    id="shippingAddress"
+    className="form-control"
+    rows="3"
+    value={shippingAddress}
+    onChange={handleShippingAddressChange}
+    placeholder="Enter Shipping Address"
+    disabled={isSameAsBilling}
+  ></textarea>
+</div>
+
+
 
           <hr className="my-4" />
 

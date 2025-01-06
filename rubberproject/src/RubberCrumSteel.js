@@ -3,7 +3,6 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './Mulch.css';
-import RubberCrumSteelImage1 from './images/RubberCrumSteel1.jpg';
 import rubbercrumimg1 from "./images/rubbercrumbtw3.jpg";
 import logo1 from './images/logo.png';
 
@@ -16,9 +15,15 @@ const RubberCrumSteel = () => {
         ex_nhavasheva: 0,
         ex_mundra: 0,
         hsn: '',
+        default_price: 0,
     });
-    const [requiredQuantity, setRequiredQuantity] = useState(1);
-    const [selectedPrice, setSelectedPrice] = useState('default'); // Set default selection
+    const [requiredQuantity, setRequiredQuantity] = useState('');
+    const [selectedPrice, setSelectedPrice] = useState(''); // Default as empty
+    const [errors, setErrors] = useState({
+        requiredQuantity: '',
+        selectedPrice: '',
+        quantityExceeds: '' // To track if quantity exceeds available stock
+    });
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -28,16 +33,19 @@ const RubberCrumSteel = () => {
                 const response = await axios.get(`${process.env.REACT_APP_API_URL}/scrap`);
                 const items = response.data.scrap_items;
 
+                // Find the Rubber Crum Steel data
                 const rubberItem = items.find(item => item.name === 'Rubber Crum Steel');
 
                 if (rubberItem) {
+                    const fetchedDefaultPrice = rubberItem.default_price || rubberItem.price || rubberItem.ex_chennai;
                     setRubberData({
                         available_quantity: Number(rubberItem.available_quantity),
-                        price: rubberItem.price,
+                        price: rubberItem.price, 
                         ex_chennai: rubberItem.ex_chennai,
                         ex_nhavasheva: rubberItem.ex_nhavasheva,
                         ex_mundra: rubberItem.ex_mundra,
                         hsn: rubberItem.hsn,
+                        default_price: fetchedDefaultPrice,
                     });
                 }
 
@@ -53,12 +61,54 @@ const RubberCrumSteel = () => {
     const handlePriceChange = (event) => {
         const selectedOption = event.target.value;
         setSelectedPrice(selectedOption);
+
+        // Update price based on the selected location
+        if (selectedOption === 'ex_chennai') {
+            setRubberData(prevState => ({ ...prevState, price: prevState.ex_chennai }));
+        } else if (selectedOption === 'ex_nhavasheva') {
+            setRubberData(prevState => ({ ...prevState, price: prevState.ex_nhavasheva }));
+        } else if (selectedOption === 'ex_mundra') {
+            setRubberData(prevState => ({ ...prevState, price: prevState.ex_mundra }));
+        } else if (selectedOption === 'default') {
+            setRubberData(prevState => ({ ...prevState, price: prevState.default_price }));
+        }
     };
 
+    // Validate form fields
+    const validateFields = () => {
+        let formIsValid = true;
+        let errors = { requiredQuantity: '', selectedPrice: '', quantityExceeds: '' };
+
+        if (!requiredQuantity || requiredQuantity <= 0) {
+            formIsValid = false;
+            errors.requiredQuantity = 'Please fill out this required field';
+        }
+
+        if (!selectedPrice) {
+            formIsValid = false;
+            errors.selectedPrice = 'Please select a price option';
+        }
+
+        // Check if required quantity exceeds available quantity
+        if (parseFloat(requiredQuantity) > parseFloat(rubberData.available_quantity)) {
+            formIsValid = false;
+            errors.quantityExceeds = 'Required quantity exceeds available quantity.';
+        }
+
+        setErrors(errors);
+        return formIsValid;
+    };
+
+    // Handle order submission
     const handleOrder = () => {
+        if (!validateFields()) {
+            return; // Don't proceed if validation fails
+        }
+
         const token = localStorage.getItem('token');
 
         if (!token) {
+            // Show alert and redirect to login
             setTimeout(() => {
                 const alertDiv = document.createElement('div');
                 alertDiv.className = 'custom-alert';
@@ -95,6 +145,7 @@ const RubberCrumSteel = () => {
                 });
             }, 0);
         } else {
+            // Proceed to the order page with the necessary data
             navigate('/Order', {
                 state: {
                     name: 'Rubber Crum Steel',
@@ -106,6 +157,10 @@ const RubberCrumSteel = () => {
             });
         }
     };
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
     return (
         <div className="mulch-container" style={{ padding: '20px', marginTop: '20px', marginLeft: '180px' }}>
@@ -133,7 +188,6 @@ const RubberCrumSteel = () => {
                 <div className="row specifications-row">
                     <div className="col-md-6">
                         <label className="spec-label">AVAILABLE QUANTITY IN (MT):</label>
-
                         <span className="spec-value">
                             {Number(rubberData.available_quantity) > 0 ? rubberData.available_quantity : 'No Stock'}
                         </span>
@@ -141,9 +195,7 @@ const RubberCrumSteel = () => {
 
                     <div className="col-md-6">
                         <label className="spec-label">HSN:</label>
-                        <span className="spec-value">
-                            {rubberData.hsn}
-                        </span>
+                        <span className="spec-value">{rubberData.hsn}</span>
                     </div>
                 </div>
 
@@ -152,10 +204,18 @@ const RubberCrumSteel = () => {
                     <input
                         type="number"
                         value={requiredQuantity}
-                        onChange={(e) => setRequiredQuantity(e.target.value)}
+                        onChange={(e) => {
+                            // Only update if the value is not negative
+                            if (e.target.value >= 0 || e.target.value === '') {
+                                setRequiredQuantity(e.target.value);
+                            }
+                        }}
                         placeholder="Enter required quantity"
                         className="form-control required-quantity-input"
+                        min="0" // Ensure input cannot go below 0
                     />
+                    {errors.requiredQuantity && <small className="text-danger">{errors.requiredQuantity}</small>}
+                    {errors.quantityExceeds && <small className="text-danger">{errors.quantityExceeds}</small>}
                 </div>
 
                 <div className="row mt-3">
@@ -165,20 +225,19 @@ const RubberCrumSteel = () => {
                             className="form-control"
                             value={selectedPrice}
                             onChange={handlePriceChange}
-                            defaultValue="default" // Setting default value here
                         >
-                            <option value="default" disabled>
-                                Select a location
-                            </option>
+                            <option value="" disabled>Select a location</option>
                             <option value="ex_chennai">Ex-Chennai</option>
                             <option value="ex_nhavasheva">Ex-Nhavasheva</option>
                             <option value="ex_mundra">Ex-Mundra</option>
                         </select>
+                        {errors.selectedPrice && <small className="text-danger">{errors.selectedPrice}</small>}
                     </div>
+
                     <div className="col-md-6">
                         <label className="spec-label">PRICE PER (MT):</label>
                         <span className="spec-value">
-                            {selectedPrice && selectedPrice !== 'default' ? `₹${rubberData[selectedPrice]}` : "Price"}
+                            {selectedPrice ? `₹${rubberData[selectedPrice]}` : "Price"}
                         </span>
                     </div>
                 </div>

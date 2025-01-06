@@ -17,8 +17,9 @@ const RubberGranules = () => {
         hsn: '',
         default_price: 0,
     });
-    const [requiredQuantity, setRequiredQuantity] = useState(1);
+    const [requiredQuantity, setRequiredQuantity] = useState();
     const [selectedPrice, setSelectedPrice] = useState('');
+    const [errors, setErrors] = useState({ requiredQuantity: '', selectedPrice: '', quantityExceeds: '' }); // To track errors
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -68,7 +69,37 @@ const RubberGranules = () => {
         }
     };
 
+    const validateFields = () => {
+        let formIsValid = true;
+        let errors = { requiredQuantity: '', selectedPrice: '', quantityExceeds: '' };
+
+        // Validate required quantity
+        if (!requiredQuantity || requiredQuantity <= 0) {
+            formIsValid = false;
+            errors.requiredQuantity = 'Please fill Out this Required Field';
+        }
+
+        // Validate selected price
+        if (!selectedPrice) {
+            formIsValid = false;
+            errors.selectedPrice = 'Please select a price option';
+        }
+
+        // Validate if the required quantity exceeds available quantity
+        if (parseFloat(requiredQuantity) > parseFloat(rubberData.available_quantity)) {
+            formIsValid = false;
+            errors.quantityExceeds = 'Required quantity exceeds available quantity.';
+        }
+
+        setErrors(errors);
+        return formIsValid;
+    };
+
     const handleOrder = () => {
+        if (!validateFields()) {
+            return; // Don't proceed if validation fails
+        }
+
         const token = localStorage.getItem('token');
 
         if (!token) {
@@ -157,11 +188,7 @@ const RubberGranules = () => {
                             <span className="spec-value">
                                 {Number(rubberData.available_quantity) > 0 ? rubberData.available_quantity : 'No Stock'}
                             </span>
-
                         </div>
-
-
-
 
                         {/* HSN */}
                         <div className="col-md-6">
@@ -172,50 +199,63 @@ const RubberGranules = () => {
                         </div>
                     </div>
 
-                    {/* Required Quantity Section */}
                     <div className="required-quantity-section mt-3">
                         <label className="spec-label">REQUIRED QUANTITY IN (MT):</label>
                         <input
                             type="number"
                             value={requiredQuantity}
-                            onChange={(e) => setRequiredQuantity(e.target.value)}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                if (value < 0) {
+                                    setRequiredQuantity(0); // Reset to 0 if negative
+                                } else {
+                                    setRequiredQuantity(value); // Update with valid input
+                                }
+                            }}
                             placeholder="Enter required quantity"
                             className="form-control required-quantity-input"
                         />
+                        {errors.requiredQuantity && (
+                            <small className="text-danger">{errors.requiredQuantity}</small>
+                        )}
+                        {errors.quantityExceeds && (
+                            <small className="text-danger">{errors.quantityExceeds}</small>
+                        )}
                     </div>
+
                     <div className="row mt-3">
-                    {/* Price Selection Dropdown */}
-                    <div className="price-dropdown col-md-6">
-                        <label className="spec-label">SELECT PRICE:</label>
-                        <select
-                            className="form-control"
-                            value={selectedPrice}
-                            onChange={handlePriceChange} // Use the handler for price change
-                        >
-                            {/* Placeholder option */}
-                            <option value="" disabled>
-                                Select a location
-                            </option>
-                            <option value="ex_chennai">Ex-Chennai</option>
-                            <option value="ex_nhavasheva">Ex-Nhavasheva</option>
-                            <option value="ex_mundra">Ex-Mundra</option>
-                        </select>
+                        {/* Price Selection Dropdown */}
+                        <div className="price-dropdown col-md-6">
+                            <label className="spec-label">SELECT PRICE:</label>
+                            <select
+                                className="form-control"
+                                value={selectedPrice}
+                                onChange={handlePriceChange}
+                            >
+                                <option value="" disabled>Select a location</option>
+                                <option value="ex_chennai">Ex-Chennai</option>
+                                <option value="ex_nhavasheva">Ex-Nhavasheva</option>
+                                <option value="ex_mundra">Ex-Mundra</option>
+                            </select>
+                            {errors.selectedPrice && (
+                                <small className="text-danger">{errors.selectedPrice}</small>
+                            )}
+                        </div>
+                        {/* Price Per MT */}
+                        <div className="col-md-6">
+                            <label className="spec-label">PRICE PER (MT):</label>
+                            <span className="spec-value">
+                                {selectedPrice ? `₹${rubberData[selectedPrice]}` : "Select a location"}
+                            </span>
+                        </div>
                     </div>
-                    {/* Price Per MT */}
-                    <div className="col-md-6">
-                        <label className="spec-label">PRICE PER (MT):</label>
-                        <span className="spec-value">
-                            {selectedPrice ? `₹${rubberData[selectedPrice]}` : "Select a location"}
-                        </span>
-                    </div>
-                    </div>
+
                     {/* Order Button */}
                     <div className="order-button-section mt-3">
-
                         <button
                             className="btn btn-primary"
                             onClick={handleOrder}
-                            disabled={Number(rubberData.available_quantity) === 0} // Ensure it's treated as a number
+                            disabled={Number(rubberData.available_quantity) === 0}
                         >
                             {Number(rubberData.available_quantity) > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
                         </button>

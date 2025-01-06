@@ -142,7 +142,7 @@ router.get('/adminorders', authenticate, async (req, res) => {
 router.post('/Adminorder', authenticate, async (req, res) => {
   console.log('Received order request:', req.body);
   try {
-    const items = req.body.items;
+    const { items, billingAddress, shippingAddress, isSameAsBilling } = req.body;
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       console.log('Validation failed: Missing or invalid items array');
@@ -158,51 +158,55 @@ router.post('/Adminorder', authenticate, async (req, res) => {
     for (const item of items) {
       const { name: itemName, quantity: requiredQuantity, price: pricePerTon } = item;
 
-      // Validate that price and quantity are present
+      // Validate item properties
       if (!itemName || !requiredQuantity || !pricePerTon) {
         console.log('Validation failed: Missing itemName, requiredQuantity, or price');
         return res.status(400).json({ message: 'Each item must have a name, required quantity, and price' });
       }
 
-      // Find the scrap item from the database for validation of availability
+      // Find the scrap item
       const scrapItem = await ScrapItem.findOne({ name: itemName });
       if (!scrapItem) {
         console.log(`Scrap item not found: ${itemName}`);
         return res.status(404).json({ message: `Scrap item not found: ${itemName}` });
       }
 
-      console.log(`Scrap item found: ${scrapItem.name}, Available: ${scrapItem.available_quantity}`);
-
-      // Check if there's enough quantity available
+      // Check availability
       if (scrapItem.available_quantity < requiredQuantity) {
         console.log(`Insufficient quantity for ${itemName}: Requested ${requiredQuantity}, Available ${scrapItem.available_quantity}`);
         return res.status(400).json({ message: `Insufficient quantity available for ${itemName}` });
       }
 
-      // Calculate the subtotal, GST, and total price using the provided price
+      // Calculate subtotal, GST, and total price
       const subtotal = pricePerTon * requiredQuantity;
       const gst = subtotal * 0.18;
       const itemTotalPrice = subtotal + gst;
-
-      console.log(`Order Calculation for ${itemName} - Subtotal: ${subtotal}, GST: ${gst}, Total: ${itemTotalPrice}`);
 
       totalSubtotal += subtotal;
       totalGST += gst;
       totalPrice += itemTotalPrice;
 
-      // Update the remaining quantity in ScrapItem
       scrapItem.available_quantity -= requiredQuantity;
       await scrapItem.save();
 
-      // Add the item to processed items list
       processedItems.push({
         name: itemName,
         price: pricePerTon,
         quantity: requiredQuantity,
         total: itemTotalPrice,
-        remainingQuantity: scrapItem.available_quantity, // Store updated remaining quantity
+        remainingQuantity: scrapItem.available_quantity,
       });
     }
+
+    // Determine final shipping address
+    const finalShippingAddress = isSameAsBilling ? billingAddress : shippingAddress;
+
+    // Ensure finalShippingAddress is validated
+    if (!finalShippingAddress || finalShippingAddress.trim() === '') {
+      console.log('Validation failed: Shipping address is required');
+      return res.status(400).json({ message: 'Shipping address is required' });
+    }
+    
 
     // Create a new order in Adminorder collection
     const newOrder = new Adminorder({
@@ -211,6 +215,9 @@ router.post('/Adminorder', authenticate, async (req, res) => {
       subtotal: totalSubtotal,
       gst: totalGST,
       totalPrice: totalPrice,
+      billingAddress,
+      shippingAddress: finalShippingAddress,
+      isSameAsBilling
     });
 
     await newOrder.save();
@@ -229,6 +236,8 @@ router.post('/Adminorder', authenticate, async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
+
 
 
 router.get('/admin/orders', async (req, res) => {

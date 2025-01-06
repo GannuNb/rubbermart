@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import MultipleBaledTyresPCRImage from './images/MultipleBaledTyresPCR.jpeg'; // Ensure to have an image for multiple baled tyres
+import MultipleBaledTyresPCRImage from './images/MultipleBaledTyresPCR.jpeg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './Mulch.css'; // Import your CSS file
@@ -17,8 +17,10 @@ const Multiple_Baled_Tyres_PCR = () => {
         hsn: '',
         default_price: 0,
     });
-    const [requiredQuantity, setRequiredQuantity] = useState(1);
+    const [requiredQuantity, setRequiredQuantity] = useState(); // Start with 1
     const [selectedPrice, setSelectedPrice] = useState(''); // Store selected price option
+    const [formErrors, setFormErrors] = useState({}); // To store validation errors
+    const [quantityExceeds, setQuantityExceeds] = useState(''); // New error state for quantity exceeding
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -44,7 +46,6 @@ const Multiple_Baled_Tyres_PCR = () => {
                         hsn: tyreItem.hsn,
                         default_price: fetchedDefaultPrice,
                     });
-
                 }
 
                 setScrapItems(items);
@@ -71,8 +72,43 @@ const Multiple_Baled_Tyres_PCR = () => {
         }
     };
 
+    const handleQuantityChange = (event) => {
+        const value = event.target.value;
+        if (value < 1) {
+            setRequiredQuantity(1); // Reset to 1 if a negative value is entered
+        } else {
+            setRequiredQuantity(value);
+        }
+    };
+
+    const validateForm = () => {
+        let errors = {};
+        if (requiredQuantity <= 0 || !requiredQuantity) {
+            errors.requiredQuantity = "Required quantity is required and must be greater than zero.";
+        }
+        if (!selectedPrice) {
+            errors.selectedPrice = "Price selection is required.";
+        }
+
+        // Check if the required quantity exceeds available quantity
+        if (parseFloat(requiredQuantity) > parseFloat(tyreData.available_quantity)) {
+            setQuantityExceeds('Required quantity exceeds available quantity.');
+            errors.quantityExceeds = 'Please check available quantity, then proceed';
+        } else {
+            setQuantityExceeds(''); // Reset error if valid
+        }
+
+        return errors;
+    };
+
     const handleOrder = () => {
         const token = localStorage.getItem('token');
+
+        const errors = validateForm();
+        if (Object.keys(errors).length) {
+            setFormErrors(errors);
+            return; // Stop execution if there are validation errors
+        }
 
         if (!token) {
             // If user isn't logged in, navigate to the login page
@@ -177,10 +213,12 @@ const Multiple_Baled_Tyres_PCR = () => {
                     <input
                         type="number"
                         value={requiredQuantity}
-                        onChange={(e) => setRequiredQuantity(e.target.value)}
+                        onChange={handleQuantityChange}
                         placeholder="Enter required quantity"
                         className="form-control required-quantity-input"
                     />
+                    {formErrors.requiredQuantity && <small className="text-danger">{formErrors.requiredQuantity}</small>}
+                    {quantityExceeds && <small className="text-danger">{quantityExceeds}</small>} {/* Display new error */}
                 </div>
 
                 <div className="row mt-3">
@@ -192,14 +230,14 @@ const Multiple_Baled_Tyres_PCR = () => {
                             value={selectedPrice}
                             onChange={handlePriceChange}
                         >
-                            {/* Placeholder option */}
-                            <option value="" disabled>
-                                Select a location
-                            </option>                         <option value="ex_chennai">Ex-Chennai: ₹{tyreData.ex_chennai}</option>
-                            <option value="ex_nhavasheva">Ex-Nhavasheva: ₹{tyreData.ex_nhavasheva}</option>
-                            <option value="ex_mundra">Ex-Mundra: ₹{tyreData.ex_mundra}</option>
+                            <option value="" disabled>Select a location</option>
+                            <option value="ex_chennai">Ex-Chennai</option>
+                            <option value="ex_nhavasheva">Ex-Nhavasheva</option>
+                            <option value="ex_mundra">Ex-Mundra</option>
                         </select>
+                        {formErrors.selectedPrice && <small className="text-danger">{formErrors.selectedPrice}</small>}
                     </div>
+
                     {/* Price Per MT */}
                     <div className="col-md-6">
                         <label className="spec-label">PRICE PER (MT):</label>
