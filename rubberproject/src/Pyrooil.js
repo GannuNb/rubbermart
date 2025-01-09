@@ -181,84 +181,85 @@ const Pyrooil = () => {
                 </div>
             </div>
 
-            {/* Specifications Section */}
             <div className="specifications-section mt-4">
-                <h3>SPECIFICATIONS</h3>
+    <h3>SPECIFICATIONS</h3>
 
-                <div className="row">
-                    {/* Available Quantity */}
-                    <div className="col-md-6">
-                        <label>AVAILABLE QUANTITY IN (MT):</label>
-                        <span className="d-block p-2 border rounded spec-value">
-                            {Number(pyrooilData.available_quantity) > 0 ? pyrooilData.available_quantity : 'No Stock'}
-                        </span>
-                    </div>
+    <div className="row">
+        {/* Available Quantity */}
+        <div className="col-md-6">
+            <label>AVAILABLE QUANTITY IN (MT):</label>
+            <span className="d-block p-2 border rounded spec-value">
+                {Number(pyrooilData.available_quantity) > 0 ? pyrooilData.available_quantity : 'No Stock'}
+            </span>
+        </div>
 
-                    {/* HSN */}
-                    <div className="col-md-6">
-                        <label>HSN:</label>
-                        <span className="d-block p-2 border rounded spec-value">{pyrooilData.hsn}</span>
-                    </div>
-                </div>
+        {/* HSN */}
+        <div className="col-md-6">
+            <label>HSN:</label>
+            <span className="d-block p-2 border rounded spec-value">{pyrooilData.hsn}</span>
+        </div>
+    </div>
 
-                {/* Required Quantity */}
-                <div className="mt-3 col-md-6">
-                    <label>REQUIRED QUANTITY IN (MT):</label>
-                    <input
-                        type="number"
-                        value={requiredQuantity}
-                        onChange={(e) => {
-                            const value = e.target.value;
-                            // Allow the value only if it is a valid number and greater than or equal to 0
-                            if (value === '' || parseFloat(value) >= 0) {
-                                setRequiredQuantity(value); // Update only if value is >= 0
-                            }
-                        }}
-                        placeholder="Enter required quantity"
-                        className="form-control"
-                    />
+    {/* Required Quantity (Single Row) */}
+    <div className="row mt-3">
+        <div className="col-md-6">
+            <label>REQUIRED QUANTITY IN (MT):</label>
+            <input
+                type="number"
+                value={requiredQuantity}
+                onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === '' || parseFloat(value) >= 0) {
+                        setRequiredQuantity(value);
+                    }
+                }}
+                placeholder="Enter required quantity"
+                className="form-control"
+            />
+            {errors.requiredQuantity && <small className="text-danger">{errors.requiredQuantity}</small>}
+            {errors.quantityExceeds && <small className="text-danger">{errors.quantityExceeds}</small>}
+        </div>
+    </div>
 
-                    {errors.requiredQuantity && <small className="text-danger">{errors.requiredQuantity}</small>}
-                    {errors.quantityExceeds && <small className="text-danger">{errors.quantityExceeds}</small>}
-                </div>
+    {/* Select Price and Price Per MT (Same Row) */}
+    <div className="row mt-3">
+        {/* Select Price */}
+        <div className="col-md-6">
+            <label>LOADING LOCATION:</label>
+            <select
+                className="form-control"
+                value={selectedPrice}
+                onChange={handlePriceChange}
+            >
+                <option value="" disabled>Select a location</option>
+                <option value="ex_chennai">Ex-Chennai</option>
+                <option value="ex_nhavasheva">Ex-Nhavasheva</option>
+                <option value="ex_mundra">Ex-Mundra</option>
+            </select>
+            {errors.selectedPrice && <small className="text-danger">{errors.selectedPrice}</small>}
+        </div>
 
-                <div className="row mt-3">
-                    {/* Price Selection Dropdown */}
-                    <div className="mt-1 col-md-6">
-                        <label>SELECT PRICE:</label>
-                        <select
-                            className="form-control"
-                            value={selectedPrice}
-                            onChange={handlePriceChange}
-                        >
-                            <option value="" disabled>Select a location</option>
-                            <option value="ex_chennai">Ex-Chennai</option>
-                            <option value="ex_nhavasheva">Ex-Nhavasheva</option>
-                            <option value="ex_mundra">Ex-Mundra</option>
-                        </select>
-                        {errors.selectedPrice && <small className="text-danger">{errors.selectedPrice}</small>}
-                    </div>
+        {/* Price Per MT */}
+        <div className="col-md-6">
+            <label>PRICE PER (MT):</label>
+            <span className="d-block p-2 border rounded spec-value">
+                {selectedPrice ? `₹${pyrooilData[selectedPrice]}` : "Price"}
+            </span>
+        </div>
+    </div>
 
-                    {/* Price Per MT */}
-                    <div className="col-md-6">
-                        <label>PRICE PER (MT):</label>
-                        <span className="d-block p-2 border rounded spec-value">
-                            {selectedPrice ? `₹${pyrooilData[selectedPrice]}` : "Price"}
-                        </span>
-                    </div>
-                </div>
+    {/* Order Button */}
+    <div className="mt-3">
+        <button
+            className="btn btn-primary"
+            onClick={handleOrder}
+            disabled={Number(pyrooilData.available_quantity) === 0}
+        >
+            {Number(pyrooilData.available_quantity) > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
+        </button>
+    </div>
+</div>
 
-                {/* Order Button */}
-                <div className="mt-3">
-                    <button
-                        className="btn btn-primary"
-                        onClick={handleOrder}
-                        disabled={Number(pyrooilData.available_quantity) === 0}
-                    >
-                        {Number(pyrooilData.available_quantity) > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
-                    </button>
-                </div>
-            </div>
         </div>
     );
 };

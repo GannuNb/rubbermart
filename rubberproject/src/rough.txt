@@ -902,3 +902,10 @@ shipAddressLines.forEach((line, index) => {
   
     return result.trim() + ' rupees only';
   };
+
+we will receive business profile detaild from frontend right, i want to make some changes(id for business profile)
+that is,
+we will get company name from frontend , for example,
+vikah rubbers
+then id should be like as VKRS_VIK_01,VKRS_VIK_02,VKRS_VIK_03,...
+VKRS is common and vik is , we will get only 3 character from company name  and counter will be applied

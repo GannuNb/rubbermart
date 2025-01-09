@@ -226,7 +226,7 @@ const RubberGranules = () => {
                     <div className="row mt-3">
                         {/* Price Selection Dropdown */}
                         <div className="price-dropdown col-md-6">
-                            <label className="spec-label">SELECT PRICE:</label>
+                            <label className="spec-label">LOADING LOCATION:</label>
                             <select
                                 className="form-control"
                                 value={selectedPrice}

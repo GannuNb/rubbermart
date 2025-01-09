@@ -7,6 +7,8 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate,useLocation } from 'react-router-dom';
 import logo from './images/logo.png';
 import logo1 from './images/logo.png';
+import seal from './images/seal.png';
+import { FaFilePdf } from 'react-icons/fa';
 
 
 
@@ -178,191 +180,210 @@ const Getorders = () => {
   
 
   
+
+
   const generatePDF = (order) => {
     const doc = new jsPDF();
+
+    // Logo
     if (logo) {
-      doc.addImage(logo, 'JPEG', 11, 6, 40, 20); // Adjust the width and height of the logo
+        doc.addImage(logo, 'JPEG', 11, 6, 40, 20);
     }
 
     // Header
-    doc.setFontSize(20);
+    doc.setFontSize(16);
     doc.text('PROFORMA INVOICE', 70, 20);
-    doc.setFontSize(10);
+    doc.setFontSize(8);
     const formattedDate = new Date(order.orderDate).toLocaleDateString();
-    doc.setFontSize(10);
-
-   
-    doc.text(`PA ID: ${order._id}`, 188, 15, { align: 'right' }); // Display Order ID
-    doc.text(`Invoice Date: ${formattedDate}`, 190, 20, { align: 'right' });
+    doc.text(`Order ID: ${order._id}`, 194, 15, { align: 'right' });
+    doc.text(`Order Date: ${formattedDate}`, 190, 20, { align: 'right' });
     doc.setDrawColor(0, 0, 0);
-    doc.line(10, 25, 200, 25); // Underline
+    doc.line(10, 25, 200, 25);
 
     // Billing and Shipping Information
-    doc.setFontSize(12);
+    doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
     doc.text('Billing Information', 14, 35);
     doc.text('Shipping Information', 110, 35);
-    doc.setDrawColor(0, 0, 0);
-   
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+
+    let billingY = 45;
+    let shippingY = 45;
+
+    if (profile) {
+        // Billing Info
+        doc.text(`Company: ${profile.companyName || 'N/A'}`, 14, billingY);
+        doc.text(`Email: ${profile.email || 'N/A'}`, 14, billingY + 5);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Address:', 14, billingY + 10);
+        doc.setFont('helvetica', 'normal');
+
+        const billingAddress = profile.billAddress || 'N/A';
+        const billingAddressLines = doc.splitTextToSize(billingAddress, 80);
+        doc.text(billingAddressLines, 14, billingY + 15);
+
+        // Shipping Info
+        doc.setFont('helvetica', 'bold');
+        doc.text('Address:', 110, shippingY);
+        doc.setFont('helvetica', 'normal');
+        const shippingAddress = order.shippingAddress || 'N/A';
+        const shippingAddressLines = doc.splitTextToSize(shippingAddress, 80);
+        doc.text(shippingAddressLines, 110, shippingY + 5);
+
+        billingY += billingAddressLines.length * 5 + 20;
+        shippingY += shippingAddressLines.length * 5 + 20;
+    }
+
+    const contentY = Math.max(billingY, shippingY);
+
+    
+    // Order Details Section
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Order Details', 14, contentY);
+    doc.line(10, contentY + 3, 200, contentY + 3);
+
+    // Calculate totals
+    let subtotal = 0;
+    order.items.forEach(item => {
+        subtotal += item.quantity * item.price;
+    });
+    const gst = subtotal * 0.18;
+    const total = subtotal + gst;
+
+    // Table for order details
+    doc.autoTable({
+        startY: contentY + 5,
+        head: [['Order ID', 'Item Name', 'Qty (tons)', 'Price/Ton', 'Subtotal', 'GST', 'Total']],
+        body: order.items.map(item => [
+            order._id,
+            item.name,
+            `${item.quantity} tons`,
+            `${item.price.toFixed(2)}`,
+            `${(item.quantity * item.price).toFixed(2)}`,
+            `${(item.quantity * item.price * 0.18).toFixed(2)}`,
+            `${(item.quantity * item.price * 1.18).toFixed(2)}`,
+        ]),
+        theme: 'striped',
+        styles: {
+            fontSize: 7,
+            cellPadding: 1,
+        },
+        columnStyles: {
+            0: { cellWidth: 20 },
+            1: { cellWidth: 35 },
+            2: { cellWidth: 30 },
+            3: { cellWidth: 25 },
+            4: { cellWidth: 25 },
+            5: { cellWidth: 25 },
+            6: { cellWidth: 30 },
+        },
+        margin: { top: 30, left: 14, right: 14 },
+        tableWidth: 'wrap',
+    });
+
+    const firstTableFinalY = doc.lastAutoTable.finalY;
+    const secondTableStartX = 140;
+
+    doc.autoTable({
+        startY: firstTableFinalY + 5,
+        startX: 30,
+        head: [['', 'Total']],
+        body: [
+            ['Taxable Value', subtotal.toFixed(2)],
+            ['Total GST', gst.toFixed(2)],
+            ['Total', total.toFixed(2)],
+        ],
+        theme: 'grid',
+        styles: { fontSize: 10 },
+        columnStyles: {
+            0: { cellWidth: 100, halign: 'left' },
+            1: { cellWidth: 40, halign: 'right' },
+        },
+        headStyles: { fontSize: 10, fontStyle: 'bold', fillColor: [240, 240, 240], textColor: [0, 0, 0] },
+    });
+
+    const totalsTableFinalY = doc.lastAutoTable.finalY;
+
+    const totalAmountInWords = numberToWords(total);
+    doc.setFontSize(10);
+    doc.text(`Total Amount (in words): ${totalAmountInWords}`, 14, totalsTableFinalY + 10);
+    doc.text(`Total Balance: Rs ${total.toFixed(2)}`, 14, totalsTableFinalY + 18);
+
+    // Address Details Section
+    const addressY = totalsTableFinalY + 30;
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Address Details', 14, addressY);
+    doc.line(10, addressY + 3, 200, addressY + 3);
 
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
-    if (profile) {
-      // Billing Info
-      doc.text(`Company: ${profile.companyName || 'N/A'}`, 14, 45);
-      
-      doc.text(`Email: ${profile.email || 'N/A'}`, 14, 50);
+    doc.text('From:', 14, addressY + 10);
+    doc.text('VIKAH RUBBERS', 14, addressY + 15);
+    doc.text('Hyderabad', 14, addressY + 20);
+    doc.text('Dispatch From:', 14, addressY + 25);
+    doc.text('#406, 4th Floor, Patel Towers,', 14, addressY + 30);
+    doc.text('Above EasyBuy Beside Nagole RTO Office,', 14, addressY + 35);
+    doc.text('Nagole Hyderabad, Telangana-500035', 14, addressY + 40);
 
-      doc.text(`Address: ${profile.billAddress || 'N/A'}`, 14, 55);
-     
-      const shippingAddress = order.shippingAddress || 'N/A'; // Extract from order object
-    doc.text(`Address: ${shippingAddress}`, 110, 45);
-    }
+    // Banking Details Section
+    const bankingY = addressY;
+    const bankingStartX = 120;
 
-    // Order Section
-  doc.setFontSize(12);
-  doc.setFont('helvetica', 'bold');
-  doc.text('Order Details', 14, 70);
-  doc.line(10, 73, 200, 73); // Underline
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Banking Details:', bankingStartX, bankingY);
+    doc.line(bankingStartX - 5, bankingY + 3, bankingStartX + 85, bankingY + 3);
 
-  // Calculate totals
-  let subtotal = 0;
-  order.items.forEach(item => {
-    subtotal += item.quantity * item.price;
-  });
-  const gst = subtotal * 0.18; // GST is 18%
-  const total = subtotal + gst;
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Bank Name:', bankingStartX, bankingY + 10);
+    doc.text('IDFC FIRST BANK', bankingStartX + 30, bankingY + 10);
 
-  // Table
-  doc.autoTable({
-    startY: 75,
-    head: [['Order ID', 'Item Name', 'Required Quantity (tons)', 'Price Per Ton', 'Subtotal', 'GST', 'Total Price']],
-    body: order.items.map(item => [
-      order._id,
-      item.name,
-      `${item.quantity} tons`,
-      `${item.price.toFixed(2)}`,
-      `${(item.quantity * item.price).toFixed(2)}`,
-      `${(item.quantity * item.price * 0.18).toFixed(2)}`,
-      `${(item.quantity * item.price * 1.18).toFixed(2)}`,
-    ]),
-    theme: 'striped',
-    styles: { fontSize: 8 },
-  });
+    doc.text('Name of Firm:', bankingStartX, bankingY + 15);
+    doc.text('VIKAH RUBBERS', bankingStartX + 30, bankingY + 15);
 
-  const finalY = doc.lastAutoTable.finalY + 10;
+    doc.text('Account Number:', bankingStartX, bankingY + 20);
+    doc.text('10113716761', bankingStartX + 30, bankingY + 20);
 
-// Total Amount in Words
-const totalAmountInWords = numberToWords(total);
-doc.setFontSize(10);
-doc.text(`Total Amount (in words): ${totalAmountInWords}`, 14, finalY);
+    doc.text('IFSC CODE:', bankingStartX, bankingY + 25);
+    doc.text('IDFB0040132', bankingStartX + 30, bankingY + 25);
 
-// Total Amount in Numbers
-doc.text(`Total Balanace : Rs ${total.toFixed(2)}`, 14, finalY + 8); 
+    doc.text('Branch:', bankingStartX, bankingY + 30);
+    doc.text('NERUL BRANCH', bankingStartX + 30, bankingY + 30);
+
+    // Terms and Conditions Section
+    const termsY = bankingY + 60;
+    doc.setFont('helvetica', 'bold');
+    doc.text('Terms and Conditions:', 14, termsY);
+    doc.line(10, termsY + 3, 200, termsY + 3);
+
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.text('1. The Seller shall not be liable to the Buyer for any loss or damage.', 14, termsY + 10);
+    doc.text('2. The Seller warrants the product for one (1) year from the date of shipment.', 14, termsY + 15);
+    doc.text('3. The purchase order will be interpreted as acceptance of this offer.', 14, termsY + 20);
+
+// Increase the size and move the image to the left
+const imageY = termsY + 20;
+doc.addImage(seal, 'PNG', 120, imageY, 80, 80); // Moved the image left by changing the x-coordinate to 120
 
 
-// Address Details Section
-doc.setFontSize(12);
-doc.setFont('helvetica');
-const addressY = finalY + 15;
-doc.text('Address Details', 14, addressY);
-doc.setDrawColor(0, 0, 0);
-doc.line(10, addressY + 3, 200, addressY + 3); // Underline
 
-doc.setFontSize(10);
-doc.setFont('helvetica', 'normal');
-
-// "From" Section
-doc.text('From:', 14, addressY + 10);
-doc.text('VIKAH RUBBERS', 14, addressY + 15);
-doc.text('Hyderabad', 14, addressY + 20);
-doc.text('Dispatch From:', 14, addressY + 25);
-doc.text('#406, 4th Floor, Patel Towers,', 14, addressY + 30);
-doc.text('Above EasyBuy Beside Nagole RTO Office,', 14, addressY + 35);
-doc.text('Nagole Hyderabad, Telangana-500035', 14, addressY + 40);
-doc.text('Hyderabad.', 14, addressY + 45);
-
-// Shipping Info Section
-// doc.setFont('helvetica', 'bold');
-// doc.text('Shipping Information', 110, addressY + 10);
-// doc.setFont('helvetica', 'normal');
-// doc.text('To:', 110, addressY + 15);
-
-// const shipAddress = profile?.shipAddress || 'N/A';
-// const shipAddressLines = shipAddress.split(',');
-// let shipAddressY = addressY + 20;
-// shipAddressLines.forEach((line, index) => {
-//   doc.text(line, 110, shipAddressY + (index * 5));
-// });
-
-// Banking Details Section in Horizontal Layout
-const bankingY = addressY + 55; // Position for Banking Section
-doc.setFontSize(11);
-doc.setFont('helvetica', 'bold');
-doc.text('Banking Details:', 14, bankingY);
-doc.setDrawColor(0, 0, 0);
-doc.line(10, bankingY + 3, 200, bankingY + 3); // Underline
-
-// Using autoTable for horizontal banking details
-doc.autoTable({
-  startY: bankingY + 10,
-  head: [['Bank Name', 'Name of Firm', 'Account Number', 'IFSC CODE', 'Account Type', 'Branch']],
-  body: [
-    [
-      'IDFC FIRST BANK',
-      'VIKAH RUBBERS',
-      '10113716761',
-      'IDFB0040132',
-      'CURRENT A/C',
-      'NERUL BRANCH'
-    ]
-  ],
-  theme: 'grid',
-  styles: { fontSize: 8, cellPadding: 2 }, // Reduced font size and padding
-  columnStyles: { 
-    0: { cellWidth: 30 }, 
-    1: { cellWidth: 35 }, 
-    2: { cellWidth: 40 }, 
-    3: { cellWidth: 30 }, 
-    4: { cellWidth: 25 }, 
-    5: { cellWidth: 30 } 
-  },
-  headStyles: { fontSize: 9, fontStyle: 'bold', fillColor: [240, 240, 240], textColor: [0, 0, 0] },
-  margin: { top: 10, left: 10, right: 10 }
-});
-
-
-// Terms and Conditions
-const termsY = bankingY + 50;
-doc.setFont('helvetica', 'bold');
-doc.text('Terms and Conditions:', 14, termsY);
-doc.setDrawColor(0, 0, 0);
-doc.line(10, termsY + 3, 200, termsY + 3); // Underline
-
-doc.setFontSize(9);
-doc.setFont('helvetica', 'normal');
-doc.text(
-  '1. The Seller shall not be liable to the Buyer for any loss or damage.',
-  14,
-  termsY + 10
-);
-doc.text(
-  '2. The Seller warrants the product for one (1) year from the date of shipment.',
-  14,
-  termsY + 15
-);
-doc.text(
-  '3. The purchase order will be interpreted as acceptance of this offer.',
-  14,
-  termsY + 20
-);
-
-// Save the PDF
-doc.save(`Invoice_${order._id}.pdf`);
-
-
- 
+    // Save the PDF
+    doc.save(`Invoice_${order._id}.pdf`);
 };
+
+
+
+
+
+
+
+
+
 
   
 
@@ -483,12 +504,10 @@ doc.save(`Invoice_${order._id}.pdf`);
                         )}
                         {index === 0 && (
                           <td rowSpan={order.items.length}>
-                            <button
-                              className="btn btn-sm btn-primary"
-                              onClick={() => generatePDF(order)}
-                            >
-                              <i className="bi bi-download"></i> Invoice
-                            </button>
+                           
+                            <button className="btn btn-primary" onClick={() => generatePDF(order)}>
+                                                            <FaFilePdf />
+                                                          </button>
                           </td>
                         )}
                         {/* File Upload Section */}

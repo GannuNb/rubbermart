@@ -1,3 +1,17 @@
+/* For mobile icon button */
+.icon-btn {
+  font-size: 24px;
+  color: #333;
+  text-decoration: none;
+}
+
+/* For desktop text button */
+.text-btn {
+  font-size: 16px;
+  color: #333;
+  text-decoration: none;
+  font-weight: bold;
+}
 
 body {
   background-color: #fbfbfb;
@@ -236,13 +250,14 @@ body {
 
 .btstop {
   display: flex;
-  justify-content: space-between;
-  gap: 10px;
+  justify-content: center; /* Center-align buttons */
+  gap: 30px; /* Decreased gap */
   width: 100%;
   max-width: 1200px;
   flex-wrap: wrap;
   margin: 0 auto;
 }
+
 
 .bttop {
   padding: 10px 20px;
@@ -266,8 +281,7 @@ body {
   .btstop {
     display: flex;
     justify-content: space-between;
-  
-    width: 42%;
+    width: 44%;
     max-width: 1200px;
     flex-wrap: wrap;
    margin-top: 9%;
@@ -311,8 +325,7 @@ body {
   .btstop {
     display: flex;
     justify-content: space-between;
-  
-    width: 42%;
+    width: 30%;
     max-width: 1200px;
     flex-wrap: wrap;
    margin-top: 0%;
@@ -341,9 +354,6 @@ body {
  
 }
 
-
-
-
 /* Base styles */
 .logout-button {
   display: flex;
@@ -360,3 +370,15 @@ body {
     display: none;
   }
 }
+
+/* Custom styling for very small screens */
+@media (max-width: 480px) {
+  .custom-btn {
+    padding: 5px 10px; /* Adjust padding for smaller screens */
+  }
+
+  .custom-icon {
+    font-size: 20px; /* Resize the icon for small screens */
+  }
+}
+

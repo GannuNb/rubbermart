@@ -89,3 +89,17 @@ h2.text-center {
     color: #fff;
   }
   
+  /* Bussinessprofile.css */
+
+.business-profile-container p {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+    max-width: 100%;
+    line-height: 1.5;
+  }
+  
+  /* Ensure proper padding and spacing */
+  .business-profile-container .col-12 {
+    padding: 10px 0;
+  }

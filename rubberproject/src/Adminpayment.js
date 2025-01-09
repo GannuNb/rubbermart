@@ -38,7 +38,7 @@ function AdminPayment() {
         }, {});
         setApprovalNotes(initialNotes);
       } else {
-        setError('No files found');
+        setError('No payment details available right now');
       }
     } catch (err) {
       setError(err.message);
@@ -206,6 +206,7 @@ function AdminPayment() {
     doc.save(`approval-details-${file._id}.pdf`);
   };
 
+  // Render Loading or Error State
   if (loading) {
     return (
       <div className="text-center my-5">
@@ -216,114 +217,114 @@ function AdminPayment() {
     );
   }
 
-  if (error) {
-    return <div className="alert alert-danger text-center my-5">{error}</div>;
-  }
-
   return (
     <>
       <Adminnav />
       <div className="container mt-5 contmax">
         <h2 className="text-center mb-4">All Uploaded Payment Proofs</h2>
-        <div className="table-responsive" style={{ maxHeight: '500px', overflowY: 'auto' }}>
-          <table className="table table-striped table-bordered">
-            <thead>
-              <tr>
-                {/* <th>Payment ID</th> */}
-                <th>User Name</th>
-                <th>Company Name</th>
-                {/* <th>User Email</th> */}
-                <th>Order ID</th>
-                <th>Files</th>
-                <th>Product Name</th>
-                <th>Quantity</th>
-                <th>Total Price</th>
-                <th>Paid Amount</th>
-                <th>Add Received payment </th>
-                <th>Remaining Amount</th>
-                <th>Approval Details</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {files.map((file) => {
-                const totalOrderPrice = file.order.items.reduce((sum, item) => sum + item.total, 0);
-                const totalPaid = approvalNotes[file.order._id]?.paid || 0;
-                const additionalPaid = approvalNotes[file.order._id]?.additionalPaid || 0;
-                const remainingAmount = totalOrderPrice - (totalPaid + additionalPaid);
+        
+        {error && <div className="alert alert-info text-center my-5">{error}</div>}
 
-                return (
-                  <tr key={file.order._id}>
-                    {/* <td>{file._id}</td> */}
-                    <td>{file.user?.name || 'N/A'}</td>
-                    <td>{file.user?.businessProfiles[0]?.companyName || 'N/A'}</td>
-                    {/* <td>{file.user?.email || 'N/A'}</td> */}
-                    <td>{file.order._id}</td>
-                    <td>
-                      {file.files.map((f) => (
+        {/* Table only shows if there are files */}
+        {files.length > 0 ? (
+          <div className="table-responsive" style={{ maxHeight: '500px', overflowY: 'auto' }}>
+            <table className="table table-striped table-bordered">
+              <thead>
+                <tr>
+                  <th>User Name</th>
+                  <th>Company Name</th>
+                  <th>Order ID</th>
+                  <th>Payment Files</th>
+                  <th>Product Name</th>
+                  <th>Quantity</th>
+                  <th>Total Price</th>
+                  <th>Paid Amount</th>
+                  <th>Add Received payment </th>
+                  <th>Remaining Amount</th>
+                  <th>Approval Details</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {files.map((file) => {
+                  const totalOrderPrice = file.order.items.reduce((sum, item) => sum + item.total, 0);
+                  const totalPaid = approvalNotes[file.order._id]?.paid || 0;
+                  const additionalPaid = approvalNotes[file.order._id]?.additionalPaid || 0;
+                  const remainingAmount = totalOrderPrice - (totalPaid + additionalPaid);
+
+                  return (
+                    <tr key={file.order._id}>
+                      <td>{file.user?.name || 'N/A'}</td>
+                      <td>{file.user?.businessProfiles[0]?.companyName || 'N/A'}</td>
+                      <td>{file.order._id}</td>
+                      <td>
+                        {file.files.map((f) => (
+                          <button
+                            key={f._id}
+                            className="btn btn-link p-0"
+                            onClick={() => handleDownload(file._id, f._id, f.fileName)}
+                          >
+                            {f.fileName}
+                          </button>
+                        ))}
+                      </td>
+                      <td>
+                        {file.order.items.map((item) => (
+                          <div key={item._id}>{item.name}</div>
+                        ))}
+                      </td>
+                      <td>
+                        {file.order.items.map((item) => (
+                          <div key={item._id}>{item.quantity}</div>
+                        ))}
+                      </td>
+                      <td>₹{totalOrderPrice.toFixed(2)}</td>
+                      <td>₹{totalPaid.toFixed(2)}</td>
+                      <td>
+                        <input
+                          type="number"
+                          className="form-control"
+                          value={additionalPaid || ''}
+                          onChange={(e) =>
+                            setApprovalNotes((prev) => ({
+                              ...prev,
+                              [file.order._id]: {
+                                ...prev[file.order._id],
+                                additionalPaid: parseFloat(e.target.value) || 0,
+                              },
+                            }))
+                          }
+                          placeholder="Enter Received amount"
+                        />
+                      </td>
+                      <td>₹{remainingAmount.toFixed(2)}</td>
+                      <td>
                         <button
-                          key={f._id}
-                          className="btn btn-link p-0"
-                          onClick={() => handleDownload(file._id, f._id, f.fileName)}
+                          className="btn btn-info btn-sm"
+                          onClick={() => generatePDF(file)}
                         >
-                          {f.fileName}
+                          Details
                         </button>
-                      ))}
-                    </td>
-                    <td>
-                      {file.order.items.map((item) => (
-                        <div key={item._id}>{item.name}</div>
-                      ))}
-                    </td>
-                    <td>
-                      {file.order.items.map((item) => (
-                        <div key={item._id}>{item.quantity}</div>
-                      ))}
-                    </td>
-                    <td>₹{totalOrderPrice.toFixed(2)}</td>
-                    <td>₹{totalPaid.toFixed(2)}</td>
-                    <td>
-                      <input
-                        type="number"
-                        className="form-control"
-                        value={additionalPaid || ''}
-                        onChange={(e) =>
-                          setApprovalNotes((prev) => ({
-                            ...prev,
-                            [file.order._id]: {
-                              ...prev[file.order._id],
-                              additionalPaid: parseFloat(e.target.value) || 0,
-                            },
-                          }))
-                        }
-                        placeholder="Enter Received amount"
-                      />
-                    </td>
-                    <td>₹{remainingAmount.toFixed(2)}</td>
-                    <td>
-                      <button
-                        className="btn btn-info btn-sm"
-                        onClick={() => generatePDF(file)}
-                      >
-                        Details
-                      </button>
-                    </td>
-                    <td>
-                      <button
-                        className={`btn btn-sm ${
-                          remainingAmount === 0 ? 'btn-success' : 'btn-primary'
-                        }`}
-                        onClick={() => handleApproval(file.order._id)}
-                      >
-                        {remainingAmount === 0 ? 'Approve' : 'Approve Payment'}
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                      </td>
+                      <td>
+                        <button
+                          className={`btn btn-sm ${
+                            remainingAmount === 0 ? 'btn-success' : 'btn-primary'
+                          }`}
+                          onClick={() => handleApproval(file.order._id)}
+                        >
+                          {remainingAmount === 0 ? 'Approve' : 'Approve Payment'}
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="alert alert-info text-center my-5">No payment details are right now</div>
+        )}
       </div>
     </>
   );

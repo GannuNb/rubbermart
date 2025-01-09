@@ -1,11 +1,24 @@
-import {useEffect,React} from "react";
+import { useEffect, React, useRef } from "react";
 import { FaRecycle } from "react-icons/fa"; // Importing the recycle icon
-import "./SellTop.css"; // Add CSS for styling
+import "./SellTop.css"; // Add custom CSS for additional styling
 
 const SellTop = () => {
+  // Create a reference to the "Upload Your Scrap Details" section
+  const formSectionRef = useRef(null);
+
+  // Scroll to the form section when the "Get Started" button is clicked
+  const handleGetStarted = () => {
+    if (formSectionRef.current) {
+      formSectionRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }
+  };
+
   useEffect(() => {
     window.scrollTo(0, 0);
-}, []);
+  }, []);
 
   return (
     <div className="sell-top-container">
@@ -17,15 +30,20 @@ const SellTop = () => {
           India’s leading eco-friendly initiative and help build a sustainable
           future.
         </p>
-        <div className="buttons">
-          <button className="sign-up-btn">Upload scrap with below form</button>
-          <button className="learn-more-btn">Now sell scrap responsibly</button>
-        </div>
+
+        {/* Get Started Button */}
+        <button className="get-started-btn" onClick={handleGetStarted}>
+          Get Started
+        </button>
         <small className="disclaimer">*Join and make a positive impact!</small>
       </div>
-      <div className="sell-top-icon">
+
+      <div className="sell-top-image">
         <FaRecycle size={100} color="#32cd32" /> {/* Recycle icon */}
       </div>
+
+      {/* Pass the ref to the "Upload Your Scrap Details" section */}
+      <div ref={formSectionRef} />
     </div>
   );
 };

@@ -97,3 +97,31 @@
     display: none; /* Optional to hide the element completely */
   }
 }
+
+
+@media (max-width: 600px) {
+  .custom-alert {
+    right: 15%;
+    margin-left:15%;
+  }
+  }
+
+  /* Custom style for the checkbox */
+.custom-checkbox {
+  background-color: transparent;  /* Transparent background */
+  border: 2px solid #000;         /* Black border */
+}
+
+.custom-checkbox:checked {
+  background-color: #007bff;      /* Blue background when checked */
+  border-color: #000;             /* Black border when checked */
+}
+
+.custom-checkbox:focus {
+  border-color: #0056b3;          /* Darker blue border on focus */
+}
+
+.custom-checkbox:checked::before {
+  border-color: #fff;             /* White checkmark */
+  background-color: #fff;         /* White checkmark */
+}

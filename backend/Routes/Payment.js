@@ -279,27 +279,44 @@ router.post('/approve/:orderId', async (req, res) => {
       },
     });
 
-    // Define the email options
-    const mailOptions = {
-      from: process.env.EMAIL_USER, // Sender address
-      to: payment.user.email, // Receiver email (user's email from payment data)
-      subject: 'Payment Approval Details', // Email subject
-      text: `
-        Dear ${payment.user.name},
+// Define the email options
+const mailOptions = {
+  from: process.env.EMAIL_USER, // Sender address
+  to: payment.user.email, // Receiver email (user's email from payment data)
+  subject: 'Payment Approval Confirmation and Details', // Refined email subject
+  text: `
+Dear ${payment.user.name},
 
-        Your payment has been approved. Here are the details:
+We are pleased to inform you that your payment has been approved. Below are the details of your payment approval for your reference:
 
-        Approval Notes: ${approvalDetails.notes}
-        Amount Approved: ₹${approvalDetails.amountPaid.toFixed(2)}
-        Total Paid: ₹${approvalDetails.totalPaid.toFixed(2)}
-        Remaining Amount: ₹${approvalDetails.remainingAmount.toFixed(2)}
+Order ID: ${payment.order._id || 'Not Available'}
+Approval Notes: ${approvalDetails.notes}
 
-        Thank you for your cooperation.
+Amount Received: ₹${approvalDetails.amountPaid.toFixed(2)}
+Total Paid to Date: ₹${approvalDetails.totalPaid.toFixed(2)}
+Remaining Amount: ₹${approvalDetails.remainingAmount.toFixed(2)}
 
-        Best regards,
-        Your  Rubber Team
-      `,
-    };
+Thank you for choosing to work with Vikah Rubbers. Your trust and support mean a lot to us, and we are committed to providing you with the best service possible.  
+
+If you have any questions or require further assistance, please do not hesitate to contact us.  
+
+Thank you once again for your cooperation.  
+
+Best regards,  
+The Vikah Rubbers Team  
+
+---  
+Admin Office:  
+#406, 4th Floor, Patel Towers,  
+Above EasyBuy, Beside Nagole RTO Office,  
+Nagole, Hyderabad, Telangana-500035  
+
+Phone: +91 4049471616  
+Email: vikahrubber@gmail.com  
+Website: https://rubberscrapmart.com/
+`,
+};
+
 
     // Send the email
     await transporter.sendMail(mailOptions);

@@ -87,7 +87,7 @@ function App() {
           <Route exact path="/ThreePiecePCR" element={<ThreePiecePCR />} /> 
           <Route exact path="/RubberGranules/crum" element={<RubberGranules />} />
           <Route exact path="/BaledTyresTBR" element={<BaledTyresTBR />} /> 
-          <Route exact path="/Shredds" element={<Shredds />} /> 
+          <Route exact path="/Shreds" element={<Shredds />} /> 
           <Route exact path="/PyroSteel" element={<PyroSteel />} /> 
           <Route exact path="/RubberCrumSteel" element={<RubberCrumSteel />} /> 
           <Route exact path="/Buyreport" element={<Buyreport />} />

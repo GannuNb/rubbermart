@@ -43,6 +43,7 @@ const ShippingSchema = new mongoose.Schema(
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     email: { type: String, required: true },
     invoiceId: { type: String, unique: true }, // Unique invoice ID
+    shipmentFrom: { type: String, required: true }, // New field for shipment origin (from)
     itemDetails: [
       {
         name: { type: String, required: true },
@@ -80,4 +81,3 @@ ShippingSchema.pre('save', async function (next) {
 const Shipping = mongoose.model('Shipping', ShippingSchema);
 
 module.exports = Shipping;
-

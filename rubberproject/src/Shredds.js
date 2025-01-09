@@ -35,7 +35,7 @@ const Shredds = () => {
                 const items = response.data.scrap_items;
 
                 // Find the shredds data
-                const shreddsItem = items.find(item => item.name === 'Shredds');
+                const shreddsItem = items.find(item => item.name === 'Shreds');
 
                 if (shreddsItem) {
                     // If backend does not send default_price, fallback to another price option
@@ -138,7 +138,7 @@ const Shredds = () => {
                     state: {
                         from: location.pathname,
                         shreddsData: {
-                            name: 'Shredds',
+                            name: 'Shreds',
                             available_quantity: shreddsData.available_quantity,
                             price: shreddsData.price,
                             required_quantity: requiredQuantity,
@@ -151,7 +151,7 @@ const Shredds = () => {
             // Redirect to order page with necessary data
             navigate('/Order', {
                 state: {
-                    name: 'Shredds',
+                    name: 'Shreds',
                     available_quantity: shreddsData.available_quantity,
                     price: shreddsData.price,
                     required_quantity: requiredQuantity,
@@ -177,11 +177,11 @@ const Shredds = () => {
                     />
                 </div>
                 <div className="col-md-6">
-                    <h2>Shredds</h2>
+                    <h2>Shreds</h2>
                     <p>
-                        Shredds are processed organic materials commonly used as mulch in gardening and landscaping.
+                        Shreds are processed organic materials commonly used as mulch in gardening and landscaping.
                         They help retain moisture, suppress weeds, and regulate soil temperature while providing nutrients as they decompose.
-                        Utilizing shredds can significantly improve soil health and enhance the appearance of gardens.
+                        Utilizing shreds can significantly improve soil health and enhance the appearance of gardens.
                     </p>
                 </div>
             </div>
@@ -238,7 +238,7 @@ const Shredds = () => {
                 <div className="row mt-3">
                     {/* Price Selection Dropdown */}
                     <div className="price-dropdown mt-1 col-md-6">
-                        <label className="spec-label">SELECT PRICE:</label>
+                        <label className="spec-label">LOADING LOCATION:</label>
                         <select
                             className="form-control"
                             value={selectedPrice}

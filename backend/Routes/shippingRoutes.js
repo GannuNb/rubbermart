@@ -17,11 +17,24 @@ const upload = multer({
 
 
 router.post('/shipping', upload.fields([{ name: 'billPdf' }]), async (req, res) => {
-  const { vehicleNumber, quantity, selectedProduct, orderId } = req.body;
+  const { vehicleNumber, quantity, selectedProduct, orderId, shipmentFrom } = req.body;  // Add shipmentFrom to the body
   const billPdfFile = req.files?.billPdf?.[0];
 
-  if (!vehicleNumber || !quantity || !selectedProduct || !orderId) {
-    return res.status(400).json({ message: 'All fields are required.' });
+  // Custom error messages for each missing field
+  if (!vehicleNumber) {
+    return res.status(400).json({ message: 'Please enter vehicle number.' });
+  }
+  if (!quantity) {
+    return res.status(400).json({ message: 'Please enter quantity.' });
+  }
+  if (!selectedProduct) {
+    return res.status(400).json({ message: 'Please select a product.' });
+  }
+  if (!orderId) {
+    return res.status(400).json({ message: 'Please provide order ID.' });
+  }
+  if (!shipmentFrom) {
+    return res.status(400).json({ message: 'Please enter shipment source (Shipment From).' });
   }
 
   try {
@@ -46,6 +59,7 @@ router.post('/shipping', upload.fields([{ name: 'billPdf' }]), async (req, res) 
       selectedProduct,
       userId: order.user._id,
       email: order.user.email,
+      shipmentFrom,  // Add shipmentFrom here
       itemDetails: order.items.map((item) => ({
         name: item.name,
         price: item.price,
@@ -83,6 +97,9 @@ router.post('/shipping', upload.fields([{ name: 'billPdf' }]), async (req, res) 
 });
 
 
+
+
+
 // Fetch shipping data by orderId
 router.get('/shipping/:orderId', async (req, res) => {
   const { orderId } = req.params;
@@ -114,10 +131,10 @@ router.get('/shippinguser', async (req, res) => {
     const shippingDetails = await Shipping.find({ userId })
       .populate({
         path: 'orderId',
-        select: '_id items subtotal gst totalPrice shippingAddress', // Make sure shippingAddress is selected
+        select: '_id items subtotal gst totalPrice shippingAddress shipmentFrom', // Make sure shippingAddress is selected
       })
       .select(
-        'orderId invoiceId vehicleNumber selectedProduct quantity subtotal gst totalPrice shippingDate userId email itemDetails billPdf'
+        'orderId invoiceId vehicleNumber selectedProduct quantity subtotal gst totalPrice shippingDate userId email itemDetails billPdf shipmentFrom'
       );
 
     if (!shippingDetails || shippingDetails.length === 0) {

@@ -5,6 +5,7 @@ import logo1 from './images/logo.png';
 import { useNavigate,useLocation } from 'react-router-dom';
 import logo from './images/logo.png';
 import { jsPDF } from "jspdf";
+import { FaFilePdf } from 'react-icons/fa';
 
 
 
@@ -251,19 +252,17 @@ function Buyreport() {
                     <td>₹{data.gst.toFixed(2)}</td>
                     <td>₹{data.totalPrice.toFixed(2)}</td>
                     <td>
-                      {data.pdfs.length > 0 ? (
-                        <>
-                          <button
-                            className="btn btn-info me-2"
-                            onClick={() => mergePDFs(data.pdfs)}
-                          >
-                            PDFs
-                          </button>
-                        </>
-                      ) : (
-                        <span>No PDFs</span>
-                      )}
-                    </td>
+  {data.pdfs.length > 0 ? (
+    <>
+      
+      <button className="btn btn-primary" onClick={() => mergePDFs(data.pdfs)}>
+                                                                  <FaFilePdf />
+                                                                </button>
+    </>
+  ) : (
+    <span>No PDFs</span>
+  )}
+</td>
                     {/* <td>
                     <button className="btn btn-primary" onClick={() => generatePDF(data)}>Invoice PDF</button>
                   </td> */}

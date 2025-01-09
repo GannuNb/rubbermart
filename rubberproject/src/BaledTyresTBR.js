@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import BaledTyresTBRImage from './images/BaledTyresTBR.jpeg'; // Image for Baled Tyres TBR
+import BaledTyresTBRImage from './images/BaledTyresTBR.jpg'; // Image for Baled Tyres TBR
 import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap CSS
 import { useNavigate, useLocation } from 'react-router-dom';
 import './Mulch.css'; // Shared CSS
@@ -213,6 +213,7 @@ const BaledTyresTBR = () => {
         placeholder="Enter required quantity"
         className="form-control required-quantity-input"
     />
+    
     {errors.requiredQuantity && (
         <small className="text-danger">{errors.requiredQuantity}</small>
     )}
@@ -225,7 +226,7 @@ const BaledTyresTBR = () => {
                 <div className="row mt-3">
                     {/* Price Selection Dropdown */}
                     <div className="mt-1 col-md-6">
-                        <label className="spec-label">SELECT PRICE:</label>
+                        <label className="spec-label">LOADING LOCATION:</label>
                         <select
                             className="form-control"
                             value={selectedPrice}

@@ -17,7 +17,13 @@ import { useNavigate } from 'react-router-dom';
 import TechnologyCards from './TechnologyCards';
 import HappyClients from './Clients';
 import SrenComponent from './SrenComponent';
-
+import mulchImage from './images/mulch.jpeg';
+import MultipleBaledTyresPCRImage from './images/MultipleBaledTyresPCR.jpeg';
+import BaledTyresTBRImage from './images/BaledTyresTBR.jpeg';
+import pyrooilImage from './images/pyro_oil2.jpeg';
+import rubbercrumimg1 from "./images/rubbercrumbtw3.jpg";
+import RubberGranulesImage from './images/RubberGranules.jpeg';
+import ShreddsImage from './images/Shredds.jpeg';
 
 const Home = () => {
     const [scrapItems, setScrapItems] = useState([]);
@@ -59,16 +65,11 @@ const Home = () => {
         window.scrollTo(0, 0);
     }, []);
 
-
     return (
         <>
-
-
             <div className='abt'>
                 <div className='setter'>
-
                 </div>
-
                 <div className="bg-container-home">
                     <div className='head'
                         style={{
@@ -87,18 +88,36 @@ const Home = () => {
                         India's Exclusive Marketplace for Rubber-Derived Products
                     </div>
                     <div className="image-container">
-  <div className="slider">
-    <img src={car1} alt="Car 1" className="slider-image" />
-    <img src={pyroOil} alt="Pyro Oil" className="slider-image" />
-    <img src={car3} alt="Car 3" className="slider-image" />
-    <img src={car1} alt="Car 1" className="slider-image" /> {/* Duplicate the first image */}
-    <img src={pyroOil} alt="Pyro Oil" className="slider-image" /> {/* Duplicate the second image */}
-    <img src={car3} alt="Car 3" className="slider-image" /> {/* Duplicate the third image */}
-  </div>
-  <div className="overlay-text">
-    BUY & SELL YOUR PRODUCTS
-  </div>
+    <div className="slider">
+        <img src={car1} alt="Car 1" className="slider-image" />
+        <img src={pyroOil} alt="Pyro Oil" className="slider-image" />
+        <img src={car3} alt="Car 3" className="slider-image" />
+        <img src={mulchImage} alt="Mulch Image" className="slider-image" />
+        <img src={MultipleBaledTyresPCRImage} alt="Multiple Baled Tyres PCR" className="slider-image" />
+        <img src={BaledTyresTBRImage} alt="Baled Tyres TBR" className="slider-image" />
+        <img src={pyrooilImage} alt="Pyro Oil Image" className="slider-image" />
+        <img src={rubbercrumimg1} alt="Rubber Crumb" className="slider-image" />
+        <img src={RubberGranulesImage} alt="Rubber Granules" className="slider-image" />
+        <img src={ShreddsImage} alt="Shredds" className="slider-image" />
+        
+        <img src={pyroOil} alt="Pyro Oil" className="slider-image" />
+        <img src={car3} alt="Car 3" className="slider-image" />
+        <img src={car1} alt="Car 1" className="slider-image" />
+        <img src={mulchImage} alt="Mulch Image" className="slider-image" />
+        <img src={MultipleBaledTyresPCRImage} alt="Multiple Baled Tyres PCR" className="slider-image" />
+        <img src={BaledTyresTBRImage} alt="Baled Tyres TBR" className="slider-image" />
+        <img src={pyrooilImage} alt="Pyro Oil Image" className="slider-image" />
+        <img src={rubbercrumimg1} alt="Rubber Crumb" className="slider-image" />
+        <img src={RubberGranulesImage} alt="Rubber Granules" className="slider-image" />
+        <img src={ShreddsImage} alt="Shredds" className="slider-image" />
+    </div>
+
+    <div className="overlay-text">BUY & SELL YOUR PRODUCTS</div>
 </div>
+
+
+
+
 
 
 

@@ -224,7 +224,7 @@ const Multiple_Baled_Tyres_PCR = () => {
                 <div className="row mt-3">
                     {/* Price Selection Dropdown */}
                     <div className="price-dropdown mt-1 col-md-6">
-                        <label className="spec-label">SELECT PRICE:</label>
+                        <label className="spec-label">LOADING LOCATION:</label>
                         <select
                             className="form-control"
                             value={selectedPrice}

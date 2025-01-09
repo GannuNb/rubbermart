@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import RubberGranulesImage from './images/RubberGranules.jpeg';
 import ShreddsImage from './images/Shredds.jpeg';
 import MultipleBaledTyresPCRImage from './images/MultipleBaledTyresPCR.jpeg';
-import BaledTyresTBRImage from './images/BaledTyresTBR.jpeg';
-import BaledTyresTBRImage2 from './images/BaledTyresTBR2.png';
+import BaledTyresTBRImage from './images/BaledTyresTBR.jpg';
+import BaledTyresTBRImage2 from './images/BaledTyresTBR_2.jpg';
 import ThreePiecePCRImage from './images/ThreePiecePCR.jpeg';
 import ThreePieceTBRImage from './images/ThreePieceTBR.jpeg';
 import ThreePieceTBRImage2 from './images/ThreePieceTBR2.webp';
@@ -29,7 +29,7 @@ const TyreScrap = () => {
     // Map product names to their corresponding image arrays
     const imagesMap = {
         "Rubber Granules/Crum": [RubberCrumSteelImage1, RubberGranuelsimg2],
-        "Shredds": [ShreddsImage, ShreddsImage],
+        "Shreds": [ShreddsImage, ShreddsImage],
         "Baled Tyres PCR": [baledtrespcrimg1, baledtrespcrimg2],
         "Baled Tyres TBR": [BaledTyresTBRImage, BaledTyresTBRImage2],
         "Three Piece PCR": [ThreePiecePCRImage, pcr2],
@@ -51,7 +51,7 @@ const TyreScrap = () => {
                 const desiredOrder = [
                     "Baled Tyres PCR",
                     "Three Piece PCR",
-                    "Shredds",
+                    "Shreds",
                     "Baled Tyres TBR",
                     "Three Piece TBR",
                     "Mulch PCR",

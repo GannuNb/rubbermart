@@ -79,9 +79,16 @@ app.get('/business-profile', async (req, res) => {
     }
 });
 
+
+const BusinessProfileCounter = require('./models/BusinessProfileCounter');
+
+
+
+
+
 app.post('/business-profile', async (req, res) => {
     try {
-        const {registeredgst, companyName, phoneNumber, email, gstNumber,pan, billAddress, shipAddress } = req.body;
+        const { companyName, registeredgst, phoneNumber, email, gstNumber, pan, billAddress, shipAddress } = req.body;
 
         const token = req.headers.authorization.split(' ')[1];
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -92,12 +99,32 @@ app.post('/business-profile', async (req, res) => {
             return res.status(404).json({ success: false, message: "User not found" });
         }
 
-        // Check if a business profile already exists
+        // Check if a business profile already exists for this user
         if (user.businessProfiles && user.businessProfiles.length > 0) {
             return res.status(400).json({ success: false, message: "Business profile already exists" });
         }
 
+        // Extract the company prefix (first 3 letters of company name, uppercase)
+        const companyPrefix = companyName.substring(0, 3).toUpperCase();
+
+        // Fetch or create the global counter
+        let counterDoc = await BusinessProfileCounter.findOne();
+        if (!counterDoc) {
+            // If no counter exists, create one with an initial value of 1
+            counterDoc = new BusinessProfileCounter();
+            await counterDoc.save();
+        }
+
+        // Generate the profile ID in the format VKRS_<PREFIX>_<COUNTER>
+        const profileId = `VKRS_${companyPrefix}_${String(counterDoc.counter).padStart(2, '0')}`;
+
+        // Increment the global counter for the next business profile
+        counterDoc.counter += 1;
+        await counterDoc.save();
+
+        // Create the new business profile
         const newProfile = {
+            profileId,
             registeredgst,
             companyName,
             phoneNumber,
@@ -108,17 +135,20 @@ app.post('/business-profile', async (req, res) => {
             shipAddress,
         };
 
+        // Add the new business profile to the user
         user.businessProfiles.push(newProfile);
         await user.save();
 
-        res.status(201).json({ success: true, message: "Business profile created successfully" });
+        res.status(201).json({ success: true, message: "Business profile created successfully", profileId });
     } catch (error) {
-        console.error("Error creating business profile:", error); // Log the error object for better debugging
+        console.error("Error creating business profile:", error);
         if (!res.headersSent) {
             res.status(500).json({ success: false, message: "Internal Server Error", error: error.message });
         }
     }
 });
+
+
 
 app.get('/scrap', (req, res) => {
     res.json({

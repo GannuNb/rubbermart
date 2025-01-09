@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; 
+import { Link, useNavigate,useLocation } from 'react-router-dom'; 
 import { useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import logo from "./images/logo.png"
 import './Sidebar.css';
+import axios from 'axios';
+
 
 import { Dropdown } from 'react-bootstrap';
 function Sidebar() {
@@ -16,6 +18,39 @@ function Sidebar() {
   const [suggestions, setSuggestions] = useState([]);
 
   const [isMobile, setIsMobile] = useState(false);
+
+  const [user, setUser] = useState(null);
+  const [businessProfiles, setBusinessProfiles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const location = useLocation();  // Get the current route location
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const token = localStorage.getItem('token'); // Retrieve token from local storage
+      if (!token) {
+        console.error('No token found');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/userdetails`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUser(response.data.user);
+        setBusinessProfiles(response.data.businessProfiles); // Set business profiles
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData(); 
+
+  }, [location]); 
+
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -31,7 +66,7 @@ function Sidebar() {
 
   const routes = {
     mulch: '/Mulch',
-    shredds: '/Shredds',
+    shreds: '/shreds',
     'multiple baled tyres pcr': '/MultipleBaledTyresPcr',
     'three piece pcr': '/ThreePiecePcr',
     'baled tyres tbr': '/BaledTyresTbr',
@@ -69,7 +104,9 @@ function Sidebar() {
   const handleLogout = () => {
     localStorage.removeItem('token');
     navigate("/login");
-  };
+    window.location.reload(); // This will refresh the page after navigating to the login page
+};
+
 
   const toggleGettingStarted = () => {
     setIsGettingStartedOpen(!isGettingStartedOpen);
@@ -108,15 +145,38 @@ function Sidebar() {
   };
 
   return (
-    <header>
-      {/* Sidebar Navigation */}
-      <nav  id="sidebarMenu" className="collapse d-lg-block sidebar bg-white mt-4">
-        <div  className="position-sticky">
-          <div  className="list-group list-group-flush mx-3 mt-4">
-            {/* Home Link */}
-            <Link to="/" className="list-group-item list-group-item-action py-2 ripple" aria-current="true" onClick={closeSidebar}>
-              <i className="fas fa-home fa-fw me-3"></i><span>Home</span>
-            </Link>
+<header>
+  {/* Sidebar Navigation */}
+  <nav id="sidebarMenu" className="collapse d-lg-block sidebar bg-white mt-4">
+    <div className="position-sticky">
+     
+
+    {loading ? (
+          <div className="p-3 mb-3 bg-light">
+            <p className="text-muted">Loading company information...</p>
+          </div>
+        ) : (
+          businessProfiles.length > 0 ? (
+            <div className="p-3 mb-3 bg-light">
+              <h6 className="text-muted"><strong>Company Name:</strong> {businessProfiles[0].companyName}</h6>
+              <h6 className="text-muted"><strong>Company Id:</strong> {businessProfiles[0].profileId}</h6>
+            </div>
+          ) : (
+            <div className="p-3 mb-3 bg-light">
+              <p className="text-muted">No company information available.</p>
+            </div>
+          )
+        )}
+
+      <div className="list-group list-group-flush mx-3 mt-4">
+        
+
+        {/* Home Link */}
+        <Link to="/" className="list-group-item list-group-item-action py-2 ripple" aria-current="true" onClick={closeSidebar}>
+          <i className="fas fa-home fa-fw me-3"></i><span>Home</span>
+        </Link>
+
+
 
             <Link to="/AboutUsPage" className="list-group-item list-group-item-action py-2 ripple" onClick={closeSidebar}>
   <i className="fas fa-info-circle fa-fw me-3"></i><span>About Us</span>
@@ -175,8 +235,8 @@ function Sidebar() {
                     <Link className="list-group-item list-group-item-action py-2 ripple" to="/RubberGranules/Crum" onClick={closeSidebar}>
                       Rubber Granules/Crum
                     </Link>
-                    <Link className="list-group-item list-group-item-action py-2 ripple" to="/Shredds" onClick={closeSidebar}>
-                      Shredds
+                    <Link className="list-group-item list-group-item-action py-2 ripple" to="/shreds" onClick={closeSidebar}>
+                      shreds
                     </Link>
                   </div>
                 )}
@@ -422,19 +482,16 @@ Pyro oil          </Link>
 
             <div className="logodis">
       {!localStorage.getItem('token') ? (
-        <Dropdown>
-          <Dropdown.Toggle id="dropdown-basic" className="toggle-btn">
-            {isMobile ? (
-              <i className="fas fa-user-circle"></i> // Icon for mobile
-            ) : (
-              'Login/Signup'
-            )}
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            <Dropdown.Item as={Link} to="/login">Login</Dropdown.Item>
-            <Dropdown.Item as={Link} to="/signup">Signup</Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
+        <Link to="/login" className="btn btn-primary btn-sm px-3 text-nowrap custom-btn">
+        {isMobile || window.innerWidth < 768 ? (
+          <i className="fas fa-user-circle custom-icon"></i> // Icon for mobile and small tablets
+        ) : (
+          'Login/Signup'
+        )}
+      </Link>
+      
+      
+      
       ) : (
         <button
           onClick={handleLogout}

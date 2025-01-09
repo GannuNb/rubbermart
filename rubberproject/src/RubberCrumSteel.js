@@ -220,7 +220,7 @@ const RubberCrumSteel = () => {
 
                 <div className="row mt-3">
                     <div className="price-dropdown mt-1 col-md-6">
-                        <label className="spec-label">SELECT PRICE:</label>
+                        <label className="spec-label">LOADING LOCATION:</label>
                         <select
                             className="form-control"
                             value={selectedPrice}

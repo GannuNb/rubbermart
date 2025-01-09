@@ -9,7 +9,7 @@ const ScrapItem = require('../models/ScrapItem');
 const authenticateToken = require('../middleware/authenticateToken');
 const User = require('../models/User');
 const nodemailer = require('nodemailer');
-
+const Approval = require('../models/Approval'); // Import Approval model
 
 
 router.post('/uploadscrap', [
@@ -88,7 +88,7 @@ The Scrap Management Team`
 
 
 
-router.get('/getuploadedscrap', authenticateToken, async (req, res) => {
+router.get('/getuploadedscrap', async (req, res) => {
     try {
         const uploadedScrapItems = await Uploadscrap.find()
             .populate('user', '_id name'); // Adjust to include specific fields if needed
@@ -103,6 +103,7 @@ router.get('/getuploadedscrap', authenticateToken, async (req, res) => {
 });
 
 
+
 const transporter = nodemailer.createTransport({
     service: 'Gmail', // Use your email service
     auth: {
@@ -111,11 +112,11 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-const Approval = require('../models/Approval'); // Import Approval model
+
 
 // routes/uploadscrap.js
 
-router.post('/approveScrap/:id', authenticateToken, async (req, res) => {
+router.post('/approveScrap/:id', async (req, res) => {
     const session = await mongoose.startSession();
     session.startTransaction();
     try {
@@ -191,7 +192,7 @@ router.post('/approveScrap/:id', authenticateToken, async (req, res) => {
                                Nagole, Hyderabad, Telangana-500035</p>
                             <p><strong>Phone:</strong> +91 4049471616</p>
                             <p><strong>Email:</strong> <a href="mailto:vikahrubber@gmail.com" style="color: #1e88e5;">vikahrubber@gmail.com</a></p>
-                            <p><strong>Website:</strong> <a href="https://vikahrubber.com" style="color: #1e88e5;">https://vikahrubber.com</a></p>
+                            <p><strong>Website:</strong> <a href="https://rubberscrapmart.com/" style="color: #1e88e5;">https://rubberscrapmart.com/</a></p>
                         </div>
                     </div>
                 `
@@ -235,10 +236,11 @@ router.post('/approveScrap/:id', authenticateToken, async (req, res) => {
 
 
 
+
 // @route   DELETE /api/denyScrap/:id
 // @desc    Deny scrap submission
 // @access  Private (Authorized users)
-router.post('/denyScrap/:id', authenticateToken, async (req, res) => {
+router.post('/denyScrap/:id', async (req, res) => {
     const session = await mongoose.startSession();
     session.startTransaction();
     try {
@@ -292,7 +294,7 @@ router.post('/denyScrap/:id', authenticateToken, async (req, res) => {
                            Nagole, Hyderabad, Telangana-500035</p>
                         <p><strong>Phone:</strong> +91 4049471616</p>
                         <p><strong>Email:</strong> <a href="mailto:vikahrubber@gmail.com" style="color: #1e88e5;">vikahrubber@gmail.com</a></p>
-                        <p><strong>Website:</strong> <a href="https://vikahrubber.com" style="color: #1e88e5;">https://vikahrubber.com</a></p>
+                        <p><strong>Website:</strong> <a href="https://rubberscrapmart.com/" style="color: #1e88e5;">https://rubberscrapmart.com</a></p>
                     </div>
                 </div>
             `
@@ -322,9 +324,10 @@ router.post('/denyScrap/:id', authenticateToken, async (req, res) => {
         await session.abortTransaction();
         session.endSession();
         console.error('Error denying scrap item:', error);
-        res.status(500).json({ message: 'Server Error' });
-    }
+        res.status(500).json({ message: 'Server Error' });
+    }
 });
+
 
 router.get('/getApprovedScrap', authenticateToken, async (req, res) => {
     try {

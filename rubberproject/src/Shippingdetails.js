@@ -5,6 +5,9 @@ import logo from './images/logo.png';
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import logo1 from './images/logo.png';
+import { FaFilePdf } from 'react-icons/fa';
+
+
 
 function ShippingDetails() {
   const [shippingDetails, setShippingDetails] = useState([]);
@@ -181,51 +184,74 @@ function ShippingDetails() {
   
     return result.trim() + ' rupees only';
   };
+
   
   const generatePDF = (order) => {
     const doc = new jsPDF();
-  
+
     // Add logo
     if (logo) {
-      doc.addImage(logo, 'JPEG', 10, 10, 40, 20);
+        doc.addImage(logo, 'JPEG', 10, 10, 30, 15);
     }
-  
+
     // Add heading and other details
-   // Add heading and other details
-doc.setFontSize(20);
-doc.setFont('helvetica', 'bold');
-doc.text('INVOICE', 105, 20, { align: 'center' });
-
-// Add Invoice ID and Date on the right
-doc.setFontSize(10);
-doc.setFont('helvetica', 'normal');
-const invoiceId = order.invoiceId || 'N/A';
-const formattedDate = order.shippingDate
-  ? new Date(order.shippingDate).toLocaleDateString()
-  : 'N/A';
-
-// Align to the right side
-doc.text(`Invoice ID: ${invoiceId}`, 190, 25, { align: 'right' });
-doc.text(`Date: ${formattedDate}`, 190, 30, { align: 'right' });
-
-  
-    // Billing and shipping info
-    doc.setFontSize(12);
+    doc.setFontSize(20);
     doc.setFont('helvetica', 'bold');
-    doc.text('Billing Information', 14, 45);
-    doc.text('Shipping Information', 110, 45);
-    doc.line(10, 48, 200, 48);
-  
+    doc.text('INVOICE', 105, 20, { align: 'center' });
+
+    // Add Invoice ID and Date on the right
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
-    if (profile) {
-      doc.text(`Company: ${profile.companyName || 'N/A'}`, 14, 55);
-      doc.text(`Email: ${profile.email || 'N/A'}`, 14, 60);
-      doc.text(`Billing Address: ${profile.billAddress || 'N/A'}`, 14, 65);
+    const invoiceId = order.invoiceId || 'N/A';
+    const formattedDate = order.shippingDate
+        ? new Date(order.shippingDate).toLocaleDateString()
+        : 'N/A';
+
+    // Align to the right side
+    doc.text(`Invoice ID: ${invoiceId}`, 194, 15, { align: 'right' });
+    doc.text(`Order Date: ${formattedDate}`, 187, 20, { align: 'right' });
+
+    // Draw a horizontal line below the header
+    doc.setDrawColor(0, 0, 0); // Set line color (black)
+    doc.line(10, 25, 200, 25); // Draw line from x=10 to x=200 at y=25
   
-      const shippingAddress = order.orderId.shippingAddress || 'N/A';  // Access the populated shippingAddress
-      doc.text(`Address: ${shippingAddress}`, 110, 55);
+    // Billing and Shipping Information
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Billing Information', 14, 35); // Left-aligned heading for billing info
+    doc.text('Shipping Information', 110, 35); // Left-aligned heading for shipping info
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+  
+    let billingY = 45;
+    let shippingY = 45;
+  
+    if (profile) {
+      // Billing Info
+      doc.text(`Company: ${profile.companyName || 'N/A'}`, 14, billingY);
+      doc.text(`Email: ${profile.email || 'N/A'}`, 14, billingY + 5);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Address:', 14, billingY + 10);
+      doc.setFont('helvetica', 'normal');
+  
+      const billingAddress = profile.billAddress || 'N/A';
+      const billingAddressLines = doc.splitTextToSize(billingAddress, 80);
+      doc.text(billingAddressLines, 14, billingY + 15);
+  
+      // Shipping Info
+      doc.setFont('helvetica', 'bold');
+      doc.text('Address:', 110, shippingY);
+      doc.setFont('helvetica', 'normal');
+      const shippingAddress = order.orderId.shippingAddress || 'N/A';
+      const shippingAddressLines = doc.splitTextToSize(shippingAddress, 80);
+      doc.text(shippingAddressLines, 110, shippingY + 5);
+  
+      billingY += billingAddressLines.length * 5 + 20;
+      shippingY += shippingAddressLines.length * 5 + 20;
     }
+  
+    // Set the content Y position to make sure both billing and shipping sections don't overlap
+    const contentY = Math.max(billingY, shippingY);
   
     // Add order details table
     doc.autoTable({
@@ -260,57 +286,93 @@ doc.text(`Date: ${formattedDate}`, 190, 30, { align: 'right' });
     const totalAmountInWords = numberToWords(order.totalPrice || 0);
     doc.text(`Total Amount (in words): ${totalAmountInWords}`, 14, finalY);
   
-    // Address Details Section
-    doc.setFontSize(12);
-    doc.setFont('helvetica');
-    const addressY = finalY + 15;
-    doc.text('Address Details', 14, addressY);
-    doc.setDrawColor(0, 0, 0);
-    doc.line(10, addressY + 3, 200, addressY + 3); // Underline
-  
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-  
-    // "From" Section
-    doc.text('From:', 14, addressY + 10);
-    doc.text('VIKAH RUBBERS', 14, addressY + 15);
-    doc.text('Hyderabad', 14, addressY + 20);
-    doc.text('Dispatch From:', 14, addressY + 25);
-    doc.text('#406, 4th Floor, Patel Towers,', 14, addressY + 30);
-    doc.text('Above EasyBuy Beside Nagole RTO Office,', 14, addressY + 35);
-    doc.text('Nagole Hyderabad, Telangana-500035', 14, addressY + 40);
-    doc.text('Hyderabad.', 14, addressY + 45);
-  
-    
-  
-    // Terms and Conditions
-    const termsY = addressY + 55;
-    doc.setFont('helvetica', 'bold');
-    doc.text('Terms and Conditions:', 14, termsY);
-    doc.setDrawColor(0, 0, 0);
-    doc.line(10, termsY + 3, 200, termsY + 3); // Underline
-  
-    doc.setFontSize(9);
-    doc.setFont('helvetica', 'normal');
-    doc.text(
-      '1. The Seller shall not be liable to the Buyer for any loss or damage.',
-      14,
-      termsY + 10
-    );
-    doc.text(
-      '2. The Seller warrants the product for one (1) year from the date of shipment.',
-      14,
-      termsY + 15
-    );
-    doc.text(
-      '3. The purchase order will be interpreted as acceptance of this offer.',
-      14,
-      termsY + 20
-    );
+// Address Details Section
+doc.setFontSize(12);
+doc.setFont('helvetica');
+const addressY = finalY + 15;
+doc.text('Address Details', 14, addressY);
+doc.text('Shipment From', 135, addressY); // Adjusted to the right side but not fully at the edge
+doc.setDrawColor(0, 0, 0);
+doc.line(10, addressY + 3, 200, addressY + 3); // Underline
+
+doc.setFontSize(10);
+doc.setFont('helvetica', 'normal');
+
+// "From" Section
+doc.text('From:', 14, addressY + 10);
+doc.text('VIKAH RUBBERS', 14, addressY + 15);
+doc.text('Hyderabad', 14, addressY + 20);
+doc.text('Dispatch From:', 14, addressY + 25);
+doc.text('#406, 4th Floor, Patel Towers,', 14, addressY + 30);
+doc.text('Above EasyBuy Beside Nagole RTO Office,', 14, addressY + 35);
+doc.text('Nagole Hyderabad, Telangana-500035', 14, addressY + 40);
+doc.text('Hyderabad.', 14, addressY + 45);
+
+// "Shipment From" Section (Right Side with Dynamic Spacing)
+const shipmentFrom = order.shipmentFrom || 'N/A';
+const shipmentFromLines = doc.splitTextToSize(shipmentFrom, 50);
+
+const shipmentFromStartY = addressY + 10; // Start below "Address Details"
+shipmentFromLines.forEach((line, index) => {
+  doc.text(line, 130, shipmentFromStartY + index * 5);
+});
+
+// Dynamically calculate the next Y-position
+const nextY = Math.max(addressY + 50, shipmentFromStartY + shipmentFromLines.length * 5 + 10);
+
+// Add a margin-top for the Banking Details section
+const bankingDetailsMarginTop = 10; // Adjust this value for the desired margin
+const bankingDetailsStartY = nextY + bankingDetailsMarginTop;
+
+// Banking Details Section
+doc.setFontSize(12);
+doc.setFont('helvetica');
+doc.text('Banking Details', 14, bankingDetailsStartY);
+doc.setDrawColor(0, 0, 0);
+doc.line(10, bankingDetailsStartY + 3, 200, bankingDetailsStartY + 3); // Underline
+
+doc.setFontSize(10);
+doc.setFont('helvetica', 'normal');
+doc.text('Bank Name: IDFC FIRST BANK', 14, bankingDetailsStartY + 10);
+doc.text('Name of Firm: VIKAH RUBBERS', 14, bankingDetailsStartY + 15);
+doc.text('Account Number: 10113716761', 14, bankingDetailsStartY + 20);
+doc.text('IFSC CODE: IDFB0040132', 14, bankingDetailsStartY + 25);
+doc.text('ACCOUNT TYPE: CURRENT A/C', 14, bankingDetailsStartY + 30);
+doc.text('BRANCH: NERUL BRANCH', 14, bankingDetailsStartY + 35);
+
+// Terms and Conditions Section
+const termsY = bankingDetailsStartY + 45; // Positioned below Banking Details
+doc.setFont('helvetica', 'bold');
+doc.text('Terms and Conditions:', 14, termsY);
+doc.setDrawColor(0, 0, 0);
+doc.line(10, termsY + 3, 200, termsY + 3); // Underline
+
+doc.setFontSize(9);
+doc.setFont('helvetica', 'normal');
+doc.text(
+  '1. The Seller shall not be liable to the Buyer for any loss or damage.',
+  14,
+  termsY + 10
+);
+doc.text(
+  '2. The Seller warrants the product for one (1) year from the date of shipment.',
+  14,
+  termsY + 15
+);
+doc.text(
+  '3. The purchase order will be interpreted as acceptance of this offer.',
+  14,
+  termsY + 20
+);
+
+
   
     // Save the PDF
     doc.save(`Invoice_${order._id}.pdf`);
   };
+  
+  
+  
   
   
 
@@ -342,6 +404,7 @@ doc.text(`Date: ${formattedDate}`, 190, 30, { align: 'right' });
                         <th>Subtotal</th>
                         <th>GST</th>
                         <th>Total Price</th>
+                      
                         <th>Shipping Date</th>
                         <th>E-Way Bill</th>
                         <th>Invoice</th>
@@ -377,6 +440,8 @@ doc.text(`Date: ${formattedDate}`, 190, 30, { align: 'right' });
                           <td>₹{detail.subtotal.toFixed(2)}</td>
                           <td>₹{detail.gst.toFixed(2)}</td>
                           <td>₹{detail.totalPrice.toFixed(2)}</td>
+                          {/* <td>{detail.shipmentFrom ? detail.shipmentFrom : 'N/A'}</td>   */}
+                         
                           <td>{new Date(detail.shippingDate).toLocaleDateString()}</td>
                           <td>
                             {detail.billPdf?.base64 ? (
@@ -396,12 +461,10 @@ doc.text(`Date: ${formattedDate}`, 190, 30, { align: 'right' });
                             )}
                           </td>
                           <td>
-                          <button
-                            className="btn btn-primary"
-                            onClick={() => generatePDF(detail)}
-                          >
-                            Download PDF
-                          </button>
+                          
+                              <button className="btn btn-primary" onClick={() => generatePDF(detail)}>
+                                <FaFilePdf /> {/* Display PDF icon */}
+                              </button>
                     </td>
                         </tr>
                       ))}

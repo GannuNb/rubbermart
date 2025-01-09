@@ -2,49 +2,22 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Sell.css';
+import Adminnav from './Adminnav';
 
 const Uploaded = () => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [loginError, setLoginError] = useState(null);
     const [scrapItems, setScrapItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
-    
-    // Handle login submission
-    const handleLogin = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/admin/login`, { email, password });
-            const tokenKey = `admin_token_${email}`; // Use template literals for the token key
-            localStorage.setItem(tokenKey, response.data.token); // Store the JWT token with a unique key
-            setIsAuthenticated(true); // Set authentication to true on successful login
-        } catch (err) {
-            setLoginError('Invalid email or password.');
-        }
-    };
-
-    const handleLogout = () => {
-        const tokenKey = `admin_token_${email}`; // Use the same unique key for logout
-        localStorage.removeItem(tokenKey); // Clear the specific JWT token
-        setIsAuthenticated(false);
-    };
 
     useEffect(() => {
         const fetchScrapData = async () => {
             try {
-                const tokenKey = `admin_token_${email}`; // Use the same unique key to fetch the token
-                const token = localStorage.getItem(tokenKey);
-                if (!token) {
-                    throw new Error('No authentication token found. Please log in.');
-                }
-                const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/getuploadedscrap`, {
-                    headers: { 'Authorization': `Bearer ${token}` } // Correctly format the Bearer token
-                });
+                // Removed authentication
+                const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/getuploadedscrap`);
                 setScrapItems(response.data.uploadedScrapItems);
             } catch (error) {
                 console.error('Error fetching scrap items:', error);
@@ -54,19 +27,13 @@ const Uploaded = () => {
             }
         };
 
-        if (isAuthenticated) {
-            fetchScrapData();
-        }
-    }, [isAuthenticated, email]); // Add email as a dependency
+        fetchScrapData();
+    }, []);
 
     const handleApprove = async (id) => {
         try {
-            const tokenKey = `admin_token_${email}`; // Use the same unique key for the approve request
-            const token = localStorage.getItem(tokenKey);
-            if (!token) throw new Error('No authentication token found. Please log in.');
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/approveScrap/${id}`, {}, {
-                headers: { 'Authorization': `Bearer ${token}` } // Correctly format the Bearer token
-            });
+            // Removed authentication
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/approveScrap/${id}`);
             setScrapItems(scrapItems.filter(item => item._id !== id));
             alert(response.data.message || 'Scrap item approved.');
         } catch (error) {
@@ -77,60 +44,22 @@ const Uploaded = () => {
 
     const handleDeny = async (id) => {
         try {
-          const tokenKey = `admin_token_${email}`; // Use the same unique key for the deny request
-          const token = localStorage.getItem(tokenKey);
-          if (!token) throw new Error('No authentication token found. Please log in.');
-      
-          const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/denyScrap/${id}`, {}, {
-            headers: { 'Authorization': `Bearer ${token}` }
-          });
-      
-          setScrapItems(scrapItems.filter(item => item._id !== id));
-          alert(response.data.message || 'Scrap item denied.');
+            // Removed authentication
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/denyScrap/${id}`);
+            setScrapItems(scrapItems.filter(item => item._id !== id));
+            alert(response.data.message || 'Scrap item denied.');
         } catch (error) {
-          console.error('Error denying scrap item:', error);
-          alert(error.response?.data?.message || error.message || 'Failed to deny the scrap item.');
+            console.error('Error denying scrap item:', error);
+            alert(error.response?.data?.message || error.message || 'Failed to deny the scrap item.');
         }
-      };
-      
-
-    // Render Login Form if not authenticated
-    if (!isAuthenticated) {
-        return (
-                <div className="login-container">
-                    <h2>Admin Login for uploaded</h2>
-                    <form onSubmit={handleLogin}>
-                        <div>
-                            <label>Email</label>
-                            <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label>Password</label>
-                            <input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
-                        </div>
-                        {loginError && <p className="text-danger">{loginError}</p>}
-                        <button type="submit">Login</button>
-                    </form>
-                </div>
-        );
-    }
+    };
 
     // Loading and error handling
     if (loading) return <div className="text-center mt-5">Loading scrap items...</div>;
-    if (error) return <div className="text-center mt-5 text-danger">Error: {error}</div>;
 
     return (
         <>
+            <Adminnav />
             <div className="container my-5">
                 <h2 className="text-center mb-4">Uploaded Scrap Items</h2>
                 {scrapItems.length === 0 ? (
@@ -164,7 +93,7 @@ const Uploaded = () => {
                                             Approve
                                         </button>
                                         <button className="btn btn-danger btn-custom" onClick={() => handleDeny(scrap._id)}>
-                                                                                    Deny
+                                            Deny
                                         </button>
                                     </td>
                                 </tr>
@@ -172,8 +101,9 @@ const Uploaded = () => {
                         </tbody>
                     </table>
                 )}
+                {error && <div className="text-center text-danger mt-4">{error}</div>}
             </div>
-            </>
+        </>
     );
 };
 

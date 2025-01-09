@@ -8,7 +8,6 @@ import SrenComponent from './SrenComponent';
 import SellTop from './SellTop';
 import logo1 from './images/logo.png';
 
-
 const Sell = () => {
     const [material, setMaterial] = useState('Tyre scrap');
     const [applications, setApplications] = useState([]);
@@ -22,15 +21,10 @@ const Sell = () => {
     const navigate = useNavigate();
     const location = useLocation(); // Get current route location
 
-
-
-
-
     // Scroll to the top whenever the location changes
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [location]);
-
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -69,8 +63,6 @@ const Sell = () => {
         }
     }, [navigate, location]);
 
-
-
     useEffect(() => {
         if (material === 'Tyre scrap') {
             setApplications([
@@ -78,16 +70,13 @@ const Sell = () => {
                 'Baled Tyres TBR',
                 'Three Piece PCR',
                 'Three Piece TBR',
-                'Shredds',
+                'Shreds',
                 'Mulch PCR',
                 'Rubber Granules/Crum'
             ]);
             setSelectedApplication('');
         } else if (material === 'pyro oil') {
-            setApplications([
-                'Pyro Oil',
-
-            ]);
+            setApplications(['Pyro Oil']);
             setSelectedApplication('');
         } else if (material === 'Tyre steel scrap') {
             setApplications(['Pyro Steel', 'Rubber Crum Steel']);
@@ -148,7 +137,7 @@ const Sell = () => {
         try {
             const authToken = localStorage.getItem('token');
             if (!authToken) throw new Error('User is not authenticated. Please log in.');
-
+        
             const response = await axios.post(
                 `${process.env.REACT_APP_API_URL}/api/uploadscrap`,
                 scrapData,
@@ -159,47 +148,39 @@ const Sell = () => {
                     },
                 }
             );
-
+        
             if (response.data.success) {
-                setMessage('Scrap details uploaded successfully!');
+                displayAlert('Scrap details uploaded successfully!', 'success');
                 setMaterial('Tyre scrap');
                 setQuantity('');
                 setSelectedApplication('');
             } else {
-                setError('Failed to upload scrap details.');
+                displayAlert('Failed to upload scrap details.', 'danger');
             }
         } catch (err) {
             console.error('Error uploading scrap details:', err);
-            setError(err.message || 'An unexpected error occurred.');
+            displayAlert(err.message || 'An unexpected error occurred.', 'danger');
         } finally {
             setLoading(false);
         }
     };
 
-
-
-    useEffect(() => {
-        window.onload = () => {
-            document.documentElement.scrollTop = 0;
-            document.body.scrollTop = 0;
-        };
-
-        // Cleanup to avoid any potential memory leaks
-        return () => {
-            window.onload = null;
-        };
-    }, []);
-
-
-
+    const displayAlert = (message, type) => {
+        const alertContainer = document.getElementById('alert-container');
+        if (alertContainer) {
+            alertContainer.innerHTML = `
+            <div class="alert alert-${type} alert-dismissible fade show alert-fade" role="alert">
+              <img src="${logo1}" alt="Logo" class="mr-2" style="width: 100px;">
+              ${message}
+            </div>
+          `;
+        }
+    };
 
     return (
         <>
-
             <div className='setter'>
                 <SellTop />
-
-
                 <div className="container" style={{ marginTop: '40px', marginBottom: '20px', padding: '2rem', borderRadius: '10px', background: 'linear-gradient(135deg, #17a2b8, #0d6efd)', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', animation: 'fadeIn 1.5s ease-in-out' }}>
                     <h2 className="tyre-scrap-heading" style={{ textAlign: 'center', color: 'white', fontSize: '2rem', marginBottom: '20px', animation: 'bounce 2s infinite' }}>Upload Your Scrap Details</h2>
 
@@ -208,7 +189,7 @@ const Sell = () => {
 
                     <form onSubmit={handleSubmit} style={{ marginBottom: '40px' }}>
                         <div className="mb-3" style={{ marginBottom: '1.5rem' }}>
-                            <label htmlFor="material" className="form-label" style={{ fontWeight: 'bold', color: 'white' }}>Choose Material</label>
+                            <label htmlFor="material" className="form-label" style={{ fontWeight: 'bold', color: 'white' }}>Choose Category</label>
                             <select
                                 id="material"
                                 className="form-select"
@@ -225,7 +206,7 @@ const Sell = () => {
 
                         {material && (
                             <div className="mb-3" style={{ marginBottom: '1.5rem' }}>
-                                <label htmlFor="applications" className="form-label" style={{ fontWeight: 'bold', color: 'white' }}>Applications</label>
+                                <label htmlFor="applications" className="form-label" style={{ fontWeight: 'bold', color: 'white' }}>Type of Scrap</label>
                                 <select
                                     id="applications"
                                     className="form-select"
@@ -268,41 +249,8 @@ const Sell = () => {
                 </div>
 
                 <SrenComponent />
-
-                <h2 className="text-center my-5" style={{ fontSize: '2.5rem', color: '#007bff', fontWeight: '700', textTransform: 'uppercase' }}>Your Profile Details</h2>
-
-{profile ? (
-    <div className="profile-container" style={{
-        maxWidth: "500px", margin: "0 auto", padding: "30px", borderRadius: "15px", 
-        backgroundColor: "#fff", boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)", 
-        border: "1px solid #e0e0e0", transition: "all 0.3s ease-in-out"
-    }}>
-        <div className="profile-content">
-            <div className="profile-text">
-                <strong style={{ color: "#007bff" }}>Company Name:</strong>
-                <p style={{ color: "#333", fontWeight: "500" }}>{profile.companyName}</p>
             </div>
-            <div className="profile-text">
-                <strong style={{ color: "#007bff" }}>Phone Number:</strong>
-                <p style={{ color: "#333", fontWeight: "500" }}>{profile.phoneNumber}</p>
-            </div>
-            <div className="profile-text">
-                <strong style={{ color: "#007bff" }}>Email:</strong>
-                <p style={{ color: "#333", fontWeight: "500" }}>{profile.email}</p>
-            </div>
-        </div>
-    </div>
-) : (
-    <div className="text-center my-5" style={{ color: '#6c757d' }}>
-        <p>{error || "Loading profile..."}</p>
-    </div>
-)}
-
-
-
-
-
-            </div></>
+        </>
     );
 };
 

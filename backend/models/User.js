@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const BusinessProfileCounter = require('./BusinessProfileCounter');
+
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -9,7 +11,7 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
-        lowercase: true, // Automatically converts emails to lowercase
+        lowercase: true,
     },
     password: {
         type: String,
@@ -20,13 +22,14 @@ const UserSchema = new mongoose.Schema({
     },
     businessProfiles: [
         {
-            registeredgst:{ type: String, required: true },
+            profileId: { type: String, required: true }, // Add the profileId field
+            registeredgst: { type: String, required: true },
             companyName: { type: String, required: true },
             phoneNumber: { type: String, required: true },
             email: { type: String, required: true },
             gstNumber: { type: String, required: true },
-            pan: { type: String, required: true }, // New Field
-            billAddress: { type: String, required: true }, // New Field
+            pan: { type: String, required: true },
+            billAddress: { type: String, required: true },
             shipAddress: { type: String, required: true },
         }
     ],
@@ -34,7 +37,6 @@ const UserSchema = new mongoose.Schema({
     tokenExpiry: { type: Date },
 });
 
-// Pre-save middleware to enforce lowercase
 UserSchema.pre('save', function(next) {
     if (this.email) {
         this.email = this.email.toLowerCase();
