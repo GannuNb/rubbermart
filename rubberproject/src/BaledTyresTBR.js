@@ -172,7 +172,8 @@ const BaledTyresTBR = () => {
                 <div className="col-md-6">
                     <h2>Baled Tyres TBR</h2>
                     <p>
-                        Baled Tyres TBR are compressed tyre bundles primarily used for recycling purposes, construction, and environmental applications. These bales are highly durable and cost-efficient.
+                        Baled Tyres TBR are
+                         compressed Tyre bundles primarily used for recycling purposes, construction, and environmental applications. These bales are highly durable and cost-efficient.
                     </p>
                 </div>
             </div>
