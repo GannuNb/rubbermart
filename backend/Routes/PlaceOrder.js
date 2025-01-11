@@ -7,6 +7,8 @@ const jwt = require('jsonwebtoken');
 const ScrapItem = require('../models/ScrapItem');
 require('dotenv').config();
 
+
+
 // Middleware for authentication
 const authenticate = (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -22,8 +24,7 @@ const authenticate = (req, res, next) => {
   }
 };
 
-// Configure multer for file uploads
-const upload = multer();
+
 
 
 // Place order route
@@ -51,6 +52,13 @@ router.post('/place-order', authenticate, async (req, res) => {
     res.status(500).json({ message: 'An error occurred while placing the order.' });
   }
 });
+
+const upload = multer({ 
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB limit
+});
+
+
 
 
 router.post('/upload-pdf', authenticate, upload.single('pdf'), async (req, res) => {
@@ -158,6 +166,9 @@ router.post('/upload-pdf', authenticate, upload.single('pdf'), async (req, res) 
 
     res.status(200).json({ message: 'Email sent successfully.' });
   } catch (error) {
+    if (error.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({ message: 'File size exceeds the 5MB limit.' });
+    }
     console.error('Error sending email:', error);
     res.status(500).json({ message: 'Failed to send email.' });
   }
