@@ -4,11 +4,11 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import './Sell.css';
-import logo from "./images/logo.png"
+import logo from "./images/logo3.png"
 import "./Order.css";
 import logo1 from "./images/logo.png"
 import 'bootstrap/dist/css/bootstrap.min.css';
-import seal from './images/seal.png';
+import seal from './images/seal1.png';
 
 const Order = () => {
   const location = useLocation();
@@ -452,12 +452,11 @@ const Order = () => {
 
   const generatePDF = () => {
     const doc = new jsPDF();
-  
+    
     if (logo) {
-      // Ensure the logo is not too large
-      doc.addImage(logo, 'JPEG', 10, 10, 32, 15); // Adjust the width and height of the logo
+      doc.addImage(logo, 'JPEG', 11, 6, 40, 20); // Adjust the width and height of the logo
     }
-  
+    
     const baseItems = [
       {
         name,
@@ -467,15 +466,15 @@ const Order = () => {
         total: price * required_quantity,
       },
     ];
-  
+    
     // Header
-    doc.setFontSize(16);
+    doc.setFontSize(20);
     doc.text('PROFORMA INVOICE', 70, 20);
     doc.setFontSize(10);
     doc.text(`Order Date: ${new Date().toLocaleDateString()}`, 190, 20, { align: 'right' });
     doc.setDrawColor(0, 0, 0);
     doc.line(10, 25, 200, 25); // Underline
-  
+    
     // Billing and Shipping Information
     doc.setFontSize(12);
     doc.setFont('helvetica', 'bold');
@@ -484,7 +483,8 @@ const Order = () => {
     doc.line(10, 38, 200, 38); // Underline
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
-  
+    
+    // Wrap the billing address text
     const billingAddress = doc.splitTextToSize(
       `Address: ${profile.billAddress || 'N/A'}`,
       90 // Limit the width for wrapping
@@ -492,19 +492,24 @@ const Order = () => {
     doc.text(`Company: ${profile.companyName || 'N/A'}`, 14, 45);
     doc.text(`Email: ${profile.email || 'N/A'}`, 14, 50);
     doc.text(billingAddress, 14, 55);
-  
+    
     // Wrap the shipping address text
-    let finalShippingAddress = isSameAsBilling ? profile?.billAddress : shippingAddress || 'N/A';
+    let finalShippingAddress = '';
+    if (isSameAsBilling) {
+      finalShippingAddress = profile?.billAddress || 'N/A';
+    } else {
+      finalShippingAddress = shippingAddress || 'N/A';
+    }
     const wrappedShippingAddress = doc.splitTextToSize(
       `Address: ${finalShippingAddress}`,
       90 // Limit the width for wrapping
     );
     doc.text(wrappedShippingAddress, 110, 45);
-  
+    
     // Measure height of the address section dynamically
-    const billingAddressHeight = 15 + billingAddress.length * 2;
-    const shippingAddressHeight = 15 + wrappedShippingAddress.length * 2;
-    const totalAddressHeight = Math.max(billingAddressHeight, shippingAddressHeight);
+    const billingAddressHeight = 15 + billingAddress.length * 2; // Basic height and extra lines for address wrapping
+    const shippingAddressHeight = 15 + wrappedShippingAddress.length * 2; // Basic height and extra lines for address wrapping
+    const totalAddressHeight = Math.max(billingAddressHeight, shippingAddressHeight); // Maximum of both addresses
   
     // Products Section: Dynamically set start position based on address length
     let productsStartY = 50 + totalAddressHeight;
@@ -513,16 +518,17 @@ const Order = () => {
     doc.text('Products', 14, productsStartY);
     doc.setDrawColor(0, 0, 0);
     doc.line(10, productsStartY + 3, 200, productsStartY + 3); // Underline
-  
+    
     const gstRate = 0.18;
-    const subtotalBase = baseItems.reduce((sum, item) => sum + item.total, 0);
-    const subtotalAdditional = additionalItems.reduce((sum, item) => sum + item.total, 0);
+    const subtotalBase = baseItems.reduce((sum, item) => sum + item.total, 0); // For base items
+    const subtotalAdditional = additionalItems.reduce((sum, item) => sum + item.total, 0); // For additional items
     const subtotal = subtotalBase + subtotalAdditional;
     const gst = subtotal * gstRate;
     const total = subtotal + gst;
     const totalAmountInWords = numberToWords(total);
   
     doc.setFont('helvetica', 'normal');
+    // Combine base and additional items for table
     const combinedItems = [
       ...baseItems.map(item => ({
         name: item.name,
@@ -543,7 +549,7 @@ const Order = () => {
     ];
   
     doc.autoTable({
-      startY: productsStartY + 5,
+      startY: productsStartY + 5, // Start products section after the header
       head: [
         ['Item Name', 'Price/Ton', 'HSN', 'Quantity', 'Subtotal', 'GST (18%)', 'Total']
       ],
@@ -558,19 +564,11 @@ const Order = () => {
       ]),
       theme: 'striped',
       styles: { fontSize: 8 },
-      columnStyles: {
-        0: { cellWidth: 'auto' }, // Auto-width for names
-        1: { cellWidth: 'auto' }, // Auto-width for prices
-      },
-      tableWidth: 'wrap', // Make sure it fits the page
-      margin: { top: 5, bottom: 5 },
     });
   
-    const firstTableFinalY = doc.lastAutoTable.finalY + 5;
-  
-    // Adding second table
-    const secondTableStartY = firstTableFinalY + 2;
-  
+    const firstTableFinalY = doc.lastAutoTable.finalY + 5; // Position after the first table
+    const secondTableStartY = firstTableFinalY + 2; // Decrease space between tables
+    
     doc.autoTable({
       startY: secondTableStartY,
       head: [['Description', 'Amount']],
@@ -581,40 +579,42 @@ const Order = () => {
       ],
       theme: 'grid',
       styles: { 
-        fontSize: 8, 
-        cellPadding: 2, 
+        fontSize: 8,  // Keep font size small
+        cellPadding: 2,  // Ensure minimal padding
       },
       columnStyles: {
         0: { cellWidth: 80, halign: 'left' },
         1: { cellWidth: 40, halign: 'right' },
       },
       headStyles: { 
-        fontSize: 9, 
+        fontSize: 9,  // Adjust heading font size
         fontStyle: 'bold', 
         fillColor: [240, 240, 240], 
         textColor: [0, 0, 0] 
       },
     });
+    
   
     // Positioning for Total Amount in Words and Total Balance
-    const totalAmountY = doc.lastAutoTable.finalY + 10;
+    const totalAmountY = doc.lastAutoTable.finalY + 10; // Position below the second table
     doc.text(`Total Amount (in words): ${totalAmountInWords}`, 14, totalAmountY);
-    doc.text(`Total Balance: Rs ${total.toFixed(2)}`, 14, totalAmountY + 8);
+    doc.text(`Total Balance : Rs ${total.toFixed(2)}`, 14, totalAmountY + 8);
   
     // Address and Banking Details Heading on the Same Line
     const addressY = totalAmountY + 18;
     doc.setFontSize(12);
     doc.setFont('helvetica');
-  
+    
+    // Left-aligned "Address Details" and right-aligned "Banking Details"
     doc.text('Address Details', 14, addressY);
-    doc.text('Banking Details', 110, addressY);
+    doc.text('Banking Details', 110, addressY);  // Right-aligned
     doc.setDrawColor(0, 0, 0);
-    doc.line(10, addressY + 3, 200, addressY + 3); 
-  
+    doc.line(10, addressY + 3, 200, addressY + 3); // Underline for both
+    
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
-  
-    // Address Details (From)
+    
+    // "From" Section (Address Details)
     doc.text('From:', 14, addressY + 10);
     doc.text('VIKAH RUBBERS', 14, addressY + 15);
     doc.text('Hyderabad', 14, addressY + 20);
@@ -623,58 +623,64 @@ const Order = () => {
     doc.text('Above EasyBuy Beside Nagole RTO Office,', 14, addressY + 35);
     doc.text('Nagole Hyderabad, Telangana-500035', 14, addressY + 40);
     doc.text('Hyderabad.', 14, addressY + 45);
-  
+    
     // Banking Details Column-wise (Right-aligned)
-    const bankingStartX = 110;
-    const bankingY = addressY + 10;
+    const bankingStartX = 110; // X position for the right side (adjusted)
+    const bankingY = addressY + 10; // Align the Y position with address section
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
+    
+    // Column-wise Banking Details
     doc.text('Bank Name:', bankingStartX, bankingY + 10);
     doc.text('IDFC FIRST BANK', bankingStartX + 30, bankingY + 10);
-  
+    
     doc.text('Name of Firm:', bankingStartX, bankingY + 15);
     doc.text('VIKAH RUBBERS', bankingStartX + 30, bankingY + 15);
-  
+    
     doc.text('Account Number:', bankingStartX, bankingY + 20);
     doc.text('10113716761', bankingStartX + 30, bankingY + 20);
-  
+    
     doc.text('IFSC CODE:', bankingStartX, bankingY + 25);
     doc.text('IDFB0040132', bankingStartX + 30, bankingY + 25);
-  
+    
     doc.text('Account Type:', bankingStartX, bankingY + 30);
     doc.text('CURRENT A/C', bankingStartX + 30, bankingY + 30);
-  
+    
     doc.text('Branch:', bankingStartX, bankingY + 35);
     doc.text('NERUL BRANCH', bankingStartX + 30, bankingY + 35);
-  
+    
     // Terms and Conditions Section
-    const termsY = bankingY + 45;
+    const termsY = bankingY + 45; // Start after banking details
     doc.setFont('helvetica', 'bold');
     doc.text('Terms and Conditions:', 14, termsY);
     doc.setDrawColor(0, 0, 0);
-    doc.line(10, termsY + 3, 200, termsY + 3);
-  
+    doc.line(10, termsY + 3, 200, termsY + 3); // Underline
+    
     doc.setFontSize(9);
     doc.setFont('helvetica', 'normal');
+    
     const termsText = [
       '1. The Seller shall not be liable to the Buyer for any loss or damage.',
       '2. The Seller warrants the product for one (1) year from the date of shipment.',
       '3. The purchase order will be interpreted as acceptance of this offer.',
     ];
-  
+    
     let yOffset = termsY + 10;
     termsText.forEach(line => {
       doc.text(line, 14, yOffset);
-      yOffset += 5;
+      yOffset += 5; // Adjust for next line
     });
-  
-    // Adjust Seal Position
-    const imageY = yOffset + 5;
-    doc.addImage(seal, 'PNG', 100, imageY, 80, 80);
-  
+    
+    // ** Move Seal Higher Up **: Adjust the Y position for seal
+    const imageY = yOffset + 0; // Move the image slightly higher
+    const imageWidth = 80; // Increased width of the image
+    const imageHeight = 80; // Increased height of the image
+    
+    // Seal Position Adjustment
+    doc.addImage(seal, 'PNG', 100, imageY, imageWidth, imageHeight); // Adjust position and size
+    
     return doc.output('blob');
   };
-  
   
   
   
@@ -880,6 +886,7 @@ const Order = () => {
             <div>
               {/* Order Summary */}
               {renderOrderSummary()}
+
               {/* Place Order Button */}
               <button
                 className="btn btn-success mt-4"

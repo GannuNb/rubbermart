@@ -138,7 +138,6 @@ router.get('/adminorders', authenticate, async (req, res) => {
 
 
 
-
 router.post('/Adminorder', authenticate, async (req, res) => {
   console.log('Received order request:', req.body);
   try {

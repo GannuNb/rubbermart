@@ -55,7 +55,7 @@ router.post('/place-order', authenticate, async (req, res) => {
 
 const upload = multer({ 
   storage: multer.memoryStorage(),
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB limit
+  limits: { fileSize: 10 * 1024 * 1024 },
 });
 
 
@@ -94,7 +94,7 @@ router.post('/upload-pdf', authenticate, upload.single('pdf'), async (req, res) 
             <p style="font-size: 16px; margin-bottom: 20px;">We are pleased to inform you that your order has been successfully processed. Please find the attached order summary PDF for your reference, which includes the details of your purchase.</p>
             <p style="font-size: 16px; margin-bottom: 30px;">If you have any questions or require further assistance, feel free to reach out to us. We are here to help and ensure a smooth experience for you.</p>
             <div style="margin-top: 30px; border-top: 2px solid #1e88e5; padding-top: 20px;">
-              <p style="font-size: 16px; margin-bottom: 10px;">Thank you once again for your business, and we look forward to serving you in the future.</p>
+             
               <p style="font-size: 16px; margin-bottom: 10px;">Best regards,</p>
               <p style="font-size: 16px; margin-bottom: 10px;"><strong>Vikah Rubber</strong></p>
             </div>
@@ -103,7 +103,6 @@ router.post('/upload-pdf', authenticate, upload.single('pdf'), async (req, res) 
               <p style="font-size: 14px; margin-bottom: 10px;">#406, 4th Floor, Patel Towers,<br>Above EasyBuy, Beside Nagole RTO Office,<br>Nagole, Hyderabad, Telangana-500035</p>
               <p style="font-size: 14px; margin-bottom: 10px;"><strong>Phone:</strong> +91 4049471616</p>
               <p style="font-size: 14px; margin-bottom: 10px;"><strong>Email:</strong> <a href="mailto:vikahrubber@gmail.com" style="color: #1e88e5;">vikahrubber@gmail.com</a></p>
-              <p style="font-size: 14px; margin-bottom: 10px;"><strong>Website:</strong> <a href="https://rubberscrapmart.com" style="color: #1e88e5;">https://rubberscrapmart.com</a></p>
             </div>
             <div style="border-left: 5px solid #d32f2f; padding-left: 20px; margin-top: 30px; margin-bottom: 30px;">
               <p style="font-size: 16px; margin-bottom: 10px;"><strong>Note:</strong></p>
@@ -132,23 +131,17 @@ router.post('/upload-pdf', authenticate, upload.single('pdf'), async (req, res) 
       html: `
         <div style="font-family: 'Arial', sans-serif; color: #333333; padding: 20px; background-color: #f4f4f4; line-height: 1.6;">
           <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; padding: 30px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
-            <h2 style="color: #d32f2f; font-size: 24px; margin-bottom: 20px;">New Order Notification</h2>
-            <p style="font-size: 16px; margin-bottom: 20px;">Dear Admin,</p>
-            <p style="font-size: 16px; margin-bottom: 20px;">A new order has been successfully placed on the system by <strong>${userEmail}</strong>.</p>
+            <h2 style="color: #d32f2f; font-size: 24px; margin-bottom: 20px;">New Order Received</h2>
+            <p style="font-size: 16px; margin-bottom: 20px;">A new order has been placed by <strong>${userEmail}</strong>.</p>
             <div style="border-left: 5px solid #d32f2f; padding-left: 20px; margin-top: 30px; margin-bottom: 30px;">
-              <p style="font-size: 16px; margin-bottom: 10px;"><strong>Next Steps:</strong></p>
+              <p style="font-size: 16px; margin-bottom: 10px;"><strong>Action Required:</strong></p>
               <ul style="font-size: 16px; list-style-type: disc; padding-left: 40px;">
-                <li>Review the attached order summary for details.</li>
-                <li>Ensure the fulfillment process is initiated promptly.</li>
-                <li>Contact the customer if additional clarification or action is needed.</li>
+                <li>Review the attached order summary.</li>
                 
               </ul>
             </div>
-            <p style="font-size: 16px; margin-bottom: 20px;">This email serves as a notification for your records and further action. If you have any questions regarding the order, please reply to this email or reach out to the support team.</p>
-            <div style="margin-top: 40px; border-top: 2px solid #d32f2f; padding-top: 20px;">
-              <p style="font-size: 16px; margin-bottom: 10px;">Best regards,</p>
-              <p style="font-size: 16px; margin-bottom: 10px;"><strong>Vikah Rubber System</strong></p>
-            </div>
+            <p style="font-size: 16px; margin-bottom: 20px;">For more details, refer to the attached order summary.</p>
+           
           </div>
         </div>
       `,
@@ -159,6 +152,7 @@ router.post('/upload-pdf', authenticate, upload.single('pdf'), async (req, res) 
         },
       ],
     };
+    
 
     // Send emails to both customer and admin
     await transporter.sendMail(adminMailOptions);
