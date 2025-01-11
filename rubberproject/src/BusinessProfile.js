@@ -21,6 +21,7 @@ const BusinessProfile = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
+  const [isSameAsBilling, setIsSameAsBilling] = useState(false);
 
  useEffect(() => {
     const token = localStorage.getItem('token');
@@ -126,6 +127,23 @@ const BusinessProfile = () => {
     }
 };
 
+const handleCheckboxChange = () => {
+  setIsSameAsBilling((prevState) => {
+    const newState = !prevState;
+    if (newState) {
+      setProfile((prevProfile) => ({
+        ...prevProfile,
+        shipAddress: prevProfile.billAddress, // Copy bill address to ship address when checked
+      }));
+    } else {
+      setProfile((prevProfile) => ({
+        ...prevProfile,
+        shipAddress: '', // Clear ship address if unchecked
+      }));
+    }
+    return newState;
+  });
+};
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -170,109 +188,135 @@ const BusinessProfile = () => {
 
   return (
     <>
-    <div className='setterbus'>
-    <div className="container mt-5 "> 
-      <form onSubmit={handleSubmit} className="border p-4 rounded bg-light shadow-lg">
-        <h2 className="text-center mb-4">Create Business Profile</h2>
+<div className="setterbus">
+      <div className="container mt-5">
+        <form onSubmit={handleSubmit} className="border p-5 rounded bg-white shadow-lg">
+          <h2 className="text-center mb-4 text-primary">Create Business Profile</h2>
 
-        <div className="row mb-3">
-          <div className="col-sm-6">
-            <label htmlFor="companyName" className="form-label">Company Name</label>
-            <input
-              type="text"
-              className="form-control"
-              id="companyName"
-              name="companyName"
-              value={profile.companyName}
-              onChange={handleChange}
-              required
-            />
+          <div className="row mb-4">
+            <div className="col-md-6">
+              <label htmlFor="companyName" className="form-label text-muted">Company Name</label>
+              <input
+                type="text"
+                className="form-control shadow-sm"
+                id="companyName"
+                name="companyName"
+                value={profile.companyName}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="col-md-6">
+              <label htmlFor="phoneNumber" className="form-label text-muted">Phone Number</label>
+              <input
+                type="tel"
+                className="form-control shadow-sm"
+                id="phoneNumber"
+                name="phoneNumber"
+                value={profile.phoneNumber}
+                onChange={handleChange}
+                required
+              />
+            </div>
           </div>
-          <div className="col-sm-6">
-            <label htmlFor="phoneNumber" className="form-label">Phone Number</label>
-            <input
-              type="tel"
-              className="form-control"
-              id="phoneNumber"
-              name="phoneNumber"
-              value={profile.phoneNumber}
-              onChange={handleChange}
-              required
-            />
-          </div>
-        </div>
 
-        <div className="row mb-3">
-          <div className="col-sm-6">
-            <label htmlFor="email" className="form-label">Email</label>
-            <input
-              type="email"
-              className="form-control"
-              id="email"
-              name="email"
-              value={profile.email}
-              onChange={handleChange}
-              required
-            />
+          <div className="row mb-4">
+            <div className="col-md-6">
+              <label htmlFor="email" className="form-label text-muted">Email</label>
+              <input
+                type="email"
+                className="form-control shadow-sm"
+                id="email"
+                name="email"
+                value={profile.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="col-md-6">
+              <label htmlFor="gstNumber" className="form-label text-muted">GST Number</label>
+              <input
+                type="text"
+                className="form-control shadow-sm"
+                id="gstNumber"
+                name="gstNumber"
+                value={profile.gstNumber}
+                onChange={handleChange}
+                required
+              />
+            </div>
           </div>
-          <div className="col-sm-6">
-            <label htmlFor="gstNumber" className="form-label">GST Number</label>
-            <input
-              type="text"
-              className="form-control"
-              id="gstNumber"
-              name="gstNumber"
-              value={profile.gstNumber}
-              onChange={handleChange}
-              required
-            />
+
+          <div className="row mb-4">
+            <div className="col-md-6">
+              <label htmlFor="pan" className="form-label text-muted">PAN</label>
+              <input
+                type="text"
+                className="form-control shadow-sm"
+                id="pan"
+                name="pan"
+                value={profile.pan}
+                onChange={handleChange}
+                required
+              />
+            </div>
           </div>
-          </div>
-          <div className="col-sm-6">
-    <label htmlFor="pan" className="form-label">PAN</label>
-    <input
-      type="text"
-      className="form-control"
-      id="pan"
-      name="pan"
-      value={profile.pan}
+
+          <div className="row mb-4">
+            <div className="col-md-6">
+              <label htmlFor="billAddress" className="form-label text-muted">Bill to Address</label>
+              <textarea
+                className="form-control shadow-sm"
+                id="billAddress"
+                name="billAddress"
+                value={profile.billAddress}
+                onChange={handleChange}
+                rows="4"
+                required
+              />
+            </div>
+            <div className="col-md-6" style={{marginTop:'-3.5%'}}>
+  <h5 className="mb-2 ml-3">Shipping Details</h5> {/* Reduced margin-bottom */}
+  <div className="form-group mt-2"> {/* Reduced top margin */}
+    {/* Checkbox Section */}
+    <div className="d-flex align-items-center mb-2">
+      <input
+        type="checkbox"
+        style={{borderColor:"black"}}
+        className="form-check-input ml-0"
+        id="sameAsBilling"
+        checked={isSameAsBilling}
+        onChange={handleCheckboxChange}
+      />
+      <label htmlFor="sameAsBilling" className="form-check-label text-muted ml-3">
+        Same as Billing Address
+      </label>
+    </div>
+
+    {/* Shipping Address Section */}
+    <textarea
+      className="form-control mt-2"
+      id="shipAddress"
+      name="shipAddress"
+      placeholder="Enter Shipping Address"
+      value={profile.shipAddress}
       onChange={handleChange}
+      rows="4"
+      disabled={isSameAsBilling} // Disable textarea when 'Same as Billing' is checked
       required
     />
   </div>
-        
-   
+</div>
 
 
-        <div className="row mb-3">
-          <div className="col-sm-6">
-            <label htmlFor="billAddress" className="form-label">Bill to Address</label>
-            <textarea
-              className="form-control"
-              id="billAddress"
-              name="billAddress"
-              value={profile.billAddress}
-              onChange={handleChange}
-              required
-            />
+
           </div>
-          <div className="col-sm-6">
-            <label htmlFor="shipAddress" className="form-label">Ship to Address</label>
-            <textarea
-              className="form-control"
-              id="shipAddress"
-              name="shipAddress"
-              value={profile.shipAddress}
-              onChange={handleChange}
-              required
-            />
-          </div>
-        </div>
 
-        <button type="submit" className="btn btn-gradient text-black w-100 mt-3">Create Profile</button>
-      </form>
+          <button type="submit" className="btn btn-primary w-100 mt-4 py-2 fs-5 fw-bold">Create Profile</button>
+        </form>
+      </div>
     </div>
-    </div>
+
     </>
   );
 }

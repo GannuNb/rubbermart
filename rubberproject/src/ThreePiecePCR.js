@@ -167,7 +167,7 @@ const ThreePiecePCR = () => {
     }, []);
 
     return (
-        <div className="threepiecepcr-container" style={{ padding: '20px', marginTop: '20px', marginLeft: '180px' }}>
+        <div className="mulch-container" style={{ padding: '20px', marginTop: '20px', marginLeft: '180px' }}>
             <div className="row align-items-center mt-5">
                 <div className="col-md-6">
                     <img

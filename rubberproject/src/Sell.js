@@ -105,8 +105,8 @@ const Sell = () => {
                 if (response.data.profileExists) {
                     setProfile(response.data.businessProfile);
                 } else {
-                    setError('No business profile found.');
-                }
+                    navigate('/BusinessProfile', { replace: true });
+                  }
             } catch (err) {
                 setError(`Failed to fetch profile. ${err.message}`);
                 console.error('Error fetching business profile:', err);
@@ -117,6 +117,7 @@ const Sell = () => {
 
         fetchProfile();
     }, []);
+
 
     const handleMaterialChange = (e) => setMaterial(e.target.value);
     const handleSubmit = async (e) => {

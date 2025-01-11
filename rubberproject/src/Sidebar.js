@@ -425,6 +425,7 @@ Pyro oil          </Link>
       <Link to="/Productspage">
         <button 
            className='bttop'
+           style={{ color: 'black', fontWeight: 530 }}
             onMouseEnter={(e) => {
                 e.target.style.backgroundColor = '#218a79';
                 e.target.style.transform = 'scale(1.05)';
@@ -440,6 +441,7 @@ Pyro oil          </Link>
       <Link to="/Sell">
         <button 
             className='bttop'
+            style={{ color: 'black', fontWeight: 530 }}
          
             onMouseEnter={(e) => {
                 e.target.style.backgroundColor = 'navyblue';

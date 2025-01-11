@@ -103,3 +103,30 @@ h2.text-center {
   .business-profile-container .col-12 {
     padding: 10px 0;
   }
+
+
+  /* Styling the container that holds both checkbox and label */
+.ship-address-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Space between checkbox and label */
+  }
+  
+  /* Style the checkbox itself */
+  .ship-checkbox {
+    accent-color: rgba(0, 0, 0, 0.911); /* Change checkbox color to black when checked */
+    width: 20px;
+    height: 20px;
+    margin-left: 2%;
+    margin-top: 0%;
+    border-color: black;
+    
+  }
+  
+  /* Optional: You can add more custom styling to the label here */
+  .ship-address-wrapper label {
+    font-weight: 700;
+    margin-left: 10%;
+    margin-top: 1%;
+  }
+  
