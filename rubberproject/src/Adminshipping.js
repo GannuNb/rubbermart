@@ -152,10 +152,11 @@ const handleCompanySelect = (company) => {
     const file = e.target.files[0];
     const fileType = e.target.name;
 
-    if (file && file.size > 4 * 1024 * 1024) {
+    
+    if (file && file.size > 1 * 1024 * 1024) {
       setFileErrors((prevErrors) => ({
         ...prevErrors,
-        [orderId]: `The ${fileType} file size should be less than 5 MB.`,
+        [orderId]: `The ${fileType} file size should be less than 1024 Kb.`,
       }));
       return;
     }
@@ -239,7 +240,7 @@ const handleCompanySelect = (company) => {
         console.error('Error during shipping:', errorMessage);
         setError(errorMessage);
       } else {
-        const errorMessage = 'Failed to store shipping information. File size should be below 5 MB.';
+        const errorMessage = 'Failed to store shipping information. File size should be below  MB.';
         console.error('Error during shipping:', errorMessage);
         setError(errorMessage);
       }

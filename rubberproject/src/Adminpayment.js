@@ -85,6 +85,7 @@ function AdminPayment() {
         ...prev,
         [orderId]: { notes: '', paid: updatedPaid, additionalPaid: 0 },
       }));
+      window.location.reload();
     } catch (err) {
       alert('Error: ' + err.message);
     }
@@ -124,9 +125,9 @@ function AdminPayment() {
     const doc = new jsPDF();
   
     // Add Logo (if available)
-   if (logo) {
-         doc.addImage(logo, 'JPEG', 11, 6, 40, 20); // Adjust the width and height of the logo
-       }
+    if (logo) {
+        doc.addImage(logo, 'JPEG', 11, 6, 40, 20); // Adjust the width and height of the logo
+    }
   
     // Header Section with Styling
     doc.setFontSize(22);
@@ -153,29 +154,33 @@ function AdminPayment() {
     doc.setFontSize(11);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(0);
-    const productDetails = file.order.items
-      .map((item, index) => `${index + 1}. ${item.name} (Quantity: ${item.quantity})`)
-      .join(' | '); // Join items with a separator for row-wise format
-    doc.text(productDetails, 14, 51, { maxWidth: 180 }); // Ensure text wraps if too long
+  
+    // Display products one after another
+    let productY = 51; // Initial Y position for products
+    file.order.items.forEach((item, index) => {
+        doc.text(`${index + 1}. ${item.name} (Quantity: ${item.quantity})`, 14, productY);
+        productY += 7; // Adjust vertical spacing for each product
+    });
   
     // Approval Table Section
-    const startY = 60;
+    const startY = productY + 10; // Start below the last product
+  
     doc.setFontSize(13);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(22, 160, 133);
     doc.text('Approval Table', 14, startY);
   
     doc.autoTable({
-      startY: startY + 6,
-      head: [['Date', 'Amount Paid']],
-      body: file.approval.map((approval) => [
-        new Date(approval.approvalDate).toLocaleDateString(),
-        `${approval.amountPaid.toFixed(2)}`,
-      ]),
-      theme: 'striped', // Stylish table theme
-      styles: { fontSize: 10, cellPadding: 4 },
-      headStyles: { fillColor: [22, 160, 133], textColor: 255, fontStyle: 'bold' },
-      alternateRowStyles: { fillColor: [240, 248, 255] }, // Light blue row background
+        startY: startY + 6,
+        head: [['Date', 'Amount Paid']],
+        body: file.approval.map((approval) => [
+            new Date(approval.approvalDate).toLocaleDateString(),
+            `${approval.amountPaid.toFixed(2)}`,
+        ]),
+        theme: 'striped', // Stylish table theme
+        styles: { fontSize: 10, cellPadding: 4 },
+        headStyles: { fillColor: [22, 160, 133], textColor: 255, fontStyle: 'bold' },
+        alternateRowStyles: { fillColor: [240, 248, 255] }, // Light blue row background
     });
   
     // Summary Section with Background
@@ -204,7 +209,8 @@ function AdminPayment() {
   
     // Save PDF
     doc.save(`approval-details-${file._id}.pdf`);
-  };
+};
+
 
   // Render Loading or Error State
   if (loading) {

@@ -425,9 +425,10 @@ doc.addImage(seal, 'PNG', 120, imageY, 80, 80); // Moved the image left by chang
         setFiles(newFiles); // Update state with the uploaded file URL
   
         displayAlert('File uploaded successfully', 'success');
+        window.location.reload();
       } catch (err) {
         console.error('Error uploading file:', err.response ? err.response.data : err.message);
-        displayAlert('Error uploading file', 'danger');
+        displayAlert('Error uploading file, file should be less than 1 MB', 'danger');
       }
     } else {
       displayAlert('Please select a file to upload', 'warning');
