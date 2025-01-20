@@ -909,3 +909,9 @@ we will get company name from frontend , for example,
 vikah rubbers
 then id should be like as VKRS_VIK_01,VKRS_VIK_02,VKRS_VIK_03,...
 VKRS is common and vik is , we will get only 3 character from company name  and counter will be applied
+
+in this component , i want to modify newwly,
+in backend there is chennai_quantity,mundra_quantity and nhavasheva_quantity
+in component there is availble quantiy, instead taking available quantity, i want to replace that with total available quantity( sum of chennai_quantity,mundra_quantity and nhavasheva_quantity)
+and we will select loading location , when selecting loading location , show quantity also like chennai-15500.
+please give correct and full code

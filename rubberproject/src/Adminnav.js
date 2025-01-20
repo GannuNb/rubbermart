@@ -39,7 +39,7 @@ function Adminnav() {
           <ul className="navbar-nav ms-auto">
             <li className="nav-item mx-2">
               <Link to="/Admin" className="nav-link nav-hover" onClick={() => setIsNavbarCollapsed(true)}>
-                ScrapItems
+                Scrap Items
               </Link>
             </li>
             <li className="nav-item mx-2">

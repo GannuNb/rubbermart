@@ -156,18 +156,26 @@ function Sidebar() {
             <p className="text-muted">Loading company information...</p>
           </div>
         ) : (
-          businessProfiles.length > 0 ? (
+          !localStorage.getItem('token') ? (
             <div className="p-3 mb-3 bg-light">
-              <h6 className="text-muted"><strong>Company Name:</strong> {businessProfiles[0].companyName}</h6>
-              <h6 className="text-muted"><strong>Company Id:</strong> {businessProfiles[0].profileId}</h6>
+              <p className="text-muted">Please login to view business profile.</p>
             </div>
           ) : (
-            <div className="p-3 mb-3 bg-light">
-              <p className="text-muted">No company information available.</p>
-            </div>
+            businessProfiles.length > 0 ? (
+              <div className="p-3 mb-3 bg-light">
+                <h6 className="text-muted"><strong>Company Name:</strong> {businessProfiles[0].companyName}</h6>
+                <h6 className="text-muted"><strong>Company ID:</strong> {businessProfiles[0].profileId}</h6>
+              </div>
+            ) : (
+              <div className="p-3 mb-3 bg-light">
+                                <Link to="/BusinessProfile" style={{ textDecoration: 'none', color: 'inherit' }}>
+  <p className="text-muted">Please create a business profile.</p>
+</Link>
+
+              </div>
+            )
           )
         )}
-
       <div className="list-group list-group-flush mx-3 mt-4">
         
 
@@ -355,7 +363,7 @@ Pyro oil          </Link>
           >
             <i className="fas fa-bars"></i>
           </button>
-          <Link className="navbar-brand" to="#">
+          <Link className="navbar-brand" to="/">
               <div className='logoset'>
           {/* Brand Logo */}
          
@@ -363,7 +371,7 @@ Pyro oil          </Link>
               src={logo}
              
               alt="Logo"
-              loading="lazy"
+              
             />
           </div></Link>
 

@@ -9,7 +9,9 @@ import logo1 from './images/logo.png';
 const Multiple_Baled_Tyres_PCR = () => {
     const [scrapItems, setScrapItems] = useState([]);
     const [tyreData, setTyreData] = useState({
-        available_quantity: 0,
+        chennai_quantity: 0,
+        mundra_quantity: 0,
+        nhavasheva_quantity: 0,
         price: 0,
         ex_chennai: 0,
         ex_nhavasheva: 0,
@@ -17,10 +19,11 @@ const Multiple_Baled_Tyres_PCR = () => {
         hsn: '',
         default_price: 0,
     });
-    const [requiredQuantity, setRequiredQuantity] = useState(); // Start with 1
+    const [requiredQuantity, setRequiredQuantity] = useState('');
     const [selectedPrice, setSelectedPrice] = useState(''); // Store selected price option
     const [formErrors, setFormErrors] = useState({}); // To store validation errors
     const [quantityExceeds, setQuantityExceeds] = useState(''); // New error state for quantity exceeding
+    const [totalAvailableQuantity, setTotalAvailableQuantity] = useState(0); // State for total available quantity
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -33,19 +36,23 @@ const Multiple_Baled_Tyres_PCR = () => {
                 // Find the Baled Tyres PCR data
                 const tyreItem = items.find(item => item.name === 'Baled Tyres PCR');
 
-                // Ensure we have the tyre item and default price
                 if (tyreItem) {
-                    const fetchedDefaultPrice = tyreItem.default_price || tyreItem.price || tyreItem.ex_chennai;
+                    const totalQuantity = tyreItem.chennai_quantity + tyreItem.mundra_quantity + tyreItem.nhavasheva_quantity;
 
                     setTyreData({
-                        available_quantity: Number(tyreItem.available_quantity),
+                        chennai_quantity: tyreItem.chennai_quantity,
+                        mundra_quantity: tyreItem.mundra_quantity,
+                        nhavasheva_quantity: tyreItem.nhavasheva_quantity,
                         price: tyreItem.price,
                         ex_chennai: tyreItem.ex_chennai,
                         ex_nhavasheva: tyreItem.ex_nhavasheva,
                         ex_mundra: tyreItem.ex_mundra,
                         hsn: tyreItem.hsn,
-                        default_price: fetchedDefaultPrice,
+                        default_price: tyreItem.default_price || tyreItem.price || tyreItem.ex_chennai,
                     });
+
+                    // Set total available quantity (sum of all location quantities)
+                    setTotalAvailableQuantity(totalQuantity);
                 }
 
                 setScrapItems(items);
@@ -57,10 +64,12 @@ const Multiple_Baled_Tyres_PCR = () => {
         fetchData();
     }, []);
 
+    // Handle price location change
     const handlePriceChange = (event) => {
         const selectedOption = event.target.value;
         setSelectedPrice(selectedOption);
 
+        // Set the price based on the selected location
         if (selectedOption === 'ex_chennai') {
             setTyreData(prevState => ({ ...prevState, price: prevState.ex_chennai }));
         } else if (selectedOption === 'ex_nhavasheva') {
@@ -72,35 +81,81 @@ const Multiple_Baled_Tyres_PCR = () => {
         }
     };
 
+    // Handle quantity change and validation
     const handleQuantityChange = (event) => {
         const value = event.target.value;
-        if (value < 1) {
-            setRequiredQuantity(1); // Reset to 1 if a negative value is entered
-        } else {
-            setRequiredQuantity(value);
+
+        // If the value is empty, allow it
+        if (value === '') {
+            setRequiredQuantity('');
+            setQuantityExceeds('');
+            return;
+        }
+
+        // Parse the value to ensure it's a number
+        const parsedValue = parseFloat(value);
+
+        // If the value is a valid number and greater than 0, update the quantity
+        if (!isNaN(parsedValue) && parsedValue > 0) {
+            setRequiredQuantity(parsedValue);
+
+            // If a location is selected, validate against the available quantity
+            if (selectedPrice) {
+                let availableQuantity = 0;
+                if (selectedPrice === 'ex_chennai') {
+                    availableQuantity = tyreData.chennai_quantity;
+                } else if (selectedPrice === 'ex_nhavasheva') {
+                    availableQuantity = tyreData.nhavasheva_quantity;
+                } else if (selectedPrice === 'ex_mundra') {
+                    availableQuantity = tyreData.mundra_quantity;
+                }
+
+                // Check if the required quantity exceeds the available quantity
+                if (parsedValue > availableQuantity) {
+                    setQuantityExceeds('Required quantity exceeds available quantity at selected location.');
+                } else {
+                    setQuantityExceeds('');
+                }
+            }
         }
     };
 
     const validateForm = () => {
         let errors = {};
+
+        // Check for required quantity
         if (requiredQuantity <= 0 || !requiredQuantity) {
             errors.requiredQuantity = "Required quantity is required and must be greater than zero.";
         }
+
+        // Check for location selection
         if (!selectedPrice) {
             errors.selectedPrice = "Price selection is required.";
         }
 
-        // Check if the required quantity exceeds available quantity
-        if (parseFloat(requiredQuantity) > parseFloat(tyreData.available_quantity)) {
-            setQuantityExceeds('Required quantity exceeds available quantity.');
-            errors.quantityExceeds = 'Please check available quantity, then proceed';
-        } else {
-            setQuantityExceeds(''); // Reset error if valid
+        // Only validate against available quantity if a location is selected
+        if (selectedPrice) {
+            let availableQuantity = 0;
+            if (selectedPrice === 'ex_chennai') {
+                availableQuantity = tyreData.chennai_quantity;
+            } else if (selectedPrice === 'ex_nhavasheva') {
+                availableQuantity = tyreData.nhavasheva_quantity;
+            } else if (selectedPrice === 'ex_mundra') {
+                availableQuantity = tyreData.mundra_quantity;
+            }
+
+            if (parseFloat(requiredQuantity) > availableQuantity) {
+                setQuantityExceeds('Required quantity exceeds available quantity at the selected location.');
+                errors.quantityExceeds = 'Please check available quantity at the selected location.';
+            } else {
+                setQuantityExceeds(''); // Reset quantity exceeds error if valid
+            }
         }
 
         return errors;
     };
 
+    // Handle order submission
     const handleOrder = () => {
         const token = localStorage.getItem('token');
 
@@ -139,10 +194,11 @@ const Multiple_Baled_Tyres_PCR = () => {
                         from: location.pathname,
                         tyreData: {
                             name: 'Baled Tyres PCR',
-                            available_quantity: tyreData.available_quantity,
+                            available_quantity: totalAvailableQuantity,
                             price: tyreData.price,
                             required_quantity: requiredQuantity,
                             hsn: tyreData.hsn,
+                            selected_location: selectedPrice, // Pass selected location to login
                         },
                     },
                 });
@@ -151,10 +207,11 @@ const Multiple_Baled_Tyres_PCR = () => {
             navigate('/Order', {
                 state: {
                     name: 'Baled Tyres PCR',
-                    available_quantity: tyreData.available_quantity,
+                    available_quantity: totalAvailableQuantity,
                     price: tyreData.price,
                     required_quantity: requiredQuantity,
                     hsn: tyreData.hsn,
+                    selected_location: selectedPrice, // Pass selected location to the order page
                 },
             });
         }
@@ -189,21 +246,42 @@ const Multiple_Baled_Tyres_PCR = () => {
                 <h3 className="section-title">SPECIFICATIONS</h3>
 
                 <div className="row specifications-row">
-                    {/* Available Quantity */}
+                    {/* Total Available Quantity */}
                     <div className="col-md-6">
-                        <label className="spec-label">AVAILABLE QUANTITY IN (MT):</label>
-
-                        <span className="spec-value">
-                            {Number(tyreData.available_quantity) > 0 ? tyreData.available_quantity : 'No Stock'}
-                        </span>
+                        <label className="spec-label">TOTAL AVAILABLE QUANTITY (MT):</label>
+                        <span className="spec-value">{totalAvailableQuantity > 0 ? totalAvailableQuantity : 'No Stock'}</span>
                     </div>
 
                     {/* HSN */}
                     <div className="col-md-6">
                         <label className="spec-label">HSN:</label>
-                        <span className="spec-value">
-                            {tyreData.hsn}
-                        </span>
+                        <span className="spec-value">{tyreData.hsn}</span>
+                    </div>
+                </div>
+
+                <div className="row mt-3">
+                    {/* Price Selection Dropdown */}
+                    <div className="price-dropdown mt-1 col-md-6">
+                        <label className="spec-label">LOADING LOCATION:</label>
+                        <select className="form-control" value={selectedPrice} onChange={handlePriceChange}>
+                            <option value="" disabled>Select a location</option>
+                            <option value="ex_chennai" disabled={tyreData.chennai_quantity === 0}>
+                                Ex-Chennai - {tyreData.chennai_quantity}
+                            </option>
+                            <option value="ex_nhavasheva" disabled={tyreData.nhavasheva_quantity === 0}>
+                                Ex-Nhavasheva - {tyreData.nhavasheva_quantity}
+                            </option>
+                            <option value="ex_mundra" disabled={tyreData.mundra_quantity === 0}>
+                                Ex-Mundra - {tyreData.mundra_quantity}
+                            </option>
+                        </select>
+                        {formErrors.selectedPrice && <small className="text-danger">{formErrors.selectedPrice}</small>}
+                    </div>
+
+                    {/* Price Per MT */}
+                    <div className="col-md-6">
+                        <label className="spec-label">PRICE PER (MT):</label>
+                        <span className="spec-value">{selectedPrice ? `₹${tyreData[selectedPrice]}` : "Price"}</span>
                     </div>
                 </div>
 
@@ -221,40 +299,14 @@ const Multiple_Baled_Tyres_PCR = () => {
                     {quantityExceeds && <small className="text-danger">{quantityExceeds}</small>} {/* Display new error */}
                 </div>
 
-                <div className="row mt-3">
-                    {/* Price Selection Dropdown */}
-                    <div className="price-dropdown mt-1 col-md-6">
-                        <label className="spec-label">LOADING LOCATION:</label>
-                        <select
-                            className="form-control"
-                            value={selectedPrice}
-                            onChange={handlePriceChange}
-                        >
-                            <option value="" disabled>Select a location</option>
-                            <option value="ex_chennai">Ex-Chennai</option>
-                            <option value="ex_nhavasheva">Ex-Nhavasheva</option>
-                            <option value="ex_mundra">Ex-Mundra</option>
-                        </select>
-                        {formErrors.selectedPrice && <small className="text-danger">{formErrors.selectedPrice}</small>}
-                    </div>
-
-                    {/* Price Per MT */}
-                    <div className="col-md-6">
-                        <label className="spec-label">PRICE PER (MT):</label>
-                        <span className="spec-value">
-                            {selectedPrice ? `₹${tyreData[selectedPrice]}` : "Price"}
-                        </span>
-                    </div>
-                </div>
-
                 {/* Order Button */}
                 <div className="order-button-section mt-3">
                     <button
                         className="btn btn-primary"
                         onClick={handleOrder}
-                        disabled={Number(tyreData.available_quantity) === 0} // Ensure it's treated as a number
+                        disabled={totalAvailableQuantity === 0} // Ensure it's treated as a number
                     >
-                        {Number(tyreData.available_quantity) > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
+                        {totalAvailableQuantity > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
                     </button>
                 </div>
             </div>

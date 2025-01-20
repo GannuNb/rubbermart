@@ -5,12 +5,27 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import './Adminshipping.css'; // Custom CSS for styling
 import logo from './images/logo.png';
+import { useNavigate } from 'react-router-dom';
 
 function AdminPayment() {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [approvalNotes, setApprovalNotes] = useState({});
+      const navigate = useNavigate();
+      const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+
+        useEffect(() => {
+          const tokenKey = `admin_token`; // Check if any valid token exists
+          if (localStorage.getItem(tokenKey)) {
+              setIsAuthenticated(true);  // If the token is found, user is authenticated
+          } else {
+              // If no token, navigate to the login page
+              navigate('/admin');  // Adjust this path to match your actual login page route
+          }
+      }, [navigate]); // Make sure to include `navigate` in the dependency array
+
 
   // Fetch payment files from the backend
   const fetchFiles = async () => {

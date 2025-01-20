@@ -3,11 +3,25 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Sell.css';
 import Adminnav from './Adminnav';
+import { useNavigate } from 'react-router-dom';
 
 const Uploaded = () => {
     const [scrapItems, setScrapItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const tokenKey = `admin_token`; // Check if any valid token exists
+    if (localStorage.getItem(tokenKey)) {
+        setIsAuthenticated(true);  // If the token is found, user is authenticated
+    } else {
+        // If no token, navigate to the login page
+        navigate('/admin');  // Adjust this path to match your actual login page route
+    }
+}, [navigate]); // Make sure to include `navigate` in the dependency array
+
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -63,7 +77,7 @@ const Uploaded = () => {
             <div className="container my-5">
                 <h2 className="text-center mb-4">Uploaded Scrap Items</h2>
                 {scrapItems.length === 0 ? (
-                    <p className="text-center">No scrap items found.</p>
+                    <p className="text-center"></p>
                 ) : (
                     <table className="table table-striped table-bordered table-hover">
                         <thead className="thead-dark">

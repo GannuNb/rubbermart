@@ -4,6 +4,7 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import './Admin.css';
 import './Sell.css';
 import Adminnav from './Adminnav';
+import { useNavigate } from 'react-router-dom';
 
 const AdminPage = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -11,7 +12,7 @@ const AdminPage = () => {
     const [password, setPassword] = useState('');
     const [loginError, setLoginError] = useState(null);
     const [scrapItems, setScrapItems] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);  // Set initial loading to false
     const [error, setError] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -20,12 +21,11 @@ const AdminPage = () => {
         type: '',
         available_quantity: '',
         price: '',
-        hsn:'',
-        ex_mundra:'',
-        ex_nhavasheva : '',
-        ex_chennai : '',
+        hsn: '',
+        ex_mundra: '',
+        ex_nhavasheva: '',
+        ex_chennai: '',
     });
-
 
     const [showEditModal, setShowEditModal] = useState(false);
     const [currentItem, setCurrentItem] = useState(null);
@@ -34,41 +34,21 @@ const AdminPage = () => {
         type: '',
         available_quantity: '',
         price: '',
-        hsn:"",
-        ex_mundra:"",
-        ex_nhavasheva : '',
-        ex_chennai : '',
+        hsn: "",
+        ex_mundra: "",
+        ex_nhavasheva: '',
+        ex_chennai: '',
     });
+
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
-    
-
-    // Handle login submission
-    const handleLogin = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/admin/login`, { email, password });
-            const tokenKey = `admin_token_${email}`; // Unique key for the token
-            localStorage.setItem(tokenKey, response.data.token); // Store the JWT token with a unique key
-            setIsAuthenticated(true); // Set authentication to true on successful login
-        } catch (err) {
-            setLoginError('Invalid email or password.');
-        }
-    };
-
-    // Logout handler
-    const handleLogout = () => {
-        const tokenKey = `admin_token_${email}`; // Use the same unique key for logout
-        localStorage.removeItem(tokenKey); // Clear the specific JWT token
-        setIsAuthenticated(false);
-    };
 
     // Fetch scrap items
     useEffect(() => {
         const fetchAdminScrapItems = async () => {
             try {
-                const tokenKey = `admin_token_${email}`; // Use the same unique key to fetch the token
+                const tokenKey = `admin_token`; // Use the same unique key to fetch the token
                 const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/admin/scrap`, {
                     headers: { Authorization: `Bearer ${localStorage.getItem(tokenKey)}` }
                 });
@@ -83,7 +63,7 @@ const AdminPage = () => {
         if (isAuthenticated) {
             fetchAdminScrapItems();
         }
-    }, [isAuthenticated, email]); // Add email as a dependency
+    }, [isAuthenticated]);
 
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this scrap item?')) {
@@ -109,8 +89,8 @@ const AdminPage = () => {
             price: item.price,
             hsn: item.hsn,
             ex_mundra: item.ex_mundra,
-            ex_nhavasheva : item.ex_nhavasheva,
-            ex_chennai : item.ex_chennai,
+            ex_nhavasheva: item.ex_nhavasheva,
+            ex_chennai: item.ex_chennai,
         });
         setShowEditModal(true);
     };
@@ -140,10 +120,10 @@ const AdminPage = () => {
             type: formData.type.trim(),
             available_quantity: Number(formData.available_quantity),
             price: Number(formData.price),
-            hsn:formData.hsn.trim(),
-            ex_mundra:Number(formData.ex_mundra),
-            ex_nhavasheva : Number(formData.ex_nhavasheva),
-            ex_chennai : Number(formData.ex_chennai),
+            hsn: formData.hsn.trim(),
+            ex_mundra: Number(formData.ex_mundra),
+            ex_nhavasheva: Number(formData.ex_nhavasheva),
+            ex_chennai: Number(formData.ex_chennai),
         };
 
         if (isNaN(updatedData.available_quantity) || updatedData.available_quantity < 0 || isNaN(updatedData.price) || updatedData.price < 0) {
@@ -178,14 +158,14 @@ const AdminPage = () => {
     const handleNewItemFormSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
-    
+
         // Ensure HSN is provided
         if (!newItemFormData.hsn.trim()) {
             alert('HSN is required.');
             setIsSubmitting(false);
             return;
         }
-    
+
         const newData = {
             name: newItemFormData.name.trim(),
             type: newItemFormData.type.trim(),
@@ -193,18 +173,17 @@ const AdminPage = () => {
             price: Number(newItemFormData.price),
             hsn: newItemFormData.hsn.trim(),
             ex_mundra: Number(newItemFormData.ex_mundra),
-            ex_nhavasheva : Number(newItemFormData.ex_nhavasheva),
-            ex_chennai : Number(newItemFormData.ex_chennai),
+            ex_nhavasheva: Number(newItemFormData.ex_nhavasheva),
+            ex_chennai: Number(newItemFormData.ex_chennai),
         };
-    
+
         // Validate other fields as well
         if (isNaN(newData.available_quantity) || newData.available_quantity < 0 || isNaN(newData.price) || newData.price < 0) {
             alert('Available Quantity and Price must be non-negative numbers.');
             setIsSubmitting(false);
             return;
         }
-    
-        
+
         try {
             const tokenKey = `admin_token_${email}`; // Use the same unique key for the add request
             const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/admin/scrap`, newData, {
@@ -219,12 +198,53 @@ const AdminPage = () => {
             setIsSubmitting(false);
         }
     };
-    
 
+    // On component mount, check if the token exists in localStorage
+    useEffect(() => {
+        const tokenKey = `admin_token`;  // Check if any valid token exists
+        if (localStorage.getItem(tokenKey)) {
+            setIsAuthenticated(true);  // If the token is found, user is authenticated
+        }
+    }, []); // Run only once on component mount
+
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        setLoading(true);  // Set loading state to true when submitting the login form
+        setError(''); // Reset error message
+        setLoginError(''); // Reset login error message
+
+        try {
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/admin/login`, { email, password });
+            const tokenKey = `admin_token`; // Using a single token key for storing the JWT token
+            localStorage.setItem(tokenKey, response.data.token); // Store the JWT token
+            setIsAuthenticated(true); // Set authentication to true on successful login
+        } catch (err) {
+            setLoginError('Invalid email or password.');
+            setError('Login failed. Please try again.');
+        } finally {
+            setLoading(false); // Set loading state back to false once the request is complete
+        }
+    };
+
+    // Logout handler
+    const handleLogout = () => {
+        localStorage.removeItem('admin_token'); // Remove the token from localStorage
+        setIsAuthenticated(false); // Set authenticated state to false
+    };
+
+    // If loading, show loading spinner
+    if (loading) {
+        return (
+            <div className="container mt-5">
+                <p>Loading...</p>
+            </div>
+        );
+    }
+
+    // If not authenticated, show login form
     if (!isAuthenticated) {
         return (
             <div>
-            
                 <div className="login-container">
                     <h2>Admin Login</h2>
                     <form onSubmit={handleLogin}>
@@ -250,17 +270,16 @@ const AdminPage = () => {
                         <button type="submit">Login</button>
                     </form>
                 </div>
-           
+                
+                {/* Show error message */}
+                {error && <div className="container mt-5"><p className="text-danger">{error}</p></div>}
             </div>
         );
     }
 
-    if (loading) return <div className="container mt-5"><p>Loading...</p></div>;
-    if (error) return <div className="container mt-5"><p className="text-danger">{error}</p></div>;
-
     return (
         <>
-        <Adminnav/>
+            <Adminnav />
 
         <div>
         <div className=" mt-5">

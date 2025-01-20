@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-
 // Helper function to calculate the financial year
 const getFinancialYear = () => {
   const today = new Date();
@@ -35,6 +34,7 @@ const generateCustomId = async () => {
   return id;
 };
 
+// Schema for order items
 const AdminOrderItemSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -52,8 +52,14 @@ const AdminOrderItemSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  loading_location: {  // New field to store the loading location
+    type: String,
+    required: true,
+    enum: ['ex_chennai', 'ex_mundra', 'ex_nhavasheva'], // Add the allowed locations
+  },
 });
 
+// Schema for the admin order
 const AdminOrderSchema = new mongoose.Schema(
   {
     _id: {

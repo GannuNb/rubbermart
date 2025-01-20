@@ -3,7 +3,7 @@ import axios from 'axios';
 import Adminnav from './Adminnav';
 import './Adminshipping.css'; // Import CSS for custom styles
 import { jsPDF } from 'jspdf'; // Import jsPDF
-
+import { useNavigate } from 'react-router-dom';
 
 function Adminshipping() {
   const [orders, setOrders] = useState([]);
@@ -12,11 +12,24 @@ function Adminshipping() {
   const [inputValues, setInputValues] = useState({});
   const [selectedFiles, setSelectedFiles] = useState({});
   const [fileErrors, setFileErrors] = useState({});
+  const navigate = useNavigate();
+   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [searchFilters, setSearchFilters] = useState({
     companyName: '',
     startDate: '',
     endDate: '',
   });
+
+
+  useEffect(() => {
+    const tokenKey = `admin_token`; // Check if any valid token exists
+    if (localStorage.getItem(tokenKey)) {
+        setIsAuthenticated(true);  // If the token is found, user is authenticated
+    } else {
+        // If no token, navigate to the login page
+        navigate('/admin');  // Adjust this path to match your actual login page route
+    }
+}, [navigate]); // Make sure to include `navigate` in the dependency array
 
   const [filteredCompanies, setFilteredCompanies] = useState([]);
 
@@ -390,188 +403,187 @@ const handleCompanySelect = (company) => {
 
         {/* Filtered Orders Table */}
         <div className="table-responsive">
-  <table className="table table-bordered table-hover table-striped">
-    <thead className="table-dark">
-      <tr>
-        <th>Order ID</th>
-        <th>Company Id</th>
-        <th>Company Name</th>
-        <th>Subtotal</th>
-        <th>GST</th>
-        <th>Total Price</th>
-        <th>Status</th>
-        <th>Order Date</th>
-        <th>Vehicle Number</th>
-        <th>Quantity</th>
-        <th>Product</th>
-        <th>E-way Bill & Invoice</th>
-        <th>Shipment From</th>
-        <th>Ship</th>
-      </tr>
-    </thead>
-    <tbody>
-      {filteredOrders.map((order) => (
-        <React.Fragment key={order._id}>
-          <tr className="custom-row">
-            <td>{order._id}</td>
-            <td>{order.user?.businessProfiles[0]?.profileId || 'N/A'}</td>
-            <td>{order.user?.businessProfiles[0]?.companyName || 'N/A'}</td>
-            <td>{order.subtotal}</td>
-            <td>{order.gst}</td>
-            <td>{order.totalPrice}</td>
-            <td>{order.status}</td>
-            <td>{new Date(order.orderDate).toLocaleString()}</td>
-            <td>
-              <input
-                type="text"
-                name="vehicleNumber"
-                value={inputValues[order._id]?.vehicleNumber || ''}
-                onChange={(e) => handleInputChange(order._id, e)}
-                placeholder="Enter vehicle number"
-                className="form-control vehicle-input"
-              />
-            </td>
+        <table className="table table-bordered table-hover table-striped">
+  <thead className="table-dark">
+    <tr>
+      <th>S.No</th> {/* Serial number column */}
+      <th>Order ID</th>
+      <th>Company Id</th>
+      <th>Company Name</th>
+      <th>Loading Location</th>
+      <th>Subtotal</th>
+      <th>GST</th>
+      <th>Total Price</th>
+      <th>Status</th>
+      <th>Order Date</th>
+      <th>Vehicle Number</th>
+      <th>Quantity</th>
+      <th>Product</th>
+      <th>E-way Bill & Invoice</th>
+      <th>Shipment From</th>
+      <th>Ship</th>
+    </tr>
+  </thead>
+  <tbody>
+    {filteredOrders.map((order, index) => (
+      <React.Fragment key={order._id}>
+        <tr className="custom-row">
+          <td><b>{index + 1}</b></td> {/* Display serial number */}
+          <td>{order._id}</td>
+          <td>{order.user?.businessProfiles[0]?.profileId || 'N/A'}</td>
+          <td>{order.user?.businessProfiles[0]?.companyName || 'N/A'}</td>
+          <td>{order.items?.[0]?.loading_location || 'N/A'}</td>
+          <td>{order.subtotal}</td>
+          <td>{order.gst}</td>
+          <td>{order.totalPrice}</td>
+          <td>{order.status}</td>
+          <td>{new Date(order.orderDate).toLocaleString()}</td>
+          <td>
+            <input
+              type="text"
+              name="vehicleNumber"
+              value={inputValues[order._id]?.vehicleNumber || ''}
+              onChange={(e) => handleInputChange(order._id, e)}
+              placeholder="Enter vehicle number"
+              className="form-control vehicle-input"
+            />
+          </td>
 
-            <td>
-              <input
-                type="number"
-                name="quantity"
-                value={inputValues[order._id]?.quantity || ''}
-                onChange={(e) => handleInputChange(order._id, e)}
-                placeholder="Enter quantity"
-                className="form-control quantity-input"
-              />
-            </td>
+          <td>
+            <input
+              type="number"
+              name="quantity"
+              value={inputValues[order._id]?.quantity || ''}
+              onChange={(e) => handleInputChange(order._id, e)}
+              placeholder="Enter quantity"
+              className="form-control quantity-input"
+            />
+          </td>
 
-            <td>
-              <select
-                name="selectedProduct"
-                value={inputValues[order._id]?.selectedProduct || ''}
-                onChange={(e) => handleInputChange(order._id, e)}
-                className="form-control product-select"
-              >
-                <option value="">Select Product</option>
-                {order.items.map((item) => (
-                  <option key={item.name} value={item.name}>
-                    {item.name}
-                  </option>
-                ))}
-              </select>
-            </td>
+          <td>
+            <select
+              name="selectedProduct"
+              value={inputValues[order._id]?.selectedProduct || ''}
+              onChange={(e) => handleInputChange(order._id, e)}
+              className="form-control product-select"
+            >
+              <option value="">Select Product</option>
+              {order.items.map((item) => (
+                <option key={item.name} value={item.name}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+          </td>
 
-            <td>
-              <input
-                type="file"
-                name="bill"
-                accept="application/pdf"
-                onChange={(e) => handleFileChange(order._id, e)}
-                className="form-control file-input"
-              />
-              {fileErrors[order._id] && (
-                <small className="text-danger">{fileErrors[order._id]}</small>
-              )}
-            </td>
+          <td>
+            <input
+              type="file"
+              name="bill"
+              accept="application/pdf"
+              onChange={(e) => handleFileChange(order._id, e)}
+              className="form-control file-input"
+            />
+            {fileErrors[order._id] && (
+              <small className="text-danger">{fileErrors[order._id]}</small>
+            )}
+          </td>
 
+          <td>
+            {/* Dropdown for predefined shipmentFrom address */}
+            <select
+              name="shipmentFromDropdown"
+              onChange={(e) => handleShipmentFromDropdownChange(order._id, e)}
+              className="form-select mb-2" // Bootstrap select class with margin-bottom for spacing
+            >
+              <option value="">Select Shipment From</option>
+              <option value="#406, 4th Floor, Patel Towers, Above EasyBuy Beside Nagole RTO Office, Nagole Hyderabad, Telangana-500068">
+                #406, 4th Floor, Patel Towers, Above EasyBuy Beside Nagole RTO Office, Nagole Hyderabad, Telangana-500068
+              </option>
+            </select>
 
-            <td>
-  {/* Dropdown for predefined shipmentFrom address */}
-  <select
-    name="shipmentFromDropdown"
-    onChange={(e) => handleShipmentFromDropdownChange(order._id, e)}
-    className="form-select mb-2"  // Bootstrap select class with margin-bottom for spacing
-  >
-    <option value="">Select Shipment From</option>
-    <option value="#406, 4th Floor, Patel Towers, Above EasyBuy Beside Nagole RTO Office, Nagole Hyderabad, Telangana-500068">
-      #406, 4th Floor, Patel Towers, Above EasyBuy Beside Nagole RTO Office, Nagole Hyderabad, Telangana-500068
-    </option>
-  </select>
+            {/* Textarea for shipmentFrom */}
+            <textarea
+              name="shipmentFrom"
+              value={inputValues[order._id]?.shipmentFrom || ''} // Handle empty value correctly
+              onChange={(e) => handleInputChange(order._id, e)} // Update inputValues on change
+              placeholder="Enter Shipment From"
+              className="form-control mb-2" // Bootstrap form-control with margin-bottom for spacing
+              style={{ resize: 'both', minHeight: '40px', minWidth: '200px' }} // Reduced height to 40px
+            />
+          </td>
 
-  {/* Textarea for shipmentFrom */}
-  <textarea
-    name="shipmentFrom"
-    value={inputValues[order._id]?.shipmentFrom || ''} // Handle empty value correctly
-    onChange={(e) => handleInputChange(order._id, e)} // Update inputValues on change
-    placeholder="Enter Shipment From"
-    className="form-control mb-2"  // Bootstrap form-control with margin-bottom for spacing
-    style={{ resize: 'both', minHeight: '40px', minWidth: '200px' }} // Reduced height to 40px
-  />
-</td>
+          <td>
+            <button
+              onClick={() => handleShip(order._id)}
+              className="btn btn-success ship-button"
+            >
+              Ship
+            </button>
+          </td>
+        </tr>
 
+        <tr>
+          <td colSpan="13">
+            <table className="table table-bordered mt-2">
+              <thead className="text-center">
+                <tr className="table-light">
+                  <th className="p-1" style={{ fontSize: '0.85rem' }}>Item Name</th>
+                  <th className="p-1" style={{ fontSize: '0.85rem' }}>Quantity</th>
+                  <th className="p-1" style={{ fontSize: '0.85rem' }}>Shipped Quantity</th>
+                  <th className="p-1" style={{ fontSize: '0.85rem' }}>Remaining Quantity</th>
+                  <th className="p-1" style={{ fontSize: '0.85rem' }}>Vehicle Numbers</th>
+                  <th className="p-1" style={{ fontSize: '0.85rem' }}>Shipping Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                {order.items.map((item, index) => {
+                  const shippedDetails = order.shippingDetails.filter(
+                    (shipping) => shipping.selectedProduct === item.name
+                  );
 
+                  const shippedQuantity = shippedDetails.reduce(
+                    (total, shipping) => total + shipping.quantity,
+                    0
+                  );
+                  const remainingQuantity = item.quantity - shippedQuantity;
 
-
-
-
-            <td>
-              <button
-                onClick={() => handleShip(order._id)}
-                className="btn btn-success ship-button"
-              >
-                Ship
-              </button>
-            </td>
-          </tr>
-
-          <tr>
-            <td colSpan="13">
-              <table className="table table-bordered mt-2">
-                <thead className="text-center">
-                  <tr className="table-light">
-                    <th className="p-1" style={{ fontSize: '0.85rem' }}>Item Name</th>
-                    <th className="p-1" style={{ fontSize: '0.85rem' }}>Quantity</th>
-                    <th className="p-1" style={{ fontSize: '0.85rem' }}>Shipped Quantity</th>
-                    <th className="p-1" style={{ fontSize: '0.85rem' }}>Remaining Quantity</th>
-                    <th className="p-1" style={{ fontSize: '0.85rem' }}>Vehicle Numbers</th>
-                    <th className="p-1" style={{ fontSize: '0.85rem' }}>Shipping Details</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {order.items.map((item, index) => {
-                    const shippedDetails = order.shippingDetails.filter(
-                      (shipping) => shipping.selectedProduct === item.name
-                    );
-
-                    const shippedQuantity = shippedDetails.reduce(
-                      (total, shipping) => total + shipping.quantity,
-                      0
-                    );
-                    const remainingQuantity = item.quantity - shippedQuantity;
-
-                    return (
-                      <tr key={index}>
-                        <td className="p-0 text-center align-middle" style={{ lineHeight: '2', fontSize: '0.85rem', width: '100px' }}>{item.name}</td>
-                        <td className="p-0 text-center align-middle" style={{ lineHeight: '2', fontSize: '0.85rem', width: '10%' }}>{item.quantity}</td>
-                        <td className="p-0 text-center align-middle" style={{ lineHeight: '2', fontSize: '0.85rem', width: '10%' }}>{shippedQuantity}</td>
-                        <td className="p-0 text-center align-middle" style={{ lineHeight: '2', fontSize: '0.85rem', width: '10%' }}>{remainingQuantity}</td>
-                        <td className="p-0 text-center align-middle" style={{ lineHeight: '2', fontSize: '0.85rem', width: '150px' }}>
-                          <small className="text-muted">
-                            {shippedDetails
-                              .map((shipping) => shipping.vehicleNumber)
-                              .join(", ")}
-                          </small>
+                  return (
+                    <tr key={index}>
+                      <td className="p-0 text-center align-middle" style={{ lineHeight: '2', fontSize: '0.85rem', width: '100px' }}>{item.name}</td>
+                      <td className="p-0 text-center align-middle" style={{ lineHeight: '2', fontSize: '0.85rem', width: '10%' }}>{item.quantity}</td>
+                      <td className="p-0 text-center align-middle" style={{ lineHeight: '2', fontSize: '0.85rem', width: '10%' }}>{shippedQuantity}</td>
+                      <td className="p-0 text-center align-middle" style={{ lineHeight: '2', fontSize: '0.85rem', width: '10%' }}>{remainingQuantity}</td>
+                      <td className="p-0 text-center align-middle" style={{ lineHeight: '2', fontSize: '0.85rem', width: '150px' }}>
+                        <small className="text-muted">
+                          {shippedDetails
+                            .map((shipping) => shipping.vehicleNumber)
+                            .join(", ")}
+                        </small>
+                      </td>
+                      {index === 0 && (
+                        <td className="p-0 text-center align-middle" style={{ lineHeight: '1.2', fontSize: '0.85rem', width: '120px' }}>
+                          <button
+                            onClick={() => generatePDF(order)}
+                            className="btn btn-primary btn-sm ms-2"
+                            style={{ padding: '0.5rem 0.7rem', fontSize: '0.75rem' }}
+                          >
+                            PDF
+                          </button>
                         </td>
-                        {index === 0 && (
-                          <td className="p-0 text-center align-middle" style={{ lineHeight: '1.2', fontSize: '0.85rem', width: '120px' }}>
-                            <button
-                              onClick={() => generatePDF(order)}
-                              className="btn btn-primary btn-sm ms-2"
-                              style={{ padding: '0.5rem 0.7rem', fontSize: '0.75rem' }}
-                            >
-                              PDF
-                            </button>
-                          </td>
-                        )}
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </td>
-          </tr>
-        </React.Fragment>
-      ))}
-    </tbody>
-  </table>
+                      )}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </React.Fragment>
+    ))}
+  </tbody>
+</table>
+
 </div>
 
       </div>

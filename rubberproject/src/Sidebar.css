@@ -121,12 +121,13 @@ body {
 
 .logoset{
         width: 100%;
+        text-align: center;
         
 }
 .navbar-brand img {
   height: 50px;
-  width: 300%;
-  margin-right: 0;
+  width: auto;
+  margin-right: 0;
 }
 
 

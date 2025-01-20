@@ -6,6 +6,7 @@ import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import logo1 from './images/logo.png';
 import { FaFilePdf } from 'react-icons/fa';
+import seal from './images/seal.png';
 
 
 
@@ -188,74 +189,124 @@ function ShippingDetails() {
   
   const generatePDF = (order) => {
     const doc = new jsPDF();
-
+    
     // Add logo
     if (logo) {
-        doc.addImage(logo, 'JPEG', 10, 10, 30, 15);
+      doc.addImage(logo, 'JPEG', 5, 9, 30, 15); // Position logo at the top left
     }
-
+  
+    // Add Address Details to the right of the logo
+    doc.setFontSize(8); // Reduced font size further
+    doc.setFont('helvetica', 'normal');
+  
+    const addressDetails = `VIKAH RUBBERS\n#406, 4th Floor, Patel Towers,\nAbove EasyBuy Beside Nagole RTO Office,\nNagole Hyderabad, Telangana-500035.`;
+    const addressLines = doc.splitTextToSize(addressDetails, 130); // Increased width to 140 for more room
+    addressLines.forEach((line, index) => {
+      doc.text(line, 34, 12 + index * 3); // Adjusted left margin and line height
+    });
+  
     // Add heading and other details
     doc.setFontSize(20);
     doc.setFont('helvetica', 'bold');
-    doc.text('INVOICE', 105, 20, { align: 'center' });
-
-    // Add Invoice ID and Date on the right
+    doc.text('INVOICE', 110, 12, { align: 'center' });
+  
+    // Add Invoice ID and Date on the right, aligning colons
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
     const invoiceId = order.invoiceId || 'N/A';
     const formattedDate = order.shippingDate
-        ? new Date(order.shippingDate).toLocaleDateString()
-        : 'N/A';
-
-    // Align to the right side
-    doc.text(`Invoice ID: ${invoiceId}`, 194, 15, { align: 'right' });
-    doc.text(`Order Date: ${formattedDate}`, 187, 20, { align: 'right' });
-
+      ? new Date(order.shippingDate).toLocaleDateString()
+      : 'N/A';
+  
+    // Define starting X positions for labels and values
+    const labelXPosition = 150; // Position for the labels ("Invoice ID:", "Order Date:")
+    const valueXPosition = 175; // Position for the values (Invoice ID and Order Date)
+    const labelYPosition = 15;  // Start Y position
+    const lineHeight = 7; // Space between lines (for vertical alignment)
+  
+    // Add "Invoice ID:" and value
+    doc.text('Invoice ID', labelXPosition, labelYPosition); // Add the label
+    doc.text(':', labelXPosition + 20, labelYPosition);   // Add the colon after the label
+    doc.text(invoiceId, valueXPosition, labelYPosition);    // Add the value
+  
+    // Add "Order Date:" and value
+    doc.text('Order Date', labelXPosition, labelYPosition + lineHeight); // Add the label for "Order Date"
+    doc.text(':', labelXPosition + 20, labelYPosition + lineHeight);  // Add the colon after the label
+    doc.text(formattedDate, valueXPosition, labelYPosition + lineHeight);  // Add the value
+  
     // Draw a horizontal line below the header
     doc.setDrawColor(0, 0, 0); // Set line color (black)
-    doc.line(10, 25, 200, 25); // Draw line from x=10 to x=200 at y=25
+    doc.line(10, 25, 200, 25);
   
-    // Billing and Shipping Information
+    // Billing, Shipping, and Shipment From Information
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
-    doc.text('Billing Information', 14, 35); // Left-aligned heading for billing info
-    doc.text('Shipping Information', 110, 35); // Left-aligned heading for shipping info
+  
+    // Column headers
+    doc.text('Bill To', 14, 35);
+    doc.text('Ship To', 90, 35); // Adjusted position to the left
+    doc.text('Ship From', 150, 35); // Adjusted position to the left
+  
+    // Set the font for the details
     doc.setFontSize(8);
     doc.setFont('helvetica', 'normal');
   
     let billingY = 45;
     let shippingY = 45;
+    let shipmentFromY = 45;
   
+    const labelX = 14; // Starting X-position for labels in the first column
+    const colonX = 30; // Reduced space closer to the label
+    const valueX = 32; // Reduced space closer to the colon
+  
+    const shippingOffsetX = 90; // Adjusted Ship To horizontal offset
+    const shipmentFromOffsetX = 150; // Adjusted Shipment From horizontal offset
+  
+    // Billing Info
     if (profile) {
-      // Billing Info
-      doc.text(`Company: ${profile.companyName || 'N/A'}`, 14, billingY);
-      doc.text(`Email: ${profile.email || 'N/A'}`, 14, billingY + 5);
-      doc.setFont('helvetica', 'bold');
-      doc.text('Address:', 14, billingY + 10);
-      doc.setFont('helvetica', 'normal');
+      doc.text('Company', labelX, billingY);
+      doc.text(':', colonX, billingY);
+      doc.text(`${profile.companyName || 'N/A'}`, valueX, billingY);
+  
+      doc.text('Email', labelX, billingY + 5);
+      doc.text(':', colonX, billingY + 5);
+      doc.text(`${profile.email || 'N/A'}`, valueX, billingY + 5);
+  
+      doc.text('Phone', labelX, billingY + 10);
+      doc.text(':', colonX, billingY + 10);
+      doc.text(`${profile.phoneNumber || 'N/A'}`, valueX, billingY + 10);
+  
+      doc.text('GST', labelX, billingY + 15);
+      doc.text(':', colonX, billingY + 15);
+      doc.text(`${profile.gstNumber || 'N/A'}`, valueX, billingY + 15);
   
       const billingAddress = profile.billAddress || 'N/A';
-      const billingAddressLines = doc.splitTextToSize(billingAddress, 80);
-      doc.text(billingAddressLines, 14, billingY + 15);
-  
-      // Shipping Info
-      doc.setFont('helvetica', 'bold');
-      doc.text('Address:', 110, shippingY);
-      doc.setFont('helvetica', 'normal');
-      const shippingAddress = order.orderId.shippingAddress || 'N/A';
-      const shippingAddressLines = doc.splitTextToSize(shippingAddress, 80);
-      doc.text(shippingAddressLines, 110, shippingY + 5);
+      const billingAddressLines = doc.splitTextToSize(billingAddress, 50);
+      doc.text('Address', labelX, billingY + 20);
+      doc.text(':', colonX, billingY + 20);
+      doc.text(billingAddressLines, valueX, billingY + 20);
   
       billingY += billingAddressLines.length * 5 + 20;
-      shippingY += shippingAddressLines.length * 5 + 20;
     }
   
-    // Set the content Y position to make sure both billing and shipping sections don't overlap
-    const contentY = Math.max(billingY, shippingY);
+    // Shipping Info
+    const shippingAddress = order.orderId.shippingAddress || 'N/A';
+    const shippingAddressLines = doc.splitTextToSize(shippingAddress, 55);
+    doc.text(shippingAddressLines, shippingOffsetX, shippingY); // Adjusted column position
   
-    // Add order details table
+    shippingY += shippingAddressLines.length * 5 + 20;
+  
+    // Shipment From Info
+    const shipmentFrom = order.shipmentFrom || 'N/A';
+    const shipmentFromLines = doc.splitTextToSize(shipmentFrom, 50);
+    doc.text(shipmentFromLines, shipmentFromOffsetX, shipmentFromY); // Adjusted column position
+    shipmentFromY += shipmentFromLines.length * 5 + 20;
+  
+    const contentY = Math.max(billingY, shippingY, shipmentFromY + shipmentFromLines.length * 5 + 5);
+  
+    // Adjusted startY to reduce space above the table
     doc.autoTable({
-      startY: 85,
+      startY: contentY + 1, // Further reduced from contentY + 5 to contentY + 1
       head: [
         ['Order ID', 'Vehicle Number', 'Product', 'Shipped Quantity', 'Total Quantity', 'Remaining Quantity', 'Price Per Ton', 'Subtotal', 'GST', 'Total Price'],
       ],
@@ -264,14 +315,14 @@ function ShippingDetails() {
           order.orderId ? order.orderId._id : 'N/A',
           order.vehicleNumber || 'N/A',
           order.selectedProduct || 'N/A',
-          `${order.quantity || 0}`,  // Shipped Quantity
-          `${order.itemDetails?.find(item => item.name === order.selectedProduct)?.quantity || 0}`,  // Total Quantity
+          `${order.quantity || 0}`,
+          `${order.itemDetails?.find(item => item.name === order.selectedProduct)?.quantity || 0}`,
           `${order.itemDetails?.find(item => item.name === order.selectedProduct)
             ? order.itemDetails.find(item => item.name === order.selectedProduct).quantity -
               groupedByOrder[order.orderId._id]
                 .filter((ship) => ship.selectedProduct === order.selectedProduct)
                 .reduce((sum, ship) => sum + ship.quantity, 0)
-            : 0}`,  // Remaining Quantity
+            : 0}`,
           `${order.itemDetails?.find(item => item.name === order.selectedProduct)?.price.toFixed(2) || 0}`,
           `${order.subtotal?.toFixed(2) || 0}`,
           `${order.gst?.toFixed(2) || 0}`,
@@ -284,92 +335,84 @@ function ShippingDetails() {
   
     const finalY = doc.lastAutoTable.finalY + 10;
     const totalAmountInWords = numberToWords(order.totalPrice || 0);
-    doc.text(`Total Amount (in words): ${totalAmountInWords}`, 14, finalY);
   
-// Address Details Section
-doc.setFontSize(12);
-doc.setFont('helvetica');
-const addressY = finalY + 15;
-doc.text('Address Details', 14, addressY);
-doc.text('Shipment From', 135, addressY); // Adjusted to the right side but not fully at the edge
-doc.setDrawColor(0, 0, 0);
-doc.line(10, addressY + 3, 200, addressY + 3); // Underline
-
-doc.setFontSize(10);
-doc.setFont('helvetica', 'normal');
-
-// "From" Section
-doc.text('From:', 14, addressY + 10);
-doc.text('VIKAH RUBBERS', 14, addressY + 15);
-doc.text('Hyderabad', 14, addressY + 20);
-doc.text('Dispatch From:', 14, addressY + 25);
-doc.text('#406, 4th Floor, Patel Towers,', 14, addressY + 30);
-doc.text('Above EasyBuy Beside Nagole RTO Office,', 14, addressY + 35);
-doc.text('Nagole Hyderabad, Telangana-500035', 14, addressY + 40);
-doc.text('Hyderabad.', 14, addressY + 45);
-
-// "Shipment From" Section (Right Side with Dynamic Spacing)
-const shipmentFrom = order.shipmentFrom || 'N/A';
-const shipmentFromLines = doc.splitTextToSize(shipmentFrom, 50);
-
-const shipmentFromStartY = addressY + 10; // Start below "Address Details"
-shipmentFromLines.forEach((line, index) => {
-  doc.text(line, 130, shipmentFromStartY + index * 5);
-});
-
-// Dynamically calculate the next Y-position
-const nextY = Math.max(addressY + 50, shipmentFromStartY + shipmentFromLines.length * 5 + 10);
-
-// Add a margin-top for the Banking Details section
-const bankingDetailsMarginTop = 10; // Adjust this value for the desired margin
-const bankingDetailsStartY = nextY + bankingDetailsMarginTop;
-
-// Banking Details Section
-doc.setFontSize(12);
-doc.setFont('helvetica');
-doc.text('Banking Details', 14, bankingDetailsStartY);
-doc.setDrawColor(0, 0, 0);
-doc.line(10, bankingDetailsStartY + 3, 200, bankingDetailsStartY + 3); // Underline
-
-doc.setFontSize(10);
-doc.setFont('helvetica', 'normal');
-doc.text('Bank Name: IDFC FIRST BANK', 14, bankingDetailsStartY + 10);
-doc.text('Name of Firm: VIKAH RUBBERS', 14, bankingDetailsStartY + 15);
-doc.text('Account Number: 10113716761', 14, bankingDetailsStartY + 20);
-doc.text('IFSC CODE: IDFB0040132', 14, bankingDetailsStartY + 25);
-doc.text('ACCOUNT TYPE: CURRENT A/C', 14, bankingDetailsStartY + 30);
-doc.text('BRANCH: NERUL BRANCH', 14, bankingDetailsStartY + 35);
-
-// Terms and Conditions Section
-const termsY = bankingDetailsStartY + 45; // Positioned below Banking Details
-doc.setFont('helvetica', 'bold');
-doc.text('Terms and Conditions:', 14, termsY);
-doc.setDrawColor(0, 0, 0);
-doc.line(10, termsY + 3, 200, termsY + 3); // Underline
-
-doc.setFontSize(9);
-doc.setFont('helvetica', 'normal');
-doc.text(
-  '1. The Seller shall not be liable to the Buyer for any loss or damage.',
-  14,
-  termsY + 10
-);
-doc.text(
-  '2. The Seller warrants the product for one (1) year from the date of shipment.',
-  14,
-  termsY + 15
-);
-doc.text(
-  '3. The purchase order will be interpreted as acceptance of this offer.',
-  14,
-  termsY + 20
-);
-
-
+    // Adjust the positions for labels and values
+    const totalAmountLabelX = 14; // Consistent left margin for label
+    const totalAmountColonX = 60; // Position for the colon
+    const totalAmountValueX = 65; // Position for the value
+  
+    doc.text('Total Amount (in words)', totalAmountLabelX, finalY);
+    doc.text(':', totalAmountColonX, finalY);
+  
+    // Split the "Total Amount in Words" into multiple lines if it's too long
+    const totalAmountInWordsLines = doc.splitTextToSize(totalAmountInWords, 120); // Width for wrapping
+    totalAmountInWordsLines.forEach((line, index) => {
+      doc.text(line, totalAmountValueX, finalY + index * 5); // Increment Y-coordinate for each line
+    });
+  
+    // Banking Details Section
+    const bankingDetailsStartY = finalY + 10;
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Banking Details', 14, bankingDetailsStartY);
+    doc.line(10, bankingDetailsStartY + 3, 200, bankingDetailsStartY + 3);
+  
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+  
+    const columnLabelX = 14; // Consistent column for labels
+    const columnColonX = 60; // Position for colons
+    const columnValueX = 65; // Position for values
+  
+    doc.text('Bank Name', columnLabelX, bankingDetailsStartY + 10);
+    doc.text(':', columnColonX, bankingDetailsStartY + 10);
+    doc.text('IDFC FIRST BANK', columnValueX, bankingDetailsStartY + 10);
+  
+    doc.text('Account Name', columnLabelX, bankingDetailsStartY + 15);
+    doc.text(':', columnColonX, bankingDetailsStartY + 15);
+    doc.text('VIKAH RUBBERS', columnValueX, bankingDetailsStartY + 15);
+  
+    doc.text('Account Number', columnLabelX, bankingDetailsStartY + 20);
+    doc.text(':', columnColonX, bankingDetailsStartY + 20);
+    doc.text('10113716761', columnValueX, bankingDetailsStartY + 20);
+  
+    doc.text('IFSC CODE', columnLabelX, bankingDetailsStartY + 25);
+    doc.text(':', columnColonX, bankingDetailsStartY + 25);
+    doc.text('IDFB0040132', columnValueX, bankingDetailsStartY + 25);
+  
+    doc.text('ACCOUNT TYPE', columnLabelX, bankingDetailsStartY + 30);
+    doc.text(':', columnColonX, bankingDetailsStartY + 30);
+    doc.text('CURRENT A/C', columnValueX, bankingDetailsStartY + 30);
+  
+    doc.text('BRANCH', columnLabelX, bankingDetailsStartY + 35);
+    doc.text(':', columnColonX, bankingDetailsStartY + 35);
+    doc.text('NERUL BRANCH', columnValueX, bankingDetailsStartY + 35);
+  
+    // Terms and Conditions Section
+    const termsY = bankingDetailsStartY + 45;
+    doc.setFont('helvetica', 'bold');
+    doc.text('Terms and Conditions:', labelX, termsY);
+    doc.line(10, termsY + 3, 200, termsY + 3);
+  
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.text('1. The Seller shall not be liable to the Buyer for any loss or damage.', 14, termsY + 10);
+    doc.text('2. The Seller warrants the product for one (1) year from the date of shipment.', 14, termsY + 15);
+    doc.text('3. The purchase order will be interpreted as acceptance of this offer.', 14, termsY + 20);
+  
+    // Image at the bottom
+    const imageY = termsY + 20;
+    doc.addImage(seal, 'PNG', 120, imageY, 80, 80); // Moved the image left by changing the x-coordinate to 120
   
     // Save the PDF
     doc.save(`Invoice_${order._id}.pdf`);
   };
+  
+  
+  
+  
+  
+  
   
   
   

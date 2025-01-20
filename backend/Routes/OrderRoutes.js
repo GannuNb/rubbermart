@@ -119,9 +119,6 @@ router.post('/place-order', authenticate, async (req, res) => {
 
 
 
-
-
-
 router.get('/adminorders', authenticate, async (req, res) => {
   try {
     const userId = req.user.id;
@@ -155,12 +152,12 @@ router.post('/Adminorder', authenticate, async (req, res) => {
     const processedItems = [];
 
     for (const item of items) {
-      const { name: itemName, quantity: requiredQuantity, price: pricePerTon } = item;
+      const { name: itemName, quantity: requiredQuantity, price: pricePerTon, loading_location } = item;
 
       // Validate item properties
-      if (!itemName || !requiredQuantity || !pricePerTon) {
-        console.log('Validation failed: Missing itemName, requiredQuantity, or price');
-        return res.status(400).json({ message: 'Each item must have a name, required quantity, and price' });
+      if (!itemName || !requiredQuantity || !pricePerTon || !loading_location) {
+        console.log('Validation failed: Missing itemName, requiredQuantity, price, or loading_location');
+        return res.status(400).json({ message: 'Each item must have a name, required quantity, price, and loading location' });
       }
 
       // Find the scrap item
@@ -170,10 +167,32 @@ router.post('/Adminorder', authenticate, async (req, res) => {
         return res.status(404).json({ message: `Scrap item not found: ${itemName}` });
       }
 
-      // Check availability
-      if (scrapItem.available_quantity < requiredQuantity) {
-        console.log(`Insufficient quantity for ${itemName}: Requested ${requiredQuantity}, Available ${scrapItem.available_quantity}`);
-        return res.status(400).json({ message: `Insufficient quantity available for ${itemName}` });
+      // Check availability at the selected location and reduce the respective location's quantity
+      let quantityToReduce = requiredQuantity;
+
+      if (loading_location === 'ex_chennai') {
+        if (scrapItem.chennai_quantity < requiredQuantity) {
+          console.log(`Insufficient quantity at Chennai for ${itemName}: Requested ${requiredQuantity}, Available ${scrapItem.chennai_quantity}`);
+          return res.status(400).json({ message: `Insufficient quantity at Chennai for ${itemName}` });
+        }
+        scrapItem.chennai_quantity -= quantityToReduce; // Reduce the Chennai-specific quantity
+        console.log(`Updated Chennai quantity for ${itemName}: ${scrapItem.chennai_quantity}`);
+      } else if (loading_location === 'ex_mundra') {
+        if (scrapItem.mundra_quantity < requiredQuantity) {
+          console.log(`Insufficient quantity at Mundra for ${itemName}: Requested ${requiredQuantity}, Available ${scrapItem.mundra_quantity}`);
+          return res.status(400).json({ message: `Insufficient quantity at Mundra for ${itemName}` });
+        }
+        scrapItem.mundra_quantity -= quantityToReduce; // Reduce the Mundra-specific quantity
+        console.log(`Updated Mundra quantity for ${itemName}: ${scrapItem.mundra_quantity}`);
+      } else if (loading_location === 'ex_nhavasheva') {
+        if (scrapItem.nhavasheva_quantity < requiredQuantity) {
+          console.log(`Insufficient quantity at Nhavasheva for ${itemName}: Requested ${requiredQuantity}, Available ${scrapItem.nhavasheva_quantity}`);
+          return res.status(400).json({ message: `Insufficient quantity at Nhavasheva for ${itemName}` });
+        }
+        scrapItem.nhavasheva_quantity -= quantityToReduce; // Reduce the Nhavasheva-specific quantity
+        console.log(`Updated Nhavasheva quantity for ${itemName}: ${scrapItem.nhavasheva_quantity}`);
+      } else {
+        return res.status(400).json({ message: `Invalid loading location for ${itemName}` });
       }
 
       // Calculate subtotal, GST, and total price
@@ -185,15 +204,14 @@ router.post('/Adminorder', authenticate, async (req, res) => {
       totalGST += gst;
       totalPrice += itemTotalPrice;
 
-      scrapItem.available_quantity -= requiredQuantity;
-      await scrapItem.save();
+      await scrapItem.save(); // Save the updated location-specific quantities
 
       processedItems.push({
         name: itemName,
         price: pricePerTon,
         quantity: requiredQuantity,
         total: itemTotalPrice,
-        remainingQuantity: scrapItem.available_quantity,
+        loading_location, // Store the loading location here
       });
     }
 
@@ -205,7 +223,6 @@ router.post('/Adminorder', authenticate, async (req, res) => {
       console.log('Validation failed: Shipping address is required');
       return res.status(400).json({ message: 'Shipping address is required' });
     }
-    
 
     // Create a new order in Adminorder collection
     const newOrder = new Adminorder({
@@ -216,7 +233,7 @@ router.post('/Adminorder', authenticate, async (req, res) => {
       totalPrice: totalPrice,
       billingAddress,
       shippingAddress: finalShippingAddress,
-      isSameAsBilling
+      isSameAsBilling,
     });
 
     await newOrder.save();
@@ -224,10 +241,6 @@ router.post('/Adminorder', authenticate, async (req, res) => {
 
     res.status(200).json({
       message: 'Order placed successfully',
-      remainingQuantities: processedItems.map(item => ({
-        name: item.name,
-        remainingQuantity: item.remainingQuantity,
-      })),
       order: newOrder,
     });
   } catch (error) {
@@ -235,9 +248,6 @@ router.post('/Adminorder', authenticate, async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
-
-
-
 
 router.get('/admin/orders', async (req, res) => {
   try {
@@ -253,10 +263,5 @@ router.get('/admin/orders', async (req, res) => {
   }
 });
 
-
-
-
-
-  
 
 module.exports = router;

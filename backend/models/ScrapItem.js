@@ -38,6 +38,21 @@ const ScrapItemSchema = new mongoose.Schema({
         required: [true, 'Price is required'],
         min: [0, 'Price cannot be negative'],
     },
+    chennai_quantity: {
+        type: Number,
+        required: [true, 'chennai quantity is required'],
+        min: [0, 'quantity  cannot be negative'],
+    },
+    mundra_quantity: {
+        type: Number,
+        required: [true, 'mundra quantity is required'],
+        min: [0, 'quantity  cannot be negative'],
+    },
+    nhavasheva_quantity: {
+        type: Number,
+        required: [true, 'nhavasheva quantity is required'],
+        min: [0, 'quantity  cannot be negative'],
+    },
     hsn: { // Added the 'hsn' field
         type: String,
         required: [true, 'HSN is required'],
