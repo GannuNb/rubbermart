@@ -1,25 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import PyroSteelImage from './images/PyroSteel.jpeg'; // Ensure to have an image for PyroSteel
-import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
-import { useNavigate, useLocation } from 'react-router-dom'; // useNavigate instead of useHistory
-import './Mulch.css'; // Import your CSS file
+import PyroSteelImage from './images/PyroSteel.jpeg'; 
+import 'bootstrap/dist/css/bootstrap.min.css'; 
+import { useNavigate, useLocation } from 'react-router-dom'; 
+import './Mulch.css'; 
 import logo1 from './images/logo.png';
 
 const PyroSteel = () => {
     const [scrapItems, setScrapItems] = useState([]);
     const [pyroSteelData, setPyroSteelData] = useState({
-        available_quantity: 0,
-        price: 0, // dynamic price based on selection
+        chennai_quantity: 0,
+        mundra_quantity: 0,
+        nhavasheva_quantity: 0,
+        price: 0,
         ex_chennai: 0,
         ex_nhavasheva: 0,
         ex_mundra: 0,
         hsn: '',
-        default_price: 0, // Default price fetched from backend
+        default_price: 0,
     });
     const [requiredQuantity, setRequiredQuantity] = useState('');
-    const [selectedPrice, setSelectedPrice] = useState(''); // Store selected price option (ex_chennai, ex_nhavasheva, ex_mundra)
-    const [errors, setErrors] = useState({ requiredQuantity: '', selectedPrice: '', quantityExceeds: '' }); // Error state
+    const [selectedPrice, setSelectedPrice] = useState('');
+    const [formErrors, setFormErrors] = useState({});
+    const [quantityExceeds, setQuantityExceeds] = useState('');
+    const [totalAvailableQuantity, setTotalAvailableQuantity] = useState(0); 
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -29,25 +33,23 @@ const PyroSteel = () => {
                 const response = await axios.get(`${process.env.REACT_APP_API_URL}/scrap`);
                 const items = response.data.scrap_items;
 
-                // Find the PyroSteel data
                 const pyroSteelItem = items.find(item => item.name === 'Pyro Steel');
-
-                // Ensure we have the PyroSteel item and default price
                 if (pyroSteelItem) {
-                    const fetchedDefaultPrice = pyroSteelItem.default_price || pyroSteelItem.price || pyroSteelItem.ex_chennai;
-
+                    const totalQuantity = pyroSteelItem.chennai_quantity + pyroSteelItem.mundra_quantity + pyroSteelItem.nhavasheva_quantity;
                     setPyroSteelData({
-                        available_quantity: Number(pyroSteelItem.available_quantity),
-                        price: pyroSteelItem.price, // Set initial price from 'price'
+                        chennai_quantity: pyroSteelItem.chennai_quantity,
+                        mundra_quantity: pyroSteelItem.mundra_quantity,
+                        nhavasheva_quantity: pyroSteelItem.nhavasheva_quantity,
+                        price: pyroSteelItem.price,
                         ex_chennai: pyroSteelItem.ex_chennai,
                         ex_nhavasheva: pyroSteelItem.ex_nhavasheva,
                         ex_mundra: pyroSteelItem.ex_mundra,
                         hsn: pyroSteelItem.hsn,
-                        default_price: fetchedDefaultPrice, // Use fetched default price or fallback
+                        default_price: pyroSteelItem.default_price || pyroSteelItem.price || pyroSteelItem.ex_chennai,
                     });
+                    setTotalAvailableQuantity(totalQuantity);
                 }
-
-                setScrapItems(items); // You can still store all scrap items if needed
+                setScrapItems(items);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -59,8 +61,6 @@ const PyroSteel = () => {
     const handlePriceChange = (event) => {
         const selectedOption = event.target.value;
         setSelectedPrice(selectedOption);
-
-        // Update the main price based on the selected dropdown option, but don't modify the constant default price
         if (selectedOption === 'ex_chennai') {
             setPyroSteelData(prevState => ({ ...prevState, price: prevState.ex_chennai }));
         } else if (selectedOption === 'ex_nhavasheva') {
@@ -72,40 +72,79 @@ const PyroSteel = () => {
         }
     };
 
-    // Validate form fields
-    const validateFields = () => {
-        let formIsValid = true;
-        let errors = { requiredQuantity: '', selectedPrice: '', quantityExceeds: '' };
+    const handleQuantityChange = (event) => {
+        const value = event.target.value;
+        if (value === '') {
+            setRequiredQuantity('');
+            setQuantityExceeds('');
+            return;
+        }
 
-        if (!requiredQuantity || requiredQuantity <= 0) {
-            formIsValid = false;
-            errors.requiredQuantity = 'Please fill out this required field';
+        const parsedValue = parseFloat(value);
+        if (!isNaN(parsedValue) && parsedValue > 0) {
+            setRequiredQuantity(parsedValue);
+
+            if (selectedPrice) {
+                let availableQuantity = 0;
+                if (selectedPrice === 'ex_chennai') {
+                    availableQuantity = pyroSteelData.chennai_quantity;
+                } else if (selectedPrice === 'ex_nhavasheva') {
+                    availableQuantity = pyroSteelData.nhavasheva_quantity;
+                } else if (selectedPrice === 'ex_mundra') {
+                    availableQuantity = pyroSteelData.mundra_quantity;
+                }
+
+                if (parsedValue > availableQuantity) {
+                    setQuantityExceeds('Required quantity exceeds available quantity at selected location.');
+                } else {
+                    setQuantityExceeds('');
+                }
+            }
+        }
+    };
+
+    const validateForm = () => {
+        let errors = {};
+
+        if (requiredQuantity <= 0 || !requiredQuantity) {
+            errors.requiredQuantity = "Required quantity is required and must be greater than zero.";
         }
 
         if (!selectedPrice) {
-            formIsValid = false;
-            errors.selectedPrice = 'Please select a price option';
+            errors.selectedPrice = "Price selection is required.";
         }
 
-        // Check if required quantity exceeds available quantity
-        if (parseFloat(requiredQuantity) > parseFloat(pyroSteelData.available_quantity)) {
-            formIsValid = false;
-            errors.quantityExceeds = 'Required quantity exceeds available quantity.';
+        if (selectedPrice) {
+            let availableQuantity = 0;
+            if (selectedPrice === 'ex_chennai') {
+                availableQuantity = pyroSteelData.chennai_quantity;
+            } else if (selectedPrice === 'ex_nhavasheva') {
+                availableQuantity = pyroSteelData.nhavasheva_quantity;
+            } else if (selectedPrice === 'ex_mundra') {
+                availableQuantity = pyroSteelData.mundra_quantity;
+            }
+
+            if (parseFloat(requiredQuantity) > availableQuantity) {
+                setQuantityExceeds('Required quantity exceeds available quantity at the selected location.');
+                errors.quantityExceeds = 'Please check available quantity at the selected location.';
+            } else {
+                setQuantityExceeds('');
+            }
         }
 
-        setErrors(errors);
-        return formIsValid;
+        return errors;
     };
 
     const handleOrder = () => {
-        if (!validateFields()) {
-            return; // Don't proceed if validation fails
+        const token = localStorage.getItem('token');
+        const errors = validateForm();
+
+        if (Object.keys(errors).length) {
+            setFormErrors(errors);
+            return;
         }
 
-        const token = localStorage.getItem('token');
-
         if (!token) {
-            // Show alert and redirect to login
             setTimeout(() => {
                 const alertDiv = document.createElement('div');
                 alertDiv.className = 'custom-alert';
@@ -133,23 +172,24 @@ const PyroSteel = () => {
                         from: location.pathname,
                         pyroSteelData: {
                             name: 'Pyro Steel',
-                            available_quantity: pyroSteelData.available_quantity,
+                            available_quantity: totalAvailableQuantity,
                             price: pyroSteelData.price,
                             required_quantity: requiredQuantity,
                             hsn: pyroSteelData.hsn,
-                        }
-                    }
+                            selected_location: selectedPrice,
+                        },
+                    },
                 });
             }, 0);
         } else {
-            // Proceed to the order page with the necessary data
             navigate('/Order', {
                 state: {
                     name: 'Pyro Steel',
-                    available_quantity: pyroSteelData.available_quantity,
+                    available_quantity: totalAvailableQuantity,
                     price: pyroSteelData.price,
                     required_quantity: requiredQuantity,
                     hsn: pyroSteelData.hsn,
+                    selected_location: selectedPrice,
                 },
             });
         }
@@ -179,86 +219,87 @@ const PyroSteel = () => {
                 </div>
             </div>
 
-            {/* Specifications Section */}
             <div className="specifications-section">
-                <h3 className="specifications-title">SPECIFICATIONS</h3>
+                <h3 className="section-title text-center">SPECIFICATIONS</h3>
+
+                <div className="total-available-quantity text-center mb-4">
+                    <label className="spec-label">TOTAL AVAILABLE QUANTITY (MT):</label>
+                    <span className="spec-value">{totalAvailableQuantity > 0 ? totalAvailableQuantity : 'No Stock'}</span>
+                </div>
 
                 <div className="row specifications-row">
-                    {/* Available Quantity */}
                     <div className="col-md-6">
-                        <label className="spec-label">AVAILABLE QUANTITY IN (MT):</label>
-                        <span className="spec-value">
-                            {Number(pyroSteelData.available_quantity) > 0 ? pyroSteelData.available_quantity : 'No Stock'}
-                        </span>
+                        <label className="spec-label">LOADING LOCATION:</label>
+                        <select className="form-control" value={selectedPrice} onChange={handlePriceChange}>
+                            <option value="" disabled>Select a location</option>
+                            <option value="ex_chennai" disabled={pyroSteelData.chennai_quantity === 0}>Ex-Chennai</option>
+                            <option value="ex_nhavasheva" disabled={pyroSteelData.nhavasheva_quantity === 0}>Ex-Nhavasheva</option>
+                            <option value="ex_mundra" disabled={pyroSteelData.mundra_quantity === 0}>Ex-Mundra</option>
+                        </select>
+                        {formErrors.selectedPrice && <small className="text-danger">{formErrors.selectedPrice}</small>}
                     </div>
 
-                    {/* HSN */}
+                    <div className="col-md-6">
+                        <label className="spec-label">AVAILABLE QUANTITY IN SELECTED LOCATION:</label>
+                        <span className="spec-value">
+                            {selectedPrice
+                                ? (selectedPrice === "ex_chennai" && pyroSteelData.chennai_quantity) ||
+                                  (selectedPrice === "ex_nhavasheva" && pyroSteelData.nhavasheva_quantity) ||
+                                  (selectedPrice === "ex_mundra" && pyroSteelData.mundra_quantity)
+                                : 'Available Quantity'}
+                        </span>
+                    </div>
+                </div>
+
+                <div className="row mt-3">
+                    <div className="col-md-6">
+                        <label className="spec-label">PRICE PER (MT):</label>
+                        <span className="spec-value">{selectedPrice ? `₹${pyroSteelData[selectedPrice]}` : "Price"}</span>
+                    </div>
+
                     <div className="col-md-6">
                         <label className="spec-label">HSN:</label>
                         <span className="spec-value">{pyroSteelData.hsn}</span>
                     </div>
                 </div>
 
-                {/* Required Quantity Section */}
-                <div className="required-quantity-section mt-3">
+                <div className="required-quantity-section text-center mt-3">
                     <label className="spec-label">REQUIRED QUANTITY IN (MT):</label>
                     <input
                         type="number"
                         value={requiredQuantity}
-                        onChange={(e) => {
-                            const value = e.target.value;
-                            // Check if the value is a valid number and not negative
-                            if (value >= 0) {
-                                setRequiredQuantity(value);
-                            } else {
-                                setRequiredQuantity(0); // Optionally set it to 0 or any other default value
-                            }
-                        }}
+                        onChange={handleQuantityChange}
                         placeholder="Enter required quantity"
-                        className="form-control required-quantity-input"
+                        className="form-control required-quantity-input mx-auto"
+                        style={{ width: '50%' }}
                     />
-
-                    {errors.requiredQuantity && <small className="text-danger">{errors.requiredQuantity}</small>}
-                    {errors.quantityExceeds && <small className="text-danger">{errors.quantityExceeds}</small>}
+                    {formErrors.requiredQuantity && <small className="text-danger">{formErrors.requiredQuantity}</small>}
+                    {quantityExceeds && <small className="text-danger">{quantityExceeds}</small>}
                 </div>
 
-                <div className="row mt-3">
-                    {/* Price Selection Dropdown */}
-                    <div className="price-dropdown mt-1 col-md-6">
-                        <label className="spec-label">LOADING LOCATION:</label>
-                        <select
-                            className="form-control"
-                            value={selectedPrice}
-                            onChange={handlePriceChange} // Use the handler for price change
-                        >
-                            {/* Placeholder option */}
-                            <option value="" disabled>Select a location</option>
-                            <option value="ex_chennai">Ex-Chennai</option>
-                            <option value="ex_nhavasheva">Ex-Nhavasheva</option>
-                            <option value="ex_mundra">Ex-Mundra</option>
-                        </select>
-                        {errors.selectedPrice && <small className="text-danger">{errors.selectedPrice}</small>}
-                    </div>
-
-                    {/* Price Per MT */}
-                    <div className="col-md-6">
-                        <label className="spec-label">PRICE PER (MT):</label>
-                        <span className="spec-value">
-                            {selectedPrice ? `₹${pyroSteelData[selectedPrice]}` : "Price"}
-                        </span>
-                    </div>
-                </div>
-
-                {/* Order Button */}
-                <div className="order-button-section mt-3">
+                <div className="order-button-section text-center mt-3">
                     <button
-                        className="btn btn-primary"
+                        className="btn"
                         onClick={handleOrder}
-                        disabled={Number(pyroSteelData.available_quantity) === 0} // Ensure it's treated as a number
+                        disabled={selectedPrice && (
+                            (selectedPrice === 'ex_chennai' && pyroSteelData.chennai_quantity === 0) ||
+                            (selectedPrice === 'ex_nhavasheva' && pyroSteelData.nhavasheva_quantity === 0) ||
+                            (selectedPrice === 'ex_mundra' && pyroSteelData.mundra_quantity === 0)
+                        )}
+                        style={{ backgroundColor: '#28a745', color: 'white' }}
                     >
-                        {Number(pyroSteelData.available_quantity) > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
+                        {
+                            (selectedPrice && (
+                                (selectedPrice === 'ex_chennai' && pyroSteelData.chennai_quantity > 0) ||
+                                (selectedPrice === 'ex_nhavasheva' && pyroSteelData.nhavasheva_quantity > 0) ||
+                                (selectedPrice === 'ex_mundra' && pyroSteelData.mundra_quantity > 0)
+                            )) 
+                            ? 'Please Proceed to Order' 
+                            : 'Out of Stock'
+                        }
                     </button>
                 </div>
+
             </div>
         </div>
     );

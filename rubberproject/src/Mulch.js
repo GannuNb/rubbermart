@@ -9,18 +9,23 @@ const Mulch = () => {
     const [scrapItems, setScrapItems] = useState([]);
     const [mulchData, setMulchData] = useState({
         available_quantity: 0,
-        price: 0, // dynamic price based on selection
+        price: 0,
         ex_chennai: 0,
         ex_nhavasheva: 0,
         ex_mundra: 0,
         hsn: '',
-        default_price: 0, // Default price fetched from backend
+        default_price: 0,
     });
     const [requiredQuantity, setRequiredQuantity] = useState('');
-    const [selectedPrice, setSelectedPrice] = useState(''); // Store selected price option (ex_chennai, ex_nhavasheva, ex_mundra)
-    const [errors, setErrors] = useState({ requiredQuantity: '', selectedPrice: '', quantityExceeds: '' }); // To track errors
+    const [selectedPrice, setSelectedPrice] = useState('');
+    const [errors, setErrors] = useState({
+        requiredQuantity: '',
+        selectedPrice: '',
+        quantityExceeds: ''
+    });
     const navigate = useNavigate();
     const location = useLocation();
+    const [totalAvailableQuantity, setTotalAvailableQuantity] = useState(0);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -28,14 +33,16 @@ const Mulch = () => {
                 const response = await axios.get(`${process.env.REACT_APP_API_URL}/scrap`);
                 const items = response.data.scrap_items;
 
-                // Find the mulch data
                 const mulchItem = items.find(item => item.name === 'Mulch PCR');
 
-                // Ensure we have the mulch item and default price
                 if (mulchItem) {
                     const fetchedDefaultPrice = mulchItem.default_price || mulchItem.price || mulchItem.ex_chennai;
+                    const totalQuantity = mulchItem.chennai_quantity + mulchItem.mundra_quantity + mulchItem.nhavasheva_quantity;
 
                     setMulchData({
+                        chennai_quantity: mulchItem.chennai_quantity,
+                        mundra_quantity: mulchItem.mundra_quantity,
+                        nhavasheva_quantity: mulchItem.nhavasheva_quantity,
                         available_quantity: Number(mulchItem.available_quantity),
                         price: mulchItem.price,
                         ex_chennai: mulchItem.ex_chennai,
@@ -44,10 +51,10 @@ const Mulch = () => {
                         hsn: mulchItem.hsn,
                         default_price: fetchedDefaultPrice,
                     });
-
+                    setTotalAvailableQuantity(totalQuantity);
                 }
 
-                setScrapItems(items); // You can still store all scrap items if needed
+                setScrapItems(items);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -60,7 +67,6 @@ const Mulch = () => {
         const selectedOption = event.target.value;
         setSelectedPrice(selectedOption);
 
-        // Update the main price based on the selected dropdown option, but don't modify the constant default price
         if (selectedOption === 'ex_chennai') {
             setMulchData(prevState => ({ ...prevState, price: prevState.ex_chennai }));
         } else if (selectedOption === 'ex_nhavasheva') {
@@ -72,24 +78,65 @@ const Mulch = () => {
         }
     };
 
+    const handleQuantityChange = (event) => {
+        const value = event.target.value;
+
+        // Validate quantity input (reject 0 or negative)
+        if (value === '' || parseFloat(value) > 0) {
+            setRequiredQuantity(value);
+
+            // Validate quantity against available quantity at selected location
+            if (selectedPrice) {
+                let availableQuantity = 0;
+
+                // Check selected location and get available quantity accordingly
+                if (selectedPrice === 'ex_chennai') {
+                    availableQuantity = mulchData.chennai_quantity;
+                } else if (selectedPrice === 'ex_nhavasheva') {
+                    availableQuantity = mulchData.nhavasheva_quantity;
+                } else if (selectedPrice === 'ex_mundra') {
+                    availableQuantity = mulchData.mundra_quantity;
+                }
+
+                // Check if required quantity exceeds available quantity at selected location
+                if (parseFloat(value) > availableQuantity) {
+                    setErrors({ ...errors, quantityExceeds: 'Required quantity exceeds available quantity at selected location.' });
+                } else {
+                    setErrors({ ...errors, quantityExceeds: '' });
+                }
+            }
+        }
+    };
+
     const validateFields = () => {
         let formIsValid = true;
         let errors = { requiredQuantity: '', selectedPrice: '', quantityExceeds: '' };
 
+        // Validate required quantity
         if (!requiredQuantity || requiredQuantity <= 0) {
             formIsValid = false;
-            errors.requiredQuantity = 'Please fill Out this Required Field';
+            errors.requiredQuantity = 'Required quantity is required and must be greater than zero.';
         }
 
+        // Validate selected price
         if (!selectedPrice) {
             formIsValid = false;
-            errors.selectedPrice = 'Please select a price option';
+            errors.selectedPrice = 'Price selection is required.';
         }
 
-        // Check if required quantity exceeds available quantity
-        if (parseFloat(requiredQuantity) > parseFloat(mulchData.available_quantity)) {
+        // Validate quantity against available quantity at selected location
+        let availableQuantity = 0;
+        if (selectedPrice === 'ex_chennai') {
+            availableQuantity = mulchData.chennai_quantity;
+        } else if (selectedPrice === 'ex_nhavasheva') {
+            availableQuantity = mulchData.nhavasheva_quantity;
+        } else if (selectedPrice === 'ex_mundra') {
+            availableQuantity = mulchData.mundra_quantity;
+        }
+
+        if (parseFloat(requiredQuantity) > availableQuantity) {
             formIsValid = false;
-            errors.quantityExceeds = 'Required quantity exceeds available quantity.';
+            errors.quantityExceeds = 'Required quantity exceeds available quantity at selected location.';
         }
 
         setErrors(errors);
@@ -98,10 +145,10 @@ const Mulch = () => {
 
     const handleOrder = () => {
         if (!validateFields()) {
-            return; // Don't proceed if validation fails
+            return;
         }
 
-        const token = localStorage.getItem('token'); // Replace 'authToken' with your token key
+        const token = localStorage.getItem('token');
 
         if (!token) {
             navigate('/login', {
@@ -109,10 +156,11 @@ const Mulch = () => {
                     from: location.pathname,
                     mulchData: {
                         name: 'Mulch PCR',
-                        available_quantity: mulchData.available_quantity,
+                        available_quantity: totalAvailableQuantity,
                         price: mulchData.price,
                         required_quantity: requiredQuantity,
                         hsn: mulchData.hsn,
+                        selected_location: selectedPrice,
                     }
                 }
             });
@@ -120,10 +168,11 @@ const Mulch = () => {
             navigate('/Order', {
                 state: {
                     name: 'Mulch PCR',
-                    available_quantity: mulchData.available_quantity,
-                    price: mulchData.price, // Pass the updated price
+                    available_quantity: totalAvailableQuantity,
+                    price: mulchData.price,
                     required_quantity: requiredQuantity,
                     hsn: mulchData.hsn,
+                    selected_location: selectedPrice,
                 },
             });
         }
@@ -157,73 +206,43 @@ const Mulch = () => {
 
                 {/* Specifications Section */}
                 <div className="specifications-section">
-                    <h3 className="section-title">SPECIFICATIONS</h3>
+                    <h3 className="section-title text-center">SPECIFICATIONS</h3>
 
-                    <div className="row specifications-row">
-                        {/* Available Quantity */}
-                        <div className="col-md-6">
-                            <label className="spec-label">AVAILABLE QUANTITY IN (MT):</label>
-                            <span className="spec-value">
-                                {Number(mulchData.available_quantity) > 0 ? mulchData.available_quantity : 'No Stock'}
-                            </span>
-                        </div>
-
-                        {/* HSN */}
-                        <div className="col-md-6">
-                            <label className="spec-label">HSN:</label>
-                            <span className="spec-value">
-                                {mulchData.hsn}
-                            </span>
-                        </div>
+                    {/* Total Available Quantity */}
+                    <div className="total-available-quantity text-center mb-4">
+                        <label className="spec-label">TOTAL AVAILABLE QUANTITY (MT):</label>
+                        <span className="spec-value">
+                            {totalAvailableQuantity > 0 ? totalAvailableQuantity : 'No Stock'}
+                        </span>
                     </div>
 
-                    {/* Required Quantity Section */}
-                    <div className="required-quantity-section mt-3">
-                        <label className="spec-label">REQUIRED QUANTITY IN (MT):</label>
-                        <input
-                            type="number"
-                            value={requiredQuantity}
-                            onChange={(e) => {
-                                const value = e.target.value;
-                                if (value < 0) {
-                                    setRequiredQuantity(0); // Reset to 0 if negative
-                                } else {
-                                    setRequiredQuantity(value); // Update with valid input
-                                }
-                            }}
-                            placeholder="Enter required quantity"
-                            className="form-control required-quantity-input"
-                        />
-                        {errors.requiredQuantity && (
-                            <small className="text-danger">{errors.requiredQuantity}</small>
-                        )}
-                        {errors.quantityExceeds && (
-                            <small className="text-danger">{errors.quantityExceeds}</small>
-                        )}
+                    <div className="row specifications-row">
+                        {/* Loading Location */}
+                        <div className="col-md-6">
+                            <label className="spec-label">LOADING LOCATION:</label>
+                            <select className="form-control" value={selectedPrice} onChange={handlePriceChange}>
+                                <option value="" disabled>Select a location</option>
+                                <option value="ex_chennai" disabled={mulchData.chennai_quantity === 0}>Ex-Chennai</option>
+                                <option value="ex_nhavasheva" disabled={mulchData.nhavasheva_quantity === 0}>Ex-Nhavasheva</option>
+                                <option value="ex_mundra" disabled={mulchData.mundra_quantity === 0}>Ex-Mundra</option>
+                            </select>
+                            {errors.selectedPrice && <small className="text-danger">{errors.selectedPrice}</small>}
+                        </div>
+
+                        {/* Available Quantity in Selected Location */}
+                        <div className="col-md-6">
+                            <label className="spec-label">AVAILABLE QUANTITY IN SELECTED LOCATION:</label>
+                            <span className="spec-value">
+                                {selectedPrice
+                                    ? (selectedPrice === "ex_chennai" && mulchData.chennai_quantity) ||
+                                    (selectedPrice === "ex_nhavasheva" && mulchData.nhavasheva_quantity) ||
+                                    (selectedPrice === "ex_mundra" && mulchData.mundra_quantity)
+                                    : 'Available Quantity'}
+                            </span>
+                        </div>
                     </div>
 
                     <div className="row mt-3">
-                        {/* Price Selection Dropdown */}
-                        <div className="price-dropdown mt-1 col-md-6">
-                            <label className="spec-label">LOADING LOCATION:</label>
-                            <select
-                                className="form-control"
-                                value={selectedPrice}
-                                onChange={handlePriceChange} // Use the handler for price change
-                            >
-                                {/* Placeholder option */}
-                                <option value="" disabled>
-                                    Select a location
-                                </option>
-                                <option value="ex_chennai">Ex-Chennai</option>
-                                <option value="ex_nhavasheva">Ex-Nhavasheva</option>
-                                <option value="ex_mundra">Ex-Mundra</option>
-                            </select>
-                            {errors.selectedPrice && (
-                                <small className="text-danger">{errors.selectedPrice}</small>
-                            )}
-                        </div>
-
                         {/* Price Per MT */}
                         <div className="col-md-6">
                             <label className="spec-label">PRICE PER (MT):</label>
@@ -231,20 +250,40 @@ const Mulch = () => {
                                 {selectedPrice ? `₹${mulchData[selectedPrice]}` : "Price"}
                             </span>
                         </div>
+
+                        {/* HSN */}
+                        <div className="col-md-6">
+                            <label className="spec-label">HSN:</label>
+                            <span className="spec-value">{mulchData.hsn}</span>
+                        </div>
+                    </div>
+
+                    {/* Required Quantity Section */}
+                    <div className="required-quantity-section text-center mt-3">
+                        <label className="spec-label">REQUIRED QUANTITY IN (MT):</label>
+                        <input
+                            type="number"
+                            value={requiredQuantity}
+                            onChange={handleQuantityChange}
+                            placeholder="Enter required quantity"
+                            className="form-control required-quantity-input mx-auto"
+                            style={{ width: '50%' }}
+                        />
+                        {errors.requiredQuantity && <small className="text-danger">{errors.requiredQuantity}</small>}
+                        {errors.quantityExceeds && <small className="text-danger">{errors.quantityExceeds}</small>}
                     </div>
 
                     {/* Order Button */}
-                    <div className="order-button-section mt-3">
+                    <div className="order-button-section text-center mt-3">
                         <button
-                            className="btn btn-primary"
+                            className="btn"
                             onClick={handleOrder}
-                            type="submit" // Ensure form submits
+                            style={{ backgroundColor: '#28a745', color: 'white' }}
                         >
-                            {Number(mulchData.available_quantity) > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
+                            Please Proceed to Order
                         </button>
                     </div>
                 </div>
-
             </div>
         </>
     );

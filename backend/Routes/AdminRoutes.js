@@ -35,7 +35,7 @@ router.delete('/admin/scrap/:id', async (req, res) => {
 // PUT /api/admin/scrap/:id - Update a scrap item by ID
 router.put('/admin/scrap/:id', async (req, res) => {
     const { id } = req.params;
-    const { name, type, available_quantity, price,hsn,ex_mundra,ex_nhavasheva,ex_chennai } = req.body;
+    const { name, type, available_quantity, price,hsn,ex_mundra,ex_nhavasheva,ex_chennai,chennai_quantity,mundra_quantity,nhavasheva_quantity } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({ message: 'Invalid ID format' });
@@ -53,6 +53,9 @@ router.put('/admin/scrap/:id', async (req, res) => {
                 ex_chennai: Number(ex_chennai),
                 ex_nhavasheva: Number(ex_nhavasheva),
                 hsn:hsn.trim(),
+                chennai_quantity:Number(chennai_quantity),
+                mundra_quantity:Number(mundra_quantity),
+                nhavasheva_quantity:Number(nhavasheva_quantity),
             },
             { new: true, runValidators: true }
         );
@@ -69,7 +72,7 @@ router.put('/admin/scrap/:id', async (req, res) => {
 });
 // POST /api/admin/scrap - Create a new scrap item
 router.post('/admin/scrap', async (req, res) => {
-    const { name, type, available_quantity, price, hsn } = req.body;
+    const { name, type, available_quantity, price, hsn,ex_mundra,ex_nhavasheva,ex_chennai,chennai_quantity,mundra_quantity,nhavasheva_quantity } = req.body;
 
     try {
         // Validate input
@@ -82,7 +85,13 @@ router.post('/admin/scrap', async (req, res) => {
             type: type.trim(),
             available_quantity: Number(available_quantity),
             price: Number(price),
-            hsn: hsn ? hsn.trim() : '',  // If hsn is undefined, set it to an empty string
+            hsn: hsn ? hsn.trim() : '', 
+            ex_chennai_quantity:Number(ex_chennai),
+            ex_mundra:Number(ex_mundra_quantity),
+            ex_nhavasheva:Number(ex_nhavasheva),
+            chennai_quantity:Number(chennai_quantity),
+            mundra_quantity:Number(mundra_quantity),
+            nhavasheva_quantity:Number(nhavasheva_quantity)
         });
     
         const savedScrapItem = await newScrapItem.save();

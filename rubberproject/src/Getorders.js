@@ -133,22 +133,22 @@ const Getorders = () => {
   };
 
   const numberToWords = (num) => {
-    if (num === 0) return 'zero rupees only';
+    if (num === 0) return 'zero Rupees Only';
   
     const a = [
-      '', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve',
-      'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen',
+      '', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve',
+      'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen','Nineteen',
     ];
-    const b = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+    const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
   
     const numToWords = (n) => {
       if (n < 20) return a[n];
       if (n < 100) return b[Math.floor(n / 10)] + (n % 10 ? ' ' + a[n % 10] : '');
-      if (n < 1000) return a[Math.floor(n / 100)] + ' hundred' + (n % 100 ? ' and ' + numToWords(n % 100) : '');
+      if (n < 1000) return a[Math.floor(n / 100)] + ' Hundred' + (n % 100 ? ' and ' + numToWords(n % 100) : '');
       return '';
     };
   
-    const units = ['crore', 'lakh', 'thousand', 'hundred'];
+    const units = ['Crore', 'Lakh', 'Thousand', 'Hundred'];
     const divisors = [10000000, 100000, 1000, 100];
   
     let result = '';
@@ -171,10 +171,10 @@ const Getorders = () => {
   
     // Add fractional part (paise)
     if (fractionalPart > 0) {
-      result += ` and ${numToWords(fractionalPart)} paise`;
+      result += ` and ${numToWords(fractionalPart)} Paise`;
     }
   
-    return result.trim() + ' rupees only';
+    return result.trim() + ' Rupees Only';
   };
   
   const generatePDF = (order) => {
@@ -256,15 +256,23 @@ doc.text('PROFORMA INVOICE', 115, addressY + 1, { align: 'center' }); // Moved d
         doc.text(':', billingColonX, billingY + 5);
         doc.text(profile.email || 'N/A', billingValueX, billingY + 5);
 
-        doc.text('Address', billingLabelX, billingY + 10);
+        doc.text('Phone', billingLabelX, billingY + 10);
         doc.text(':', billingColonX, billingY + 10);
+        doc.text(profile.phoneNumber || 'N/A', billingValueX, billingY + 10);
+
+        doc.text('GST', billingLabelX, billingY + 15);
+        doc.text(':', billingColonX, billingY + 15);
+        doc.text(profile.gstNumber || 'N/A', billingValueX, billingY + 15);
+
+        doc.text('Address', billingLabelX, billingY + 20);
+        doc.text(':', billingColonX, billingY + 20);
         const billingAddress = profile.billAddress || 'N/A';
         const billingAddressLines = doc.splitTextToSize(billingAddress, maxAddressLength);
         billingAddressLines.forEach((line, index) => {
-            doc.text(line, billingValueX, billingY + 15 + (index * 5));
+            doc.text(line, billingValueX, billingY + 20 + (index * 5));
         });
 
-        billingY += 15 + (billingAddressLines.length * 5); // Adjust Y after billing address
+        billingY += 25 + (billingAddressLines.length * 5); // Adjust Y after billing address
 
         // Shipping Info
         const shippingLabelX = 110; // Renamed for shipping section
@@ -353,7 +361,7 @@ doc.text('PROFORMA INVOICE', 115, addressY + 1, { align: 'center' }); // Moved d
 
     const totalAmountInWords = numberToWords(total);
     doc.setFontSize(10);
-    doc.text(`Total Amount (in words): ${totalAmountInWords}`, 14, totalsTableFinalY + 10);
+    doc.text(`Total Amount (In Words): ${totalAmountInWords}`, 14, totalsTableFinalY + 10);
     doc.text(`Total Balance: Rs ${total.toFixed(2)}`, 14, totalsTableFinalY + 18);
 
     // Banking Details Section

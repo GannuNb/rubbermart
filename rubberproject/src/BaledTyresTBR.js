@@ -22,6 +22,7 @@ const BaledTyresTBR = () => {
     const [errors, setErrors] = useState({ requiredQuantity: '', selectedPrice: '', quantityExceeds: '' }); // Error states
     const navigate = useNavigate();
     const location = useLocation();
+    const [totalAvailableQuantity, setTotalAvailableQuantity] = useState(0); // State for total available quantity
 
     // Fetch Baled Tyres TBR data from the backend
     useEffect(() => {
@@ -34,8 +35,12 @@ const BaledTyresTBR = () => {
 
                 if (item) {
                     const fetchedDefaultPrice = item.default_price || item.price || item.ex_chennai;
+                    const totalQuantity = item.chennai_quantity + item.mundra_quantity + item.nhavasheva_quantity;
 
                     setMulchData({
+                        chennai_quantity: item.chennai_quantity,
+                        mundra_quantity: item.mundra_quantity,
+                        nhavasheva_quantity: item.nhavasheva_quantity,
                         available_quantity: Number(item.available_quantity),
                         price: fetchedDefaultPrice,
                         ex_chennai: item.ex_chennai,
@@ -44,6 +49,7 @@ const BaledTyresTBR = () => {
                         hsn: item.hsn,
                         default_price: fetchedDefaultPrice,
                     });
+                    setTotalAvailableQuantity(totalQuantity);
                 }
                 setScrapItems(items);
             } catch (error) {
@@ -74,6 +80,20 @@ const BaledTyresTBR = () => {
         }));
     };
 
+    // Check if location option should be disabled
+    const isLocationDisabled = (location) => {
+        switch(location) {
+            case 'ex_chennai':
+                return mulchData.chennai_quantity === 0;
+            case 'ex_nhavasheva':
+                return mulchData.nhavasheva_quantity === 0;
+            case 'ex_mundra':
+                return mulchData.mundra_quantity === 0;
+            default:
+                return false;
+        }
+    };
+
     // Validation of form fields
     const validateFields = () => {
         let formIsValid = true;
@@ -91,10 +111,20 @@ const BaledTyresTBR = () => {
             errors.selectedPrice = 'Please select a price option';
         }
 
-        // Check if required quantity exceeds available quantity
-        if (parseFloat(requiredQuantity) > parseFloat(mulchData.available_quantity)) {
+        // Check if required quantity exceeds available quantity for the selected location
+        let availableQuantityForLocation = 0;
+
+        if (selectedPrice === 'ex_chennai') {
+            availableQuantityForLocation = mulchData.chennai_quantity;
+        } else if (selectedPrice === 'ex_nhavasheva') {
+            availableQuantityForLocation = mulchData.nhavasheva_quantity;
+        } else if (selectedPrice === 'ex_mundra') {
+            availableQuantityForLocation = mulchData.mundra_quantity;
+        }
+
+        if (parseFloat(requiredQuantity) > parseFloat(availableQuantityForLocation)) {
             formIsValid = false;
-            errors.quantityExceeds = 'Required quantity exceeds available quantity.';
+            errors.quantityExceeds = 'Required quantity exceeds available quantity at the selected location.';
         }
 
         setErrors(errors);
@@ -137,10 +167,11 @@ const BaledTyresTBR = () => {
                         from: location.pathname,
                         mulchData: {
                             name: 'Baled Tyres TBR',
-                            available_quantity: mulchData.available_quantity,
+                            available_quantity: totalAvailableQuantity,
                             price: mulchData.price,
                             required_quantity: requiredQuantity,
                             hsn: mulchData.hsn,
+                            selected_location: selectedPrice,
                         }
                     }
                 });
@@ -149,10 +180,11 @@ const BaledTyresTBR = () => {
             navigate('/Order', {
                 state: {
                     name: 'Baled Tyres TBR',
-                    available_quantity: mulchData.available_quantity,
+                    available_quantity: totalAvailableQuantity,
                     price: mulchData.price,
                     required_quantity: requiredQuantity,
                     hsn: mulchData.hsn,
+                    selected_location: selectedPrice,
                 },
             });
         }
@@ -166,105 +198,102 @@ const BaledTyresTBR = () => {
                         src={BaledTyresTBRImage}
                         alt="Baled Tyres TBR"
                         className="img-fluid img-hover-effect"
-                        style={{ borderRadius: '8px', width: '90%', marginLeft: '20px', height: '300px' }}
+                        style={{ borderRadius: '8px', width: '80%', marginLeft: '20px' }}
                     />
                 </div>
                 <div className="col-md-6">
                     <h2>Baled Tyres TBR</h2>
                     <p>
-                        Baled Tyres TBR are
-                         compressed Tyre bundles primarily used for recycling purposes, construction, and environmental applications. These bales are highly durable and cost-efficient.
+                        Baled Tyres TBR are compressed Tyre bundles primarily used for recycling purposes, construction, and environmental applications. These bales are highly durable and cost-efficient.
                     </p>
                 </div>
             </div>
 
             {/* Specifications Section */}
             <div className="specifications-section">
-                <h3 className="specifications-title">SPECIFICATIONS</h3>
+                <h3 className="section-title text-center">SPECIFICATIONS</h3>
+
+                {/* Total Available Quantity */}
+                <div className="total-available-quantity text-center mb-4">
+                    <label className="spec-label">TOTAL AVAILABLE QUANTITY (MT):</label>
+                    <span className="spec-value">{totalAvailableQuantity > 0 ? totalAvailableQuantity : 'No Stock'}</span>
+                </div>
+
                 <div className="row specifications-row">
+                    {/* Loading Location */}
                     <div className="col-md-6">
-                        <label className="spec-label">AVAILABLE QUANTITY (MT):</label>
-
-                        <span className="spec-value">
-                            {Number(mulchData.available_quantity) > 0 ? mulchData.available_quantity : 'No Stock'}
-                        </span>
-
+                        <label className="spec-label">LOADING LOCATION:</label>
+                        <select className="form-control" value={selectedPrice} onChange={handlePriceChange}>
+                            <option value="" disabled>Select a location</option>
+                            <option value="ex_chennai" disabled={isLocationDisabled('ex_chennai')}>Ex-Chennai</option>
+                            <option value="ex_nhavasheva" disabled={isLocationDisabled('ex_nhavasheva')}>Ex-Nhavasheva</option>
+                            <option value="ex_mundra" disabled={isLocationDisabled('ex_mundra')}>Ex-Mundra</option>
+                        </select>
+                        {errors.selectedPrice && <small className="text-danger">{errors.selectedPrice}</small>}
                     </div>
-                    
+
+                    {/* Available Quantity in Selected Location */}
+                    <div className="col-md-6">
+                        <label className="spec-label">AVAILABLE QUANTITY IN SELECTED LOCATION:</label>
+                        <span className="spec-value">
+                            {selectedPrice
+                                ? (selectedPrice === "ex_chennai" && mulchData.chennai_quantity) ||
+                                  (selectedPrice === "ex_nhavasheva" && mulchData.nhavasheva_quantity) ||
+                                  (selectedPrice === "ex_mundra" && mulchData.mundra_quantity)
+                                : 'Available Quantity'}
+                        </span>
+                    </div>
+                </div>
+
+                <div className="row mt-3">
+                    {/* Price Per MT */}
+                    <div className="col-md-6">
+                        <label className="spec-label">PRICE PER (MT):</label>
+                        <span className="spec-value">{selectedPrice ? `₹${mulchData[selectedPrice]}` : "Price"}</span>
+                    </div>
+
+                    {/* HSN */}
                     <div className="col-md-6">
                         <label className="spec-label">HSN:</label>
                         <span className="spec-value">{mulchData.hsn}</span>
                     </div>
                 </div>
 
-                {/* Required Quantity */}
-<div className="required-quantity-section mt-3">
-    <label className="spec-label">REQUIRED QUANTITY (MT):</label>
-    <input
-        type="number"
-        value={requiredQuantity}
-        onChange={(e) => {
-            const value = e.target.value;
-            if (value < 0) {
-                setRequiredQuantity(0); // Reset to 0 if negative
-            } else {
-                setRequiredQuantity(value); // Update with valid input
-            }
-        }}
-        placeholder="Enter required quantity"
-        className="form-control required-quantity-input"
-    />
-    
-    {errors.requiredQuantity && (
-        <small className="text-danger">{errors.requiredQuantity}</small>
-    )}
-    {errors.quantityExceeds && (
-        <small className="text-danger">{errors.quantityExceeds}</small>
-    )}
-</div>
+                {/* Centered Required Quantity Section */}
+                <div className="required-quantity-section text-center mt-3">
+                    <label className="spec-label">REQUIRED QUANTITY IN (MT):</label>
+                    <input
+                        type="number"
+                        value={requiredQuantity}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            // Ensure that the input is either a positive number or zero
+                            if (value >= 0) {
+                                setRequiredQuantity(value);
+                            }
+                        }}
+                        placeholder="Enter required quantity"
+                        className="form-control required-quantity-input mx-auto"  /* Center the input field */
+                        style={{ width: '50%' }}  /* Adjust the width if needed */
+                        min="1"  /* Ensure input cannot go below 0 */
+                        step="1"  /* Optional: Only allow integer values */
+                    />
 
-
-                <div className="row mt-3">
-                    {/* Price Selection Dropdown */}
-                    <div className="mt-1 col-md-6">
-                        <label className="spec-label">LOADING LOCATION:</label>
-                        <select
-                            className="form-control"
-                            value={selectedPrice}
-                            onChange={handlePriceChange}
-                        >
-                            {/* Placeholder option */}
-                            <option value="" disabled>
-                                Select a location
-                            </option>
-                            <option value="ex_chennai">Ex-Chennai</option>
-                            <option value="ex_nhavasheva">Ex-Nhavasheva</option>
-                            <option value="ex_mundra">Ex-Mundra</option>
-                        </select>
-                        {errors.selectedPrice && (
-                            <small className="text-danger">{errors.selectedPrice}</small>
-                        )}
-                    </div>
-
-                    {/* Price Per MT */}
-                    <div className="col-md-6">
-                        <label className="spec-label">PRICE PER (MT):</label>
-                        <span className="d-block p-2 border rounded spec-value">
-                            {selectedPrice ? `₹${mulchData[selectedPrice]}` : "Price"}
-                        </span>
-                    </div>
+                    {errors.requiredQuantity && <small className="text-danger">{errors.requiredQuantity}</small>}
+                    {errors.quantityExceeds && <small className="text-danger">{errors.quantityExceeds}</small>}
                 </div>
 
-                {/* Order Button */}
-                <div className="order-button-section mt-3">
+                {/* Centered Order Button Section */}
+                <div className="order-button-section text-center mt-3">
                     <button
                         className="btn btn-primary"
                         onClick={handleOrder}
-                        disabled={Number(mulchData.available_quantity) === 0} // Ensure it's treated as a number
+                        disabled={mulchData.available_quantity === 0}
                     >
-                        {Number(mulchData.available_quantity) > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
+                        {mulchData.available_quantity > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
                     </button>
                 </div>
+
             </div>
         </div>
     );

@@ -16,12 +16,17 @@ const RubberGranules = () => {
         ex_mundra: 0,
         hsn: '',
         default_price: 0,
+        chennai_quantity: 0,
+        nhavasheva_quantity: 0,
+        mundra_quantity: 0
     });
-    const [requiredQuantity, setRequiredQuantity] = useState();
+    const [requiredQuantity, setRequiredQuantity] = useState('');
     const [selectedPrice, setSelectedPrice] = useState('');
-    const [errors, setErrors] = useState({ requiredQuantity: '', selectedPrice: '', quantityExceeds: '' }); // To track errors
+    const [errors, setErrors] = useState({ requiredQuantity: '', selectedPrice: '', quantityExceeds: '' });
+    const [isOrderDisabled, setIsOrderDisabled] = useState(false); // To manage button disabling
     const navigate = useNavigate();
     const location = useLocation();
+    const [totalAvailableQuantity, setTotalAvailableQuantity] = useState(0); // State for total available quantity
 
     useEffect(() => {
         const fetchData = async () => {
@@ -33,8 +38,12 @@ const RubberGranules = () => {
 
                 if (rubberItem) {
                     const fetchedDefaultPrice = rubberItem.default_price || rubberItem.price || rubberItem.ex_chennai;
+                    const totalQuantity = rubberItem.chennai_quantity + rubberItem.mundra_quantity + rubberItem.nhavasheva_quantity;
 
                     setRubberData({
+                        chennai_quantity: rubberItem.chennai_quantity,
+                        mundra_quantity: rubberItem.mundra_quantity,
+                        nhavasheva_quantity: rubberItem.nhavasheva_quantity,
                         available_quantity: rubberItem.available_quantity,
                         price: rubberItem.price,
                         ex_chennai: rubberItem.ex_chennai,
@@ -43,6 +52,7 @@ const RubberGranules = () => {
                         hsn: rubberItem.hsn,
                         default_price: fetchedDefaultPrice,
                     });
+                    setTotalAvailableQuantity(totalQuantity);
                 }
 
                 setScrapItems(items);
@@ -69,6 +79,50 @@ const RubberGranules = () => {
         }
     };
 
+    const handleQuantityChange = (event) => {
+        const value = event.target.value;
+
+        // If the value is empty, allow it
+        if (value === '') {
+            setRequiredQuantity('');
+            setErrors({ ...errors, quantityExceeds: '' });
+            setIsOrderDisabled(false);  // Enable order button when the value is empty
+            return;
+        }
+
+        // Parse the value to ensure it's a valid positive number
+        const parsedValue = parseFloat(value);
+
+        if (parsedValue > 0) {
+            setRequiredQuantity(parsedValue);
+
+            // Validate against available quantity if a price is selected
+            if (selectedPrice) {
+                let availableQuantity = 0;
+                if (selectedPrice === 'ex_chennai') {
+                    availableQuantity = rubberData.chennai_quantity;
+                } else if (selectedPrice === 'ex_nhavasheva') {
+                    availableQuantity = rubberData.nhavasheva_quantity;
+                } else if (selectedPrice === 'ex_mundra') {
+                    availableQuantity = rubberData.mundra_quantity;
+                }
+
+                // Check if the required quantity exceeds available quantity at the selected location
+                if (parsedValue > availableQuantity) {
+                    setErrors({ ...errors, quantityExceeds: 'Required quantity exceeds available quantity at selected location.' });
+                    setIsOrderDisabled(true);  // Disable order button when quantity exceeds available quantity
+                } else {
+                    setErrors({ ...errors, quantityExceeds: '' });
+                    setIsOrderDisabled(false);  // Enable order button when quantity is valid
+                }
+            }
+        } else {
+            setRequiredQuantity('');
+            setErrors({ ...errors, quantityExceeds: 'Please enter a valid positive quantity.' });
+            setIsOrderDisabled(true);  // Disable order button when quantity is invalid
+        }
+    };
+
     const validateFields = () => {
         let formIsValid = true;
         let errors = { requiredQuantity: '', selectedPrice: '', quantityExceeds: '' };
@@ -76,7 +130,7 @@ const RubberGranules = () => {
         // Validate required quantity
         if (!requiredQuantity || requiredQuantity <= 0) {
             formIsValid = false;
-            errors.requiredQuantity = 'Please fill Out this Required Field';
+            errors.requiredQuantity = 'Please fill out this required field';
         }
 
         // Validate selected price
@@ -85,10 +139,19 @@ const RubberGranules = () => {
             errors.selectedPrice = 'Please select a price option';
         }
 
-        // Validate if the required quantity exceeds available quantity
-        if (parseFloat(requiredQuantity) > parseFloat(rubberData.available_quantity)) {
+        // Validate if the required quantity exceeds available quantity at selected location
+        let availableQuantity = 0;
+        if (selectedPrice === 'ex_chennai') {
+            availableQuantity = rubberData.chennai_quantity;
+        } else if (selectedPrice === 'ex_nhavasheva') {
+            availableQuantity = rubberData.nhavasheva_quantity;
+        } else if (selectedPrice === 'ex_mundra') {
+            availableQuantity = rubberData.mundra_quantity;
+        }
+
+        if (parseFloat(requiredQuantity) > availableQuantity) {
             formIsValid = false;
-            errors.quantityExceeds = 'Required quantity exceeds available quantity.';
+            errors.quantityExceeds = 'Required quantity exceeds available quantity at selected location.';
         }
 
         setErrors(errors);
@@ -131,10 +194,11 @@ const RubberGranules = () => {
                         from: location.pathname,
                         rubberData: {
                             name: 'Rubber Granules/Crum',
-                            available_quantity: rubberData.available_quantity,
+                            available_quantity: totalAvailableQuantity,
                             price: rubberData.price,
                             required_quantity: requiredQuantity,
                             hsn: rubberData.hsn,
+                            selected_location: selectedPrice,
                         }
                     }
                 });
@@ -143,10 +207,11 @@ const RubberGranules = () => {
             navigate('/Order', {
                 state: {
                     name: 'Rubber Granules/Crum',
-                    available_quantity: Number(rubberData.available_quantity),
+                    available_quantity: totalAvailableQuantity,
                     price: rubberData.price, // Pass the updated price
                     required_quantity: requiredQuantity,
                     hsn: rubberData.hsn,
+                    selected_location: selectedPrice,
                 },
             });
         }
@@ -157,112 +222,114 @@ const RubberGranules = () => {
     }, []);
 
     return (
-        <>
-            <div className="rubber-granules-container" style={{ padding: '20px', marginTop: '20px', marginLeft: '180px' }}>
-                <div className="row align-items-center mt-5">
-                    <div className="col-md-6">
-                        <img
-                            src={RubberGranulesImage}
-                            alt="Rubber Granules"
-                            className="img-fluid img-hover-effect"
-                            style={{ borderRadius: '8px', width: '80%', marginLeft: '20px' }}
-                        />
-                    </div>
-                    <div className="col-md-6">
-                        <h2>Rubber Granules/Crum</h2>
-                        <p>
-                            Rubber granules are small particles derived from recycled rubber, commonly used in various applications including playgrounds, tracks, and as mulch.
-                            They provide excellent shock absorption and moisture retention, making them ideal for landscaping and gardening purposes.
-                            Additionally, using rubber granules can help in reducing waste and promoting sustainability.
-                        </p>
-                    </div>
+        <div className="rubber-granules-container" style={{ padding: '20px', marginTop: '20px', marginLeft: '180px' }}>
+            <div className="row align-items-center mt-5">
+                <div className="col-md-6">
+                    <img
+                        src={RubberGranulesImage}
+                        alt="Rubber Granules"
+                        className="img-fluid img-hover-effect"
+                        style={{ borderRadius: '8px', width: '80%', marginLeft: '20px' }}
+                    />
                 </div>
-
-                {/* Specifications Section */}
-                <div className="specifications-section">
-                    <h3 className="section-title">SPECIFICATIONS</h3>
-                    <div className="row specifications-row">
-                        {/* Available Quantity */}
-                        <div className="col-md-6">
-                            <label className="spec-label">AVAILABLE QUANTITY IN (MT):</label>
-                            <span className="spec-value">
-                                {Number(rubberData.available_quantity) > 0 ? rubberData.available_quantity : 'No Stock'}
-                            </span>
-                        </div>
-
-                        {/* HSN */}
-                        <div className="col-md-6">
-                            <label className="spec-label">HSN:</label>
-                            <span className="spec-value">
-                                {rubberData.hsn}
-                            </span>
-                        </div>
-                    </div>
-
-                    <div className="required-quantity-section mt-3">
-                        <label className="spec-label">REQUIRED QUANTITY IN (MT):</label>
-                        <input
-                            type="number"
-                            value={requiredQuantity}
-                            onChange={(e) => {
-                                const value = e.target.value;
-                                if (value < 0) {
-                                    setRequiredQuantity(0); // Reset to 0 if negative
-                                } else {
-                                    setRequiredQuantity(value); // Update with valid input
-                                }
-                            }}
-                            placeholder="Enter required quantity"
-                            className="form-control required-quantity-input"
-                        />
-                        {errors.requiredQuantity && (
-                            <small className="text-danger">{errors.requiredQuantity}</small>
-                        )}
-                        {errors.quantityExceeds && (
-                            <small className="text-danger">{errors.quantityExceeds}</small>
-                        )}
-                    </div>
-
-                    <div className="row mt-3">
-                        {/* Price Selection Dropdown */}
-                        <div className="price-dropdown col-md-6">
-                            <label className="spec-label">LOADING LOCATION:</label>
-                            <select
-                                className="form-control"
-                                value={selectedPrice}
-                                onChange={handlePriceChange}
-                            >
-                                <option value="" disabled>Select a location</option>
-                                <option value="ex_chennai">Ex-Chennai</option>
-                                <option value="ex_nhavasheva">Ex-Nhavasheva</option>
-                                <option value="ex_mundra">Ex-Mundra</option>
-                            </select>
-                            {errors.selectedPrice && (
-                                <small className="text-danger">{errors.selectedPrice}</small>
-                            )}
-                        </div>
-                        {/* Price Per MT */}
-                        <div className="col-md-6">
-                            <label className="spec-label">PRICE PER (MT):</label>
-                            <span className="spec-value">
-                                {selectedPrice ? `₹${rubberData[selectedPrice]}` : "Select a location"}
-                            </span>
-                        </div>
-                    </div>
-
-                    {/* Order Button */}
-                    <div className="order-button-section mt-3">
-                        <button
-                            className="btn btn-primary"
-                            onClick={handleOrder}
-                            disabled={Number(rubberData.available_quantity) === 0}
-                        >
-                            {Number(rubberData.available_quantity) > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
-                        </button>
-                    </div>
+                <div className="col-md-6">
+                    <h2>Rubber Granules/Crum</h2>
+                    <p>
+                        Rubber granules are small particles derived from recycled rubber, commonly used in various applications including playgrounds, tracks, and as mulch.
+                        They provide excellent shock absorption and moisture retention, making them ideal for landscaping and gardening purposes.
+                        Additionally, using rubber granules can help in reducing waste and promoting sustainability.
+                    </p>
                 </div>
             </div>
-        </>
+
+            {/* Specifications Section */}
+            <div className="specifications-section">
+                <h3 className="section-title text-center">SPECIFICATIONS</h3>
+
+                {/* Total Available Quantity */}
+                <div className="total-available-quantity text-center mb-4">
+                    <label className="spec-label">TOTAL AVAILABLE QUANTITY (MT):</label>
+                    <span className="spec-value">{totalAvailableQuantity > 0 ? totalAvailableQuantity : 'No Stock'}</span>
+                </div>
+
+                <div className="row specifications-row">
+                    {/* Loading Location */}
+                    <div className="col-md-6">
+                        <label className="spec-label">LOADING LOCATION:</label>
+                        <select
+                            className="form-control"
+                            value={selectedPrice}
+                            onChange={handlePriceChange}
+                        >
+                            <option value="" disabled>Select a location</option>
+                            <option value="ex_chennai" disabled={rubberData.chennai_quantity === 0}>
+                                Ex-Chennai
+                            </option>
+                            <option value="ex_nhavasheva" disabled={rubberData.nhavasheva_quantity === 0}>
+                                Ex-Nhavasheva
+                            </option>
+                            <option value="ex_mundra" disabled={rubberData.mundra_quantity === 0}>
+                                Ex-Mundra
+                            </option>
+                        </select>
+                        {errors.selectedPrice && <small className="text-danger">{errors.selectedPrice}</small>}
+                    </div>
+
+                    {/* Available Quantity in Selected Location */}
+                    <div className="col-md-6">
+                        <label className="spec-label">AVAILABLE QUANTITY IN SELECTED LOCATION:</label>
+                        <span className="spec-value">
+                            {selectedPrice
+                                ? (selectedPrice === "ex_chennai" && rubberData.chennai_quantity) ||
+                                  (selectedPrice === "ex_nhavasheva" && rubberData.nhavasheva_quantity) ||
+                                  (selectedPrice === "ex_mundra" && rubberData.mundra_quantity)
+                                : 'Select a location'}
+                        </span>
+                    </div>
+                </div>
+
+                <div className="row mt-3">
+                    {/* Price Per MT */}
+                    <div className="col-md-6">
+                        <label className="spec-label">PRICE PER (MT):</label>
+                        <span className="spec-value">{selectedPrice ? `₹${rubberData[selectedPrice]}` : "Price"}</span>
+                    </div>
+
+                    {/* HSN */}
+                    <div className="col-md-6">
+                        <label className="spec-label">HSN:</label>
+                        <span className="spec-value">{rubberData.hsn}</span>
+                    </div>
+                </div>
+
+                {/* Required Quantity */}
+                <div className="required-quantity-section text-center mt-3">
+                    <label className="spec-label">REQUIRED QUANTITY IN (MT):</label>
+                    <input
+                        type="number"
+                        value={requiredQuantity}
+                        onChange={handleQuantityChange}
+                        placeholder="Enter required quantity"
+                        className="form-control required-quantity-input mx-auto"
+                        style={{ width: '50%' }}
+                    />
+                    {errors.requiredQuantity && <small className="text-danger">{errors.requiredQuantity}</small>}
+                    {errors.quantityExceeds && <small className="text-danger">{errors.quantityExceeds}</small>}
+                </div>
+
+                {/* Order Button */}
+                <div className="order-button-section text-center mt-3">
+                    <button
+                        className="btn"
+                        onClick={handleOrder}
+                        disabled={isOrderDisabled || rubberData.available_quantity === 0}
+                        style={{ backgroundColor: '#28a745', color: 'white' }}
+                    >
+                        {rubberData.available_quantity > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
+                    </button>
+                </div>
+            </div>
+        </div>
     );
 };
 

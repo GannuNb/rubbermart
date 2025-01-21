@@ -10,18 +10,22 @@ const Pyrooil = () => {
     const [scrapItems, setScrapItems] = useState([]);
     const [pyrooilData, setPyrooilData] = useState({
         available_quantity: 0,
-        price: 0, // dynamic price based on selection
+        price: 0,
         ex_chennai: 0,
         ex_nhavasheva: 0,
         ex_mundra: 0,
         hsn: '',
         default_price: 0,
+        chennai_quantity: 0,
+        mundra_quantity: 0,
+        nhavasheva_quantity: 0,
     });
-    const [requiredQuantity, setRequiredQuantity] = useState();
-    const [selectedPrice, setSelectedPrice] = useState(''); // Store selected price option
-    const [errors, setErrors] = useState({ requiredQuantity: '', selectedPrice: '', quantityExceeds: '' }); // Track errors
+    const [requiredQuantity, setRequiredQuantity] = useState('');
+    const [selectedPrice, setSelectedPrice] = useState('');
+    const [errors, setErrors] = useState({ requiredQuantity: '', selectedPrice: '', quantityExceeds: '' });
     const navigate = useNavigate();
     const location = useLocation();
+    const [totalAvailableQuantity, setTotalAvailableQuantity] = useState(0);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -29,23 +33,25 @@ const Pyrooil = () => {
                 const response = await axios.get(`${process.env.REACT_APP_API_URL}/scrap`);
                 const items = response.data.scrap_items;
 
-                // Find the Pyrooil data
                 const pyrooilItem = items.find(item => item.name === 'Pyro Oil');
-
                 if (pyrooilItem) {
                     const fetchedDefaultPrice = pyrooilItem.default_price || pyrooilItem.price || pyrooilItem.ex_chennai;
+                    const totalQuantity = pyrooilItem.chennai_quantity + pyrooilItem.mundra_quantity + pyrooilItem.nhavasheva_quantity;
 
                     setPyrooilData({
+                        chennai_quantity: pyrooilItem.chennai_quantity,
+                        mundra_quantity: pyrooilItem.mundra_quantity,
+                        nhavasheva_quantity: pyrooilItem.nhavasheva_quantity,
                         available_quantity: Number(pyrooilItem.available_quantity),
-                        price: pyrooilItem.price, // Initial price
+                        price: pyrooilItem.price,
                         ex_chennai: pyrooilItem.ex_chennai,
                         ex_nhavasheva: pyrooilItem.ex_nhavasheva,
                         ex_mundra: pyrooilItem.ex_mundra,
                         hsn: pyrooilItem.hsn,
                         default_price: fetchedDefaultPrice,
                     });
+                    setTotalAvailableQuantity(totalQuantity);
                 }
-
                 setScrapItems(items);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -55,7 +61,6 @@ const Pyrooil = () => {
         fetchData();
     }, []);
 
-    // Handle price selection change
     const handlePriceChange = (event) => {
         const selectedOption = event.target.value;
         setSelectedPrice(selectedOption);
@@ -71,24 +76,54 @@ const Pyrooil = () => {
         }
     };
 
-    // Validate form fields
+    const handleQuantityChange = (event) => {
+        const value = event.target.value;
+
+        // Ensure only valid numbers greater than 0 are allowed
+        if (value === '' || (value > 0 && !isNaN(value))) {
+            setRequiredQuantity(value);
+            setErrors((prevState) => ({ ...prevState, quantityExceeds: '' }));
+
+            // Check if the quantity exceeds available quantity at selected location
+            if (selectedPrice) {
+                let availableQuantity = 0;
+                if (selectedPrice === 'ex_chennai') {
+                    availableQuantity = pyrooilData.chennai_quantity;
+                } else if (selectedPrice === 'ex_nhavasheva') {
+                    availableQuantity = pyrooilData.nhavasheva_quantity;
+                } else if (selectedPrice === 'ex_mundra') {
+                    availableQuantity = pyrooilData.mundra_quantity;
+                }
+
+                if (parseFloat(value) > availableQuantity) {
+                    setErrors((prevState) => ({
+                        ...prevState,
+                        quantityExceeds: 'Required quantity exceeds available quantity at selected location.',
+                    }));
+                }
+            }
+        } else {
+            setErrors((prevState) => ({
+                ...prevState,
+                requiredQuantity: 'Please enter a valid quantity greater than 0.',
+            }));
+        }
+    };
+
     const validateFields = () => {
         let formIsValid = true;
         let errors = { requiredQuantity: '', selectedPrice: '', quantityExceeds: '' };
 
-        // Validate required quantity
         if (!requiredQuantity || requiredQuantity <= 0) {
             formIsValid = false;
             errors.requiredQuantity = 'Please fill out this required field';
         }
 
-        // Validate selected price
         if (!selectedPrice) {
             formIsValid = false;
             errors.selectedPrice = 'Please select a price option';
         }
 
-        // Validate if required quantity exceeds available quantity
         if (parseFloat(requiredQuantity) > parseFloat(pyrooilData.available_quantity)) {
             formIsValid = false;
             errors.quantityExceeds = 'Required quantity exceeds available quantity.';
@@ -98,16 +133,14 @@ const Pyrooil = () => {
         return formIsValid;
     };
 
-    // Handle order submission
     const handleOrder = () => {
         if (!validateFields()) {
-            return; // Don't proceed if validation fails
+            return;
         }
 
-        const token = localStorage.getItem('token'); // Replace 'authToken' with your token key
+        const token = localStorage.getItem('token');
 
         if (!token) {
-            // Redirect to login if the user is not logged in
             setTimeout(() => {
                 const alertDiv = document.createElement('div');
                 alertDiv.className = 'custom-alert';
@@ -139,12 +172,12 @@ const Pyrooil = () => {
                             price: pyrooilData.price,
                             required_quantity: requiredQuantity,
                             hsn: pyrooilData.hsn,
-                        }
-                    }
+                            selected_location: selectedPrice,
+                        },
+                    },
                 });
             }, 0);
         } else {
-            // Redirect to order page with necessary data
             navigate('/Order', {
                 state: {
                     name: 'Pyro Oil',
@@ -152,6 +185,7 @@ const Pyrooil = () => {
                     price: pyrooilData.price,
                     required_quantity: requiredQuantity,
                     hsn: pyrooilData.hsn,
+                    selected_location: selectedPrice,
                 },
             });
         }
@@ -181,85 +215,91 @@ const Pyrooil = () => {
                 </div>
             </div>
 
+            {/* Specifications Section */}
             <div className="specifications-section mt-4">
-    <h3>SPECIFICATIONS</h3>
+                <h3 className="section-title text-center">SPECIFICATIONS</h3>
 
-    <div className="row">
-        {/* Available Quantity */}
-        <div className="col-md-6">
-            <label>AVAILABLE QUANTITY IN (MT):</label>
-            <span className="d-block p-2 border rounded spec-value">
-                {Number(pyrooilData.available_quantity) > 0 ? pyrooilData.available_quantity : 'No Stock'}
-            </span>
-        </div>
+                {/* Total Available Quantity */}
+                <div className="total-available-quantity text-center mb-4">
+                    <label className="spec-label">TOTAL AVAILABLE QUANTITY (MT):</label>
+                    <span className="spec-value">{totalAvailableQuantity > 0 ? totalAvailableQuantity : 'No Stock'}</span>
+                </div>
 
-        {/* HSN */}
-        <div className="col-md-6">
-            <label>HSN:</label>
-            <span className="d-block p-2 border rounded spec-value">{pyrooilData.hsn}</span>
-        </div>
-    </div>
+                <div className="row specifications-row">
+                    {/* Loading Location */}
+                    <div className="col-md-6">
+                        <label className="spec-label">LOADING LOCATION:</label>
+                        <select className="form-control" value={selectedPrice} onChange={handlePriceChange}>
+                            <option value="" disabled>Select a location</option>
+                            <option value="ex_chennai" disabled={pyrooilData.chennai_quantity === 0}>
+                                Ex-Chennai
+                            </option>
+                            <option value="ex_nhavasheva" disabled={pyrooilData.nhavasheva_quantity === 0}>
+                                Ex-Nhavasheva
+                            </option>
+                            <option value="ex_mundra" disabled={pyrooilData.mundra_quantity === 0}>
+                                Ex-Mundra
+                            </option>
+                        </select>
+                        {errors.selectedPrice && <small className="text-danger">{errors.selectedPrice}</small>}
+                    </div>
 
-    {/* Required Quantity (Single Row) */}
-    <div className="row mt-3">
-        <div className="col-md-6">
-            <label>REQUIRED QUANTITY IN (MT):</label>
-            <input
-                type="number"
-                value={requiredQuantity}
-                onChange={(e) => {
-                    const value = e.target.value;
-                    if (value === '' || parseFloat(value) >= 0) {
-                        setRequiredQuantity(value);
-                    }
-                }}
-                placeholder="Enter required quantity"
-                className="form-control"
-            />
-            {errors.requiredQuantity && <small className="text-danger">{errors.requiredQuantity}</small>}
-            {errors.quantityExceeds && <small className="text-danger">{errors.quantityExceeds}</small>}
-        </div>
-    </div>
+                    {/* Available Quantity in Selected Location */}
+                    <div className="col-md-6">
+                        <label className="spec-label">AVAILABLE QUANTITY IN SELECTED LOCATION:</label>
+                        <span className="spec-value">
+                            {selectedPrice
+                                ? (selectedPrice === "ex_chennai" && pyrooilData.chennai_quantity) ||
+                                  (selectedPrice === "ex_nhavasheva" && pyrooilData.nhavasheva_quantity) ||
+                                  (selectedPrice === "ex_mundra" && pyrooilData.mundra_quantity)
+                                : 'Available Quantity'}
+                        </span>
+                    </div>
+                </div>
 
-    {/* Select Price and Price Per MT (Same Row) */}
-    <div className="row mt-3">
-        {/* Select Price */}
-        <div className="col-md-6">
-            <label>LOADING LOCATION:</label>
-            <select
-                className="form-control"
-                value={selectedPrice}
-                onChange={handlePriceChange}
-            >
-                <option value="" disabled>Select a location</option>
-                <option value="ex_chennai">Ex-Chennai</option>
-                <option value="ex_nhavasheva">Ex-Nhavasheva</option>
-                <option value="ex_mundra">Ex-Mundra</option>
-            </select>
-            {errors.selectedPrice && <small className="text-danger">{errors.selectedPrice}</small>}
-        </div>
+                <div className="row mt-3">
+                    {/* Price Per MT */}
+                    <div className="col-md-6">
+                        <label className="spec-label">PRICE PER (MT):</label>
+                        <span className="spec-value">
+                            {selectedPrice ? `₹${pyrooilData[selectedPrice]}` : "Price"}
+                        </span>
+                    </div>
 
-        {/* Price Per MT */}
-        <div className="col-md-6">
-            <label>PRICE PER (MT):</label>
-            <span className="d-block p-2 border rounded spec-value">
-                {selectedPrice ? `₹${pyrooilData[selectedPrice]}` : "Price"}
-            </span>
-        </div>
-    </div>
+                    {/* HSN */}
+                    <div className="col-md-6">
+                        <label className="spec-label">HSN:</label>
+                        <span className="spec-value">{pyrooilData.hsn}</span>
+                    </div>
+                </div>
 
-    {/* Order Button */}
-    <div className="mt-3">
-        <button
-            className="btn btn-primary"
-            onClick={handleOrder}
-            disabled={Number(pyrooilData.available_quantity) === 0}
-        >
-            {Number(pyrooilData.available_quantity) > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
-        </button>
-    </div>
-</div>
+                {/* Required Quantity Section */}
+                <div className="required-quantity-section text-center mt-3">
+                    <label className="spec-label">REQUIRED QUANTITY IN (MT):</label>
+                    <input
+                        type="number"
+                        value={requiredQuantity}
+                        onChange={handleQuantityChange}
+                        placeholder="Enter required quantity"
+                        className="form-control required-quantity-input mx-auto"
+                        style={{ width: '50%' }}
+                    />
+                    {errors.requiredQuantity && <small className="text-danger">{errors.requiredQuantity}</small>}
+                    {errors.quantityExceeds && <small className="text-danger">{errors.quantityExceeds}</small>}
+                </div>
 
+                {/* Order Button */}
+                <div className="order-button-section text-center mt-3">
+                    <button
+                        className="btn"
+                        onClick={handleOrder}
+                        disabled={Number(pyrooilData.available_quantity) === 0 || errors.quantityExceeds}
+                        style={{ backgroundColor: '#28a745', color: 'white' }}
+                    >
+                        {Number(pyrooilData.available_quantity) > 0 && !errors.quantityExceeds ? 'Please Proceed to Order' : 'Out of Stock'}
+                    </button>
+                </div>
+            </div>
         </div>
     );
 };

@@ -25,6 +25,9 @@ const AdminPage = () => {
         ex_mundra: '',
         ex_nhavasheva: '',
         ex_chennai: '',
+        chennai_quantity:'',
+        mundra_quantity:'',
+        nhavasheva_quantity:'',
     });
 
     const [showEditModal, setShowEditModal] = useState(false);
@@ -38,6 +41,9 @@ const AdminPage = () => {
         ex_mundra: "",
         ex_nhavasheva: '',
         ex_chennai: '',
+        chennai_quantity:'',
+        mundra_quantity:'',
+        nhavasheva_quantity:'',
     });
 
     useEffect(() => {
@@ -91,6 +97,9 @@ const AdminPage = () => {
             ex_mundra: item.ex_mundra,
             ex_nhavasheva: item.ex_nhavasheva,
             ex_chennai: item.ex_chennai,
+            chennai_quantity:item.chennai_quantity,
+            mundra_quantity:item.mundra_quantity,
+            nhavasheva_quantity:item.nhavasheva_quantity,
         });
         setShowEditModal(true);
     };
@@ -107,7 +116,7 @@ const AdminPage = () => {
         setShowEditModal(false);
         setCurrentItem(null); // Reset currentItem when closing modal
         setFormData({ name: '', type: '', available_quantity: '', price: '',hsn:'',ex_mundra:'' ,ex_nhavasheva : '',
-            ex_chennai : '',}); // Reset form data
+            ex_chennai : '', chennai_quantity:'', mundra_quantity:'', nhavasheva_quantity:'',   }); // Reset form data
     };
 
     const handleFormSubmit = async (e) => {
@@ -124,6 +133,9 @@ const AdminPage = () => {
             ex_mundra: Number(formData.ex_mundra),
             ex_nhavasheva: Number(formData.ex_nhavasheva),
             ex_chennai: Number(formData.ex_chennai),
+            chennai_quantity:Number(formData.chennai_quantity),
+            mundra_quantity:Number(formData.mundra_quantity),
+            nhavasheva_quantity:Number(formData.nhavasheva_quantity),
         };
 
         if (isNaN(updatedData.available_quantity) || updatedData.available_quantity < 0 || isNaN(updatedData.price) || updatedData.price < 0) {
@@ -175,6 +187,9 @@ const AdminPage = () => {
             ex_mundra: Number(newItemFormData.ex_mundra),
             ex_nhavasheva: Number(newItemFormData.ex_nhavasheva),
             ex_chennai: Number(newItemFormData.ex_chennai),
+            chennai_quantity:Number(newItemFormData.chennai_quantity),
+            mundra_quantity:Number(newItemFormData.mundra_quantity),
+            nhavasheva_quantity:Number(newItemFormData.nhavasheva_quantity),
         };
 
         // Validate other fields as well
@@ -191,7 +206,9 @@ const AdminPage = () => {
             });
             setScrapItems([...scrapItems, response.data.scrap_item]);
             alert('New scrap item added successfully.');
-            setNewItemFormData({ name: '', type: '', available_quantity: '', price: '', hsn: '' }); // Reset after adding
+            setNewItemFormData({ name: '', type: '', available_quantity: '', price: '', hsn: '', chennai_quantity:'',
+                mundra_quantity:'',
+                nhavasheva_quantity:'', }); // Reset after adding
         } catch (err) {
             alert('Failed to add new scrap item.');
         } finally {
@@ -286,6 +303,43 @@ const AdminPage = () => {
             <h2 className="mb-4">Admin Dashboard</h2>
 
          
+
+
+            <div className="row">
+                {scrapItems.length === 0 ? (
+                    <p>No scrap items available.</p>
+                ) : (
+                    scrapItems.map((item) => (
+                        <div key={item._id} className="col-md-4 mb-4">
+                            <div className="card h-100">
+                                <div className="card-header bg-primary text-white">
+                                    <h5 className="card-title">{item.name}</h5>
+                                </div>
+                                <div className="card-body">
+                                    <p><strong>Type:</strong> {item.type}</p>
+                                    <p><strong>Available Quantity:</strong> {item.available_quantity}</p>
+                                    <p><strong>Price:</strong> ${item.price}</p>
+                                    <p><strong>Hsn:</strong> ${item.hsn}</p>
+                                    <p><strong>ex_mundra Price:</strong> ${item.ex_mundra}</p>
+                                    <p><strong>ex_nhavasheva price:</strong> ${item.ex_nhavasheva}</p>
+                                    <p><strong>ex_chennai price:</strong> ${item.ex_chennai}</p> 
+                                    <p><strong>chennai_quantity:</strong> ${item.chennai_quantity}</p>
+                                    <p><strong>mundra_quantity:</strong> ${item.mundra_quantity}</p>
+                                    <p><strong>nhavasheva_quantity:</strong> ${item.nhavasheva_quantity}</p>                               </div>
+                                <div className="card-footer">
+                                    <Button variant="secondary" size="sm" className="me-2" onClick={() => handleEdit(item)}>
+                                        Edit
+                                    </Button>
+                                    <Button variant="danger" size="sm" onClick={() => handleDelete(item._id)}>
+                                        Delete
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
+                    ))
+                )}
+            </div>
+
             <div className="mb-4">
                 <h3>Add New Scrap Item</h3>
                 <Form onSubmit={handleNewItemFormSubmit}>
@@ -343,7 +397,7 @@ const AdminPage = () => {
                         />
                     </Form.Group>
                     <Form.Group controlId="newPrice" className="mt-3">
-                        <Form.Label>ex_mundra</Form.Label>
+                        <Form.Label>ex_mundra price</Form.Label>
                         <Form.Control
                             type="number"
                             name="ex_mundra"
@@ -355,7 +409,7 @@ const AdminPage = () => {
                     </Form.Group>
 
                     <Form.Group controlId="newPrice" className="mt-3">
-                        <Form.Label>ex_nhavasheva</Form.Label>
+                        <Form.Label>ex_nhavasheva price</Form.Label>
                         <Form.Control
                             type="number"
                             name="ex_nhavasheva"
@@ -367,7 +421,7 @@ const AdminPage = () => {
                     </Form.Group>
 
                     <Form.Group controlId="newPrice" className="mt-3">
-                        <Form.Label>ex_chennai</Form.Label>
+                        <Form.Label>ex_chennai price</Form.Label>
                         <Form.Control
                             type="number"
                             name="ex_chennai"
@@ -378,42 +432,44 @@ const AdminPage = () => {
                         />
                     </Form.Group>
 
+                    <Form.Group controlId="newPrice" className="mt-3">
+                        <Form.Label>chennai_quantity </Form.Label>
+                        <Form.Control
+                            type="number"
+                            name="chennai_quantity"
+                            value={newItemFormData.chennai_quantity}
+                            onChange={handleNewItemFormChange}
+                            required
+                            min="0"
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="newPrice" className="mt-3">
+                        <Form.Label>mundra_quantity </Form.Label>
+                        <Form.Control
+                            type="number"
+                            name="mundra_quantity"
+                            value={newItemFormData.mundra_quantity}
+                            onChange={handleNewItemFormChange}
+                            required
+                            min="0"
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="newPrice" className="mt-3">
+                        <Form.Label>nhavasheva_quantity</Form.Label>
+                        <Form.Control
+                            type="number"
+                            name="nhavasheva_quantity"
+                            value={newItemFormData.nhavasheva_quantity}
+                            onChange={handleNewItemFormChange}
+                            required
+                            min="0"
+                        />
+                    </Form.Group>
+
                     <Button variant="primary" type="submit" className="mt-3" disabled={isSubmitting}>
                         {isSubmitting ? 'Adding...' : 'Add Scrap Item'}
                     </Button>
                 </Form>
-            </div>
-
-            <div className="row">
-                {scrapItems.length === 0 ? (
-                    <p>No scrap items available.</p>
-                ) : (
-                    scrapItems.map((item) => (
-                        <div key={item._id} className="col-md-4 mb-4">
-                            <div className="card h-100">
-                                <div className="card-header bg-primary text-white">
-                                    <h5 className="card-title">{item.name}</h5>
-                                </div>
-                                <div className="card-body">
-                                    <p><strong>Type:</strong> {item.type}</p>
-                                    <p><strong>Available Quantity:</strong> {item.available_quantity}</p>
-                                    <p><strong>Price:</strong> ${item.price}</p>
-                                    <p><strong>Hsn:</strong> ${item.hsn}</p>
-                                    <p><strong>ex_mundra:</strong> ${item.ex_mundra}</p>
-                                    <p><strong>ex_nhavasheva:</strong> ${item.ex_nhavasheva}</p>
-                                    <p><strong>ex_chennai:</strong> ${item.ex_chennai}</p>                                </div>
-                                <div className="card-footer">
-                                    <Button variant="secondary" size="sm" className="me-2" onClick={() => handleEdit(item)}>
-                                        Edit
-                                    </Button>
-                                    <Button variant="danger" size="sm" onClick={() => handleDelete(item._id)}>
-                                        Delete
-                                    </Button>
-                                </div>
-                            </div>
-                        </div>
-                    ))
-                )}
             </div>
 
            
@@ -477,7 +533,7 @@ const AdminPage = () => {
                             </Form.Group>
 
                             <Form.Group controlId="formPrice" className="mt-3">
-                            <Form.Label>ex_mundra</Form.Label>
+                            <Form.Label>ex_mundra Price</Form.Label>
                             <Form.Control
                                 type="number"
                                 name="ex_mundra"
@@ -489,7 +545,7 @@ const AdminPage = () => {
                         </Form.Group>
 
                         <Form.Group controlId="formPrice" className="mt-3">
-                            <Form.Label>ex_nhavasheva</Form.Label>
+                            <Form.Label>ex_nhavasheva Price</Form.Label>
                             <Form.Control
                                 type="number"
                                 name="ex_nhavasheva"
@@ -502,7 +558,7 @@ const AdminPage = () => {
 
                         
                         <Form.Group controlId="formPrice" className="mt-3">
-                            <Form.Label>ex_chennai</Form.Label>
+                            <Form.Label>ex_chennai Price</Form.Label>
                             <Form.Control
                                 type="number"
                                 name="ex_chennai"
@@ -512,6 +568,45 @@ const AdminPage = () => {
                                 min="0"
                             />
                         </Form.Group>
+
+                        <Form.Group controlId="formPrice" className="mt-3">
+                            <Form.Label>chennai_quantity</Form.Label>
+                            <Form.Control
+                                type="number"
+                                name="chennai_quantity"
+                                value={formData.chennai_quantity}
+                                onChange={handleFormChange}
+                                required
+                                min="0"
+                            />
+                        </Form.Group>
+
+                        <Form.Group controlId="formPrice" className="mt-3">
+                            <Form.Label>mundra_quantity</Form.Label>
+                            <Form.Control
+                                type="number"
+                                name="mundra_quantity"
+                                value={formData.mundra_quantity}
+                                onChange={handleFormChange}
+                                required
+                                min="0"
+                            />
+                        </Form.Group>
+
+                        <Form.Group controlId="formPrice" className="mt-3">
+                            <Form.Label>nhavasheva_quantity</Form.Label>
+                            <Form.Control
+                                type="number"
+                                name="nhavasheva_quantity"
+                                value={formData.nhavasheva_quantity}
+                                onChange={handleFormChange}
+                                required
+                                min="0"
+                            />
+                        </Form.Group>
+
+
+
 
                         
                         <Button variant="primary" type="submit" className="mt-3" disabled={isSubmitting}>

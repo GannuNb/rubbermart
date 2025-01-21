@@ -9,17 +9,21 @@ import logo1 from './images/logo.png';
 const ThreePieceTBR = () => {
     const [scrapItems, setScrapItems] = useState([]);
     const [tbrData, setTbrData] = useState({
-        available_quantity: 0,
+        chennai_quantity: 0,
+        mundra_quantity: 0,
+        nhavasheva_quantity: 0,
         price: 0,
         ex_chennai: 0,
         ex_nhavasheva: 0,
         ex_mundra: 0,
         hsn: '',
-        default_price: 0, // Default price fetched from backend
+        default_price: 0,
     });
     const [requiredQuantity, setRequiredQuantity] = useState('');
     const [selectedPrice, setSelectedPrice] = useState('');
-    const [errors, setErrors] = useState({ requiredQuantity: '', selectedPrice: '', quantityExceeds: '' }); // Updated errors for validation
+    const [errors, setErrors] = useState({ requiredQuantity: '', selectedPrice: '', quantityExceeds: '' });
+    const [quantityExceeds, setQuantityExceeds] = useState('');
+    const [totalAvailableQuantity, setTotalAvailableQuantity] = useState(0); // State for total available quantity
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -36,17 +40,19 @@ const ThreePieceTBR = () => {
                 const tbrItem = items.find(item => item.name === 'Three Piece TBR');
 
                 if (tbrItem) {
-                    const fetchedDefaultPrice = tbrItem.default_price || tbrItem.price || tbrItem.ex_chennai;
-
+                    const totalQuantity = tbrItem.chennai_quantity + tbrItem.mundra_quantity + tbrItem.nhavasheva_quantity;
                     setTbrData({
-                        available_quantity: tbrItem.available_quantity,
+                        chennai_quantity: tbrItem.chennai_quantity,
+                        mundra_quantity: tbrItem.mundra_quantity,
+                        nhavasheva_quantity: tbrItem.nhavasheva_quantity,
                         price: tbrItem.price,
                         ex_chennai: tbrItem.ex_chennai,
                         ex_nhavasheva: tbrItem.ex_nhavasheva,
                         ex_mundra: tbrItem.ex_mundra,
                         hsn: tbrItem.hsn,
-                        default_price: fetchedDefaultPrice,
+                        default_price: tbrItem.default_price || tbrItem.price || tbrItem.ex_chennai,
                     });
+                    setTotalAvailableQuantity(totalQuantity);
                 }
 
                 setScrapItems(items);
@@ -73,27 +79,61 @@ const ThreePieceTBR = () => {
         }
     };
 
-    // Validation Function
+    const handleQuantityChange = (event) => {
+        const value = event.target.value;
+
+        // If the value is empty, allow it
+        if (value === '') {
+            setRequiredQuantity('');
+            setQuantityExceeds('');
+            return;
+        }
+
+        // Parse the value to ensure it's a number
+        const parsedValue = parseFloat(value);
+
+        // If the value is a valid number and greater than 0, update the quantity
+        if (!isNaN(parsedValue) && parsedValue > 0) {
+            setRequiredQuantity(parsedValue);
+
+            // If a location is selected, validate against the available quantity
+            if (selectedPrice) {
+                let availableQuantity = 0;
+                if (selectedPrice === 'ex_chennai') {
+                    availableQuantity = tbrData.chennai_quantity;
+                } else if (selectedPrice === 'ex_nhavasheva') {
+                    availableQuantity = tbrData.nhavasheva_quantity;
+                } else if (selectedPrice === 'ex_mundra') {
+                    availableQuantity = tbrData.mundra_quantity;
+                }
+
+                // Check if the required quantity exceeds the available quantity
+                if (parsedValue > availableQuantity) {
+                    setQuantityExceeds('Required quantity exceeds available quantity at selected location.');
+                } else {
+                    setQuantityExceeds('');
+                }
+            }
+        }
+    };
+
     const validateFields = () => {
         let formIsValid = true;
         let errors = { requiredQuantity: '', selectedPrice: '', quantityExceeds: '' };
 
-        // Required Quantity validation
         if (!requiredQuantity || requiredQuantity <= 0) {
             formIsValid = false;
             errors.requiredQuantity = 'Please fill out this required field';
         }
 
-        // Price selection validation
         if (!selectedPrice) {
             formIsValid = false;
             errors.selectedPrice = 'Please select a price option';
         }
 
-        // Check if required quantity exceeds available quantity
-        if (parseFloat(requiredQuantity) > parseFloat(tbrData.available_quantity)) {
+        if (quantityExceeds) {
             formIsValid = false;
-            errors.quantityExceeds = 'Required quantity exceeds available quantity.';
+            errors.quantityExceeds = quantityExceeds;
         }
 
         setErrors(errors);
@@ -102,7 +142,7 @@ const ThreePieceTBR = () => {
 
     const handleOrder = () => {
         if (!validateFields()) {
-            return; // Don't proceed if validation fails
+            return; // Stop execution if there are validation errors
         }
 
         const token = localStorage.getItem('token');
@@ -135,10 +175,11 @@ const ThreePieceTBR = () => {
                         from: location.pathname,
                         tbrData: {
                             name: 'Three Piece TBR',
-                            available_quantity: tbrData.available_quantity,
+                            available_quantity: totalAvailableQuantity,
                             price: tbrData.price,
                             required_quantity: requiredQuantity,
                             hsn: tbrData.hsn,
+                            selected_location: selectedPrice, // Pass selected location to login
                         },
                     },
                 });
@@ -147,10 +188,11 @@ const ThreePieceTBR = () => {
             navigate('/Order', {
                 state: {
                     name: 'Three Piece TBR',
-                    available_quantity: tbrData.available_quantity,
+                    available_quantity: totalAvailableQuantity,
                     price: tbrData.price,
                     required_quantity: requiredQuantity,
                     hsn: tbrData.hsn,
+                    selected_location: selectedPrice, // Pass selected location to the order page
                 },
             });
         }
@@ -164,113 +206,98 @@ const ThreePieceTBR = () => {
                         src={ThreePieceTBRImage}
                         alt="Three Piece TBR"
                         className="img-fluid img-hover-effect"
-                        style={{ borderRadius: '8px', width: '72%', marginLeft: '20px' }}
+                        style={{ borderRadius: '8px', width: '80%', marginLeft: '20px' }}
                     />
                 </div>
                 <div className="col-md-6">
-                    <h2 className="mulch-title">Three Piece TBR</h2>
-                    <p className="mulch-description">
+                    <h2>Three Piece TBR</h2>
+                    <p>
                         The Three Piece TBR (Truck and Bus Radial) tire is designed for heavy-duty vehicles, offering excellent durability and performance on both highways and off-road terrains.
                         With a robust construction, it provides superior traction, stability, and load-bearing capacity, making it ideal for long-distance transport and industrial applications.
-                        Engineered for longevity, the Three Piece TBR tire ensures reduced wear and increased fuel efficiency, making it a cost-effective choice for fleet operators.
                     </p>
                 </div>
             </div>
 
             {/* Specifications Section */}
             <div className="specifications-section">
-                <h3 className="specifications-title" style={{ marginTop: '40px' }}>SPECIFICATIONS</h3>
-                <div className="row specifications-row" style={{ marginTop: '10px' }}>
-                    {/* Available Quantity */}
+                <h3 className="section-title text-center">SPECIFICATIONS</h3>
+
+                {/* Total Available Quantity */}
+                <div className="total-available-quantity text-center mb-4">
+                    <label className="spec-label">TOTAL AVAILABLE QUANTITY (MT):</label>
+                    <span className="spec-value">{totalAvailableQuantity > 0 ? totalAvailableQuantity : 'No Stock'}</span>
+                </div>
+
+                <div className="row specifications-row">
+                    {/* Loading Location */}
                     <div className="col-md-6">
-                        <label className="spec-label" style={{ color: 'black', fontWeight: 'bold' }}>AVAILABLE QUANTITY IN (MT):</label>
-                        <span className="spec-value d-block p-2 border rounded">
-                            {tbrData.available_quantity > 0 ? tbrData.available_quantity : 'No Stock'}
+                        <label className="spec-label">LOADING LOCATION:</label>
+                        <select className="form-control" value={selectedPrice} onChange={handlePriceChange}>
+                            <option value="" disabled>Select a location</option>
+                            <option value="ex_chennai" disabled={tbrData.chennai_quantity === 0}>
+                                Ex-Chennai
+                            </option>
+                            <option value="ex_nhavasheva" disabled={tbrData.nhavasheva_quantity === 0}>
+                                Ex-Nhavasheva
+                            </option>
+                            <option value="ex_mundra" disabled={tbrData.mundra_quantity === 0}>
+                                Ex-Mundra
+                            </option>
+                        </select>
+                        {errors.selectedPrice && <small className="text-danger">{errors.selectedPrice}</small>}
+                    </div>
+
+                    {/* Available Quantity in Selected Location */}
+                    <div className="col-md-6">
+                        <label className="spec-label">AVAILABLE QUANTITY IN SELECTED LOCATION:</label>
+                        <span className="spec-value">
+                            {selectedPrice
+                                ? (selectedPrice === "ex_chennai" && tbrData.chennai_quantity) ||
+                                  (selectedPrice === "ex_nhavasheva" && tbrData.nhavasheva_quantity) ||
+                                  (selectedPrice === "ex_mundra" && tbrData.mundra_quantity)
+                                : 'Available Quantity'}
                         </span>
+                    </div>
+                </div>
+
+                <div className="row mt-3">
+                    {/* Price Per MT */}
+                    <div className="col-md-6">
+                        <label className="spec-label">PRICE PER (MT):</label>
+                        <span className="spec-value">{selectedPrice ? `₹${tbrData[selectedPrice]}` : "Price"}</span>
                     </div>
 
                     {/* HSN */}
                     <div className="col-md-6">
-                        <label className="spec-label" style={{ color: 'black', fontWeight: 'bold' }}>HSN:</label>
-                        <span className="spec-value d-block p-2 border rounded" style={{ border: '1px solid #ccc' }}>
-                            {tbrData.hsn}
-                        </span>
+                        <label className="spec-label">HSN:</label>
+                        <span className="spec-value">{tbrData.hsn}</span>
                     </div>
                 </div>
 
-                {/* Required Quantity Section */}
-                {tbrData.available_quantity > 0 && (
-                    <div className="required-quantity-section mt-3">
-                        <label className="spec-label" style={{ color: 'black', fontWeight: 'bold', marginBottom: '5px', display: 'block' }}>
-                            REQUIRED QUANTITY IN (MT):
-                        </label>
-                        <input
-    type="number"
-    value={requiredQuantity}
-    onChange={(e) => {
-        const value = e.target.value;
-        // Ensure the value is not negative
-        if (value < 0) {
-            setRequiredQuantity(0); // Reset to 0 if negative value is entered
-        } else {
-            setRequiredQuantity(value); // Otherwise, update the value
-        }
-    }}
-    placeholder="Enter required quantity"
-    className="form-control required-quantity-input"
-    style={{
-        border: '1px solid #ccc',
-        padding: '8px',
-        marginTop: '5px',
-        width: '48%',
-    }}
-/>
-
-                        {errors.requiredQuantity && (
-                            <small className="text-danger">{errors.requiredQuantity}</small>
-                        )}
-                        {errors.quantityExceeds && (
-                            <small className="text-danger">{errors.quantityExceeds}</small>
-                        )}
-                    </div>
-                )}
-
-                <div className="row mt-3">
-                    {/* Price Selection Dropdown */}
-                    <div className="price-dropdown col-md-6">
-                        <label className="spec-label">LOADING LOCATION:</label>
-                        <select
-                            className="form-control"
-                            value={selectedPrice}
-                            onChange={handlePriceChange}
-                        >
-                            <option value="" disabled>Select a location</option>
-                            <option value="ex_chennai">Ex-Chennai</option>
-                            <option value="ex_nhavasheva">Ex-Nhavasheva</option>
-                            <option value="ex_mundra">Ex-Mundra</option>
-                        </select>
-                        {errors.selectedPrice && (
-                            <small className="text-danger">{errors.selectedPrice}</small>
-                        )}
-                    </div>
-
-                    {/* Price Per MT */}
-                    <div className="col-md-6">
-                        <label className="spec-label" style={{ color: 'black', fontWeight: 'bold' }}>PRICE PER (MT):</label>
-                        <span className="spec-value d-block p-2 border rounded bg-light">
-                            {selectedPrice ? `₹${tbrData[selectedPrice]}` : "Select a location"}
-                        </span>
-                    </div>
+                {/* Centered Required Quantity Section */}
+                <div className="required-quantity-section text-center mt-3">
+                    <label className="spec-label">REQUIRED QUANTITY IN (MT):</label>
+                    <input
+                        type="number"
+                        value={requiredQuantity}
+                        onChange={handleQuantityChange}
+                        placeholder="Enter required quantity"
+                        className="form-control required-quantity-input mx-auto"
+                        style={{ width: '50%' }}
+                    />
+                    {errors.requiredQuantity && <small className="text-danger">{errors.requiredQuantity}</small>}
+                    {quantityExceeds && <small className="text-danger">{quantityExceeds}</small>}
                 </div>
 
-                {/* Order Button */}
-                <div className="order-button-section mt-3">
+                {/* Centered Order Button Section */}
+                <div className="order-button-section text-center mt-3">
                     <button
-                        className="btn btn-primary"
+                        className="btn"
                         onClick={handleOrder}
-                        disabled={tbrData.available_quantity === 0}
+                        disabled={quantityExceeds || totalAvailableQuantity === 0}
+                        style={{ backgroundColor: '#28a745', color: 'white' }}
                     >
-                        {tbrData.available_quantity > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
+                        {totalAvailableQuantity > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
                     </button>
                 </div>
             </div>

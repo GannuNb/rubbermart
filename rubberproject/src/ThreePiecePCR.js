@@ -16,26 +16,31 @@ const ThreePiecePCR = () => {
         ex_mundra: 0,
         hsn: '',
         default_price: 0,
+        chennai_quantity: 0,
+        mundra_quantity: 0,
+        nhavasheva_quantity: 0
     });
-    const [requiredQuantity, setRequiredQuantity] = useState();
+    const [requiredQuantity, setRequiredQuantity] = useState('');
     const [selectedPrice, setSelectedPrice] = useState('');
     const [errors, setErrors] = useState({ requiredQuantity: '', selectedPrice: '', quantityExceeds: '' });
     const navigate = useNavigate();
     const location = useLocation();
+    const [totalAvailableQuantity, setTotalAvailableQuantity] = useState(0); // State for total available quantity
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios.get(`${process.env.REACT_APP_API_URL}/scrap`);
                 const items = response.data.scrap_items;
-
                 // Find the Three Piece PCR data
                 const threePiecePCRItem = items.find(item => item.name === 'Three Piece PCR');
-
                 if (threePiecePCRItem) {
                     const fetchedDefaultPrice = threePiecePCRItem.default_price || threePiecePCRItem.price || threePiecePCRItem.ex_chennai;
-
+                    const totalQuantity = threePiecePCRItem.chennai_quantity + threePiecePCRItem.mundra_quantity + threePiecePCRItem.nhavasheva_quantity;
                     setThreePiecePCRData({
+                        chennai_quantity: threePiecePCRItem.chennai_quantity,
+                        mundra_quantity: threePiecePCRItem.mundra_quantity,
+                        nhavasheva_quantity: threePiecePCRItem.nhavasheva_quantity,
                         available_quantity: Number(threePiecePCRItem.available_quantity),
                         price: threePiecePCRItem.price,
                         ex_chennai: threePiecePCRItem.ex_chennai,
@@ -44,21 +49,19 @@ const ThreePiecePCR = () => {
                         hsn: threePiecePCRItem.hsn,
                         default_price: fetchedDefaultPrice,
                     });
+                    setTotalAvailableQuantity(totalQuantity);
                 }
-
                 setScrapItems(items);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
         };
-
         fetchData();
     }, []);
 
     const handlePriceChange = (event) => {
         const selectedOption = event.target.value;
         setSelectedPrice(selectedOption);
-
         if (selectedOption === 'ex_chennai') {
             setThreePiecePCRData(prevState => ({ ...prevState, price: prevState.ex_chennai }));
         } else if (selectedOption === 'ex_nhavasheva') {
@@ -70,24 +73,46 @@ const ThreePiecePCR = () => {
         }
     };
 
+    const handleRequiredQuantityChange = (event) => {
+        const value = event.target.value;
+        if (value < 1) {
+            setRequiredQuantity(1);
+        } else {
+            setRequiredQuantity(value);
+        }
+    };
+
     const validateFields = () => {
         let formIsValid = true;
         let errors = { requiredQuantity: '', selectedPrice: '', quantityExceeds: '' };
 
+        // Check if the required quantity is entered
         if (!requiredQuantity || requiredQuantity < 1) {
             formIsValid = false;
             errors.requiredQuantity = 'Please fill out this required field';
         }
 
+        // Check if a loading location is selected
         if (!selectedPrice) {
             formIsValid = false;
             errors.selectedPrice = 'Please select a price option';
         }
 
-        // Check if required quantity exceeds available quantity
-        if (parseFloat(requiredQuantity) > parseFloat(threePiecePCRData.available_quantity)) {
-            formIsValid = false;
-            errors.quantityExceeds = 'Required quantity exceeds available quantity.';
+        // Check if required quantity exceeds available quantity for the selected location
+        if (selectedPrice) {
+            let availableQuantity = 0;
+            if (selectedPrice === 'ex_chennai') {
+                availableQuantity = threePiecePCRData.chennai_quantity;
+            } else if (selectedPrice === 'ex_nhavasheva') {
+                availableQuantity = threePiecePCRData.nhavasheva_quantity;
+            } else if (selectedPrice === 'ex_mundra') {
+                availableQuantity = threePiecePCRData.mundra_quantity;
+            }
+
+            if (parseFloat(requiredQuantity) > availableQuantity) {
+                formIsValid = false;
+                errors.quantityExceeds = 'Required quantity exceeds available quantity at the selected location.';
+            }
         }
 
         setErrors(errors);
@@ -98,43 +123,36 @@ const ThreePiecePCR = () => {
         if (!validateFields()) {
             return; // Don't proceed if validation fails
         }
-
         const token = localStorage.getItem('token'); 
         const { available_quantity, hsn } = threePiecePCRData;
-
         if (!token) {
             // Handle unauthenticated user
             setTimeout(() => {
                 const alertDiv = document.createElement('div');
                 alertDiv.className = 'custom-alert';
-
                 const logoImg = document.createElement('img');
                 logoImg.src = logo1;
                 logoImg.alt = 'Company Logo';
                 logoImg.className = 'alert-logo';
-
                 const alertMessage = document.createElement('span');
                 alertMessage.textContent = 'Please log in to proceed';
                 alertMessage.className = 'alert-message';
-
                 alertDiv.appendChild(logoImg);
                 alertDiv.appendChild(alertMessage);
-
                 document.body.appendChild(alertDiv);
-
                 setTimeout(() => {
                     alertDiv.remove();
                 }, 5000);
-
                 navigate('/login', {
                     state: {
                         from: location.pathname,
                         threePiecePCRData: {
                             name: 'Three Piece PCR',
-                            available_quantity,
+                            available_quantity:totalAvailableQuantity,
                             price: threePiecePCRData.price,
                             required_quantity: requiredQuantity,
-                            hsn,
+                            hsn:threePiecePCRData.hsn,
+                            selected_location: selectedPrice,
                         }
                     }
                 });
@@ -144,21 +162,13 @@ const ThreePiecePCR = () => {
             navigate('/Order', {
                 state: {
                     name: 'Three Piece PCR',
-                    available_quantity,
+                    available_quantity:totalAvailableQuantity,
                     price: threePiecePCRData.price,
                     required_quantity: requiredQuantity,
-                    hsn,
+                    hsn:threePiecePCRData.hsn,
+                    selected_location: selectedPrice,
                 },
             });
-        }
-    };
-
-    const handleRequiredQuantityChange = (event) => {
-        const value = event.target.value;
-        if (value < 1) {
-            setRequiredQuantity(1);
-        } else {
-            setRequiredQuantity(value);
         }
     };
 
@@ -186,84 +196,79 @@ const ThreePiecePCR = () => {
                     </p>
                 </div>
             </div>
-
             {/* Specifications Section */}
             <div className="specifications-section">
-                <h3 className="section-title">SPECIFICATIONS</h3>
-                <div className="row specifications-row">
-                    {/* Available Quantity */}
-                    <div className="col-md-6">
-                        <label className="spec-label">AVAILABLE QUANTITY IN (MT):</label>
-                        <span className="spec-value">
-                            {Number(threePiecePCRData.available_quantity) > 0 ? threePiecePCRData.available_quantity : 'No Stock'}
-                        </span>
+                <h3 className="section-title text-center">SPECIFICATIONS</h3>
+                {/* Total Available Quantity */}
+                <div className="total-available-quantity text-center mb-4">
+                    <label className="spec-label">TOTAL AVAILABLE QUANTITY (MT):</label>
+                    <span className="spec-value">{totalAvailableQuantity > 0 ? totalAvailableQuantity : 'No Stock'}</span>
                     </div>
-
-                    {/* HSN */}
+                <div className="row specifications-row">
+                    {/* Loading Location */}
                     <div className="col-md-6">
-                        <label className="spec-label">HSN:</label>
+                        <label className="spec-label">LOADING LOCATION:</label>
+                        <select className="form-control" value={selectedPrice} onChange={handlePriceChange}>
+                            <option value="" disabled>Select a location</option>
+                            <option value="ex_chennai" disabled={threePiecePCRData.chennai_quantity === 0}>
+                                Ex-Chennai
+                            </option>
+                            <option value="ex_nhavasheva" disabled={threePiecePCRData.nhavasheva_quantity === 0}>
+                                Ex-Nhavasheva
+                            </option>
+                            <option value="ex_mundra" disabled={threePiecePCRData.mundra_quantity === 0}>
+                                Ex-Mundra
+                            </option>
+                        </select>
+                        {errors.selectedPrice && <small className="text-danger">{errors.selectedPrice}</small>}
+                    </div>
+                    {/* Available Quantity in Selected Location */}
+                    <div className="col-md-6">
+                        <label className="spec-label">AVAILABLE QUANTITY IN SELECTED LOCATION:</label>
                         <span className="spec-value">
-                            {threePiecePCRData.hsn}
+                            {selectedPrice
+                                ? (selectedPrice === "ex_chennai" && threePiecePCRData.chennai_quantity) ||
+                                  (selectedPrice === "ex_nhavasheva" && threePiecePCRData.nhavasheva_quantity) ||
+                                  (selectedPrice === "ex_mundra" && threePiecePCRData.mundra_quantity)
+                                : 'Available Quantity'}
                         </span>
                     </div>
                 </div>
-
+                <div className="row mt-3">
+                    {/* Price Per MT */}
+                    <div className="col-md-6">
+                        <label className="spec-label">PRICE PER (MT):</label>
+                        <span className="spec-value">{selectedPrice ? `₹${threePiecePCRData[selectedPrice]}` : 'Select a location'}</span>
+                    </div>
+                    {/* HSN */}
+                    <div className="col-md-6">
+                        <label className="spec-label">HSN:</label>
+                        <span className="spec-value">{threePiecePCRData.hsn}</span>
+                    </div>
+                </div>
                 {/* Required Quantity Section */}
-                <div className="required-quantity-section mt-3">
-                    <label className="spec-label">REQUIRED QUANTITY IN (MT):</label>
+                <div className="required-quantity-section text-center mt-3">
+                    <label className="spec-label">REQUIRED QUANTITY (MT):</label>
                     <input
                         type="number"
                         value={requiredQuantity}
                         onChange={handleRequiredQuantityChange}
                         placeholder="Enter required quantity"
-                        className="form-control required-quantity-input"
+                        className="form-control required-quantity-input mx-auto"
+                        style={{ width: '50%' }}
                     />
-                    {errors.requiredQuantity && (
-                        <small className="text-danger">{errors.requiredQuantity}</small>
-                    )}
-                    {errors.quantityExceeds && (
-                        <small className="text-danger">{errors.quantityExceeds}</small>
-                    )}
+                    {errors.requiredQuantity && <small className="text-danger">{errors.requiredQuantity}</small>}
+                    {errors.quantityExceeds && <small className="text-danger">{errors.quantityExceeds}</small>}
                 </div>
-
-                <div className="row mt-3">
-                    {/* Price Selection Dropdown */}
-                    <div className="price-dropdown mt-1 col-md-6">
-                        <label className="spec-label">LOADING LOCATION:</label>
-                        <select
-                            className="form-control"
-                            value={selectedPrice}
-                            onChange={handlePriceChange}
-                        >
-                            <option value="" disabled>
-                                Select a location
-                            </option>
-                            <option value="ex_chennai">Ex-Chennai</option>
-                            <option value="ex_nhavasheva">Ex-Nhavasheva</option>
-                            <option value="ex_mundra">Ex-Mundra</option>
-                        </select>
-                        {errors.selectedPrice && (
-                            <small className="text-danger">{errors.selectedPrice}</small>
-                        )}
-                    </div>
-
-                    {/* Price Per MT */}
-                    <div className="col-md-6">
-                        <label className="spec-label">PRICE PER (MT):</label>
-                        <span className="spec-value">
-                            {selectedPrice ? `₹${threePiecePCRData[selectedPrice]}` : 'Select a location'}
-                        </span>
-                    </div>
-                </div>
-
-                {/* Order Button */}
-                <div className="order-button-section mt-3">
+                {/* Order Button Section */}
+                <div className="order-button-section text-center mt-3">
                     <button
-                        className="btn btn-primary"
+                        className="btn"
                         onClick={handleOrder}
-                        disabled={Number(threePiecePCRData.available_quantity) === 0}
+                        disabled={totalAvailableQuantity === 0}
+                        style={{ backgroundColor: '#28a745', color: 'white' }}
                     >
-                        {Number(threePiecePCRData.available_quantity) > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
+                        {totalAvailableQuantity > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
                     </button>
                 </div>
             </div>

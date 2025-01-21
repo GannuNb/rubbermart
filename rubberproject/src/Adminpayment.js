@@ -12,20 +12,19 @@ function AdminPayment() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [approvalNotes, setApprovalNotes] = useState({});
-      const navigate = useNavigate();
-      const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(''); // State for search term
+  const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-
-        useEffect(() => {
-          const tokenKey = `admin_token`; // Check if any valid token exists
-          if (localStorage.getItem(tokenKey)) {
-              setIsAuthenticated(true);  // If the token is found, user is authenticated
-          } else {
-              // If no token, navigate to the login page
-              navigate('/admin');  // Adjust this path to match your actual login page route
-          }
-      }, [navigate]); // Make sure to include `navigate` in the dependency array
-
+  useEffect(() => {
+    const tokenKey = `admin_token`; // Check if any valid token exists
+    if (localStorage.getItem(tokenKey)) {
+      setIsAuthenticated(true);  // If the token is found, user is authenticated
+    } else {
+      // If no token, navigate to the login page
+      navigate('/admin');  // Adjust this path to match your actual login page route
+    }
+  }, [navigate]); // Make sure to include `navigate` in the dependency array
 
   // Fetch payment files from the backend
   const fetchFiles = async () => {
@@ -66,13 +65,24 @@ function AdminPayment() {
     fetchFiles();
   }, []);
 
+  // Handle search filter
+  const filteredFiles = files.filter((file) => {
+    const searchString = searchTerm.toLowerCase();
+    return (
+      file.user?.name?.toLowerCase().includes(searchString) ||
+      file.user?.businessProfiles[0]?.companyName?.toLowerCase().includes(searchString) ||
+      file.order._id?.toLowerCase().includes(searchString) ||
+      file.order.items.some(item => item.name.toLowerCase().includes(searchString))
+    );
+  });
+
   const handleApproval = async (orderId) => {
     try {
       const { notes, paid, additionalPaid } = approvalNotes[orderId] || {};
-      
+
       // Make sure we're adding the additional paid to the current paid amount
       const updatedPaid = parseFloat(paid || 0) + parseFloat(additionalPaid || 0);
-  
+
       const response = await fetch(`${process.env.REACT_APP_API_URL}/payment/approve/${orderId}`, {
         method: 'POST',
         headers: {
@@ -83,18 +93,18 @@ function AdminPayment() {
           additionalPaid: additionalPaid, // Only send the additionalPaid to the backend
         }),
       });
-  
+
       if (!response.ok) {
         const errorResponse = await response.json();
         throw new Error(errorResponse.message || 'Unknown error occurred');
       }
-  
+
       const data = await response.json();
       alert(data.message);
-  
+
       // Re-fetch files to update the UI
       fetchFiles();
-  
+
       // Reset the approval notes and additionalPaid amount
       setApprovalNotes((prev) => ({
         ...prev,
@@ -109,23 +119,23 @@ function AdminPayment() {
   const handleDownload = async (paymentId, fileId, fileName) => {
     try {
       const downloadUrl = `${process.env.REACT_APP_API_URL}/payment/getpayment/${paymentId}/${fileId}`;
-  
+
       const response = await fetch(downloadUrl, {
         method: 'GET',
       });
-  
+
       if (!response.ok) {
         throw new Error('Failed to download file');
       }
-  
+
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
-  
+
       const link = document.createElement('a');
       link.href = url;
       link.download = fileName || 'payment-proof';
       link.click();
-  
+
       window.URL.revokeObjectURL(url); // Clean up
     } catch (error) {
       alert('Failed to download file: ' + error.message);
@@ -136,14 +146,14 @@ function AdminPayment() {
     const totalOrderPrice = file.order.items.reduce((sum, item) => sum + item.total, 0);
     const totalPaid = file.approval.reduce((sum, approval) => sum + approval.amountPaid, 0);
     const remainingAmount = totalOrderPrice - totalPaid;
-  
+
     const doc = new jsPDF();
-  
+
     // Add Logo (if available)
     if (logo) {
-        doc.addImage(logo, 'JPEG', 11, 6, 40, 20); // Adjust the width and height of the logo
+      doc.addImage(logo, 'JPEG', 11, 6, 40, 20); // Adjust the width and height of the logo
     }
-  
+
     // Header Section with Styling
     doc.setFontSize(22);
     doc.setFont('helvetica', 'bold');
@@ -152,80 +162,79 @@ function AdminPayment() {
     doc.setFontSize(10);
     doc.setDrawColor(34, 45, 65); // Line color
     doc.line(10, 25, 200, 25); // Horizontal line below header
-  
+
     // Order and User Details (Row-wise format)
     doc.setFontSize(12);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(0);
     const orderAndUserDetails = `Order ID: ${file.order._id}    |    User Name: ${file.user?.name || 'N/A'}`;
     doc.text(orderAndUserDetails, 14, 35);
-  
+
     // Product Details Section
     doc.setFontSize(13);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(22, 160, 133); // Stylish heading color
     doc.text('Product Details', 14, 45);
-  
+
     doc.setFontSize(11);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(0);
-  
+
     // Display products one after another
     let productY = 51; // Initial Y position for products
     file.order.items.forEach((item, index) => {
-        doc.text(`${index + 1}. ${item.name} (Quantity: ${item.quantity})`, 14, productY);
-        productY += 7; // Adjust vertical spacing for each product
+      doc.text(`${index + 1}. ${item.name} (Quantity: ${item.quantity})`, 14, productY);
+      productY += 7; // Adjust vertical spacing for each product
     });
-  
+
     // Approval Table Section
     const startY = productY + 10; // Start below the last product
-  
+
     doc.setFontSize(13);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(22, 160, 133);
     doc.text('Approval Table', 14, startY);
-  
+
     doc.autoTable({
-        startY: startY + 6,
-        head: [['Date', 'Amount Paid']],
-        body: file.approval.map((approval) => [
-            new Date(approval.approvalDate).toLocaleDateString(),
-            `${approval.amountPaid.toFixed(2)}`,
-        ]),
-        theme: 'striped', // Stylish table theme
-        styles: { fontSize: 10, cellPadding: 4 },
-        headStyles: { fillColor: [22, 160, 133], textColor: 255, fontStyle: 'bold' },
-        alternateRowStyles: { fillColor: [240, 248, 255] }, // Light blue row background
+      startY: startY + 6,
+      head: [['Date', 'Amount Paid']],
+      body: file.approval.map((approval) => [
+        new Date(approval.approvalDate).toLocaleDateString(),
+        `${approval.amountPaid.toFixed(2)}`,
+      ]),
+      theme: 'striped', // Stylish table theme
+      styles: { fontSize: 10, cellPadding: 4 },
+      headStyles: { fillColor: [22, 160, 133], textColor: 255, fontStyle: 'bold' },
+      alternateRowStyles: { fillColor: [240, 248, 255] }, // Light blue row background
     });
-  
+
     // Summary Section with Background
     const finalY = doc.autoTable.previous.finalY + 10;
-  
+
     doc.setFillColor(255, 248, 220); // Light beige background
     doc.rect(14, finalY, 182, 40, 'F'); // Draw rectangle for summary section
-  
+
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(0);
     doc.text('Summary', 16, finalY + 8); // Add heading
-  
+
     // Summary Details
     doc.setFontSize(12);
     doc.setFont('helvetica', 'normal');
     doc.text(`Total Price: ${totalOrderPrice.toFixed(2)}`, 16, finalY + 16);
     doc.text(`Paid Amount: ${totalPaid.toFixed(2)}`, 16, finalY + 24);
     doc.text(`Remaining Amount: ${remainingAmount.toFixed(2)}`, 16, finalY + 32);
-  
+
     // Footer
     doc.setFontSize(10);
     doc.setFont('helvetica', 'italic');
     doc.setTextColor(100);
     doc.text('Generated by Admin Payment System', 105, 290, { align: 'center' }); // Center-aligned footer
-  
+
     // Save PDF
     doc.save(`approval-details-${file._id}.pdf`);
-};
-
+  };
 
   // Render Loading or Error State
   if (loading) {
@@ -243,11 +252,22 @@ function AdminPayment() {
       <Adminnav />
       <div className="container mt-5 contmax">
         <h2 className="text-center mb-4">All Uploaded Payment Proofs</h2>
-        
+
         {error && <div className="alert alert-info text-center my-5">{error}</div>}
 
+        {/* Search input */}
+        <div className="mb-4">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search by Order ID, User Name, Company Name, or Product Name"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+
         {/* Table only shows if there are files */}
-        {files.length > 0 ? (
+        {filteredFiles.length > 0 ? (
           <div className="table-responsive" style={{ maxHeight: '500px', overflowY: 'auto' }}>
             <table className="table table-striped table-bordered">
               <thead>
@@ -267,7 +287,7 @@ function AdminPayment() {
                 </tr>
               </thead>
               <tbody>
-                {files.map((file) => {
+                {filteredFiles.map((file) => {
                   const totalOrderPrice = file.order.items.reduce((sum, item) => sum + item.total, 0);
                   const totalPaid = approvalNotes[file.order._id]?.paid || 0;
                   const additionalPaid = approvalNotes[file.order._id]?.additionalPaid || 0;
