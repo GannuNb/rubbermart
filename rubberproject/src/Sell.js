@@ -116,6 +116,7 @@ const Sell = () => {
 
         fetchProfile();
     }, []);
+    
 
     const handleMaterialChange = (e) => setMaterial(e.target.value);
     const handleImageChange = (e) => {

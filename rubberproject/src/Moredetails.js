@@ -87,14 +87,14 @@ function Moredetails() {
         <th style={{ fontWeight: 'bold' }}>Available Quantity</th>
         <td>{approval.quantity}</td>
     </tr>
-    <tr>
+    {/* <tr>
         <th style={{ fontWeight: 'bold' }}>Company Name</th>
         <td>{approval.companyName}</td>
     </tr>
     <tr>
         <th style={{ fontWeight: 'bold' }}>Email</th>
         <td>{approval.email}</td>
-    </tr>
+    </tr> */}
     <tr>
         <th style={{ fontWeight: 'bold' }}>Price</th>
         <td>{approval.price}</td>
@@ -116,22 +116,28 @@ function Moredetails() {
             Seller Details
         </th>
     </tr>
-    <tr>
+    
+
+    {/* <tr>
         <th style={{ fontWeight: 'bold' }}>Name</th>
         <td>{approval.postedBy?.name}</td>
-    </tr>
+    </tr> */}
     <tr>
         <th style={{ fontWeight: 'bold' }}>Seller ID</th>
         <td>{approval.postedBy?.businessProfiles[0]?.profileId}</td>
     </tr>
-    <tr>
+    {/* <tr>
+        <th style={{ fontWeight: 'bold' }}> ID</th>
+        <td>{approval.postedBy?._id}</td>
+    </tr> */}
+    {/* <tr>
         <th style={{ fontWeight: 'bold' }}>Company Name</th>
         <td>{approval.postedBy?.businessProfiles[0]?.companyName}</td>
     </tr>
     <tr>
         <th style={{ fontWeight: 'bold' }}>Email</th>
         <td>{approval.postedBy?.email}</td>
-    </tr>
+    </tr> */}
 </tbody>
 
             </table>

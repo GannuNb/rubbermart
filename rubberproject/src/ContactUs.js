@@ -108,10 +108,10 @@ function ContactUs() {
           <div className="col-lg-5 mb-4">
             <h2 className="mb-4">Contact Information</h2>
             <ul className="list-unstyled">
-              <li><i className="fas fa-map-marker-alt me-2"></i>Admin Off : #406, 4th Floor, Patel Towers, Above EasyBuy Beside Nagole RTO Office, Nagole Hyderabad, Telangana-500035</li>
+              <li><i className="fas fa-map-marker-alt me-2"></i>Admin Off : #406, 4th Floor, Patel Towers, Above EasyBuy Beside Nagole RTO Office, Nagole Hyderabad, Telangana-500068</li>
               <br />
               <li><i className="fas fa-phone-alt me-2"></i>+914049471616</li>
-              <li><i className="fas fa-envelope me-2"></i> Info@vikahecotech.com</li>
+              <li><i className="fas fa-envelope me-2"></i> Info@rubberscrapmart.com</li>
             </ul>
 
             <div className="map-container mb-4">
@@ -171,7 +171,7 @@ function ContactUs() {
                 </h2>
                 <div id="collapseTwo" className="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
                   <div className="accordion-body">
-                    Our office is located at #406, 4th Floor, Patel Towers, Above EasyBuy Beside Nagole RTO Office, Nagole Hyderabad, Telangana-500035, India.
+                    Our office is located at #406, 4th Floor, Patel Towers, Above EasyBuy Beside Nagole RTO Office, Nagole Hyderabad, Telangana-500068, India.
                   </div>
                 </div>
               </div>

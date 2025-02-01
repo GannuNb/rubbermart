@@ -36,7 +36,7 @@ const Footer = () => {
 {/* Column 3: Contact Info and Social Media */}
 <Col xs={12} md={6} lg={4} className="mb-4 text-center text-lg-end"> {/* Centered for small screens, align right on large screens */}
   <h5 className="fw-bold">Contact Information</h5>
-  <p>Email: Info@vikahrubber.com</p>
+  <p>Email: info@rubberscrapmart.com</p>
   <p>Phone: +91 4049471616</p>
   <h5 className="fw-bold">Follow Us</h5>
   <div className="text-center text-lg-end"> {/* Center icons on small screens, align right on larger screens */}

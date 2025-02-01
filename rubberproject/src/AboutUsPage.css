@@ -47,7 +47,7 @@
   position: relative;
   width: 100%;
   padding: 0 15px; /* Added padding for small screens */
-  margin-bottom: 80px; /* Added margin-bottom to give space for controls */
+  margin-bottom: 0px; /* Added margin-bottom to give space for controls */
 
 }
 
