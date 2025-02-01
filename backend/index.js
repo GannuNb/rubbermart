@@ -6,15 +6,17 @@ const jwt = require('jsonwebtoken');
 const mailRoutes = require('./Routes/Mail');
 const placeOrderRoute = require('./Routes/PlaceOrder');
 const contactRoute = require('./Routes/Contactus');
-
 const app = express();
 const port = process.env.PORT || 4000;
 const BusinessProfile = require('./models/BusinessProfile');
 const User = require('./models/User');
 const shippingRoutes = require('./Routes/shippingRoutes');
-
-
 const allowedOrigins = process.env.CLIENT_URL?.split(',') || [];
+const bodyParser = require('body-parser');
+
+// Use bodyParser to parse JSON and URL-encoded data
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cors({
     origin: (origin, callback) => {
@@ -27,9 +29,6 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
 }));
-
-app.use(express.json());
-
 
 mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
@@ -79,12 +78,7 @@ app.get('/business-profile', async (req, res) => {
     }
 });
 
-
 const BusinessProfileCounter = require('./models/BusinessProfileCounter');
-
-
-
-
 
 app.post('/business-profile', async (req, res) => {
     try {
@@ -148,17 +142,11 @@ app.post('/business-profile', async (req, res) => {
     }
 });
 
-
-
 app.get('/scrap', (req, res) => {
     res.json({
         scrap_items: global.scrap_items,
-      
     });
 });
-
-
-
 
 // Import and use routes
 const uploadscrapRoute = require('./Routes/Uploadscrap');
@@ -168,13 +156,9 @@ app.use('/payment', PaymentRoutes);
 
 const adminRoutes = require('./Routes/AdminRoutes'); // Corrected variable name
 app.use('/api', require('./Routes/OrderRoutes'));
-
 app.use('/api', adminRoutes); // Mount AdminRoutes at /api
 app.use('/api', placeOrderRoute);
-
 app.use('/api', contactRoute);
-
-
 app.use('/api', mailRoutes);
 app.use('/api', uploadscrapRoute);
 app.use('/api', createUserRoute);

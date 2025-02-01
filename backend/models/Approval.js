@@ -1,6 +1,6 @@
-// models/Approval.js
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
+
 
 const ApprovalSchema = new Schema({
     scrapItem: {
@@ -32,11 +32,31 @@ const ApprovalSchema = new Schema({
         type: String,
         required: true
     },
+    price: {
+        type: Number,  // Add price to the schema
+        required: true
+    },
+    loadingLocation: {
+        type: String,  // Add loading location to the schema
+        required: true
+    },
+    countryOfOrigin: {
+        type: String,  // Add country of origin to the schema
+        required: true
+    },
     postedBy: {
         type: Schema.Types.ObjectId,
-        ref: 'User', // Reference to the User model
+        ref: 'User',
         required: true
-    }
+    },
+    images: [
+        {
+            data: Buffer,
+            contentType: { type: String }
+        }
+    ]
 });
+
+
 
 module.exports = mongoose.model('Approval', ApprovalSchema);

@@ -353,7 +353,7 @@ Pyro oil          </Link>
         <div className="container-fluid">
           {/* Sidebar Toggle Button */}
           <button
-            className="navbar-toggler"
+            className="navbar-toggler threetop"
             type="button"
             data-mdb-toggle="collapse"
             data-mdb-target="#sidebarMenu"

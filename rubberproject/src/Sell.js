@@ -17,6 +17,11 @@ const Sell = () => {
     const [message, setMessage] = useState(null);
     const [error, setError] = useState(null);
     const [profile, setProfile] = useState(null);
+    const [loadingLocation, setLoadingLocation] = useState('');
+    const [countryOfOrigin, setCountryOfOrigin] = useState('');
+    const [price, setPrice] = useState('');
+    const [images, setImages] = useState([]); // State to store images
+    const [imagePreviewUrls, setImagePreviewUrls] = useState([]); // For previewing images
 
     const navigate = useNavigate();
     const location = useLocation(); // Get current route location
@@ -30,34 +35,28 @@ const Sell = () => {
         const token = localStorage.getItem('token');
         if (!token) {
             setTimeout(() => {
-                // Create a custom alert with inline styling or a class
                 const alertDiv = document.createElement('div');
                 alertDiv.className = 'custom-alert';
 
-                // Create an image element for the logo
                 const logoImg = document.createElement('img');
-                logoImg.src = logo1;  // Use the imported logo here
+                logoImg.src = logo1;
                 logoImg.alt = 'Company Logo';
-                logoImg.className = 'alert-logo';  // Add a class for logo styling
+                logoImg.className = 'alert-logo';
 
-                // Create a text message for the alert
                 const alertMessage = document.createElement('span');
                 alertMessage.textContent = 'Please log in to Sell.';
-                alertMessage.className = 'alert-message';  // Class for message styling
+                alertMessage.className = 'alert-message';
 
-                // Append logo and message to the alert div
                 alertDiv.appendChild(logoImg);
                 alertDiv.appendChild(alertMessage);
 
-                // Append alert div to the body
                 document.body.appendChild(alertDiv);
 
-                // Remove the alert after 5 seconds
                 setTimeout(() => {
                     alertDiv.remove();
                 }, 5000);
 
-                navigate('/Login', { state: { from: location.pathname } }); // Navigate to login if no token
+                navigate('/Login', { state: { from: location.pathname } });
             }, 0);
             return;
         }
@@ -106,7 +105,7 @@ const Sell = () => {
                     setProfile(response.data.businessProfile);
                 } else {
                     navigate('/BusinessProfile', { replace: true });
-                  }
+                }
             } catch (err) {
                 setError(`Failed to fetch profile. ${err.message}`);
                 console.error('Error fetching business profile:', err);
@@ -118,49 +117,72 @@ const Sell = () => {
         fetchProfile();
     }, []);
 
-
     const handleMaterialChange = (e) => setMaterial(e.target.value);
+    const handleImageChange = (e) => {
+        const files = e.target.files;
+        if (files.length > 3) {
+            alert('You can only upload up to 3 images.');
+            return;
+        }
+    
+        const fileArray = Array.from(files);
+        
+        // Check if any file is above 1 MB
+        const isSizeValid = fileArray.every(file => file.size <= 1 * 1024 * 1024); // 1 MB in bytes
+    
+        if (!isSizeValid) {
+            alert('Please upload images below 1 MB.');
+            return;
+        }
+    
+        // Proceed with setting the images if all are under the size limit
+        setImages(files);
+        const previewUrls = fileArray.map(file => URL.createObjectURL(file));
+        setImagePreviewUrls(previewUrls);
+    };
+    
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         setMessage(null);
         setError(null);
-
-        const scrapData = {
-            material,
-            application: selectedApplication,
-            quantity: parseFloat(quantity),
-            companyName: profile?.companyName,
-            phoneNumber: profile?.phoneNumber,
-            email: profile?.email,
-        };
-
+    
+        const formData = new FormData();
+        formData.append('material', material);
+        formData.append('application', selectedApplication);
+        formData.append('quantity', parseFloat(quantity));
+        formData.append('companyName', profile.companyName);
+        formData.append('phoneNumber', profile.phoneNumber);
+        formData.append('email', profile.email);
+        formData.append('loadingLocation', loadingLocation);
+        formData.append('countryOfOrigin', countryOfOrigin);
+        formData.append('price', parseFloat(price));
+        Array.from(images).forEach(image => formData.append('images', image));
+    
         try {
             const authToken = localStorage.getItem('token');
             if (!authToken) throw new Error('User is not authenticated. Please log in.');
-        
+    
             const response = await axios.post(
                 `${process.env.REACT_APP_API_URL}/api/uploadscrap`,
-                scrapData,
+                formData,
                 {
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'multipart/form-data',
                         'Authorization': `Bearer ${authToken}`,
                     },
                 }
             );
-        
+    
             if (response.data.success) {
                 displayAlert('Scrap details uploaded successfully!', 'success');
-                setMaterial('Tyre scrap');
-                setQuantity('');
-                setSelectedApplication('');
             } else {
                 displayAlert('Failed to upload scrap details.', 'danger');
             }
         } catch (err) {
-            console.error('Error uploading scrap details:', err);
-            displayAlert(err.message || 'An unexpected error occurred.', 'danger');
+            console.error('Error uploading scrap details:', err.response || err.message);
+            displayAlert(err.response?.data?.message || 'An unexpected error occurred.', 'danger');
         } finally {
             setLoading(false);
         }
@@ -228,6 +250,7 @@ const Sell = () => {
                             </div>
                         )}
 
+                        {/* Quantity */}
                         <div className="mb-3" style={{ marginBottom: '1.5rem' }}>
                             <label htmlFor="quantity" className="form-label" style={{ fontWeight: 'bold', color: 'white' }}>Quantity</label>
                             <input
@@ -243,13 +266,93 @@ const Sell = () => {
                             />
                         </div>
 
-                        <button type="submit" className="btn btn-primary" disabled={loading} style={{ padding: '10px 20px', fontSize: '1.1rem', fontWeight: 'bold', backgroundColor: '#007bff', borderRadius: '5px', cursor: 'pointer', width: '100%', transition: 'transform 0.3s ease, box-shadow 0.3s ease' }}>
-                            {loading ? 'Submitting...' : 'Submit'}
+                        {/* Loading Location */}
+                        <div className="mb-3" style={{ marginBottom: '1.5rem' }}>
+                            <label htmlFor="loadingLocation" className="form-label" style={{ fontWeight: 'bold', color: 'white' }}>Loading Location</label>
+                            <select
+                                id="loadingLocation"
+                                className="form-select"
+                                value={loadingLocation}
+                                onChange={(e) => setLoadingLocation(e.target.value)}
+                                required
+                                style={{ padding: '10px', fontSize: '1rem', borderRadius: '5px' }}
+                            >
+                                <option value="">Select Loading Location</option>
+                                <option value="ex_chennai">Ex Chennai</option>
+                                <option value="ex_mundra">Ex Mundra</option>
+                                <option value="ex_nhavasheva">Ex Nhavasheva</option>
+                            </select>
+                        </div>
+
+                        {/* Country of Origin */}
+                        <div className="mb-3" style={{ marginBottom: '1.5rem' }}>
+                            <label htmlFor="countryOfOrigin" className="form-label" style={{ fontWeight: 'bold', color: 'white' }}>Country of Origin</label>
+                            <input
+                                type="text"
+                                id="countryOfOrigin"
+                                className="form-control"
+                                value={countryOfOrigin}
+                                onChange={(e) => setCountryOfOrigin(e.target.value)}
+                                required
+                                style={{ padding: '10px', fontSize: '1rem', borderRadius: '5px' }}
+                            />
+                        </div>
+
+                        {/* Price */}
+                        <div className="mb-3" style={{ marginBottom: '1.5rem' }}>
+                            <label htmlFor="price" className="form-label" style={{ fontWeight: 'bold', color: 'white' }}>Price per Unit</label>
+                            <input
+                                type="number"
+                                id="price"
+                                className="form-control"
+                                value={price}
+                                onChange={(e) => setPrice(e.target.value)}
+                                required
+                                min="0"
+                                step="0.01"
+                                style={{ padding: '10px', fontSize: '1rem', borderRadius: '5px' }}
+                            />
+                        </div>
+
+                        {/* Image Upload */}
+                        <div className="mb-3" style={{ marginBottom: '1.5rem' }}>
+                            <label htmlFor="images" className="form-label" style={{ fontWeight: 'bold', color: 'white' }}>Upload Images (Max 3)</label>
+                            <input
+                                type="file"
+                                id="images"
+                                className="form-control"
+                                multiple
+                                onChange={handleImageChange}
+                                accept="image/*"
+                                style={{ padding: '10px', fontSize: '1rem', borderRadius: '5px' }}
+                            />
+                        </div>
+
+                        {/* Image Previews */}
+                        {imagePreviewUrls.length > 0 && (
+                            <div className="image-previews" style={{ marginBottom: '1.5rem' }}>
+                                {imagePreviewUrls.map((url, index) => (
+                                    <img
+                                        key={index}
+                                        src={url}
+                                        alt={`Preview ${index + 1}`}
+                                        style={{ maxWidth: '200px', marginRight: '10px', borderRadius: '5px' }}
+                                    />
+                                ))}
+                            </div>
+                        )}
+
+                        {/* Submit Button */}
+                        <button
+                            type="submit"
+                            className="btn btn-primary"
+                            style={{ padding: '10px 20px', fontSize: '1rem', borderRadius: '5px' }}
+                            disabled={loading}
+                        >
+                            {loading ? 'Uploading...' : 'Upload Scrap'}
                         </button>
                     </form>
                 </div>
-
-                <SrenComponent />
             </div>
         </>
     );

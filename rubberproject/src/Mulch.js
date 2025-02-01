@@ -1,292 +1,169 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import mulchImage from './images/mulch.jpeg';
+import mulchImage from './images/mulch.jpeg'; // Image for Mulch
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './Mulch.css';
 
-const Mulch = () => {
-    const [scrapItems, setScrapItems] = useState([]);
-    const [mulchData, setMulchData] = useState({
-        available_quantity: 0,
-        price: 0,
-        ex_chennai: 0,
-        ex_nhavasheva: 0,
-        ex_mundra: 0,
-        hsn: '',
-        default_price: 0,
-    });
-    const [requiredQuantity, setRequiredQuantity] = useState('');
-    const [selectedPrice, setSelectedPrice] = useState('');
-    const [errors, setErrors] = useState({
-        requiredQuantity: '',
-        selectedPrice: '',
-        quantityExceeds: ''
-    });
-    const navigate = useNavigate();
-    const location = useLocation();
-    const [totalAvailableQuantity, setTotalAvailableQuantity] = useState(0);
+function Mulch() {
+  const [approvals, setApprovals] = useState([]);
+  const [userDetails, setUserDetails] = useState(null);
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get(`${process.env.REACT_APP_API_URL}/scrap`);
-                const items = response.data.scrap_items;
+  useEffect(() => {
+    async function fetchApprovalDetails() {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/approvals`, {
+          params: { application: 'Mulch PCR' }
+        });
 
-                const mulchItem = items.find(item => item.name === 'Mulch PCR');
+        const approvalsData = response.data.approvals;
+        setApprovals(approvalsData);
 
-                if (mulchItem) {
-                    const fetchedDefaultPrice = mulchItem.default_price || mulchItem.price || mulchItem.ex_chennai;
-                    const totalQuantity = mulchItem.chennai_quantity + mulchItem.mundra_quantity + mulchItem.nhavasheva_quantity;
-
-                    setMulchData({
-                        chennai_quantity: mulchItem.chennai_quantity,
-                        mundra_quantity: mulchItem.mundra_quantity,
-                        nhavasheva_quantity: mulchItem.nhavasheva_quantity,
-                        available_quantity: Number(mulchItem.available_quantity),
-                        price: mulchItem.price,
-                        ex_chennai: mulchItem.ex_chennai,
-                        ex_nhavasheva: mulchItem.ex_nhavasheva,
-                        ex_mundra: mulchItem.ex_mundra,
-                        hsn: mulchItem.hsn,
-                        default_price: fetchedDefaultPrice,
-                    });
-                    setTotalAvailableQuantity(totalQuantity);
-                }
-
-                setScrapItems(items);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-
-        fetchData();
-    }, []);
-
-    const handlePriceChange = (event) => {
-        const selectedOption = event.target.value;
-        setSelectedPrice(selectedOption);
-
-        if (selectedOption === 'ex_chennai') {
-            setMulchData(prevState => ({ ...prevState, price: prevState.ex_chennai }));
-        } else if (selectedOption === 'ex_nhavasheva') {
-            setMulchData(prevState => ({ ...prevState, price: prevState.ex_nhavasheva }));
-        } else if (selectedOption === 'ex_mundra') {
-            setMulchData(prevState => ({ ...prevState, price: prevState.ex_mundra }));
-        } else if (selectedOption === 'default') {
-            setMulchData(prevState => ({ ...prevState, price: prevState.default_price }));
+        if (approvalsData.length > 0 && approvalsData[0].postedBy) {
+          const userResponse = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/${approvalsData[0].postedBy._id}`);
+          setUserDetails(userResponse.data);
         }
-    };
+      } catch (error) {
+        console.error('Error fetching approval details:', error);
+        // If there's an error (like 404), still render the page with just the image and description
+      }
+    }
 
-    const handleQuantityChange = (event) => {
-        const value = event.target.value;
+    fetchApprovalDetails();
+  }, []);
 
-        // Validate quantity input (reject 0 or negative)
-        if (value === '' || parseFloat(value) > 0) {
-            setRequiredQuantity(value);
-
-            // Validate quantity against available quantity at selected location
-            if (selectedPrice) {
-                let availableQuantity = 0;
-
-                // Check selected location and get available quantity accordingly
-                if (selectedPrice === 'ex_chennai') {
-                    availableQuantity = mulchData.chennai_quantity;
-                } else if (selectedPrice === 'ex_nhavasheva') {
-                    availableQuantity = mulchData.nhavasheva_quantity;
-                } else if (selectedPrice === 'ex_mundra') {
-                    availableQuantity = mulchData.mundra_quantity;
-                }
-
-                // Check if required quantity exceeds available quantity at selected location
-                if (parseFloat(value) > availableQuantity) {
-                    setErrors({ ...errors, quantityExceeds: 'Required quantity exceeds available quantity at selected location.' });
-                } else {
-                    setErrors({ ...errors, quantityExceeds: '' });
-                }
-            }
-        }
-    };
-
-    const validateFields = () => {
-        let formIsValid = true;
-        let errors = { requiredQuantity: '', selectedPrice: '', quantityExceeds: '' };
-
-        // Validate required quantity
-        if (!requiredQuantity || requiredQuantity <= 0) {
-            formIsValid = false;
-            errors.requiredQuantity = 'Required quantity is required and must be greater than zero.';
-        }
-
-        // Validate selected price
-        if (!selectedPrice) {
-            formIsValid = false;
-            errors.selectedPrice = 'Price selection is required.';
-        }
-
-        // Validate quantity against available quantity at selected location
-        let availableQuantity = 0;
-        if (selectedPrice === 'ex_chennai') {
-            availableQuantity = mulchData.chennai_quantity;
-        } else if (selectedPrice === 'ex_nhavasheva') {
-            availableQuantity = mulchData.nhavasheva_quantity;
-        } else if (selectedPrice === 'ex_mundra') {
-            availableQuantity = mulchData.mundra_quantity;
-        }
-
-        if (parseFloat(requiredQuantity) > availableQuantity) {
-            formIsValid = false;
-            errors.quantityExceeds = 'Required quantity exceeds available quantity at selected location.';
-        }
-
-        setErrors(errors);
-        return formIsValid;
-    };
-
-    const handleOrder = () => {
-        if (!validateFields()) {
-            return;
-        }
-
-        const token = localStorage.getItem('token');
-
-        if (!token) {
-            navigate('/login', {
-                state: {
-                    from: location.pathname,
-                    mulchData: {
-                        name: 'Mulch PCR',
-                        available_quantity: totalAvailableQuantity,
-                        price: mulchData.price,
-                        required_quantity: requiredQuantity,
-                        hsn: mulchData.hsn,
-                        selected_location: selectedPrice,
-                    }
-                }
-            });
-        } else {
-            navigate('/Order', {
-                state: {
-                    name: 'Mulch PCR',
-                    available_quantity: totalAvailableQuantity,
-                    price: mulchData.price,
-                    required_quantity: requiredQuantity,
-                    hsn: mulchData.hsn,
-                    selected_location: selectedPrice,
-                },
-            });
-        }
-    };
-
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, []);
-
+  // If approvals is empty or userDetails is unavailable, just show the image and description
+  if (approvals.length === 0 || !userDetails) {
     return (
-        <>
-            <div className="mulch-container" style={{ padding: '20px', marginTop: '20px', marginLeft: '180px' }}>
-                <div className="row align-items-center mt-5">
-                    <div className="col-md-6">
-                        <img
-                            src={mulchImage}
-                            alt="Mulch"
-                            className="img-fluid img-hover-effect"
-                            style={{ borderRadius: '8px', width: '80%', marginLeft: '20px' }}
-                        />
-                    </div>
-                    <div className="col-md-6">
-                        <h2>Mulch PCR</h2>
-                        <p>
-                            Mulch PCR is a material applied to the surface of soil. It serves several purposes, including moisture retention, temperature regulation, and weed suppression.
-                            Organic mulches, such as wood chips, straw, and leaves, decompose over time, adding nutrients to the soil.
-                            Utilizing mulch can enhance the aesthetic appeal of gardens while also promoting healthy plant growth.
-                        </p>
-                    </div>
-                </div>
-
-                {/* Specifications Section */}
-                <div className="specifications-section">
-                    <h3 className="section-title text-center">SPECIFICATIONS</h3>
-
-                    {/* Total Available Quantity */}
-                    <div className="total-available-quantity text-center mb-4">
-                        <label className="spec-label">TOTAL AVAILABLE QUANTITY (MT):</label>
-                        <span className="spec-value">
-                            {totalAvailableQuantity > 0 ? totalAvailableQuantity : 'No Stock'}
-                        </span>
-                    </div>
-
-                    <div className="row specifications-row">
-                        {/* Loading Location */}
-                        <div className="col-md-6">
-                            <label className="spec-label">LOADING LOCATION:</label>
-                            <select className="form-control" value={selectedPrice} onChange={handlePriceChange}>
-                                <option value="" disabled>Select a location</option>
-                                <option value="ex_chennai" disabled={mulchData.chennai_quantity === 0}>Ex-Chennai</option>
-                                <option value="ex_nhavasheva" disabled={mulchData.nhavasheva_quantity === 0}>Ex-Nhavasheva</option>
-                                <option value="ex_mundra" disabled={mulchData.mundra_quantity === 0}>Ex-Mundra</option>
-                            </select>
-                            {errors.selectedPrice && <small className="text-danger">{errors.selectedPrice}</small>}
-                        </div>
-
-                        {/* Available Quantity in Selected Location */}
-                        <div className="col-md-6">
-                            <label className="spec-label">AVAILABLE QUANTITY IN SELECTED LOCATION:</label>
-                            <span className="spec-value">
-                                {selectedPrice
-                                    ? (selectedPrice === "ex_chennai" && mulchData.chennai_quantity) ||
-                                    (selectedPrice === "ex_nhavasheva" && mulchData.nhavasheva_quantity) ||
-                                    (selectedPrice === "ex_mundra" && mulchData.mundra_quantity)
-                                    : 'Available Quantity'}
-                            </span>
-                        </div>
-                    </div>
-
-                    <div className="row mt-3">
-                        {/* Price Per MT */}
-                        <div className="col-md-6">
-                            <label className="spec-label">PRICE PER (MT):</label>
-                            <span className="spec-value">
-                                {selectedPrice ? `₹${mulchData[selectedPrice]}` : "Price"}
-                            </span>
-                        </div>
-
-                        {/* HSN */}
-                        <div className="col-md-6">
-                            <label className="spec-label">HSN:</label>
-                            <span className="spec-value">{mulchData.hsn}</span>
-                        </div>
-                    </div>
-
-                    {/* Required Quantity Section */}
-                    <div className="required-quantity-section text-center mt-3">
-                        <label className="spec-label">REQUIRED QUANTITY IN (MT):</label>
-                        <input
-                            type="number"
-                            value={requiredQuantity}
-                            onChange={handleQuantityChange}
-                            placeholder="Enter required quantity"
-                            className="form-control required-quantity-input mx-auto"
-                            style={{ width: '50%' }}
-                        />
-                        {errors.requiredQuantity && <small className="text-danger">{errors.requiredQuantity}</small>}
-                        {errors.quantityExceeds && <small className="text-danger">{errors.quantityExceeds}</small>}
-                    </div>
-
-                    {/* Order Button */}
-                    <div className="order-button-section text-center mt-3">
-                        <button
-                            className="btn"
-                            onClick={handleOrder}
-                            style={{ backgroundColor: '#28a745', color: 'white' }}
-                        >
-                            Please Proceed to Order
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </>
+      <div className='setter'>
+      <div className="container py-5">
+        <div className="row">
+          <div className="col-md-6">
+            <img src={mulchImage} alt="Mulch" className="img-fluid" />
+          </div>
+          <div className="col-md-6">
+            <h2 className="text-center">Mulch</h2>
+            <p>
+              Mulch is a popular landscaping material used to retain soil moisture, suppress weeds, and improve the overall health of your garden.
+              Made from natural materials such as wood chips, bark, or grass clippings, it is an environmentally friendly choice that also adds an aesthetic appeal to outdoor spaces.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="no-stock-wrapper">
+      <h1>No Stock Availble</h1>
+      </div>
+      </div>
     );
-};
+  }
+
+  const handleMoreDetailsClick = (approval) => {
+    navigate('/moredetails', { state: { approval } });
+  };
+
+  return (
+    <>
+      <div className="setter">
+        <div className="container">
+          <div className="row py-5">
+            <div className="col-md-6">
+              <img src={mulchImage} alt="Mulch" className="img-fluid" />
+            </div>
+            <div className="col-md-6">
+              <h2 className="text-center">Mulch</h2>
+              <p>
+                Mulch is a popular landscaping material used to retain soil moisture, suppress weeds, and improve the overall health of your garden.
+                Made from natural materials such as wood chips, bark, or grass clippings, it is an environmentally friendly choice that also adds an aesthetic appeal to outdoor spaces.
+              </p>
+            </div>
+          </div>
+
+          {/* Only show this section if there are approval details */}
+          {approvals.length > 0 && userDetails && (
+            <div className="container mt-5 d-flex justify-content-center">
+              <div className="w-100">
+
+                {approvals.map((approval) => (
+                  <div
+                    key={approval._id}
+                    className="card mb-3 shadow-sm border-0 p-2"
+                    style={{
+                      backgroundColor: "#f9f9f9",
+                      borderRadius: "12px",
+                      width: "85%", // Maintain width
+                      margin: "0 auto",
+                    }}
+                  >
+                    <div className="card-body p-3">
+                      <div className="row align-items-center">
+                        {/* Left: Image Section */}
+                        <div className="col-md-4 text-center">
+                          {approval.images?.[0] && (
+                            <img
+                              src={approval.images[0]}
+                              alt="Approval Image"
+                              className="img-fluid rounded shadow-sm"
+                              style={{
+                                maxHeight: "200px", // Reduced image height
+                                maxWidth: "100%",
+                                borderRadius: "10px",
+                              }}
+                            />
+                          )}
+                        </div>
+
+                        {/* Right: Details Section */}
+                        <div className="col-md-8">
+                          <div className="row">
+                            {/* Scrap Details */}
+                            <div className="col-md-6">
+                              <h5 className="mb-1 text-dark fw-semibold">{approval.material}</h5>
+                              <h6 className="text-secondary mb-1">{approval.application}</h6>
+                              <p className="mb-1">
+                                <strong>Price:</strong> <span className="text-success">{approval.price} INR</span>
+                              </p>
+                              <p className="mb-1">
+                                <strong>Loading Location:</strong> {approval.loadingLocation}
+                              </p>
+                              <p className="mb-1">
+                                <strong>Country of Origin:</strong> {approval.countryOfOrigin}
+                              </p>
+                            </div>
+
+                            {/* User Details */}
+                            {userDetails?.businessProfiles?.[0] && (
+                              <div className="col-md-6">
+                                <h6 className="text-primary">Seller Details:</h6>
+                                <p className="mb-1">
+                                  <strong>Seller ID:</strong> {userDetails.businessProfiles[0].profileId}
+                                </p>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Buttons Section */}
+                          <div className="mt-3 d-flex gap-2">
+                            <button
+                              className="btn btn-primary px-3 py-1 fw-bold shadow-sm"
+                              style={{ borderRadius: "8px" }}
+                              onClick={() => handleMoreDetailsClick(approval)}
+                            >
+                              More Details
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
 
 export default Mulch;

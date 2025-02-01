@@ -4,101 +4,103 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const mongoose = require('mongoose'); // Needed for transactions
 const Uploadscrap = require('../models/Uploadscrap');
-
-const ScrapItem = require('../models/ScrapItem');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+const nodemailer = require('nodemailer');
 const authenticateToken = require('../middleware/authenticateToken');
 const User = require('../models/User');
-const nodemailer = require('nodemailer');
-const Approval = require('../models/Approval'); // Import Approval model
+const ScrapItem = require('../models/ScrapItem'); // Adjust the path based on your project structure
+const Approval = require('../models/Approval');
 
 
-router.post('/uploadscrap', [
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const randomDir = `uploads/images_${Date.now()}`;
+        fs.mkdirSync(randomDir, { recursive: true });
+        cb(null, randomDir);
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({
+    storage,
+    limits: { fileSize: 5 * 1024 * 1024 },
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype.startsWith('image/')) {
+            cb(null, true);
+        } else {
+            cb(new Error('Not an image! Please upload an image file.'), false);
+        }
+    }
+
+});
+
+// In your upload route:
+router.post('/uploadscrap', upload.array('images', 3), [
     authenticateToken,
     body('material').isIn(['Tyre scrap', 'pyro oil', 'Tyre steel scrap']).withMessage('Invalid material type'),
     body('application').notEmpty().withMessage('Application is required'),
     body('quantity').isFloat({ gt: 0 }).withMessage('Quantity must be a positive number'),
     body('companyName').notEmpty().withMessage('Company Name is required'),
     body('phoneNumber').notEmpty().withMessage('Phone Number is required'),
-    body('email').isEmail().withMessage('Valid Email is required')
+    body('email').isEmail().withMessage('Valid Email is required'),
+    body('loadingLocation').isIn(['ex_chennai', 'ex_mundra', 'ex_nhavasheva']).withMessage('Invalid loading location'),
+    body('countryOfOrigin').notEmpty().withMessage('Country of Origin is required'),
+    body('price').isFloat({ gt: 0 }).withMessage('Price must be a positive number')
 ], async (req, res) => {
+    console.log('Received request body:', req.body);
+    console.log('Received files:', req.files);
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+        console.error('Validation Errors:', errors.array());
         return res.status(400).json({ success: false, errors: errors.array() });
     }
 
-    const { material, application, quantity, companyName, phoneNumber, email } = req.body;
+    const { material, application, quantity, companyName, phoneNumber, email, loadingLocation, countryOfOrigin, price } = req.body;
+
+    if (!req.files || req.files.length === 0) {
+        console.error('No images uploaded.');
+        return res.status(400).json({ success: false, message: 'No images uploaded. Please upload up to 3 images.' });
+    }
+
+    const images = await Promise.all(req.files.map(file => {
+        const fileBuffer = fs.readFileSync(file.path);  // Read file content as buffer
+        return {
+            data: fileBuffer,
+            contentType: file.mimetype  // Store the file's mimetype
+        };
+    }));
 
     try {
-        // Find user by ID extracted from token
         const user = await User.findById(req.user.id);
         if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
-        // Create new scrap item with associated user ID
         const newScrap = new Uploadscrap({
-            user: req.user.id, // Save user ID with scrap item
+            user: req.user.id,
             material,
             application,
             quantity,
             companyName,
             phoneNumber,
-            email
+            email,
+            loadingLocation,
+            countryOfOrigin,
+            price,
+            images
         });
 
         await newScrap.save();
 
-        // Send email to admin
- // Send email to admin
-const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to: process.env.ADMIN_EMAIL,
-    subject: 'New Scrap Submission Received',
-    text: `Dear Admin,
-
-We have received a new scrap submission. Below are the details:
-
-- Material Type: ${material}
-- Application: ${application}
-- Quantity: ${quantity}
-- Company Name: ${companyName}
-- Contact Number: ${phoneNumber}
-- Email Address: ${email}
-
-Please log in to the admin portal to review and process this submission.
-
-Best regards,  
-The Scrap Management Team`
-};
-
-
-
-
-        transporter.sendMail(mailOptions, (err, info) => {
-            if (err) {
-                console.error('Error sending email:', err);
-                return res.status(500).json({ success: false, message: 'Scrap uploaded but failed to send email.' });
-            }
-            console.log('Email sent:', info.response);
-            res.status(201).json({ success: true, message: 'Scrap details uploaded successfully and email sent.', scrap: newScrap });
-        });
+        console.log('Scrap saved successfully:', newScrap);
+        res.status(201).json({ success: true, message: 'Scrap details uploaded successfully.', scrap: newScrap });
     } catch (error) {
         console.error('Error uploading scrap details:', error);
         res.status(500).json({ success: false, message: 'Internal Server Error' });
-    }
-});
-
-
-
-router.get('/getuploadedscrap', async (req, res) => {
-    try {
-        const uploadedScrapItems = await Uploadscrap.find()
-            .populate('user', '_id name'); // Adjust to include specific fields if needed
-        if (!uploadedScrapItems.length) {
-            return res.status(404).json({ message: 'No uploaded scrap items found' });
-        }
-        res.json({ uploadedScrapItems });
-    } catch (err) {
-        console.error('Error fetching uploaded scrap items:', err);
-        res.status(500).json({ message: 'Server Error' });
     }
 });
 
@@ -112,13 +114,38 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+// Updated Route to Fetch Scrap Items (Including Images in Base64 Format)
+router.get('/getuploadedscrap', async (req, res) => {
+    try {
+        const uploadedScrapItems = await Uploadscrap.find().populate('user', '_id name');
+
+        if (!uploadedScrapItems.length) {
+            return res.status(404).json({ message: 'No uploaded scrap items found' });
+        }
+
+        // Fetch images in base64 format
+        const scrapItemsWithImages = await Promise.all(uploadedScrapItems.map(async (scrap) => {
+            const imagesBase64 = await Promise.all(scrap.images.map(async (image) => {
+                const base64Image = image.data.toString('base64');
+                return `data:${image.contentType};base64,${base64Image}`;
+            }));
+            return { ...scrap.toObject(), imagesBase64 };
+        }));
+
+        res.json({ uploadedScrapItems: scrapItemsWithImages });
+
+    } catch (err) {
+        console.error('Error fetching uploaded scrap items:', err);
+        res.status(500).json({ message: 'Server Error' });
+    }
+});
 
 
-// routes/uploadscrap.js
 
 router.post('/approveScrap/:id', async (req, res) => {
     const session = await mongoose.startSession();
     session.startTransaction();
+
     try {
         const uploadedScrap = await Uploadscrap.findById(req.params.id).session(session);
         if (!uploadedScrap) {
@@ -127,102 +154,84 @@ router.post('/approveScrap/:id', async (req, res) => {
             return res.status(404).json({ message: 'Scrap item not found' });
         }
 
-        const { material, application, quantity, email, companyName } = uploadedScrap;
+        const { material, application, quantity, email, companyName, price, loadingLocation, countryOfOrigin, images } = uploadedScrap;
 
-        const existingScrapItem = await ScrapItem.findOne({
-            type: { $regex: new RegExp(`^${material}$`, 'i') },
-            name: { $regex: new RegExp(`^${application}$`, 'i') },
+        if (!images || images.length === 0) {
+            return res.status(400).json({ message: 'No images provided in uploaded scrap.' });
+        }
+
+        // Process images from Buffer to base64
+        const imageBuffers = images.map(image => {
+            if (image.data) { // Check if binary data exists
+                const base64Image = image.data.toString('base64');
+                return {
+                    contentType: image.contentType,
+                    data: Buffer.from(base64Image, 'base64')  // Convert the base64 string back into a buffer
+                };
+            }
+            return null;  // Skip if binary data is missing
+        }).filter(image => image !== null);
+
+        if (imageBuffers.length === 0) {
+            return res.status(400).json({ message: 'No valid images found in uploaded scrap.' });
+        }
+
+        // Check if an approval with the same material, application, price, loadingLocation, countryOfOrigin, companyName, and email already exists
+        const existingApproval = await Approval.findOne({
+            material,
+            application,
+            price,
+            loadingLocation,
+            countryOfOrigin,
+            companyName,
+            email
         }).session(session);
 
-        if (existingScrapItem) {
-            existingScrapItem.available_quantity += quantity;
-            await existingScrapItem.save({ session });
+        if (existingApproval) {
+            // If an approval exists, just update the quantity
+            existingApproval.quantity += quantity;  // Add quantity to the existing approval
+            await existingApproval.save({ session });
 
-            // Save approval record with only posted user ID
+            // Remove the approved scrap item from Uploadscrap collection
+            await Uploadscrap.findByIdAndDelete(req.params.id).session(session);
+
+            // Commit the transaction
+            await session.commitTransaction();
+            session.endSession();
+
+            return res.status(200).json({
+                message: 'Scrap approved, quantity updated.',
+                approvedScrap: existingApproval
+            });
+        } else {
+            // If no existing approval, create a new approval record
             const approval = new Approval({
                 scrapItem: uploadedScrap._id,
-                postedBy: uploadedScrap.user, // Store the user ID of the posted user
+                postedBy: uploadedScrap.user,
                 material,
                 application,
                 quantity,
                 companyName,
-                email
+                email,
+                price,  // Add price to the approval object
+                loadingLocation,  // Add loading location to the approval object
+                countryOfOrigin,  // Add country of origin to the approval object
+                images: imageBuffers
             });
+
             await approval.save({ session });
 
-            // Remove approved scrap from Uploadscrap collection
+            // Remove approved scrap item from Uploadscrap collection
             await Uploadscrap.findByIdAndDelete(req.params.id).session(session);
 
-            // Prepare scrap details for the email
-            const scrapDetailsHtml = `
-                <table style="border-collapse: collapse; width: 100%; margin-top: 20px;">
-                    <tr>
-                        <th style="border: 1px solid #ddd; padding: 8px; background-color: #f4f4f4;">Material</th>
-                        <th style="border: 1px solid #ddd; padding: 8px; background-color: #f4f4f4;">Application</th>
-                        <th style="border: 1px solid #ddd; padding: 8px; background-color: #f4f4f4;">Quantity</th>
-                    </tr>
-                    <tr>
-                        <td style="border: 1px solid #ddd; padding: 8px;">${material}</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">${application}</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">${quantity}</td>
-                    </tr>
-                </table>
-            `;
-
-            // Send confirmation email
-            const mailOptions = {
-                from: process.env.ADMIN_EMAIL,
-                to: email,
-                subject: 'Scrap Product Approval Notification – Vikah Rubber',
-                html: `
-                    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-                        <h2 style="color: #1e88e5;">Scrap Product Approval Notification</h2>
-                        <p>Dear ${companyName || 'Customer'},</p>
-                        <p>Thank you for submitting your scrap product details to <strong>Vikah Rubber</strong>.</p>
-                        <p>We are pleased to inform you that your scrap items have been successfully approved by our admin team. Below are the details of your approved scrap:</p>
-                        ${scrapDetailsHtml}
-                        <p>If you have any questions or need further assistance, feel free to contact us. We are here to support you through every stage of the process.</p>
-                        <p style="margin-top: 20px;">Thank you for choosing <strong>Vikah Rubber</strong>. We look forward to continuing our business relationship.</p>
-                        <p style="margin-top: 20px;">Best regards,</p>
-                        <p><strong>Vikah Rubber</strong></p>
-                        <div style="margin-top: 20px; padding: 10px; background-color: #f4f4f4; border-radius: 5px;">
-                            <p><strong>Admin Office:</strong></p>
-                            <p>#406, 4th Floor, Patel Towers,<br>
-                               Above EasyBuy, Beside Nagole RTO Office,<br>
-                               Nagole, Hyderabad, Telangana-500035</p>
-                            <p><strong>Phone:</strong> +91 4049471616</p>
-                            <p><strong>Email:</strong> <a href="mailto:vikahrubber@gmail.com" style="color: #1e88e5;">vikahrubber@gmail.com</a></p>
-                            <p><strong>Website:</strong> <a href="https://rubberscrapmart.com/" style="color: #1e88e5;">https://rubberscrapmart.com/</a></p>
-                        </div>
-                    </div>
-                `
-            };
-
-            transporter.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                    console.error('Error sending email:', error);
-                } else {
-                    console.log('Email sent:', info.response);
-                }
-            });
-
+            // Commit the transaction
             await session.commitTransaction();
             session.endSession();
 
-            // Include approved scrap details in the response
             return res.status(200).json({
-                message: 'Scrap approved, quantity updated, and email sent.',
-                approvedScrap: {
-                    material,
-                    application,
-                    quantity,
-                    companyName
-                }
+                message: 'Scrap approved and images saved.',
+                approvedScrap: approval
             });
-        } else {
-            await session.abortTransaction();
-            session.endSession();
-            return res.status(400).json({ message: 'No matching scrap item found; approval failed.' });
         }
     } catch (error) {
         await session.abortTransaction();
@@ -329,6 +338,13 @@ router.post('/denyScrap/:id', async (req, res) => {
 });
 
 
+
+
+
+
+
+
+
 router.get('/getApprovedScrap', authenticateToken, async (req, res) => {
     try {
         // Find approvals for scraps uploaded by the logged-in user
@@ -344,6 +360,61 @@ router.get('/getApprovedScrap', authenticateToken, async (req, res) => {
     } catch (error) {
         console.error('Error fetching approved scrap:', error);
         res.status(500).json({ message: 'Server Error' });
+    }
+});
+
+
+
+
+// Updated route for fetching approval details with image
+router.get('/approvals', async (req, res) => {
+    try {
+        const { application } = req.query;  // Fetch 'application' query parameter
+
+        // Fetch all approval details matching the application
+        const approvals = await Approval.find({ application })
+            .populate('postedBy', 'name email businessProfiles')  // Populate the user data
+            .exec();
+
+        if (approvals.length === 0) {
+            return res.status(404).json({ message: 'No approvals found for this application' });
+        }
+
+        // Convert image buffer to Base64 for all approvals
+        const approvalsWithImages = approvals.map(approval => {
+            const imagesBase64 = approval.images.map(image =>
+                `data:${image.contentType};base64,${image.data.toString('base64')}`
+            );
+
+            return { ...approval.toObject(), images: imagesBase64 };
+        });
+
+        // Send the array of approval details
+        res.json({ approvals: approvalsWithImages });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+
+
+// Get user details by ID
+router.get('/users/:id', async (req, res) => {
+    try {
+        const userId = req.params.id;  // Get user ID from URL parameter
+
+        // Find the user by ID
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.json(user);  // Return the user details
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
     }
 });
 

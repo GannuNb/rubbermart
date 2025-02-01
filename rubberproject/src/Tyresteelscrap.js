@@ -98,11 +98,7 @@ const Tyresteelscrap = () => {
                         </Slider>
                         <div className="tyre-card-body">
                             <h5 className="tyre-card-title">{item.name}</h5>
-                            <p className="tyre-card-text">
-                                
-                            {item.available_quantity > 0 
-                                    ? `Quantity: ${item.available_quantity}` 
-                                    : "No Stock"}</p>
+                            
                             
                             <button
                                 className="btn btn-primary"

@@ -45,6 +45,8 @@ import GetPay from './getpay.js';
 import AdminPayment from './Adminpayment.js';
 import Pyrooil from './Pyrooil.js';
 import ForgetMailPass from './forgetmailpass.js';
+import Moredetails from './Moredetails.js';
+
 
 
 
@@ -100,6 +102,8 @@ function App() {
           <Route exact path='/Alert' element={<Alert/>}/>
           <Route exact path='/forgot-password' element={<ForgotPassword/>}/>         
           <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route exact path="/moredetails" element={<Moredetails />} />
+
         </Routes>
       </div>
       <Footer />

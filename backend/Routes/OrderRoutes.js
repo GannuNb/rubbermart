@@ -1,5 +1,4 @@
 // Routes/OrderRoutes.js
-
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
@@ -8,7 +7,8 @@ const User = require('../models/User');
 const ScrapItem = require('../models/ScrapItem'); 
 const AdminOrder = require('../models/AdminOrder');
 const Adminorder = require('../models/AdminOrder');
-
+const mongoose = require('mongoose');
+const Approval = require('../models/Approval');
 
 // Middleware to authenticate and attach user to request
 const authenticate = (req, res, next) => {
@@ -135,10 +135,13 @@ router.get('/adminorders', authenticate, async (req, res) => {
 
 
 
+
+
+
 router.post('/Adminorder', authenticate, async (req, res) => {
   console.log('Received order request:', req.body);
   try {
-    const { items, billingAddress, shippingAddress, isSameAsBilling } = req.body;
+    const { items, billingAddress, shippingAddress, isSameAsBilling, id } = req.body;
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       console.log('Validation failed: Missing or invalid items array');
@@ -151,71 +154,63 @@ router.post('/Adminorder', authenticate, async (req, res) => {
 
     const processedItems = [];
 
+    // Iterate through all items in the order
     for (const item of items) {
-      const { name: itemName, quantity: requiredQuantity, price: pricePerTon, loading_location } = item;
+      const { name: itemName, quantity: requiredQuantity, price: pricePerTon, loading_location, scrapid } = item;
 
       // Validate item properties
-      if (!itemName || !requiredQuantity || !pricePerTon || !loading_location) {
-        console.log('Validation failed: Missing itemName, requiredQuantity, price, or loading_location');
-        return res.status(400).json({ message: 'Each item must have a name, required quantity, price, and loading location' });
+      if (!itemName || !requiredQuantity || !pricePerTon || !loading_location || !scrapid) {
+        console.log('Validation failed: Missing itemName, requiredQuantity, price, loading_location, or scrapid');
+        return res.status(400).json({ message: 'Each item must have a name, required quantity, price, loading location, and scrapid' });
       }
 
-      // Find the scrap item
-      const scrapItem = await ScrapItem.findOne({ name: itemName });
-      if (!scrapItem) {
-        console.log(`Scrap item not found: ${itemName}`);
-        return res.status(404).json({ message: `Scrap item not found: ${itemName}` });
+      console.log(`Looking for Approval record with scrapid: ${scrapid} and application: ${itemName}`);
+      
+      // Find the approval record for the given scrapid and application
+      const approvalRecord = await Approval.findOne({
+        _id: new mongoose.Types.ObjectId(scrapid),
+        application: itemName, // Match on application name
+      });
+
+      if (!approvalRecord) {
+        console.log(`Approval record not found for ${itemName}`);
+        return res.status(404).json({ message: `Approval record not found for ${itemName}` });
       }
 
-      // Check availability at the selected location and reduce the respective location's quantity
-      let quantityToReduce = requiredQuantity;
-
-      if (loading_location === 'ex_chennai') {
-        if (scrapItem.chennai_quantity < requiredQuantity) {
-          console.log(`Insufficient quantity at Chennai for ${itemName}: Requested ${requiredQuantity}, Available ${scrapItem.chennai_quantity}`);
-          return res.status(400).json({ message: `Insufficient quantity at Chennai for ${itemName}` });
-        }
-        scrapItem.chennai_quantity -= quantityToReduce; // Reduce the Chennai-specific quantity
-        console.log(`Updated Chennai quantity for ${itemName}: ${scrapItem.chennai_quantity}`);
-      } else if (loading_location === 'ex_mundra') {
-        if (scrapItem.mundra_quantity < requiredQuantity) {
-          console.log(`Insufficient quantity at Mundra for ${itemName}: Requested ${requiredQuantity}, Available ${scrapItem.mundra_quantity}`);
-          return res.status(400).json({ message: `Insufficient quantity at Mundra for ${itemName}` });
-        }
-        scrapItem.mundra_quantity -= quantityToReduce; // Reduce the Mundra-specific quantity
-        console.log(`Updated Mundra quantity for ${itemName}: ${scrapItem.mundra_quantity}`);
-      } else if (loading_location === 'ex_nhavasheva') {
-        if (scrapItem.nhavasheva_quantity < requiredQuantity) {
-          console.log(`Insufficient quantity at Nhavasheva for ${itemName}: Requested ${requiredQuantity}, Available ${scrapItem.nhavasheva_quantity}`);
-          return res.status(400).json({ message: `Insufficient quantity at Nhavasheva for ${itemName}` });
-        }
-        scrapItem.nhavasheva_quantity -= quantityToReduce; // Reduce the Nhavasheva-specific quantity
-        console.log(`Updated Nhavasheva quantity for ${itemName}: ${scrapItem.nhavasheva_quantity}`);
-      } else {
-        return res.status(400).json({ message: `Invalid loading location for ${itemName}` });
+      // Check if there's sufficient quantity in the approval record
+      if (approvalRecord.quantity < requiredQuantity) {
+        console.log(`Insufficient quantity for ${itemName}: Requested ${requiredQuantity}, Available ${approvalRecord.quantity}`);
+        return res.status(400).json({ message: `Insufficient quantity for ${itemName}` });
       }
 
-      // Calculate subtotal, GST, and total price
+      // Reduce the quantity in the Approval record
+      approvalRecord.quantity -= requiredQuantity;
+
+      // Save the updated approval record for each item
+      await approvalRecord.save(); // Save the updated quantity to the database
+      console.log(`Quantity updated for ${itemName}, new quantity: ${approvalRecord.quantity}`);
+
+      // Calculate subtotal, GST, and total price for this item
       const subtotal = pricePerTon * requiredQuantity;
-      const gst = subtotal * 0.18;
+      const gst = subtotal * 0.18; // Assuming GST is 18%
       const itemTotalPrice = subtotal + gst;
 
+      // Accumulate totals for the entire order
       totalSubtotal += subtotal;
       totalGST += gst;
       totalPrice += itemTotalPrice;
 
-      await scrapItem.save(); // Save the updated location-specific quantities
-
+      // Push the processed item details into the array for the order
       processedItems.push({
         name: itemName,
         price: pricePerTon,
         quantity: requiredQuantity,
         total: itemTotalPrice,
-        loading_location, // Store the loading location here
+        loading_location,
       });
     }
 
-    // Determine final shipping address
+    // Determine final shipping address (billing address if same)
     const finalShippingAddress = isSameAsBilling ? billingAddress : shippingAddress;
 
     // Ensure finalShippingAddress is validated
@@ -224,9 +219,9 @@ router.post('/Adminorder', authenticate, async (req, res) => {
       return res.status(400).json({ message: 'Shipping address is required' });
     }
 
-    // Create a new order in Adminorder collection
+    // Create a new order in the Adminorder collection
     const newOrder = new Adminorder({
-      user: req.user.id,
+      user: req.user.id, // User from the authenticated session
       items: processedItems,
       subtotal: totalSubtotal,
       gst: totalGST,
@@ -236,9 +231,11 @@ router.post('/Adminorder', authenticate, async (req, res) => {
       isSameAsBilling,
     });
 
+    // Save the new order to the database
     await newOrder.save();
     console.log('Order saved successfully:', newOrder);
 
+    // Respond with success message and order details
     res.status(200).json({
       message: 'Order placed successfully',
       order: newOrder,
@@ -248,6 +245,13 @@ router.post('/Adminorder', authenticate, async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
+
+
+
+
+
+
 
 router.get('/admin/orders', async (req, res) => {
   try {
@@ -262,6 +266,38 @@ router.get('/admin/orders', async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
+
+router.get('/applications', async (req, res) => {
+  try {
+    const { id } = req.query; // Only filter by postedBy (id)
+    if (!id) {
+      return res.status(400).json({ message: "Missing id (postedBy)" });
+    }
+
+    // Fetch approvals along with 'scrapid', 'application', 'price', 'loadingLocation'
+    const approvals = await Approval.find({ postedBy: id }).select('application price loadingLocation quantity');
+
+    if (approvals.length === 0) {
+      return res.status(404).json({ message: "No applications found for this id" });
+    }
+
+    // Send the application names along with price, loadingLocation, and scrapid (converted to string)
+    res.status(200).json(approvals.map(app => ({
+      scrapid: app._id.toString(),       // Use app._id to get the ObjectId and convert it to string
+      application: app.application,
+      price: app.price,
+      loadingLocation: app.loadingLocation,
+      quantity:app.quantity
+    })));
+
+  } catch (error) {
+    console.error("Error fetching applications:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
 
 
 module.exports = router;

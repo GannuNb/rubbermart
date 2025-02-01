@@ -1,302 +1,171 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import BaledTyresTBRImage from './images/BaledTyresTBR.jpg'; // Image for Baled Tyres TBR
-import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap CSS
-import { useNavigate, useLocation } from 'react-router-dom';
-import './Mulch.css'; // Shared CSS
-import logo1 from './images/logo.png';
+import BaledTyresTBRImage from './images/BaledTyresTBR.jpg';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { useNavigate } from 'react-router-dom';
+import './Mulch.css';
 
-const BaledTyresTBR = () => {
-    const [scrapItems, setScrapItems] = useState([]);
-    const [mulchData, setMulchData] = useState({
-        available_quantity: 0,
-        price: 0, // dynamic price based on selection
-        ex_chennai: 0,
-        ex_nhavasheva: 0,
-        ex_mundra: 0,
-        hsn: '',
-        default_price: 0,
-    });
-    const [requiredQuantity, setRequiredQuantity] = useState();
-    const [selectedPrice, setSelectedPrice] = useState(''); // Default as empty to show "Select a location"
-    const [errors, setErrors] = useState({ requiredQuantity: '', selectedPrice: '', quantityExceeds: '' }); // Error states
-    const navigate = useNavigate();
-    const location = useLocation();
-    const [totalAvailableQuantity, setTotalAvailableQuantity] = useState(0); // State for total available quantity
+function BaledTyresTBR() {
+  const [approvals, setApprovals] = useState([]);
+  const [userDetails, setUserDetails] = useState(null);
+  const navigate = useNavigate();
 
-    // Fetch Baled Tyres TBR data from the backend
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get(`${process.env.REACT_APP_API_URL}/scrap`);
-                const items = response.data.scrap_items;
+  useEffect(() => {
+    async function fetchApprovalDetails() {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/approvals`, {
+          params: { application: 'Baled Tyres TBR' }
+        });
 
-                const item = items.find(item => item.name === 'Baled Tyres TBR');
+        const approvalsData = response.data.approvals;
+        setApprovals(approvalsData);
 
-                if (item) {
-                    const fetchedDefaultPrice = item.default_price || item.price || item.ex_chennai;
-                    const totalQuantity = item.chennai_quantity + item.mundra_quantity + item.nhavasheva_quantity;
-
-                    setMulchData({
-                        chennai_quantity: item.chennai_quantity,
-                        mundra_quantity: item.mundra_quantity,
-                        nhavasheva_quantity: item.nhavasheva_quantity,
-                        available_quantity: Number(item.available_quantity),
-                        price: fetchedDefaultPrice,
-                        ex_chennai: item.ex_chennai,
-                        ex_nhavasheva: item.ex_nhavasheva,
-                        ex_mundra: item.ex_mundra,
-                        hsn: item.hsn,
-                        default_price: fetchedDefaultPrice,
-                    });
-                    setTotalAvailableQuantity(totalQuantity);
-                }
-                setScrapItems(items);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-
-        fetchData();
-    }, []);
-
-    // Scroll to top on load
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, []);
-
-    // Handle price selection from dropdown
-    const handlePriceChange = (event) => {
-        const selectedOption = event.target.value;
-        setSelectedPrice(selectedOption);
-
-        setMulchData(prevState => ({
-            ...prevState,
-            price:
-                selectedOption === 'ex_chennai' ? prevState.ex_chennai :
-                    selectedOption === 'ex_nhavasheva' ? prevState.ex_nhavasheva :
-                        selectedOption === 'ex_mundra' ? prevState.ex_mundra :
-                            prevState.default_price
-        }));
-    };
-
-    // Check if location option should be disabled
-    const isLocationDisabled = (location) => {
-        switch(location) {
-            case 'ex_chennai':
-                return mulchData.chennai_quantity === 0;
-            case 'ex_nhavasheva':
-                return mulchData.nhavasheva_quantity === 0;
-            case 'ex_mundra':
-                return mulchData.mundra_quantity === 0;
-            default:
-                return false;
+        if (approvalsData.length > 0 && approvalsData[0].postedBy) {
+          const userResponse = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/${approvalsData[0].postedBy._id}`);
+          setUserDetails(userResponse.data);
         }
-    };
+      } catch (error) {
+        console.error('Error fetching approval details:', error);
+        // If there's an error (like 404), still render the page with just the image and description
+      }
+    }
 
-    // Validation of form fields
-    const validateFields = () => {
-        let formIsValid = true;
-        let errors = { requiredQuantity: '', selectedPrice: '', quantityExceeds: '' };
+    fetchApprovalDetails();
+  }, []);
 
-        // Validate required quantity
-        if (!requiredQuantity || requiredQuantity <= 0) {
-            formIsValid = false;
-            errors.requiredQuantity = 'Please fill out this required field';
-        }
-
-        // Validate selected price
-        if (!selectedPrice) {
-            formIsValid = false;
-            errors.selectedPrice = 'Please select a price option';
-        }
-
-        // Check if required quantity exceeds available quantity for the selected location
-        let availableQuantityForLocation = 0;
-
-        if (selectedPrice === 'ex_chennai') {
-            availableQuantityForLocation = mulchData.chennai_quantity;
-        } else if (selectedPrice === 'ex_nhavasheva') {
-            availableQuantityForLocation = mulchData.nhavasheva_quantity;
-        } else if (selectedPrice === 'ex_mundra') {
-            availableQuantityForLocation = mulchData.mundra_quantity;
-        }
-
-        if (parseFloat(requiredQuantity) > parseFloat(availableQuantityForLocation)) {
-            formIsValid = false;
-            errors.quantityExceeds = 'Required quantity exceeds available quantity at the selected location.';
-        }
-
-        setErrors(errors);
-        return formIsValid;
-    };
-
-    // Handle Order Button Click
-    const handleOrder = () => {
-        if (!validateFields()) {
-            return; // Don't proceed if validation fails
-        }
-
-        const token = localStorage.getItem('token');
-
-        if (!token) {
-            setTimeout(() => {
-                const alertDiv = document.createElement('div');
-                alertDiv.className = 'custom-alert';
-
-                const logoImg = document.createElement('img');
-                logoImg.src = logo1;
-                logoImg.alt = 'Company Logo';
-                logoImg.className = 'alert-logo';
-
-                const alertMessage = document.createElement('span');
-                alertMessage.textContent = 'Please log in to proceed';
-                alertMessage.className = 'alert-message';
-
-                alertDiv.appendChild(logoImg);
-                alertDiv.appendChild(alertMessage);
-
-                document.body.appendChild(alertDiv);
-
-                setTimeout(() => {
-                    alertDiv.remove();
-                }, 5000);
-
-                navigate('/login', {
-                    state: {
-                        from: location.pathname,
-                        mulchData: {
-                            name: 'Baled Tyres TBR',
-                            available_quantity: totalAvailableQuantity,
-                            price: mulchData.price,
-                            required_quantity: requiredQuantity,
-                            hsn: mulchData.hsn,
-                            selected_location: selectedPrice,
-                        }
-                    }
-                });
-            }, 0);
-        } else {
-            navigate('/Order', {
-                state: {
-                    name: 'Baled Tyres TBR',
-                    available_quantity: totalAvailableQuantity,
-                    price: mulchData.price,
-                    required_quantity: requiredQuantity,
-                    hsn: mulchData.hsn,
-                    selected_location: selectedPrice,
-                },
-            });
-        }
-    };
-
+  // If approvals is empty or userDetails is unavailable, show the image and description only
+  if (approvals.length === 0 || !userDetails) {
     return (
-        <div className="mulch-container" style={{ padding: '20px', marginTop: '20px', marginLeft: '180px' }}>
-            <div className="row align-items-center mt-5">
-                <div className="col-md-6">
-                    <img
-                        src={BaledTyresTBRImage}
-                        alt="Baled Tyres TBR"
-                        className="img-fluid img-hover-effect"
-                        style={{ borderRadius: '8px', width: '80%', marginLeft: '20px' }}
-                    />
-                </div>
-                <div className="col-md-6">
-                    <h2>Baled Tyres TBR</h2>
-                    <p>
-                        Baled Tyres TBR are compressed Tyre bundles primarily used for recycling purposes, construction, and environmental applications. These bales are highly durable and cost-efficient.
-                    </p>
-                </div>
+      <div className="setter">
+        <div className="container py-5">
+          <div className="row">
+            <div className="col-md-6">
+              <img src={BaledTyresTBRImage} alt="Baled Tyres TBR" className="img-fluid" />
             </div>
-
-            {/* Specifications Section */}
-            <div className="specifications-section">
-                <h3 className="section-title text-center">SPECIFICATIONS</h3>
-
-                {/* Total Available Quantity */}
-                <div className="total-available-quantity text-center mb-4">
-                    <label className="spec-label">TOTAL AVAILABLE QUANTITY (MT):</label>
-                    <span className="spec-value">{totalAvailableQuantity > 0 ? totalAvailableQuantity : 'No Stock'}</span>
-                </div>
-
-                <div className="row specifications-row">
-                    {/* Loading Location */}
-                    <div className="col-md-6">
-                        <label className="spec-label">LOADING LOCATION:</label>
-                        <select className="form-control" value={selectedPrice} onChange={handlePriceChange}>
-                            <option value="" disabled>Select a location</option>
-                            <option value="ex_chennai" disabled={isLocationDisabled('ex_chennai')}>Ex-Chennai</option>
-                            <option value="ex_nhavasheva" disabled={isLocationDisabled('ex_nhavasheva')}>Ex-Nhavasheva</option>
-                            <option value="ex_mundra" disabled={isLocationDisabled('ex_mundra')}>Ex-Mundra</option>
-                        </select>
-                        {errors.selectedPrice && <small className="text-danger">{errors.selectedPrice}</small>}
-                    </div>
-
-                    {/* Available Quantity in Selected Location */}
-                    <div className="col-md-6">
-                        <label className="spec-label">AVAILABLE QUANTITY IN SELECTED LOCATION:</label>
-                        <span className="spec-value">
-                            {selectedPrice
-                                ? (selectedPrice === "ex_chennai" && mulchData.chennai_quantity) ||
-                                  (selectedPrice === "ex_nhavasheva" && mulchData.nhavasheva_quantity) ||
-                                  (selectedPrice === "ex_mundra" && mulchData.mundra_quantity)
-                                : 'Available Quantity'}
-                        </span>
-                    </div>
-                </div>
-
-                <div className="row mt-3">
-                    {/* Price Per MT */}
-                    <div className="col-md-6">
-                        <label className="spec-label">PRICE PER (MT):</label>
-                        <span className="spec-value">{selectedPrice ? `₹${mulchData[selectedPrice]}` : "Price"}</span>
-                    </div>
-
-                    {/* HSN */}
-                    <div className="col-md-6">
-                        <label className="spec-label">HSN:</label>
-                        <span className="spec-value">{mulchData.hsn}</span>
-                    </div>
-                </div>
-
-                {/* Centered Required Quantity Section */}
-                <div className="required-quantity-section text-center mt-3">
-                    <label className="spec-label">REQUIRED QUANTITY IN (MT):</label>
-                    <input
-                        type="number"
-                        value={requiredQuantity}
-                        onChange={(e) => {
-                            const value = e.target.value;
-                            // Ensure that the input is either a positive number or zero
-                            if (value >= 0) {
-                                setRequiredQuantity(value);
-                            }
-                        }}
-                        placeholder="Enter required quantity"
-                        className="form-control required-quantity-input mx-auto"  /* Center the input field */
-                        style={{ width: '50%' }}  /* Adjust the width if needed */
-                        min="1"  /* Ensure input cannot go below 0 */
-                        step="1"  /* Optional: Only allow integer values */
-                    />
-
-                    {errors.requiredQuantity && <small className="text-danger">{errors.requiredQuantity}</small>}
-                    {errors.quantityExceeds && <small className="text-danger">{errors.quantityExceeds}</small>}
-                </div>
-
-                {/* Centered Order Button Section */}
-                <div className="order-button-section text-center mt-3">
-                    <button
-                        className="btn btn-primary"
-                        onClick={handleOrder}
-                        disabled={mulchData.available_quantity === 0}
-                    >
-                        {mulchData.available_quantity > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
-                    </button>
-                </div>
-
+            <div className="col-md-6">
+              <h2 className="text-center">Baled Tyres TBR</h2>
+              <p>
+                Baled Tyres TBR (Truck and Bus Radial tyres) are high-quality tyres that have been processed and baled for easy handling and transport.
+                They are ideal for recycling or reuse in various industries, such as construction and manufacturing.
+                This material offers an eco-friendly solution to tyre disposal and provides substantial cost savings.
+              </p>
             </div>
+          </div>
         </div>
+        <div className="no-stock-wrapper">
+      <h1>No Stock Availble</h1>
+      </div>
+      </div>
     );
-};
+  }
+
+  const handleMoreDetailsClick = (approval) => {
+    navigate('/moredetails', { state: { approval } });
+  };
+
+  return (
+    <>
+      <div className="setter">
+        <div className="container">
+          <div className="row py-5">
+            <div className="col-md-6">
+              <img src={BaledTyresTBRImage} alt="Baled Tyres TBR" className="img-fluid" />
+            </div>
+            <div className="col-md-6">
+              <h2 className="text-center">Baled Tyres TBR</h2>
+              <p>
+                Baled Tyres TBR (Truck and Bus Radial tyres) are high-quality tyres that have been processed and baled for easy handling and transport.
+                They are ideal for recycling or reuse in various industries, such as construction and manufacturing.
+                This material offers an eco-friendly solution to tyre disposal and provides substantial cost savings.
+              </p>
+            </div>
+          </div>
+
+          {/* Only show this section if there are approval details */}
+          {approvals.length > 0 && userDetails && (
+            <div className="container mt-5 d-flex justify-content-center">
+              <div className="w-100">
+
+                {approvals.map((approval) => (
+                  <div
+                    key={approval._id}
+                    className="card mb-3 shadow-sm border-0 p-2"
+                    style={{
+                      backgroundColor: "#f9f9f9",
+                      borderRadius: "12px",
+                      width: "85%", // Maintain width
+                      margin: "0 auto",
+                    }}
+                  >
+                    <div className="card-body p-3">
+                      <div className="row align-items-center">
+                        {/* Left: Image Section */}
+                        <div className="col-md-4 text-center">
+                          {approval.images?.[0] && (
+                            <img
+                              src={approval.images[0]}
+                              alt="Approval Image"
+                              className="img-fluid rounded shadow-sm"
+                              style={{
+                                maxHeight: "200px", // Reduced image height
+                                maxWidth: "100%",
+                                borderRadius: "10px",
+                              }}
+                            />
+                          )}
+                        </div>
+
+                        {/* Right: Details Section */}
+                        <div className="col-md-8">
+                          <div className="row">
+                            {/* Scrap Details */}
+                            <div className="col-md-6">
+                              <h5 className="mb-1 text-dark fw-semibold">{approval.material}</h5>
+                              <h6 className="text-secondary mb-1">{approval.application}</h6>
+                              <p className="mb-1">
+                                <strong>Price:</strong> <span className="text-success">{approval.price} INR</span>
+                              </p>
+                              <p className="mb-1">
+                                <strong>Loading Location:</strong> {approval.loadingLocation}
+                              </p>
+                              <p className="mb-1">
+                                <strong>Country of Origin:</strong> {approval.countryOfOrigin}
+                              </p>
+                            </div>
+
+                            {/* User Details */}
+                            {userDetails?.businessProfiles?.[0] && (
+                              <div className="col-md-6">
+                                <h6 className="text-primary">Seller Details:</h6>
+                                <p className="mb-1">
+                                  <strong>Seller ID:</strong> {userDetails.businessProfiles[0].profileId}
+                                </p>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Buttons Section */}
+                          <div className="mt-3 d-flex gap-2">
+                            <button
+                              className="btn btn-primary px-3 py-1 fw-bold shadow-sm"
+                              style={{ borderRadius: "8px" }}
+                              onClick={() => handleMoreDetailsClick(approval)}
+                            >
+                              More Details
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
 
 export default BaledTyresTBR;

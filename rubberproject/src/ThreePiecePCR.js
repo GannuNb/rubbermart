@@ -1,279 +1,171 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import ThreePiecePCRImage from './images/ThreePiecePCR.jpeg'; 
+import ThreePiecePCRImage from './images/ThreePiecePCR.jpeg'; // Three Piece PCR Image
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useNavigate, useLocation } from 'react-router-dom';
-import './Mulch.css'; 
-import logo1 from './images/logo.png';
+import { useNavigate } from 'react-router-dom';
+import './Mulch.css';
 
-const ThreePiecePCR = () => {
-    const [scrapItems, setScrapItems] = useState([]);
-    const [threePiecePCRData, setThreePiecePCRData] = useState({
-        available_quantity: 0,
-        price: 0,
-        ex_chennai: 0,
-        ex_nhavasheva: 0,
-        ex_mundra: 0,
-        hsn: '',
-        default_price: 0,
-        chennai_quantity: 0,
-        mundra_quantity: 0,
-        nhavasheva_quantity: 0
-    });
-    const [requiredQuantity, setRequiredQuantity] = useState('');
-    const [selectedPrice, setSelectedPrice] = useState('');
-    const [errors, setErrors] = useState({ requiredQuantity: '', selectedPrice: '', quantityExceeds: '' });
-    const navigate = useNavigate();
-    const location = useLocation();
-    const [totalAvailableQuantity, setTotalAvailableQuantity] = useState(0); // State for total available quantity
+function ThreePiecePCR() {
+  const [approvals, setApprovals] = useState([]);
+  const [userDetails, setUserDetails] = useState(null);
+  const navigate = useNavigate(); // Hook to navigate to another route
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get(`${process.env.REACT_APP_API_URL}/scrap`);
-                const items = response.data.scrap_items;
-                // Find the Three Piece PCR data
-                const threePiecePCRItem = items.find(item => item.name === 'Three Piece PCR');
-                if (threePiecePCRItem) {
-                    const fetchedDefaultPrice = threePiecePCRItem.default_price || threePiecePCRItem.price || threePiecePCRItem.ex_chennai;
-                    const totalQuantity = threePiecePCRItem.chennai_quantity + threePiecePCRItem.mundra_quantity + threePiecePCRItem.nhavasheva_quantity;
-                    setThreePiecePCRData({
-                        chennai_quantity: threePiecePCRItem.chennai_quantity,
-                        mundra_quantity: threePiecePCRItem.mundra_quantity,
-                        nhavasheva_quantity: threePiecePCRItem.nhavasheva_quantity,
-                        available_quantity: Number(threePiecePCRItem.available_quantity),
-                        price: threePiecePCRItem.price,
-                        ex_chennai: threePiecePCRItem.ex_chennai,
-                        ex_nhavasheva: threePiecePCRItem.ex_nhavasheva,
-                        ex_mundra: threePiecePCRItem.ex_mundra,
-                        hsn: threePiecePCRItem.hsn,
-                        default_price: fetchedDefaultPrice,
-                    });
-                    setTotalAvailableQuantity(totalQuantity);
-                }
-                setScrapItems(items);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-        fetchData();
-    }, []);
+  useEffect(() => {
+    async function fetchApprovalDetails() {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/approvals`, {
+          params: { application: 'Three Piece PCR' }
+        });
 
-    const handlePriceChange = (event) => {
-        const selectedOption = event.target.value;
-        setSelectedPrice(selectedOption);
-        if (selectedOption === 'ex_chennai') {
-            setThreePiecePCRData(prevState => ({ ...prevState, price: prevState.ex_chennai }));
-        } else if (selectedOption === 'ex_nhavasheva') {
-            setThreePiecePCRData(prevState => ({ ...prevState, price: prevState.ex_nhavasheva }));
-        } else if (selectedOption === 'ex_mundra') {
-            setThreePiecePCRData(prevState => ({ ...prevState, price: prevState.ex_mundra }));
-        } else if (selectedOption === 'default') {
-            setThreePiecePCRData(prevState => ({ ...prevState, price: prevState.default_price }));
+        const approvalsData = response.data.approvals;
+        setApprovals(approvalsData);
+
+        if (approvalsData.length > 0 && approvalsData[0].postedBy) {
+          const userResponse = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/${approvalsData[0].postedBy._id}`);
+          setUserDetails(userResponse.data);
         }
-    };
+      } catch (error) {
+        console.error('Error fetching approval details:', error);
+      }
+    }
 
-    const handleRequiredQuantityChange = (event) => {
-        const value = event.target.value;
-        if (value < 1) {
-            setRequiredQuantity(1);
-        } else {
-            setRequiredQuantity(value);
-        }
-    };
+    fetchApprovalDetails();
+  }, []);
 
-    const validateFields = () => {
-        let formIsValid = true;
-        let errors = { requiredQuantity: '', selectedPrice: '', quantityExceeds: '' };
-
-        // Check if the required quantity is entered
-        if (!requiredQuantity || requiredQuantity < 1) {
-            formIsValid = false;
-            errors.requiredQuantity = 'Please fill out this required field';
-        }
-
-        // Check if a loading location is selected
-        if (!selectedPrice) {
-            formIsValid = false;
-            errors.selectedPrice = 'Please select a price option';
-        }
-
-        // Check if required quantity exceeds available quantity for the selected location
-        if (selectedPrice) {
-            let availableQuantity = 0;
-            if (selectedPrice === 'ex_chennai') {
-                availableQuantity = threePiecePCRData.chennai_quantity;
-            } else if (selectedPrice === 'ex_nhavasheva') {
-                availableQuantity = threePiecePCRData.nhavasheva_quantity;
-            } else if (selectedPrice === 'ex_mundra') {
-                availableQuantity = threePiecePCRData.mundra_quantity;
-            }
-
-            if (parseFloat(requiredQuantity) > availableQuantity) {
-                formIsValid = false;
-                errors.quantityExceeds = 'Required quantity exceeds available quantity at the selected location.';
-            }
-        }
-
-        setErrors(errors);
-        return formIsValid;
-    };
-
-    const handleOrder = () => {
-        if (!validateFields()) {
-            return; // Don't proceed if validation fails
-        }
-        const token = localStorage.getItem('token'); 
-        const { available_quantity, hsn } = threePiecePCRData;
-        if (!token) {
-            // Handle unauthenticated user
-            setTimeout(() => {
-                const alertDiv = document.createElement('div');
-                alertDiv.className = 'custom-alert';
-                const logoImg = document.createElement('img');
-                logoImg.src = logo1;
-                logoImg.alt = 'Company Logo';
-                logoImg.className = 'alert-logo';
-                const alertMessage = document.createElement('span');
-                alertMessage.textContent = 'Please log in to proceed';
-                alertMessage.className = 'alert-message';
-                alertDiv.appendChild(logoImg);
-                alertDiv.appendChild(alertMessage);
-                document.body.appendChild(alertDiv);
-                setTimeout(() => {
-                    alertDiv.remove();
-                }, 5000);
-                navigate('/login', {
-                    state: {
-                        from: location.pathname,
-                        threePiecePCRData: {
-                            name: 'Three Piece PCR',
-                            available_quantity:totalAvailableQuantity,
-                            price: threePiecePCRData.price,
-                            required_quantity: requiredQuantity,
-                            hsn:threePiecePCRData.hsn,
-                            selected_location: selectedPrice,
-                        }
-                    }
-                });
-            }, 0);
-        } else {
-            // Proceed to Order page
-            navigate('/Order', {
-                state: {
-                    name: 'Three Piece PCR',
-                    available_quantity:totalAvailableQuantity,
-                    price: threePiecePCRData.price,
-                    required_quantity: requiredQuantity,
-                    hsn:threePiecePCRData.hsn,
-                    selected_location: selectedPrice,
-                },
-            });
-        }
-    };
-
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, []);
-
+  // If no approvals or user details are available, just show the image and description
+  if (approvals.length === 0 || !userDetails) {
     return (
-        <div className="mulch-container" style={{ padding: '20px', marginTop: '20px', marginLeft: '180px' }}>
-            <div className="row align-items-center mt-5">
-                <div className="col-md-6">
-                    <img
-                        src={ThreePiecePCRImage}
-                        alt="Three Piece PCR"
-                        className="img-fluid img-hover-effect"
-                        style={{ borderRadius: '8px', width: '80%', marginLeft: '20px', height: '300px' }}
-                    />
-                </div>
-                <div className="col-md-6">
-                    <h2>Three Piece PCR</h2>
-                    <p>
-                        Three Piece PCR refers to a type of processed material widely used in recycling and manufacturing.
-                        This material is known for its durability and versatility, making it suitable for various applications, including automotive and construction industries.
-                        Utilizing high-quality Three Piece PCR can contribute to sustainable practices by reducing waste and promoting recycling efforts.
-                    </p>
-                </div>
-            </div>
-            {/* Specifications Section */}
-            <div className="specifications-section">
-                <h3 className="section-title text-center">SPECIFICATIONS</h3>
-                {/* Total Available Quantity */}
-                <div className="total-available-quantity text-center mb-4">
-                    <label className="spec-label">TOTAL AVAILABLE QUANTITY (MT):</label>
-                    <span className="spec-value">{totalAvailableQuantity > 0 ? totalAvailableQuantity : 'No Stock'}</span>
-                    </div>
-                <div className="row specifications-row">
-                    {/* Loading Location */}
-                    <div className="col-md-6">
-                        <label className="spec-label">LOADING LOCATION:</label>
-                        <select className="form-control" value={selectedPrice} onChange={handlePriceChange}>
-                            <option value="" disabled>Select a location</option>
-                            <option value="ex_chennai" disabled={threePiecePCRData.chennai_quantity === 0}>
-                                Ex-Chennai
-                            </option>
-                            <option value="ex_nhavasheva" disabled={threePiecePCRData.nhavasheva_quantity === 0}>
-                                Ex-Nhavasheva
-                            </option>
-                            <option value="ex_mundra" disabled={threePiecePCRData.mundra_quantity === 0}>
-                                Ex-Mundra
-                            </option>
-                        </select>
-                        {errors.selectedPrice && <small className="text-danger">{errors.selectedPrice}</small>}
-                    </div>
-                    {/* Available Quantity in Selected Location */}
-                    <div className="col-md-6">
-                        <label className="spec-label">AVAILABLE QUANTITY IN SELECTED LOCATION:</label>
-                        <span className="spec-value">
-                            {selectedPrice
-                                ? (selectedPrice === "ex_chennai" && threePiecePCRData.chennai_quantity) ||
-                                  (selectedPrice === "ex_nhavasheva" && threePiecePCRData.nhavasheva_quantity) ||
-                                  (selectedPrice === "ex_mundra" && threePiecePCRData.mundra_quantity)
-                                : 'Available Quantity'}
-                        </span>
-                    </div>
-                </div>
-                <div className="row mt-3">
-                    {/* Price Per MT */}
-                    <div className="col-md-6">
-                        <label className="spec-label">PRICE PER (MT):</label>
-                        <span className="spec-value">{selectedPrice ? `₹${threePiecePCRData[selectedPrice]}` : 'Select a location'}</span>
-                    </div>
-                    {/* HSN */}
-                    <div className="col-md-6">
-                        <label className="spec-label">HSN:</label>
-                        <span className="spec-value">{threePiecePCRData.hsn}</span>
-                    </div>
-                </div>
-                {/* Required Quantity Section */}
-                <div className="required-quantity-section text-center mt-3">
-                    <label className="spec-label">REQUIRED QUANTITY (MT):</label>
-                    <input
-                        type="number"
-                        value={requiredQuantity}
-                        onChange={handleRequiredQuantityChange}
-                        placeholder="Enter required quantity"
-                        className="form-control required-quantity-input mx-auto"
-                        style={{ width: '50%' }}
-                    />
-                    {errors.requiredQuantity && <small className="text-danger">{errors.requiredQuantity}</small>}
-                    {errors.quantityExceeds && <small className="text-danger">{errors.quantityExceeds}</small>}
-                </div>
-                {/* Order Button Section */}
-                <div className="order-button-section text-center mt-3">
-                    <button
-                        className="btn"
-                        onClick={handleOrder}
-                        disabled={totalAvailableQuantity === 0}
-                        style={{ backgroundColor: '#28a745', color: 'white' }}
-                    >
-                        {totalAvailableQuantity > 0 ? 'Please Proceed to Order' : 'Out of Stock'}
-                    </button>
-                </div>
-            </div>
+      <div className='setter'>
+      <div className="container py-5">
+        <div className="row">
+          <div className="col-md-6">
+            <img src={ThreePiecePCRImage} alt="Three Piece PCR" className="img-fluid" />
+          </div>
+          <div className="col-md-6">
+            <h2 className="text-center">Three Piece PCR</h2>
+            <p>
+              Three Piece PCR (Post Consumer Recycled) is a highly durable and eco-friendly material used primarily in manufacturing processes.
+              It is created using recycled materials, ensuring both cost-effectiveness and environmental responsibility.
+              This material is highly sought after for its performance and sustainability in various industries.
+            </p>
+          </div>
         </div>
+      </div>
+      <div className="no-stock-wrapper">
+      <h1>No Stock Availble</h1>
+      </div>
+      </div>
     );
-};
+  }
+
+  const handleMoreDetailsClick = (approval) => {
+    // Navigate to the /moredetails page and pass the approval data
+    navigate('/moredetails', { state: { approval } });
+  };
+
+  return (
+    <>
+      <div className="setter">
+        <div className="container">
+          <div className="row py-5">
+            <div className="col-md-6">
+              <img src={ThreePiecePCRImage} alt="Three Piece PCR" className="img-fluid" />
+            </div>
+            <div className="col-md-6">
+              <h2 className="text-center">Three Piece PCR</h2>
+              <p>
+                Three Piece PCR (Post Consumer Recycled) is a highly durable and eco-friendly material used primarily in manufacturing processes.
+                It is created using recycled materials, ensuring both cost-effectiveness and environmental responsibility.
+                This material is highly sought after for its performance and sustainability in various industries.
+              </p>
+            </div>
+          </div>
+
+          {/* Only show the approval details if they are available */}
+          {approvals.length > 0 && userDetails && (
+            <div className="container mt-5 d-flex justify-content-center">
+              <div className="w-100">
+
+                {approvals.map((approval) => (
+                  <div
+                    key={approval._id}
+                    className="card mb-3 shadow-sm border-0 p-2"
+                    style={{
+                      backgroundColor: "#f9f9f9",
+                      borderRadius: "12px",
+                      width: "85%", // Maintain width
+                      margin: "0 auto",
+                    }}
+                  >
+                    <div className="card-body p-3">
+                      <div className="row align-items-center">
+                        {/* Left: Image Section */}
+                        <div className="col-md-4 text-center">
+                          {approval.images?.[0] && (
+                            <img
+                              src={approval.images[0]}
+                              alt="Approval Image"
+                              className="img-fluid rounded shadow-sm"
+                              style={{
+                                maxHeight: "200px", // Reduced image height
+                                maxWidth: "100%",
+                                borderRadius: "10px",
+                              }}
+                            />
+                          )}
+                        </div>
+
+                        {/* Right: Details Section */}
+                        <div className="col-md-8">
+                          <div className="row">
+                            {/* Scrap Details */}
+                            <div className="col-md-6">
+                              <h5 className="mb-1 text-dark fw-semibold">{approval.material}</h5>
+                              <h6 className="text-secondary mb-1">{approval.application}</h6>
+                              <p className="mb-1">
+                                <strong>Price:</strong> <span className="text-success">{approval.price} INR</span>
+                              </p>
+                              <p className="mb-1">
+                                <strong>Loading Location:</strong> {approval.loadingLocation}
+                              </p>
+                              <p className="mb-1">
+                                <strong>Country of Origin:</strong> {approval.countryOfOrigin}
+                              </p>
+                            </div>
+
+                            {/* User Details */}
+                            {userDetails?.businessProfiles?.[0] && (
+                              <div className="col-md-6">
+                                <h6 className="text-primary">Seller Details:</h6>
+                                <p className="mb-1">
+                                  <strong>Seller ID:</strong> {userDetails.businessProfiles[0].profileId}
+                                </p>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Buttons Section */}
+                          <div className="mt-3 d-flex gap-2">
+                            <button
+                              className="btn btn-primary px-3 py-1 fw-bold shadow-sm"
+                              style={{ borderRadius: "8px" }}
+                              onClick={() => handleMoreDetailsClick(approval)}
+                            >
+                              More Details
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
 
 export default ThreePiecePCR;

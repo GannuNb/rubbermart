@@ -58,6 +58,7 @@ router.post('/upload', authenticate, upload.single('file'), async (req, res) => 
         files: [],
       });
     }
+    
 
     payment.files.push({
       file: file.buffer,

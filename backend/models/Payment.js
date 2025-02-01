@@ -19,4 +19,5 @@ const paymentSchema = new mongoose.Schema({
   paid: { type: Number, required: true, default: 0 },
 });
 
+
 module.exports = mongoose.model('Payment', paymentSchema);
