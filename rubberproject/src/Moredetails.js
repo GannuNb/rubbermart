@@ -118,6 +118,7 @@ function Moredetails() {
     </tr>
     
 
+
     {/* <tr>
         <th style={{ fontWeight: 'bold' }}>Name</th>
         <td>{approval.postedBy?.name}</td>

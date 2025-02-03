@@ -176,8 +176,10 @@ const Sell = () => {
                 }
             );
     
+
             if (response.data.success) {
                 displayAlert('Scrap details uploaded successfully!', 'success');
+                window.location.reload();
             } else {
                 displayAlert('Failed to upload scrap details.', 'danger');
             }

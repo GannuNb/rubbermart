@@ -112,85 +112,88 @@ const Uploaded = () => {
         {scrapItems.length === 0 ? (
           <p className="text-center">No scrap items uploaded yet.</p>
         ) : (
-          <table className="table table-striped table-bordered table-hover">
-            <thead className="thead-dark">
-              <tr>
-                <th>Material</th>
-                <th>Application</th>
-                <th>Quantity</th>
-                <th>Company Name</th>
-                <th>Phone Number</th>
-                <th>Email</th>
-                <th>Country of origin</th>
-                <th>Loading Location</th>
-                <th>Price</th>
-                <th>Uploaded At</th>
-                <th>Images</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {scrapItems.map((scrap) => (
-                <tr key={scrap._id}>
-                  <td>{scrap.material}</td>
-                  <td>{scrap.application}</td>
-                  <td>{scrap.quantity}</td>
-                  <td>{scrap.companyName}</td>
-                  <td>{scrap.phoneNumber}</td>
-                  <td>{scrap.email}</td>
-                  <td>{scrap.countryOfOrigin}</td>
-                  <td>{scrap.loadingLocation}</td>
-                  <td>{scrap.price}</td>
-                  <td>{new Date(scrap.uploadedAt).toLocaleString()}</td>
-                  <td>
-                    {scrap.imagesBase64 && scrap.imagesBase64.length > 0 ? (
-                      <div className="d-flex">
-                        {scrap.imagesBase64.map((image, index) => (
-                          <img
-                            key={index}
-                            src={image}
-                            alt={`Scrap Image ${index + 1}`}
-                            style={{
-                              width: "100px",
-                              height: "100px",
-                              marginRight: "10px",
-                            }}
-                          />
-                        ))}
-                      </div>
-                    ) : (
-                      <p>No images</p>
-                    )}
-                  </td>
-                  <td
-                    style={{
-                      display: "flex",
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                    }}
-                  >
-                    <button
-                      className="btn btn-success btn-custom me-2"
-                      onClick={() => handleApprove(scrap._id)}
-                    >
-                      Approve
-                    </button>
-                    <button
-                      className="btn btn-danger btn-custom"
-                      onClick={() => handleDeny(scrap._id)}
-                    >
-                      Deny
-                    </button>
-                  </td>
+          <div style={{ maxHeight: "400px", overflowY: "auto" }}>
+            <table className="table table-striped table-bordered table-hover">
+              <thead className="thead-dark">
+                <tr>
+                  <th>Material</th>
+                  <th>Application</th>
+                  <th>Quantity</th>
+                  <th>Company Name</th>
+                  <th>Phone Number</th>
+                  <th>Email</th>
+                  <th>Country of origin</th>
+                  <th>Loading Location</th>
+                  <th>Price</th>
+                  <th>Uploaded At</th>
+                  <th>Images</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {scrapItems.map((scrap) => (
+                  <tr key={scrap._id}>
+                    <td>{scrap.material}</td>
+                    <td>{scrap.application}</td>
+                    <td>{scrap.quantity}</td>
+                    <td>{scrap.companyName}</td>
+                    <td>{scrap.phoneNumber}</td>
+                    <td>{scrap.email}</td>
+                    <td>{scrap.countryOfOrigin}</td>
+                    <td>{scrap.loadingLocation}</td>
+                    <td>{scrap.price}</td>
+                    <td>{new Date(scrap.uploadedAt).toLocaleString()}</td>
+                    <td>
+                      {scrap.imagesBase64 && scrap.imagesBase64.length > 0 ? (
+                        <div className="d-flex">
+                          {scrap.imagesBase64.map((image, index) => (
+                            <img
+                              key={index}
+                              src={image}
+                              alt={`Scrap Image ${index + 1}`}
+                              style={{
+                                width: "100px",
+                                height: "100px",
+                                marginRight: "10px",
+                              }}
+                            />
+                          ))}
+                        </div>
+                      ) : (
+                        <p>No images</p>
+                      )}
+                    </td>
+                    <td
+                      style={{
+                        display: "flex",
+                        justifyContent: "flex-start",
+                        alignItems: "center",
+                      }}
+                    >
+                      <button
+                        className="btn btn-success btn-custom me-2"
+                        onClick={() => handleApprove(scrap._id)}
+                      >
+                        Approve
+                      </button>
+                      <button
+                        className="btn btn-danger btn-custom"
+                        onClick={() => handleDeny(scrap._id)}
+                      >
+                        Deny
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
         {error && <div className="text-center text-danger mt-4">{error}</div>}
       </div>
     </>
   );
+  
 };
 
 export default Uploaded;

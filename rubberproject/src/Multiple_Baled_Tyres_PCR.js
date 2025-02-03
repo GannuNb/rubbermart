@@ -136,7 +136,7 @@ function MultipleBaledTyresPCR() {
                               <div className="col-md-6">
                                 <h6 className="text-primary">Seller Details:</h6>
                                 <p className="mb-1">
-                                  <strong>Seller ID:</strong> {userDetails.businessProfiles[0].profileId}
+                                  <strong>Seller ID:</strong> {approval.postedBy?.businessProfiles[0]?.profileId}
                                 </p>
                               </div>
                             )}

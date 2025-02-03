@@ -78,7 +78,7 @@ function Pyrooil() {
 
           <div className="container mt-5 d-flex justify-content-center">
             <div className="w-100">
-              <h3 className="mb-4 text-primary fw-bold text-center">Approval Details</h3>
+              
 
               {approvals.map((approval) => (
                 <div
@@ -132,7 +132,7 @@ function Pyrooil() {
                             <div className="col-md-6">
                               <h6 className="text-primary">Seller Details:</h6>
                               <p className="mb-1">
-                                <strong>Seller ID:</strong> {userDetails.businessProfiles[0].profileId}
+                                <strong>Seller ID:</strong> {approval.postedBy?.businessProfiles[0]?.profileId}
                               </p>
                             </div>
                           )}
