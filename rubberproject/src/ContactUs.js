@@ -56,7 +56,7 @@ function ContactUs() {
             <h2 className="mb-4">Get in Touch</h2>
             <form onSubmit={handleSubmit} className="needs-validation" noValidate>
               <div className="form-group mb-3">
-                <label htmlFor="name">Name</label>
+                <label htmlFor="name"  className="text-black">Name</label>
                 <input
                   type="text"
                   className="form-control"
@@ -69,8 +69,8 @@ function ContactUs() {
                 <div className="invalid-feedback">Please enter your name.</div>
               </div>
 
-              <div className="form-group mb-3">
-                <label htmlFor="email">Email address</label>
+              <div className="form-group mb-3" >
+                <label htmlFor="email" className="text-black">Email address</label>
                 <input
                   type="email"
                   className="form-control"
@@ -84,7 +84,7 @@ function ContactUs() {
               </div>
 
               <div className="form-group mb-3">
-                <label htmlFor="message">Message</label>
+                <label htmlFor="message" className="text-black">Message</label>
                 <textarea
                   className="form-control"
                   id="message"

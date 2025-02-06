@@ -36,6 +36,12 @@ const generateCustomId = async () => {
 
 // Schema for order items
 const AdminOrderItemSchema = new mongoose.Schema({
+
+  sellerid: {
+    type: String,
+    required: true,
+  },
+
   name: {
     type: String,
     required: true,

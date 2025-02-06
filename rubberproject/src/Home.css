@@ -1,4 +1,25 @@
+/* App.css */
 
+body {
+    font-family: 'Roboto', sans-serif;
+  }
+  
+  .card-img-top {
+    transition: transform 0.3s ease;
+  }
+  
+  .card-img-top:hover {
+    transform: scale(1.05);
+  }
+  
+  .btn-primary {
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .btn-primary:hover {
+    transform: scale(1.1);
+  }
+  
 .bg-container-home {
     height: 80vh; /* 80% of the viewport height */
     display: flex;

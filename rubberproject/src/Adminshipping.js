@@ -428,7 +428,8 @@ const handleCompanySelect = (company) => {
     {filteredOrders.map((order, index) => (
       <React.Fragment key={order._id}>
         <tr className="custom-row">
-          <td><b>{index + 1}</b></td> {/* Display serial number */}
+          <td><b>{index + 1}</b></td> 
+          
           <td>{order._id}</td>
           <td>{order.user?.businessProfiles[0]?.profileId || 'N/A'}</td>
           <td>{order.user?.businessProfiles[0]?.companyName || 'N/A'}</td>
@@ -528,6 +529,7 @@ const handleCompanySelect = (company) => {
             <table className="table table-bordered mt-2">
               <thead className="text-center">
                 <tr className="table-light">
+                <th className="p-1" style={{ fontSize: '0.85rem' }}>Seller Id</th>
                   <th className="p-1" style={{ fontSize: '0.85rem' }}>Item Name</th>
                   <th className="p-1" style={{ fontSize: '0.85rem' }}>Quantity</th>
                   <th className="p-1" style={{ fontSize: '0.85rem' }}>Shipped Quantity</th>
@@ -550,6 +552,7 @@ const handleCompanySelect = (company) => {
 
                   return (
                     <tr key={index}>
+                      <td className="p-0 text-center align-middle" style={{ lineHeight: '2', fontSize: '0.85rem', width: '100px' }}>{item.sellerid}</td>
                       <td className="p-0 text-center align-middle" style={{ lineHeight: '2', fontSize: '0.85rem', width: '100px' }}>{item.name}</td>
                       <td className="p-0 text-center align-middle" style={{ lineHeight: '2', fontSize: '0.85rem', width: '10%' }}>{item.quantity}</td>
                       <td className="p-0 text-center align-middle" style={{ lineHeight: '2', fontSize: '0.85rem', width: '10%' }}>{shippedQuantity}</td>

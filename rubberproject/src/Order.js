@@ -13,6 +13,7 @@ const Order = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const {
+    sellerid,
     name,
     available_quantity,
     price,
@@ -83,6 +84,7 @@ const Order = () => {
 
     if (selectedApp) {
       const newItem = {
+        sellerid:sellerid,
         name: selectedApp.application,
         price: selectedApp.price,
         hsn: selectedApp.hsn,
@@ -114,6 +116,7 @@ const Order = () => {
 
       if (selectedApp) {
         const item = {
+          sellerid:sellerid,
           name: selectedApp.application,
           price: selectedApp.price,
           hsn: "40040000", // Static HSN for additional items, replace '40040000' with the actual HSN code.
@@ -155,6 +158,7 @@ const Order = () => {
     // baseItems contains the main order item (the one passed in the location state)
     const baseItems = [
       {
+        sellerid,
         name,
         price,
         hsn,
@@ -199,6 +203,7 @@ const Order = () => {
           <table className="table table-bordered">
             <thead>
               <tr>
+              <th>Seller ID</th>
                 <th>Item</th>
                 <th>Price/Ton</th>
                 <th>Loading Location</th>
@@ -210,6 +215,7 @@ const Order = () => {
             <tbody>
               {allItems.map((item, index) => (
                 <tr key={index}>
+                  <td>{item.sellerid}</td>
                   <td>{item.name}</td>
                   <td>₹{item.price.toFixed(2)}</td>
                   <td>{item.loading_location}</td>
@@ -248,12 +254,14 @@ const Order = () => {
                   {/* Show the dropdown only if it's visible and order is not added */}
                   {!orderAdded && dropdownVisible && (
                     <div className="mb-3 mt-4">
+                      
                       <label
-                        htmlFor="applicationDropdown"
-                        className={orderAdded ? "text-muted" : ""} // Disable label if order is added
-                      >
-                        Add Applications from this Seller
-                      </label>
+                            htmlFor="applicationDropdown"
+                            className={orderAdded ? "text-muted text-black" : "text-black"} // Apply black color by default, muted if order is added
+                          >
+                            Add Applications from this Seller
+                          </label>
+
                       <select
                         id="applicationDropdown"
                         className="form-select"
@@ -606,6 +614,7 @@ const Order = () => {
         const gst = total * gstRate; // GST calculation
 
         return {
+          sellerid:sellerid,
           name: item.name,
           price: item.price,
           hsn: item.hsn,
@@ -622,6 +631,7 @@ const Order = () => {
       startY: productsStartY + 5,
       head: [
         [
+          "SellerID",
           "Item Name",
           "Price/Ton",
           "Loading Location",
@@ -638,6 +648,7 @@ const Order = () => {
         const totalWithGST = item.total + gst;
 
         return [
+          sellerid,
           item.name,
           `RS ${item.price.toFixed(2)}`,
           item.loading_location, // Loading Location
@@ -766,6 +777,7 @@ const Order = () => {
       const gstRate = 0.18; // GST rate of 18%
       const baseItems = [
         {
+          sellerid:sellerid,
           name,
           price,
           hsn,
@@ -779,6 +791,7 @@ const Order = () => {
       const combinedItems = [
         ...baseItems,
         ...orderItems.map((item) => ({
+          sellerid:sellerid,
           name: item.name,
           price: item.price,
           hsn: item.hsn,

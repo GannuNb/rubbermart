@@ -156,7 +156,7 @@ router.post('/Adminorder', authenticate, async (req, res) => {
 
     // Iterate through all items in the order
     for (const item of items) {
-      const { name: itemName, quantity: requiredQuantity, price: pricePerTon, loading_location, scrapid,sellerid:sellerid } = item;
+      const { name: itemName, quantity: requiredQuantity, price: pricePerTon, loading_location, scrapid } = item;
 
       // Validate item properties
       if (!itemName || !requiredQuantity || !pricePerTon || !loading_location || !scrapid) {
@@ -202,7 +202,6 @@ router.post('/Adminorder', authenticate, async (req, res) => {
 
       // Push the processed item details into the array for the order
       processedItems.push({
-        sellerid:sellerid,
         name: itemName,
         price: pricePerTon,
         quantity: requiredQuantity,
@@ -258,7 +257,7 @@ router.get('/admin/orders', async (req, res) => {
   try {
     // Retrieve all orders with user and business profile details
     const orders = await Adminorder.find()
-      .populate('user', 'name email businessProfiles ')
+      .populate('user', 'name email businessProfiles')
       .exec();
 
     res.status(200).json(orders);
