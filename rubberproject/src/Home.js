@@ -89,7 +89,7 @@ const Home = () => {
                     </div> */}
                     <HeroSection />
                 </div>
-                <div className="bg-container-home">
+                {/* <div className="bg-container-home">
 
                     <div className="image-container">
                         <div className="slider">
@@ -117,7 +117,7 @@ const Home = () => {
                         </div>
                         <div className="overlay-text">BUY & SELL YOUR PRODUCTS</div>
                     </div>
-                </div>
+                </div> */}
                 <div>
                     <div className="row">
                         {/* Apply margin-left on larger screens and adjust on small screens */}

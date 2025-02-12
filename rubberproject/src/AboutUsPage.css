@@ -52,7 +52,7 @@
 }
 
 /* Each slide */
-.slide {
+/* .slide {
   position: absolute;
   width: 80%;
   max-width: 800px;
@@ -60,14 +60,13 @@
   background: #24defc;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
-  text-align: center;
-  opacity: 0;
-  display: none; /* Hide non-active slides */
+  text-align: center; */
+  /* opacity: 0; */
+  /* display: none;
   transition: opacity 1s ease-in-out;
-  pointer-events: none; /* Prevent interaction when inactive */
-  animation-play-state: running; /* Default to running */
-  padding: 3%;
-}
+  pointer-events: none;
+  animation-play-state: running;
+  padding: 3%; */
 
 /* Active slide that will be shown */
 .active {

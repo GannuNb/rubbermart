@@ -1,0 +1,45 @@
+.morefor-card {
+    background: #fff;
+    border-radius: 10px;
+  }
+  
+  .morefor-item {
+    padding: 20px;
+  }
+  
+  .icon-style {
+    display: block;
+    margin: 0 auto;
+    color: black; /* Icons remain outlined and do not fill with color */
+  }
+  
+  .morefor-title {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 5px;
+  }
+  
+  .text-muted {
+    font-size: 14px;
+  }
+  
+  .morefor-btn {
+    border: 2px solid #007bff;
+    color: #007bff;
+    background: white;
+    transition: all 0.3s ease;
+    width: 150px; /* Ensures uniform button width */
+  }
+  
+  .morefor-btn:hover {
+    background: #007bff;
+    color: white;
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+  }
+  

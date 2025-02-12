@@ -84,7 +84,7 @@ export default function AboutUsPage() {
         </div>
 
         {/* Sliding Animation Section */}
-        <div className="about-us-container">
+        {/* <div className="about-us-container">
           {slides.map((slide, index) => (
             <div
               key={index}
@@ -102,7 +102,7 @@ export default function AboutUsPage() {
             <button onClick={handleNext}>Next</button>
             <button onClick={handlePause}>{paused ? "Resume" : "Pause"}</button>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

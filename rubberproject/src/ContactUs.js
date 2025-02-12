@@ -1,62 +1,70 @@
-import React, { useEffect,useState } from 'react';
-import './ContactUs.css';
-import './Sell.css';
+import React, { useEffect, useState } from "react";
+import "./ContactUs.css";
+import "./Sell.css";
 
 function ContactUs() {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: ''
+    name: "",
+    email: "",
+    message: "",
   });
-  const [formStatus, setFormStatus] = useState('');
+  const [formStatus, setFormStatus] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.id]: e.target.value
+      [e.target.id]: e.target.value,
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setFormStatus('');
+    setFormStatus("");
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/contact`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/contact`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        }
+      );
 
       if (response.ok) {
-        setFormStatus('Your message has been sent successfully!');
-        setFormData({ name: '', email: '', message: '' });
+        setFormStatus("Your message has been sent successfully!");
+        setFormData({ name: "", email: "", message: "" });
       } else {
-        setFormStatus('Failed to send your message. Please try again later.');
+        setFormStatus("Failed to send your message. Please try again later.");
       }
     } catch (error) {
-      console.error('Error submitting the form:', error);
-      setFormStatus('An error occurred. Please try again later.');
+      console.error("Error submitting the form:", error);
+      setFormStatus("An error occurred. Please try again later.");
     } finally {
       setIsSubmitting(false);
     }
   };
   useEffect(() => {
     window.scrollTo(0, 0);
-}, []);
+  }, []);
 
   return (
-    <div className='setter'>
+    <div className="setter">
       <div className="container contact-us-page my-5">
         <div className="row">
-          {/* Contact Form Section */}
           <div className="col-lg-6 mb-4">
             <h2 className="mb-4">Get in Touch</h2>
-            <form onSubmit={handleSubmit} className="needs-validation" noValidate>
+            <form
+              onSubmit={handleSubmit}
+              className="needs-validation"
+              noValidate
+            >
               <div className="form-group mb-3">
-                <label htmlFor="name"  className="text-black">Name</label>
+                <label htmlFor="name" className="text-black">
+                  Name
+                </label>
                 <input
                   type="text"
                   className="form-control"
@@ -69,8 +77,10 @@ function ContactUs() {
                 <div className="invalid-feedback">Please enter your name.</div>
               </div>
 
-              <div className="form-group mb-3" >
-                <label htmlFor="email" className="text-black">Email address</label>
+              <div className="form-group mb-3">
+                <label htmlFor="email" className="text-black">
+                  Email address
+                </label>
                 <input
                   type="email"
                   className="form-control"
@@ -80,11 +90,15 @@ function ContactUs() {
                   onChange={handleChange}
                   required
                 />
-                <div className="invalid-feedback">Please enter a valid email address.</div>
+                <div className="invalid-feedback">
+                  Please enter a valid email address.
+                </div>
               </div>
 
               <div className="form-group mb-3">
-                <label htmlFor="message" className="text-black">Message</label>
+                <label htmlFor="message" className="text-black">
+                  Message
+                </label>
                 <textarea
                   className="form-control"
                   id="message"
@@ -94,24 +108,38 @@ function ContactUs() {
                   onChange={handleChange}
                   required
                 ></textarea>
-                <div className="invalid-feedback">Please enter your message.</div>
+                <div className="invalid-feedback">
+                  Please enter your message.
+                </div>
               </div>
 
-              <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-                {isSubmitting ? 'Submitting...' : 'Submit'}
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Submitting..." : "Submit"}
               </button>
             </form>
             {formStatus && <p className="mt-3">{formStatus}</p>}
           </div>
 
-          {/* Contact Information Section */}
           <div className="col-lg-5 mb-4">
             <h2 className="mb-4">Contact Information</h2>
             <ul className="list-unstyled">
-              <li><i className="fas fa-map-marker-alt me-2"></i>Admin Off : #406, 4th Floor, Patel Towers, Above EasyBuy Beside Nagole RTO Office, Nagole Hyderabad, Telangana-500068</li>
+              <li>
+                <i className="fas fa-map-marker-alt me-2"></i>Admin Off : #406,
+                4th Floor, Patel Towers, Above EasyBuy Beside Nagole RTO Office,
+                Nagole Hyderabad, Telangana-500068
+              </li>
               <br />
-              <li><i className="fas fa-phone-alt me-2"></i>+914049471616</li>
-              <li><i className="fas fa-envelope me-2"></i> Info@rubberscrapmart.com</li>
+              <li>
+                <i className="fas fa-phone-alt me-2"></i>+914049471616
+              </li>
+              <li>
+                <i className="fas fa-envelope me-2"></i>{" "}
+                Info@rubberscrapmart.com
+              </li>
             </ul>
 
             <div className="map-container mb-4">
@@ -126,22 +154,45 @@ function ContactUs() {
               ></iframe>
             </div>
 
-{/* Social Media Links */}
-<div className="social-icons">
-  <h4>Follow Us</h4>
-  <a href="https://www.facebook.com/people/Vikah-Ecotech/61562484014600/?mibextid=qi2Omg&rdid=DtTaZ8FyfC8gsDCh&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1Mxsd16XWYMsvCyi%2F%3Fmibextid%3Dqi2Omg" target="_blank" rel="noopener noreferrer" className="me-3">
-    <i className="fab fa-facebook fa-2x text-primary"></i> {/* Facebook - Blue */}
-  </a>
-  <a href="https://x.com/i/flow/login?redirect_after_login=%2Fvikahecotech" target="_blank" rel="noopener noreferrer" className="me-3">
-    <i className="fab fa-twitter fa-2x text-info"></i> {/* Twitter - Light Blue */}
-  </a>
-  <a href="https://www.instagram.com/vikahecotech/" target="_blank" rel="noopener noreferrer" className="me-3">
-    <i className="fab fa-instagram fa-2x text-danger"></i> {/* Instagram - Red */}
-  </a>
-  <a href="https://www.youtube.com/@vikahecotech" target="_blank" rel="noopener noreferrer">
-    <i className="fab fa-youtube fa-2x text-danger"></i> {/* YouTube - Red */}
-  </a>
-</div>
+            {/* Social Media Links */}
+            <div className="social-icons">
+              <h4>Follow Us</h4>
+              <a
+                href="https://www.facebook.com/people/Vikah-Ecotech/61562484014600/?mibextid=qi2Omg&rdid=DtTaZ8FyfC8gsDCh&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1Mxsd16XWYMsvCyi%2F%3Fmibextid%3Dqi2Omg"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="me-3"
+              >
+                <i className="fab fa-facebook fa-2x text-primary"></i>{" "}
+                {/* Facebook - Blue */}
+              </a>
+              <a
+                href="https://x.com/i/flow/login?redirect_after_login=%2Fvikahecotech"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="me-3"
+              >
+                <i className="fab fa-twitter fa-2x text-info"></i>{" "}
+                {/* Twitter - Light Blue */}
+              </a>
+              <a
+                href="https://www.instagram.com/vikahecotech/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="me-3"
+              >
+                <i className="fab fa-instagram fa-2x text-danger"></i>{" "}
+                {/* Instagram - Red */}
+              </a>
+              <a
+                href="https://www.youtube.com/@vikahecotech"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i className="fab fa-youtube fa-2x text-danger"></i>{" "}
+                {/* YouTube - Red */}
+              </a>
+            </div>
           </div>
         </div>
 
@@ -152,26 +203,53 @@ function ContactUs() {
             <div className="accordion" id="faqAccordion">
               <div className="accordion-item">
                 <h2 className="accordion-header" id="headingOne">
-                  <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                  <button
+                    className="accordion-button"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseOne"
+                    aria-expanded="true"
+                    aria-controls="collapseOne"
+                  >
                     How can I get in touch with customer service?
                   </button>
                 </h2>
-                <div id="collapseOne" className="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                <div
+                  id="collapseOne"
+                  className="accordion-collapse collapse show"
+                  aria-labelledby="headingOne"
+                  data-bs-parent="#faqAccordion"
+                >
                   <div className="accordion-body">
-                    You can reach us via the form above or by calling +914049471616 during business hours.
+                    You can reach us via the form above or by calling
+                    +914049471616 during business hours.
                   </div>
                 </div>
               </div>
 
               <div className="accordion-item">
                 <h2 className="accordion-header" id="headingTwo">
-                  <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                  <button
+                    className="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseTwo"
+                    aria-expanded="false"
+                    aria-controls="collapseTwo"
+                  >
                     Where are you located?
                   </button>
                 </h2>
-                <div id="collapseTwo" className="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                <div
+                  id="collapseTwo"
+                  className="accordion-collapse collapse"
+                  aria-labelledby="headingTwo"
+                  data-bs-parent="#faqAccordion"
+                >
                   <div className="accordion-body">
-                    Our office is located at #406, 4th Floor, Patel Towers, Above EasyBuy Beside Nagole RTO Office, Nagole Hyderabad, Telangana-500068, India.
+                    Our office is located at #406, 4th Floor, Patel Towers,
+                    Above EasyBuy Beside Nagole RTO Office, Nagole Hyderabad,
+                    Telangana-500068, India.
                   </div>
                 </div>
               </div>

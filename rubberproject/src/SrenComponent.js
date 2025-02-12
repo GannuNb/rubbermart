@@ -1,11 +1,9 @@
-import {useEffect,React} from "react";
+import { useEffect, React } from "react";
 import "./SrenComponent.css";
+import { Link } from "react-router-dom";
 import { FaUpload, FaCheckCircle, FaHandshake } from "react-icons/fa"; // Updated Icons
 
 const SrenComponent = () => {
-
-
-
   const cards = [
     {
       title: "Upload Your Scrap Details",
@@ -29,14 +27,16 @@ const SrenComponent = () => {
       bgIcon: <FaHandshake className="sren-bg-icon" />, // Background icon
     },
   ];
+  // #dbffd6
 
   return (
-    <div className="mt-5">
-      <h2 className="sren-heading">How It Works for Sellers</h2>
+    <div className="mt-5 " style={{ backgroundColor: "#dbffd6" }}>
+      <h2 className="sren-heading mt-3">How It Works for Sellers</h2>
       <div className="sren-container">
         {cards.map((card, index) => (
           <div className="sren-card" key={index}>
-            <div className="sren-bg-icon-wrapper">{card.bgIcon}</div> {/* Background Icon */}
+            <div className="sren-bg-icon-wrapper">{card.bgIcon}</div>{" "}
+            {/* Background Icon */}
             <div>{card.icon}</div> {/* Foreground Icon */}
             <h3 className="sren-title">{card.title}</h3>
             <hr className="sren-underline" />
@@ -44,6 +44,14 @@ const SrenComponent = () => {
           </div>
         ))}
       </div>
+      <Link style={{ textDecoration: "none" }} to="/Sell" className="mb-5">
+        <button
+          className="btn btn-primary mt-4 d-block mx-auto"
+          style={{ fontSize: "16px", padding: "10px 20px", maxWidth: "300px" }}
+        >
+          Start Selling
+        </button>
+      </Link>
     </div>
   );
 };

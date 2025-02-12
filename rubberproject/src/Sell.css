@@ -58,8 +58,8 @@ h2.text-center {
 /* Medium Devices: Small Navbar for 990px to 1350px */
 @media (max-width: 1350px) and (min-width: 991px){
     .setter {
-        margin-left: 14%;
-        margin-top: 10%;
+        margin-left: 12%;
+        margin-top: 7%;
     }
 
     h2.text-center {

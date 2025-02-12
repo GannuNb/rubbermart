@@ -244,7 +244,7 @@ body {
         margin-top:10%
     }
 }
-.carousel-container-home {
+/* .carousel-container-home {
     position: relative;
     margin-top: 6%;
     margin-left: 10.5%;
@@ -255,18 +255,18 @@ body {
     overflow: hidden;
     box-shadow: 0 2% 4% rgba(0, 0, 0, 0.1);
     margin-bottom: 2%;
-    }
+    } */
 
-    .carousel .slide img {
+    /* .carousel .slide img {
         width: 100% !important;
         vertical-align: top;
         border: 0;
         height: 510px !important;
         object-fit: cover;
-      }
+      } */
 
 
- @media (min-width:300px) and (max-width:600px){
+ /* @media (min-width:300px) and (max-width:600px){
 .carousel-container-home {
 margin-left: 0.5%;
 
@@ -277,7 +277,7 @@ margin-left: 0.5%;
     margin-left: 0.5%;
     
     
-    } }
+    } } */
 
 
 
@@ -527,8 +527,8 @@ margin-left: 0.5%;
   
 
   
- /* Container for the entire slider */
-.image-container {
+
+/* .image-container {
     position: relative;
     width: 100%;
     max-width: 900px;
@@ -537,14 +537,14 @@ margin-left: 0.5%;
     margin: 0 auto;
 }
 
-/* Slider with infinite looping animation */
+
 .slider {
     display: flex;
     width: fit-content;
     animation: slide 30s linear infinite;
 }
 
-/* Images in the slider */
+
 .slider-image {
     width: 300px;
     height: 300px;
@@ -552,7 +552,7 @@ margin-left: 0.5%;
     border-radius: 10px;
 }
 
-/* Overlay text */
+
 .overlay-text {
     position: absolute;
     top: 50%;
@@ -564,7 +564,7 @@ margin-left: 0.5%;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-/* Keyframes for infinite seamless slide animation */
+
 @keyframes slide {
     0% {
         transform: translateX(0);
@@ -581,4 +581,4 @@ margin-left: 0.5%;
     100% {
         transform: translateX(-1200px);
     }
-}
+} */

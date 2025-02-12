@@ -20,13 +20,12 @@ const Sell = () => {
     const [loadingLocation, setLoadingLocation] = useState('');
     const [countryOfOrigin, setCountryOfOrigin] = useState('');
     const [price, setPrice] = useState('');
-    const [images, setImages] = useState([]); // State to store images
-    const [imagePreviewUrls, setImagePreviewUrls] = useState([]); // For previewing images
-
+    const [images, setImages] = useState([]); 
+    const [imagePreviewUrls, setImagePreviewUrls] = useState([]);
     const navigate = useNavigate();
-    const location = useLocation(); // Get current route location
+    const location = useLocation();
 
-    // Scroll to the top whenever the location changes
+
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [location]);
@@ -83,7 +82,6 @@ const Sell = () => {
         }
     }, [material]);
 
-    // Fetch business profile on mount
     useEffect(() => {
         const fetchProfile = async () => {
             setLoading(true);
@@ -94,7 +92,6 @@ const Sell = () => {
                     setLoading(false);
                     return;
                 }
-
                 const config = {
                     headers: { Authorization: `Bearer ${token}` },
                 };
@@ -114,10 +111,10 @@ const Sell = () => {
             }
         };
 
+        
         fetchProfile();
     }, []);
     
-
     const handleMaterialChange = (e) => setMaterial(e.target.value);
     const handleImageChange = (e) => {
         const files = e.target.files;
@@ -127,22 +124,15 @@ const Sell = () => {
         }
     
         const fileArray = Array.from(files);
-        
-        // Check if any file is above 1 MB
-        const isSizeValid = fileArray.every(file => file.size <= 1 * 1024 * 1024); // 1 MB in bytes
-    
+        const isSizeValid = fileArray.every(file => file.size <= 1 * 1024 * 1024);
         if (!isSizeValid) {
             alert('Please upload images below 1 MB.');
             return;
         }
-    
-        // Proceed with setting the images if all are under the size limit
         setImages(files);
         const previewUrls = fileArray.map(file => URL.createObjectURL(file));
         setImagePreviewUrls(previewUrls);
     };
-    
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -252,8 +242,6 @@ const Sell = () => {
                                 </select>
                             </div>
                         )}
-
-                        {/* Quantity */}
                         <div className="mb-3" style={{ marginBottom: '1.5rem' }}>
                             <label htmlFor="quantity" className="form-label" style={{ fontWeight: 'bold', color: 'white' }}>Quantity</label>
                             <input
@@ -268,8 +256,6 @@ const Sell = () => {
                                 style={{ padding: '10px', fontSize: '1rem', borderRadius: '5px' }}
                             />
                         </div>
-
-                        {/* Loading Location */}
                         <div className="mb-3" style={{ marginBottom: '1.5rem' }}>
                             <label htmlFor="loadingLocation" className="form-label" style={{ fontWeight: 'bold', color: 'white' }}>Loading Location</label>
                             <select
@@ -286,8 +272,6 @@ const Sell = () => {
                                 <option value="ex_nhavasheva">Ex Nhavasheva</option>
                             </select>
                         </div>
-
-                        {/* Country of Origin */}
                         <div className="mb-3" style={{ marginBottom: '1.5rem' }}>
                             <label htmlFor="countryOfOrigin" className="form-label" style={{ fontWeight: 'bold', color: 'white' }}>Country of Origin</label>
                             <input
@@ -300,8 +284,6 @@ const Sell = () => {
                                 style={{ padding: '10px', fontSize: '1rem', borderRadius: '5px' }}
                             />
                         </div>
-
-                        {/* Price */}
                         <div className="mb-3" style={{ marginBottom: '1.5rem' }}>
                             <label htmlFor="price" className="form-label" style={{ fontWeight: 'bold', color: 'white' }}>Price per Unit</label>
                             <input
@@ -316,8 +298,6 @@ const Sell = () => {
                                 style={{ padding: '10px', fontSize: '1rem', borderRadius: '5px' }}
                             />
                         </div>
-
-                        {/* Image Upload */}
                         <div className="mb-3" style={{ marginBottom: '1.5rem' }}>
                             <label htmlFor="images" className="form-label" style={{ fontWeight: 'bold', color: 'white' }}>Upload Images (Max 3)</label>
                             <input
@@ -330,8 +310,6 @@ const Sell = () => {
                                 style={{ padding: '10px', fontSize: '1rem', borderRadius: '5px' }}
                             />
                         </div>
-
-                        {/* Image Previews */}
                         {imagePreviewUrls.length > 0 && (
                             <div className="image-previews" style={{ marginBottom: '1.5rem' }}>
                                 {imagePreviewUrls.map((url, index) => (
@@ -344,8 +322,6 @@ const Sell = () => {
                                 ))}
                             </div>
                         )}
-
-                        {/* Submit Button */}
                         <button
                             type="submit"
                             className="btn btn-primary"

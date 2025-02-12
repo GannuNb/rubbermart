@@ -46,6 +46,8 @@ import AdminPayment from './Adminpayment.js';
 import Pyrooil from './Pyrooil.js';
 import ForgetMailPass from './forgetmailpass.js';
 import Moredetails from './Moredetails.js';
+import Homepage from './Homepage.js';
+import Cate from './Cate.js';
 
 
 
@@ -62,7 +64,7 @@ function App() {
       {!isSidebarHidden && <Sidebar />}
       <div className="container">
         <Routes>
-          <Route exact path="/" element={<Home />} />
+          <Route exact path="/" element={<Homepage />} />
           <Route exact path="/registered" element={<Registeredgst />} />
           <Route exact path="/unregistered" element={<Unregisteredgst />} />
           <Route exact path="/getpay" element={<GetPay />} />
@@ -103,6 +105,8 @@ function App() {
           <Route exact path='/forgot-password' element={<ForgotPassword/>}/>         
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route exact path="/moredetails" element={<Moredetails />} />
+          <Route exact path="/homepage" element={<Homepage/>}/>
+          <Route exact path="/cate" element={<Cate/>}/>
 
         </Routes>
       </div>
