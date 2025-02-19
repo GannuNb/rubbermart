@@ -196,17 +196,15 @@ const Getorders = () => {
     ];
 
     let addressY = 12; // Adjusted starting Y to align with logo
-    doc.text(companyAddress[0], 40, addressY+4); // Company Name
-    
+    doc.text(companyAddress[0], 40, addressY + 4); // Company Name
     doc.text(companyAddress[1], 40, addressY + 8); // Street Address
     doc.text(companyAddress[2], 40, addressY + 12); // Additional Address
     doc.text(companyAddress[3], 40, addressY + 16); // City, State, and Postal Code
 
-// PROFORMA INVOICE Heading - Slightly adjusted Y-position to move it down
-doc.setFontSize(16);
-doc.setFont('helvetica', 'bold');
-doc.text('PROFORMA INVOICE', 115, addressY + 1, { align: 'center' }); // Moved down slightly
-
+    // PROFORMA INVOICE Heading - Slightly adjusted Y-position to move it down
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text('PROFORMA INVOICE', 115, addressY + 1, { align: 'center' }); // Moved down slightly
 
     // Order ID and Date - Positioned to the left
     doc.setFontSize(8);
@@ -219,7 +217,6 @@ doc.text('PROFORMA INVOICE', 115, addressY + 1, { align: 'center' }); // Moved d
     // Aligning colons vertically with reduced space after them, shifted left
     doc.text(`Order ID`, orderLabelX, addressY + 5); // Label for Order ID
     doc.text(`:`, colonX, addressY + 5); // Colon for Order ID
-
     doc.text(`${order._id}`, valueX, addressY + 5); // Right-aligned Order ID value
 
     doc.text(`Order Date`, orderLabelX, addressY + 5 + padding); // Label for Order Date
@@ -274,13 +271,32 @@ doc.text('PROFORMA INVOICE', 115, addressY + 1, { align: 'center' }); // Moved d
 
         billingY += 25 + (billingAddressLines.length * 5); // Adjust Y after billing address
 
-        // Shipping Info
+        // Shipping Info (updated to include company, email, phone, gst)
         const shippingLabelX = 110; // Renamed for shipping section
-        const shippingValueX = 140;
+        const shippingColonX = 135; // Position for colons in the shipping section
+        const shippingValueX = 140; // Position for shipping values in the shipping section
+
+        // Add Company, Email, Phone, GST to the Ship To section
+        doc.text('Company', shippingLabelX, shippingY);
+        doc.text(':', shippingColonX, shippingY);
+        doc.text(profile.companyName || 'N/A', shippingValueX, shippingY);
+
+        doc.text('Email', shippingLabelX, shippingY + 5);
+        doc.text(':', shippingColonX, shippingY + 5);
+        doc.text(profile.email || 'N/A', shippingValueX, shippingY + 5);
+
+        doc.text('Phone', shippingLabelX, shippingY + 10);
+        doc.text(':', shippingColonX, shippingY + 10);
+        doc.text(profile.phoneNumber || 'N/A', shippingValueX, shippingY + 10);
+
+        doc.text('GST', shippingLabelX, shippingY + 15);
+        doc.text(':', shippingColonX, shippingY + 15);
+        doc.text(profile.gstNumber || 'N/A', shippingValueX, shippingY + 15);
+
+        shippingY += 20;  // Adjust Y after adding the billing info to Ship To
 
         const shippingAddress = order.shippingAddress || 'N/A';
-
-        // Split the address into multiple lines if it's too long
+        // Split the shipping address into multiple lines if it's too long
         const shippingAddressLines = doc.splitTextToSize(shippingAddress, maxAddressLength);
 
         // Add the shipping address directly under the Shipping Info
@@ -292,6 +308,8 @@ doc.text('PROFORMA INVOICE', 115, addressY + 1, { align: 'center' }); // Moved d
     }
 
     const contentY = Math.max(billingY, shippingY);
+
+
 
     // Order Details Section
     doc.setFontSize(10);

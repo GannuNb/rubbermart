@@ -1,96 +1,167 @@
+
+
+/* Main Section */
 .sell-top-container {
   display: flex;
+  justify-content: center;
   align-items: center;
-  justify-content: space-between;
-  background: linear-gradient(90deg, #00c6ff, #0072ff), url('https://via.placeholder.com/1200x800'); /* Background image + gradient */
-  background-size: cover;
-  background-position: center;
-  color: #ffffff;
-  padding: 40px;
-  border-radius: 8px;
-  overflow: hidden;
-  width: 100%;
+  min-height: 75vh; /* Reduced the height to 75% of the viewport */
+  padding: 30px 20px; /* Reduced padding for a more compact design */
+  background: linear-gradient(135deg, #0a74da 0%, #38c9a9 100%);
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  color: #fff;
+  text-align: center;
   position: relative;
+  flex-direction: row; /* Ensure content and image are side by side */
 }
 
 .sell-top-content {
-  max-width: 50%;
-  padding-right: 20px; /* Add some padding to the right to space out content */
-  z-index: 1; /* Ensure content is above the background */
+  max-width: 600px;
+  z-index: 2;
+  padding-right: 40px; /* Space between text and image */
 }
 
-.festival-badge {
-  background: #ffd700;
-  color: #000;
-  font-weight: bold;
-  padding: 5px 10px;
-  border-radius: 20px;
+.title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  margin-bottom: 30px;
+  margin-top: 40px;
+  line-height: 1.3;
+  position: relative;
+  padding: 20px 30px;
   display: inline-block;
-  margin-bottom: 10px;
-  transition: transform 0.3s ease;
+  background: #005f8d; /* Solid background color before hovering */
+  color: white; /* Solid color text before hover */
+  border-radius: 8px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
 }
 
-.festival-badge:hover {
-  transform: scale(1.1); /* Adds a hover effect for the badge */
+/* Hover Effect for Title */
+.title:hover {
+  transform: scale(1.05);
+  background: linear-gradient(135deg, #38c9a9, #005f8d);
+  color: #fff;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
 }
 
-h1 {
-  font-size: 2.5rem;
-  margin-bottom: 10px;
-  font-family: "Algerian", sans-serif;
-  width: 100%; /* Fixed width to ensure text doesn’t overflow */
-  animation: fadeIn 1s ease-out;
+/* Description Styling */
+.description {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 30px;
+  color: rgba(255, 255, 255, 0.85);
 }
 
-p {
-  font-size: 1rem;
-  margin-bottom: 20px;
-  width: 100%; /* Ensures full width for the paragraph */
-  animation: fadeIn 1.5s ease-out;
+.cta-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-bottom: 30px;
 }
 
-.get-started-btn {
-  padding: 12px 25px;
-  background-color: #32cd32; /* Green color */
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
+.get-started-btn,
+.learn-more-btn {
+  background-color: #fff;
+  color: #32cd32;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: 2px solid #32cd32;
+  padding: 12px 36px;
+  border-radius: 50px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-top: 20px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
-.get-started-btn:hover {
-  background-color: #228b22; /* Darker green on hover */
+.get-started-btn:hover,
+.learn-more-btn:hover {
+  background-color: #32cd32;
+  color: #fff;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
+.learn-more-btn {
+  background-color: transparent;
+  color: #fff;
+  border-color: #fff;
+}
+
+.learn-more-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+/* Icon Section */
 .sell-top-image {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex: 1;
+  margin-top: 20px;
 }
 
 .sell-top-image svg {
-  max-width: 100%;
-  border-radius: 8px;
+  background-color: #fff;
+  padding: 18px;
+  border-radius: 50%;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  width: 120px;
+  height: 120px;
 }
 
-.disclaimer {
-  font-size: 0.8rem;
-  margin-top: 10px;
-  opacity: 0.8;
-  display: block;
+.sell-top-image svg:hover {
+  transform: rotate(360deg);
 }
 
-@keyframes fadeIn {
-  from {
+/* Keyframes for Animations */
+@keyframes fadeInUp {
+  0% {
     opacity: 0;
     transform: translateY(20px);
   }
-  to {
+  100% {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive design for mobile */
+@media (max-width: 768px) {
+  .sell-top-container {
+    flex-direction: column; /* Stack content and image vertically on smaller screens */
+    align-items: center;
+  }
+
+  .sell-top-content {
+    padding: 20px;
+    text-align: center;
+  }
+
+  .cta-buttons {
+    flex-direction: column;
+  }
+
+  .get-started-btn,
+  .learn-more-btn {
+    width: 100%;
+  }
+
+  .sell-top-image {
+    margin-top: 20px;
   }
 }

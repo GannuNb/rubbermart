@@ -7,10 +7,10 @@ import { Link } from 'react-router-dom';
 function Morefor() {
   return (
     <Container className="my-5">
-      <h2 className="mb-4">More for You</h2>
+      <h2 className="mb-4 text-center">More for You</h2>
       <div className="morefor-card p-4 shadow-sm rounded">
         <Row className="text-center">
-          <Col md={3} className="border-end">
+          <Col xs={12} sm={6} md={3} className="mb-4 mb-sm-0">
             <div className="morefor-item">
               <FaUserTie size={40} className="mb-2 icon-style" />
               <p className="morefor-title">Create Business Profile</p>
@@ -25,7 +25,7 @@ function Morefor() {
             </div>
           </Col>
 
-          <Col md={3} className="border-end">
+          <Col xs={12} sm={6} md={3} className="mb-4 mb-sm-0">
             <div className="morefor-item">
               <FaStore size={40} className="mb-2 icon-style" />
               <p className="morefor-title">Sell on Rubbercrapmart for Free</p>
@@ -40,7 +40,7 @@ function Morefor() {
             </div>
           </Col>
 
-          <Col md={3} className="border-end">
+          <Col xs={12} sm={6} md={3} className="mb-4 mb-sm-0">
             <div className="morefor-item">
               <FaShoppingCart size={40} className="mb-2 icon-style" />
               <p className="morefor-title">Buying</p>
@@ -55,7 +55,7 @@ function Morefor() {
             </div>
           </Col>
 
-          <Col md={3}>
+          <Col xs={12} sm={6} md={3}>
             <div className="morefor-item">
               <FaEnvelope size={40} className="mb-2 icon-style" />
               <p className="morefor-title">Contact Us</p>

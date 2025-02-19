@@ -495,16 +495,16 @@ const Order = () => {
     seal
   ) => {
     const doc = new jsPDF();
-
+  
     // Add logo to PDF
     if (logo) {
       doc.addImage(logo, "PNG", 8, 6, 35, 15); // Adjust the width and height of the logo
     }
-
+  
     // Set font for header
     doc.setFontSize(8);
     doc.setFont("helvetica", "normal");
-
+  
     // Company address
     const companyAddress = [
       "VIKAH RUBBERS",
@@ -512,18 +512,18 @@ const Order = () => {
       "Above EasyBuy Beside Nagole RTO Office,",
       "Nagole Hyderabad, Telangana-500035",
     ];
-
+  
     let addressYy = 9; // Adjusted starting Y to align with logo
     doc.text(companyAddress[0], 40, addressYy + 2); // Company Name
     doc.text(companyAddress[1], 40, addressYy + 5); // Street Address
     doc.text(companyAddress[2], 40, addressYy + 8); // Additional Address
     doc.text(companyAddress[3], 40, addressYy + 11); // City, State, and Postal Code
-
+  
     // Invoice Title
     doc.setFontSize(16);
     doc.setFont("helvetica", "bold");
     doc.text("PROFORMA INVOICE", 115, addressYy + 1, { align: "center" });
-
+  
     // Order Date
     doc.setFontSize(10);
     doc.text(`Order Date: ${new Date().toLocaleDateString()}`, 190, 20, {
@@ -531,14 +531,14 @@ const Order = () => {
     });
     doc.setDrawColor(0, 0, 0);
     doc.line(10, 25, 200, 25); // Underline
-
+  
     // Billing and Shipping Information
     doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
     doc.text("Bill To", 14, 35);
     doc.text("Ship To", 133, 35);
     doc.line(10, 38, 200, 38); // Underline
-
+  
     // Bill To Section
     const labelX = 14; // X position for the left side
     const colonX = labelX + 20; // X position for the colon alignment
@@ -565,7 +565,7 @@ const Order = () => {
     billingAddress.forEach((line, index) => {
       doc.text(line, valueX, 65 + index * 5);
     });
-
+  
     // Ship To Section
     const shipToColonX = labelX + 20; // Unique name for the second colonX
     let finalShippingAddress = "";
@@ -578,15 +578,34 @@ const Order = () => {
       `${finalShippingAddress}`,
       60
     );
+  
+    // Add company details to "Ship To" section
+    doc.text("Company", labelX + 95, 45);
+    doc.text(":", shipToColonX + 95, 45);
+    doc.text(profile.companyName || "N/A", valueX + 95, 45);
+    doc.text("Email", labelX + 95, 50);
+    doc.text(":", shipToColonX + 95, 50);
+    doc.text(profile.email || "N/A", valueX + 95, 50);
+    doc.text("Phone", labelX + 95, 55);
+    doc.text(":", shipToColonX + 95, 55);
+    doc.text(profile.phoneNumber || "N/A", valueX + 95, 55);
+    doc.text("GST", labelX + 95, 60);
+    doc.text(":", shipToColonX + 95, 60);
+    doc.text(profile.gstNumber || "N/A", valueX + 95, 60);
+  
+    // Address Text for Ship To
     wrappedShippingAddress.forEach((line, index) => {
-      doc.text(line, valueX + 95, 45 + index * 5);
+      doc.text(line, valueX + 95, 65 + index * 5);
     });
+  
     const billingAddressHeight = 15 + billingAddress.length * 5;
     const shippingAddressHeight = 15 + wrappedShippingAddress.length * 5;
     const totalAddressHeight = Math.max(
       billingAddressHeight,
       shippingAddressHeight
     ); // Maximum of both addresses
+  
+  
 
     // Products Section
     let productsStartY = 50 + totalAddressHeight;
@@ -949,18 +968,19 @@ const Order = () => {
                     {profile?.companyName || "N/A"}
                   </p>
                   <p style={{ wordWrap: "break-word", maxWidth: "300px" }}>
-                    <strong>Phone:</strong> {profile?.phoneNumber || "N/A"}
-                  </p>
-                  <p style={{ wordWrap: "break-word", maxWidth: "300px" }}>
-                    <strong>Email:</strong> {profile?.email || "N/A"}
-                  </p>
-                  <p style={{ wordWrap: "break-word", maxWidth: "300px" }}>
-                    <strong>GST:</strong> {profile?.gstNumber || "N/A"}
-                  </p>
-                  <p style={{ wordWrap: "break-word", maxWidth: "300px" }}>
                     <strong>Billing Address:</strong>{" "}
                     {profile?.billAddress || "N/A"}
                   </p>
+                  <p style={{ wordWrap: "break-word", maxWidth: "300px" }}>
+                    <strong>Phone:</strong> {profile?.phoneNumber || "N/A"}
+                  </p>
+                  <p style={{ wordWrap: "break-word", maxWidth: "300px" }}>
+                    <strong>E-Mail:</strong> {profile?.email || "N/A"}
+                  </p>
+                  <p style={{ wordWrap: "break-word", maxWidth: "300px" }}>
+                    <strong>GSTN:</strong> {profile?.gstNumber || "N/A"}
+                  </p>
+                  
                 </div>
               </div>
             </div>

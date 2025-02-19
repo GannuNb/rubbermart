@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const UserProfile = () => {
+  
   const [user, setUser] = useState(null);
   const [businessProfiles, setBusinessProfiles] = useState([]);
   const [loading, setLoading] = useState(true);

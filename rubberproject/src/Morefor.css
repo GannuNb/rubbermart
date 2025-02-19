@@ -1,45 +1,101 @@
 .morefor-card {
-    background: #fff;
-    border-radius: 10px;
-  }
-  
+  background: #fff;
+  border-radius: 10px;
+}
+
+.morefor-item {
+  padding: 20px;
+}
+
+.icon-style {
+  display: block;
+  margin: 0 auto;
+  color: black; /* Icons remain outlined and do not fill with color */
+}
+
+.morefor-title {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.text-muted {
+  font-size: 14px;
+}
+
+.morefor-btn {
+  border: 2px solid #007bff;
+  color: #007bff;
+  background: white;
+  transition: all 0.3s ease;
+  width: 150px; /* Ensures uniform button width */
+}
+
+.morefor-btn:hover {
+  background: #007bff;
+  color: white;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
   .morefor-item {
-    padding: 20px;
+    padding: 15px;
   }
-  
-  .icon-style {
-    display: block;
-    margin: 0 auto;
-    color: black; /* Icons remain outlined and do not fill with color */
-  }
-  
+
   .morefor-title {
-    font-size: 16px;
-    color: #333;
-    margin-bottom: 5px;
+    font-size: 14px;
   }
+
+  .text-muted {
+    font-size: 12px;
+  }
+
+  .morefor-btn {
+    width: 100%; /* Reduce button size for smaller screens */
+    
+  }
+
   
+}
+
+@media (max-width: 576px) {
+  .morefor-title {
+    font-size: 12px;
+  }
+
   .text-muted {
     font-size: 14px;
   }
-  
+
   .morefor-btn {
-    border: 2px solid #007bff;
-    color: #007bff;
-    background: white;
-    transition: all 0.3s ease;
-    width: 150px; /* Ensures uniform button width */
+    width: 100%; /* Further reduce button size for mobile screens */
+    font-size: 70%;
   }
-  
-  .morefor-btn:hover {
-    background: #007bff;
-    color: white;
+}
+
+@media(min-width:768px) and (max-width:1100px){
+
+  .morefor-item {
+    padding: 1px;
   }
-  
-  .button-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 10px;
+
+  .morefor-title {
+    font-size: 14px;
   }
-  
+
+  .text-muted {
+    font-size: 10px;
+  }
+
+  .morefor-btn {
+    width: 100%; /* Reduce button size for smaller screens */
+    font-size: 62%;
+  }
+}

@@ -915,3 +915,8 @@ in backend there is chennai_quantity,mundra_quantity and nhavasheva_quantity
 in component there is availble quantiy, instead taking available quantity, i want to replace that with total available quantity( sum of chennai_quantity,mundra_quantity and nhavasheva_quantity)
 and we will select loading location , when selecting loading location , show quantity also like chennai-15500.
 please give correct and full code
+
+
+<p className="mb-1">
+                                <strong>Country of Origin:</strong> {approval.countryOfOrigin}
+                              </p>

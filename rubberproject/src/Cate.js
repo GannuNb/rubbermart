@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import tyreScrap from "./images/tyre_scrap.jpeg";
 import pyroOil from "./images/pyro_oil2.jpeg";
-import artificialPlants from "./images/tyre_scrap.jpeg";
+import artificialPlants from "./images/PyroSteel.jpeg";
 import "./Homepage.css"; 
 
 function Cate() {

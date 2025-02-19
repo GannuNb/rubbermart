@@ -23,6 +23,32 @@ const BusinessProfile = () => {
   const [isSameAsBilling, setIsSameAsBilling] = useState(false);
 
   useEffect(() => {
+    const fetchUserData = async () => {
+      const token = localStorage.getItem('token'); // Retrieve token from local storage
+      if (!token) {
+        console.error('No token found');
+        setLoading(false);
+        return;
+      }
+  
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/userdetails`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setProfile({ ...profile, email: response.data.user.email }); // Set email in profile state
+       
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchUserData();
+  }, []);
+  
+
+  useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
       setTimeout(() => {

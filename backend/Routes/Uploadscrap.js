@@ -302,7 +302,7 @@ const transporter = nodemailer.createTransport({
             <li><strong>Material:</strong> ${material}</li>
             <li><strong>Application:</strong> ${application}</li>
             <li><strong>Quantity:</strong> ${quantity}</li>
-            <li><strong>Price:</strong> $${price}</li>
+            <li><strong>Price:</strong> ${price}</li>
             <li><strong>Loading Location:</strong> ${loadingLocation}</li>
             <li><strong>Country of Origin:</strong> ${countryOfOrigin}</li>
           </ul>
@@ -374,7 +374,7 @@ router.post("/denyScrap/:id", async (req, res) => {
       const mailOptions = {
         from: process.env.ADMIN_EMAIL,
         to: email,
-        subject: "Scrap Product Denial Notification – Vikah Rubber",
+        subject: "Scrap Product Denial Notification – Rubberscrapmart",
         html: `
           <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
             <h2 style="color: #e53935;">Scrap Product Denial Notification</h2>
@@ -384,7 +384,7 @@ router.post("/denyScrap/:id", async (req, res) => {
             ${scrapDetailsHtml}
             <p>If you have any questions or need further clarification, feel free to contact us.</p>
             <p style="margin-top: 20px;">Best regards,</p>
-            <p><strong>Vikah Rubber</strong></p>
+            <p><strong>Rubberscrapmart</strong></p>
             <div style="margin-top: 20px; padding: 10px; background-color: #f4f4f4; border-radius: 5px;">
               <p><strong>Admin Office:</strong></p>
               <p>#406, 4th Floor, Patel Towers,<br>

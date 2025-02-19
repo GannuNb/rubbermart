@@ -214,3 +214,22 @@
     text-align: center;
   }
   
+
+
+
+  /* Ensures proper row spacing */
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: left;
+  gap: 10%; /* Adds space between cards */
+}
+
+
+  
+  .trusted-seller-icon {
+    width: 60px;
+    height: auto;
+    display: inline-block;
+  }
+  

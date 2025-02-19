@@ -1,12 +1,10 @@
 import { useEffect, React, useRef } from "react";
-import { FaRecycle } from "react-icons/fa"; // Importing the recycle icon
-import "./SellTop.css"; // Add custom CSS for additional styling
+import { FaRecycle } from "react-icons/fa";
+import "./SellTop.css"; // Custom CSS
 
 const SellTop = () => {
-  // Create a reference to the "Upload Your Scrap Details" section
   const formSectionRef = useRef(null);
 
-  // Scroll to the form section when the "Get Started" button is clicked
   const handleGetStarted = () => {
     if (formSectionRef.current) {
       formSectionRef.current.scrollIntoView({
@@ -16,6 +14,7 @@ const SellTop = () => {
     }
   };
 
+  
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -23,26 +22,27 @@ const SellTop = () => {
   return (
     <div className="sell-top-container">
       <div className="sell-top-content">
-        <div className="festival-badge">Great Scrap Festival</div>
-        <h1>Become a VikaRubber Partner</h1>
-        <p>
-          Recycle scrap responsibly and contribute to a greener planet. Join
-          India’s leading eco-friendly initiative and help build a sustainable
-          future.
+        <h1 className="title">Become a VikaRubber Partner</h1>
+        <p className="description">
+          Sell your scrap materials quickly and easily through India’s leading scrap marketplace. Whether you have metal, plastic, or other materials, our platform connects you to reliable buyers, ensuring a smooth and profitable selling experience.
         </p>
 
-        {/* Get Started Button */}
-        <button className="get-started-btn" onClick={handleGetStarted}>
-          Get Started
-        </button>
+
+        <div className="cta-buttons">
+          <button className="get-started-btn" onClick={handleGetStarted}>
+            Get Started
+          </button>
+          <button className="learn-more-btn">
+            Learn More
+          </button>
+        </div>
         <small className="disclaimer">*Join and make a positive impact!</small>
       </div>
 
       <div className="sell-top-image">
-        <FaRecycle size={100} color="#32cd32" /> {/* Recycle icon */}
+        <FaRecycle size={120} color="#32cd32" />
       </div>
 
-      {/* Pass the ref to the "Upload Your Scrap Details" section */}
       <div ref={formSectionRef} />
     </div>
   );

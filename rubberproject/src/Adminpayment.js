@@ -266,7 +266,7 @@ function AdminPayment() {
           />
         </div>
 
-        {/* Table only shows if there are files */}
+        
         {filteredFiles.length > 0 ? (
           <div className="table-responsive" style={{ maxHeight: '500px', overflowY: 'auto' }}>
             <table className="table table-striped table-bordered">

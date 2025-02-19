@@ -23,12 +23,13 @@ const Footer = () => {
             <div className="text-left text-lg-end"> {/* Center text on small screens, right align on medium and larger screens */}
               <h5 className="fw-bolds">Quick Links</h5>
               <ul className="quick-links list-unstyled"> {/* Center the list items */}
-  <li><Link to ="/"><a >Home</a></Link></li>
-  <li><Link to ="/AboutUsPage"><a >About Us</a></Link></li>
-  <li><Link to ="/Sell"><a >Sell</a></Link></li>
-  <li><Link to ="/Contact"><a >Contact</a></Link></li>
+                  <li><Link to ="/"><a >Home</a></Link></li>
+                  <li><Link to ="/AboutUsPage"><a >About Us</a></Link></li>
+                  <li><Link to ="/Productspage"><a >Bus</a></Link></li>
+                  <li><Link to ="/Sell"><a >Sell</a></Link></li>
+                  <li><Link to ="/Contact"><a >Contact</a></Link></li>
  
-</ul>
+              </ul>
 
             </div>
           </Col>
