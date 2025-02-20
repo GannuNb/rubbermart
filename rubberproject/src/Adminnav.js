@@ -16,7 +16,9 @@ function Adminnav() {
   // Logout function
   const handleLogout = () => {
     localStorage.removeItem("admin_token"); // Remove the token from localStorage
+    window.location.reload();
     navigate("/admin"); // Redirect to admin page (or any other page you want)
+    
   };
 
   // Check if user is authenticated (token exists)
@@ -57,7 +59,7 @@ function Adminnav() {
               id="navbarNav"
             >
               <ul className="navbar-nav ms-auto">
-                <li className="nav-item mx-2">
+                {/* <li className="nav-item mx-2">
                   <Link
                     to="/Admin"
                     className="nav-link nav-hover"
@@ -65,7 +67,7 @@ function Adminnav() {
                   >
                     <b>Scrap Items</b>
                   </Link>
-                </li>
+                </li> */}
                 <li className="nav-item mx-2">
                   <Link
                     to="/Adminshipping"

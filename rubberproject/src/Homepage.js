@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef,useState } from 'react';
 import { Link } from 'react-router-dom'; // Import Link
 import SrenComponent from './SrenComponent';
 import './Homepage.css'; 
@@ -11,7 +11,8 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import VisibilityIcon from '@mui/icons-material/Visibility'; // Eye icon
 import Cate from './Cate';
 import Morefor from './Morefor';
-
+import './Home.css';
+import './Card.css';
 import mulchImage from './images/mulch.jpeg'; 
 import MultipleBaledTyresPCRImage from './images/MultipleBaledTyresPCR.jpeg';
 import ThreePiecePCRImage from './images/ThreePiecePCR.jpeg';
@@ -37,6 +38,8 @@ const products = [
 ];
 
 function Homepage() {
+
+  const [hoveredCard, setHoveredCard] = useState(null);
   const productRowRef = useRef(null);
 
   const scrollLeft = () => {
@@ -69,37 +72,40 @@ function Homepage() {
       <p className="products-heading">Available to Buy</p>
 
       <div className="products-wrapper">
-        <button className="scroll-btn left" onClick={scrollLeft}>
-          <ArrowBackIosIcon />
-        </button>
+  <button className="scroll-btn left" onClick={scrollLeft}>
+    <ArrowBackIosIcon />
+  </button>
 
-        <div className="products-container" ref={productRowRef}>
-          {products.map((product) => (
-            // Wrap only the image and product name with Link
-            <div className="product-card" key={product.id}>
-              <Link to={product.link || '#'} className="product-link">
-                <div className="image-container">
-                  <img src={product.image} alt={product.name} className="product-image" />
-                  <VisibilityIcon className="eye-icon" />
-                </div>
-                <div className="product-info">
-                  <p className="category">{product.category}</p>
-                  <p className="product-name">{product.name}</p>
-                </div>
-              </Link>
-
-              {/* Rating stars outside of the Link */}
-              <div className="rating">
-                {'★'.repeat(product.rating) + '☆'.repeat(5 - product.rating)}
-              </div>
-            </div>
-          ))}
+  <div className="products-container" ref={productRowRef}>
+    {products.map((product) => (
+      <div
+        className={`product-card animate-card ${hoveredCard !== null && hoveredCard !== product.id ? 'inactive' : ''}`}
+        key={product.id}
+        onMouseEnter={() => setHoveredCard(product.id)}
+        onMouseLeave={() => setHoveredCard(null)}
+      >
+        <Link to={product.link || '#'} className="product-link">
+          <div className="image-container">
+            <img src={product.image} alt={product.name} className="product-image" />
+            <VisibilityIcon className="eye-icon" />
+          </div>
+          <div className="product-info">
+            <p className="category">{product.category}</p>
+            <p className="product-name">{product.name}</p>
+          </div>
+        </Link>
+        <div className="rating">
+          {'★'.repeat(product.rating) + '☆'.repeat(5 - product.rating)}
         </div>
-
-        <button className="scroll-btn right" onClick={scrollRight}>
-          <ArrowForwardIosIcon />
-        </button>
       </div>
+    ))}
+  </div>
+
+  <button className="scroll-btn right" onClick={scrollRight}>
+    <ArrowForwardIosIcon />
+  </button>
+</div>
+
 
       <Cate/>
       <SrenComponent />

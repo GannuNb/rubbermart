@@ -13,7 +13,7 @@ function Adminshipping() {
   const [selectedFiles, setSelectedFiles] = useState({});
   const [fileErrors, setFileErrors] = useState({});
   const navigate = useNavigate();
-   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [searchFilters, setSearchFilters] = useState({
     companyName: '',
     startDate: '',
@@ -24,12 +24,12 @@ function Adminshipping() {
   useEffect(() => {
     const tokenKey = `admin_token`; // Check if any valid token exists
     if (localStorage.getItem(tokenKey)) {
-        setIsAuthenticated(true);  // If the token is found, user is authenticated
+      setIsAuthenticated(true);  // If the token is found, user is authenticated
     } else {
-        // If no token, navigate to the login page
-        navigate('/admin');  // Adjust this path to match your actual login page route
+      // If no token, navigate to the login page
+      navigate('/admin');  // Adjust this path to match your actual login page route
     }
-}, [navigate]); // Make sure to include `navigate` in the dependency array
+  }, [navigate]); // Make sure to include `navigate` in the dependency array
 
   const [filteredCompanies, setFilteredCompanies] = useState([]);
 
@@ -59,38 +59,38 @@ function Adminshipping() {
 
 
   // Handle searching for company names and updating dropdown
-const handleSearchChange = (e) => {
-  const query = e.target.value;
-  setSearchFilters((prevFilters) => ({
-    ...prevFilters,
-    companyName: query,
-  }));
+  const handleSearchChange = (e) => {
+    const query = e.target.value;
+    setSearchFilters((prevFilters) => ({
+      ...prevFilters,
+      companyName: query,
+    }));
 
-  if (query) {
-    const filtered = orders
-      .map(order => {
-        const companyName = order.user?.businessProfiles[0]?.companyName;
-        const companyId = order.user?.businessProfiles[0]?.profileId;
-        return companyName && companyId ? { companyName, companyId } : null;
-      })
-      .filter(item => item && item.companyName.toLowerCase().includes(query.toLowerCase()))
-      .filter((value, index, self) => self.findIndex(v => v.companyId === value.companyId) === index); // Remove duplicates by company ID
+    if (query) {
+      const filtered = orders
+        .map(order => {
+          const companyName = order.user?.businessProfiles[0]?.companyName;
+          const companyId = order.user?.businessProfiles[0]?.profileId;
+          return companyName && companyId ? { companyName, companyId } : null;
+        })
+        .filter(item => item && item.companyName.toLowerCase().includes(query.toLowerCase()))
+        .filter((value, index, self) => self.findIndex(v => v.companyId === value.companyId) === index); // Remove duplicates by company ID
 
-    setFilteredCompanies(filtered);
-  } else {
-    setFilteredCompanies([]);
-  }
-};
+      setFilteredCompanies(filtered);
+    } else {
+      setFilteredCompanies([]);
+    }
+  };
 
 
-// Handle company selection from the dropdown
-const handleCompanySelect = (company) => {
-  setSearchFilters((prevFilters) => ({
-    ...prevFilters,
-    companyName: company,
-  }));
-  setFilteredCompanies([]); // Close the dropdown after selection
-};
+  // Handle company selection from the dropdown
+  const handleCompanySelect = (company) => {
+    setSearchFilters((prevFilters) => ({
+      ...prevFilters,
+      companyName: company,
+    }));
+    setFilteredCompanies([]); // Close the dropdown after selection
+  };
 
 
   useEffect(() => {
@@ -147,7 +147,7 @@ const handleCompanySelect = (company) => {
 
   const handleShipmentFromDropdownChange = (orderId, e) => {
     const selectedShipmentFrom = e.target.value;
-  
+
     setInputValues((prevValues) => ({
       ...prevValues,
       [orderId]: {
@@ -156,16 +156,16 @@ const handleCompanySelect = (company) => {
       },
     }));
   };
-  
-  
-  
-  
+
+
+
+
 
   const handleFileChange = (orderId, e) => {
     const file = e.target.files[0];
     const fileType = e.target.name;
 
-    
+
     if (file && file.size > 1 * 1024 * 1024) {
       setFileErrors((prevErrors) => ({
         ...prevErrors,
@@ -193,28 +193,28 @@ const handleCompanySelect = (company) => {
   const handleShip = async (orderId) => {
     const orderInput = inputValues[orderId] || {};
     const { vehicleNumber, quantity, selectedProduct, shipmentFrom } = orderInput;
-  
+
     // Explicit validation check for each field
     if (!vehicleNumber || vehicleNumber.trim() === '') {
       alert('Please enter a valid vehicle number.');
       return;
     }
-  
+
     if (!quantity || quantity <= 0) {
       alert('Please enter a valid quantity.');
       return;
     }
-  
+
     if (!selectedProduct || selectedProduct.trim() === '') {
       alert('Please select a product.');
       return;
     }
-  
+
     if (!shipmentFrom || shipmentFrom.trim() === '') {
       alert('Please enter shipment source (Shipment From).');
       return;
     }
-  
+
     // Proceed with form submission if validation passes
     const shippingData = new FormData();
     shippingData.append('vehicleNumber', vehicleNumber);
@@ -222,7 +222,7 @@ const handleCompanySelect = (company) => {
     shippingData.append('selectedProduct', selectedProduct);
     shippingData.append('orderId', orderId);
     shippingData.append('shipmentFrom', shipmentFrom);  // Include shipmentFrom
-  
+
     // Append files if selected
     if (selectedFiles[orderId]) {
       if (selectedFiles[orderId].bill) {
@@ -232,7 +232,7 @@ const handleCompanySelect = (company) => {
         shippingData.append('invoicePdf', selectedFiles[orderId].invoice);
       }
     }
-  
+
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/shipping`,
@@ -243,7 +243,7 @@ const handleCompanySelect = (company) => {
       );
       console.log('Shipping data stored:', response.data);
       alert('Shipping data stored successfully!');
-  
+
       // Refresh the page after successful submission
       window.location.reload();
     } catch (err) {
@@ -259,9 +259,9 @@ const handleCompanySelect = (company) => {
       }
     }
   };
-  
-  
-  
+
+
+
 
   const generatePDF = (order) => {
     const doc = new jsPDF();
@@ -358,19 +358,19 @@ const handleCompanySelect = (company) => {
                 className="form-control"
                 autoComplete="off"
               />
-{filteredCompanies.length > 0 && (
-  <ul className="dropdown-list shadow p-2">
-    {filteredCompanies.map((item, index) => (
-      <li
-        key={index}
-        onClick={() => handleCompanySelect(item.companyName)}
-        className="dropdown-item"
-      >
-        {item.companyName} ({item.companyId})
-      </li>
-    ))}
-  </ul>
-)}
+              {filteredCompanies.length > 0 && (
+                <ul className="dropdown-list shadow p-2">
+                  {filteredCompanies.map((item, index) => (
+                    <li
+                      key={index}
+                      onClick={() => handleCompanySelect(item.companyName)}
+                      className="dropdown-item"
+                    >
+                      {item.companyName} ({item.companyId})
+                    </li>
+                  ))}
+                </ul>
+              )}
 
             </div>
 
@@ -400,194 +400,178 @@ const handleCompanySelect = (company) => {
           </div>
         </div>
 
-
-        {/* Filtered Orders Table */}
         <div className="table-responsive">
-        <table className="table table-bordered table-hover table-striped">
-  <thead className="table-dark">
-    <tr>
-      <th>S.No</th> {/* Serial number column */}
-      <th>Order ID</th>
-      <th>Company Id</th>
-      <th>Company Name</th>
-      <th>Loading Location</th>
-      <th>Subtotal</th>
-      <th>GST</th>
-      <th>Total Price</th>
-      <th>Status</th>
-      <th>Order Date</th>
-      <th>Vehicle Number</th>
-      <th>Quantity</th>
-      <th>Product</th>
-      <th>E-way Bill & Invoice</th>
-      <th>Shipment From</th>
-      <th>Ship</th>
-    </tr>
-  </thead>
-  <tbody>
-    {filteredOrders.map((order, index) => (
-      <React.Fragment key={order._id}>
-        <tr className="custom-row">
-          <td><b>{index + 1}</b></td> 
-          
-          <td>{order._id}</td>
-          <td>{order.user?.businessProfiles[0]?.profileId || 'N/A'}</td>
-          <td>{order.user?.businessProfiles[0]?.companyName || 'N/A'}</td>
-          <td>{order.items?.[0]?.loading_location || 'N/A'}</td>
-          <td>{order.subtotal}</td>
-          <td>{order.gst}</td>
-          <td>{order.totalPrice}</td>
-          <td>{order.status}</td>
-          <td>{new Date(order.orderDate).toLocaleString()}</td>
-          <td>
-            <input
-              type="text"
-              name="vehicleNumber"
-              value={inputValues[order._id]?.vehicleNumber || ''}
-              onChange={(e) => handleInputChange(order._id, e)}
-              placeholder="Enter vehicle number"
-              className="form-control vehicle-input"
-            />
-          </td>
+  {filteredOrders.map((order, index) => (
+    <div key={order._id} className="mb-4"> {/* Adds spacing between orders */}
+      <table className="table table-bordered table-hover table-striped">
+        {/* Order Headers */}
+        <thead className="table-dark">
+          <tr>
+            <th>S.No</th>
+            <th>Order ID</th>
+            <th>Company Id</th>
+            <th>Company Name</th>
+            <th>Loading Location</th>
+            <th>Subtotal</th>
+            <th>GST</th>
+            <th>Total Price</th>
+            <th>Status</th>
+            <th>Order Date</th>
+            <th>Vehicle Number</th>
+            <th>Quantity</th>
+            <th>Product</th>
+            <th>E-way Bill & Invoice</th>
+            <th>Shipment From</th>
+            <th>Ship</th>
+          </tr>
+        </thead>
 
-          <td>
-            <input
-              type="number"
-              name="quantity"
-              value={inputValues[order._id]?.quantity || ''}
-              onChange={(e) => handleInputChange(order._id, e)}
-              placeholder="Enter quantity"
-              className="form-control quantity-input"
-            />
-          </td>
-
-          <td>
-            <select
-              name="selectedProduct"
-              value={inputValues[order._id]?.selectedProduct || ''}
-              onChange={(e) => handleInputChange(order._id, e)}
-              className="form-control product-select"
-            >
-              <option value="">Select Product</option>
-              {order.items.map((item) => (
-                <option key={item.name} value={item.name}>
-                  {item.name}
+        {/* Order Data */}
+        <tbody>
+          <tr>
+            <td><b>{index + 1}</b></td>
+            <td>{order._id}</td>
+            <td>{order.user?.businessProfiles[0]?.profileId || 'N/A'}</td>
+            <td>{order.user?.businessProfiles[0]?.companyName || 'N/A'}</td>
+            <td>{order.items?.[0]?.loading_location || 'N/A'}</td>
+            <td>{order.subtotal}</td>
+            <td>{order.gst}</td>
+            <td>{order.totalPrice}</td>
+            <td>{order.status}</td>
+            <td>{new Date(order.orderDate).toLocaleString()}</td>
+            <td>
+              <input
+                type="text"
+                name="vehicleNumber"
+                value={inputValues[order._id]?.vehicleNumber || ''}
+                onChange={(e) => handleInputChange(order._id, e)}
+                placeholder="Enter vehicle number"
+                className="form-control"
+              />
+            </td>
+            <td>
+              <input
+                type="number"
+                name="quantity"
+                value={inputValues[order._id]?.quantity || ''}
+                onChange={(e) => handleInputChange(order._id, e)}
+                placeholder="Enter quantity"
+                className="form-control"
+              />
+            </td>
+            <td>
+              <select
+                name="selectedProduct"
+                value={inputValues[order._id]?.selectedProduct || ''}
+                onChange={(e) => handleInputChange(order._id, e)}
+                className="form-control"
+              >
+                <option value="">Select Product</option>
+                {order.items.map((item) => (
+                  <option key={item.name} value={item.name}>{item.name}</option>
+                ))}
+              </select>
+            </td>
+            <td>
+              <input
+                type="file"
+                name="bill"
+                accept="application/pdf"
+                onChange={(e) => handleFileChange(order._id, e)}
+                className="form-control"
+              />
+              {fileErrors[order._id] && (
+                <small className="text-danger">{fileErrors[order._id]}</small>
+              )}
+            </td>
+            <td>
+              <select
+                name="shipmentFromDropdown"
+                onChange={(e) => handleShipmentFromDropdownChange(order._id, e)}
+                className="form-select mb-2"
+              >
+                <option value="">Select Shipment From</option>
+                <option value="#406, 4th Floor, Patel Towers, Above EasyBuy Beside Nagole RTO Office, Nagole Hyderabad, Telangana-500068">
+                  #406, 4th Floor, Patel Towers, Above EasyBuy Beside Nagole RTO Office, Nagole Hyderabad, Telangana-500068
                 </option>
-              ))}
-            </select>
-          </td>
+              </select>
+              <textarea
+                name="shipmentFrom"
+                value={inputValues[order._id]?.shipmentFrom || ''}
+                onChange={(e) => handleInputChange(order._id, e)}
+                placeholder="Enter Shipment From"
+                className="form-control"
+                style={{ resize: 'both', minHeight: '40px', minWidth: '200px' }}
+              />
+            </td>
+            <td>
+              <button
+                onClick={() => handleShip(order._id)}
+                className="btn btn-success"
+              >
+                Ship
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-          <td>
-            <input
-              type="file"
-              name="bill"
-              accept="application/pdf"
-              onChange={(e) => handleFileChange(order._id, e)}
-              className="form-control file-input"
-            />
-            {fileErrors[order._id] && (
-              <small className="text-danger">{fileErrors[order._id]}</small>
-            )}
-          </td>
+      {/* Sub-table for Order Items */}
+      <table className="table table-bordered mt-2">
+        <thead className="table text-center">
+          <tr>
+            <th>Seller Id</th>
+            <th>Item Name</th>
+            <th>Quantity</th>
+            <th>Shipped Quantity</th>
+            <th>Remaining Quantity</th>
+            <th>Vehicle Numbers</th>
+            <th>Shipping Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          {order.items.map((item, index) => {
+            const shippedDetails = order.shippingDetails.filter(
+              (shipping) => shipping.selectedProduct === item.name
+            );
+            const shippedQuantity = shippedDetails.reduce(
+              (total, shipping) => total + shipping.quantity,
+              0
+            );
+            const remainingQuantity = item.quantity - shippedQuantity;
 
-          <td>
-            {/* Dropdown for predefined shipmentFrom address */}
-            <select
-              name="shipmentFromDropdown"
-              onChange={(e) => handleShipmentFromDropdownChange(order._id, e)}
-              className="form-select mb-2" // Bootstrap select class with margin-bottom for spacing
-            >
-              <option value="">Select Shipment From</option>
-              <option value="#406, 4th Floor, Patel Towers, Above EasyBuy Beside Nagole RTO Office, Nagole Hyderabad, Telangana-500068">
-                #406, 4th Floor, Patel Towers, Above EasyBuy Beside Nagole RTO Office, Nagole Hyderabad, Telangana-500068
-              </option>
-            </select>
-
-            {/* Textarea for shipmentFrom */}
-            <textarea
-              name="shipmentFrom"
-              value={inputValues[order._id]?.shipmentFrom || ''} // Handle empty value correctly
-              onChange={(e) => handleInputChange(order._id, e)} // Update inputValues on change
-              placeholder="Enter Shipment From"
-              className="form-control mb-2" // Bootstrap form-control with margin-bottom for spacing
-              style={{ resize: 'both', minHeight: '40px', minWidth: '200px' }} // Reduced height to 40px
-            />
-          </td>
-
-          <td>
-            <button
-              onClick={() => handleShip(order._id)}
-              className="btn btn-success ship-button"
-            >
-              Ship
-            </button>
-          </td>
-        </tr>
-
-        <tr>
-          <td colSpan="13">
-            <table className="table table-bordered mt-2">
-              <thead className="text-center">
-                <tr className="table-light">
-                <th className="p-1" style={{ fontSize: '0.85rem' }}>Seller Id</th>
-                  <th className="p-1" style={{ fontSize: '0.85rem' }}>Item Name</th>
-                  <th className="p-1" style={{ fontSize: '0.85rem' }}>Quantity</th>
-                  <th className="p-1" style={{ fontSize: '0.85rem' }}>Shipped Quantity</th>
-                  <th className="p-1" style={{ fontSize: '0.85rem' }}>Remaining Quantity</th>
-                  <th className="p-1" style={{ fontSize: '0.85rem' }}>Vehicle Numbers</th>
-                  <th className="p-1" style={{ fontSize: '0.85rem' }}>Shipping Details</th>
-                </tr>
-              </thead>
-              <tbody>
-                {order.items.map((item, index) => {
-                  const shippedDetails = order.shippingDetails.filter(
-                    (shipping) => shipping.selectedProduct === item.name
-                  );
-
-                  const shippedQuantity = shippedDetails.reduce(
-                    (total, shipping) => total + shipping.quantity,
-                    0
-                  );
-                  const remainingQuantity = item.quantity - shippedQuantity;
-
-                  return (
-                    <tr key={index}>
-                      <td className="p-0 text-center align-middle" style={{ lineHeight: '2', fontSize: '0.85rem', width: '100px' }}>{item.sellerid}</td>
-                      <td className="p-0 text-center align-middle" style={{ lineHeight: '2', fontSize: '0.85rem', width: '100px' }}>{item.name}</td>
-                      <td className="p-0 text-center align-middle" style={{ lineHeight: '2', fontSize: '0.85rem', width: '10%' }}>{item.quantity}</td>
-                      <td className="p-0 text-center align-middle" style={{ lineHeight: '2', fontSize: '0.85rem', width: '10%' }}>{shippedQuantity}</td>
-                      <td className="p-0 text-center align-middle" style={{ lineHeight: '2', fontSize: '0.85rem', width: '10%' }}>{remainingQuantity}</td>
-                      <td className="p-0 text-center align-middle" style={{ lineHeight: '2', fontSize: '0.85rem', width: '150px' }}>
-                        <small className="text-muted">
-                          {shippedDetails
-                            .map((shipping) => shipping.vehicleNumber)
-                            .join(", ")}
-                        </small>
-                      </td>
-                      {index === 0 && (
-                        <td className="p-0 text-center align-middle" style={{ lineHeight: '1.2', fontSize: '0.85rem', width: '120px' }}>
-                          <button
-                            onClick={() => generatePDF(order)}
-                            className="btn btn-primary btn-sm ms-2"
-                            style={{ padding: '0.5rem 0.7rem', fontSize: '0.75rem' }}
-                          >
-                            PDF
-                          </button>
-                        </td>
-                      )}
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </td>
-        </tr>
-      </React.Fragment>
-    ))}
-  </tbody>
-</table>
-
+            return (
+              <tr key={index}>
+                <td className="text-center align-middle">{item.sellerid}</td>
+                <td className="text-center align-middle">{item.name}</td>
+                <td className="text-center align-middle">{item.quantity}</td>
+                <td className="text-center align-middle">{shippedQuantity}</td>
+                <td className="text-center align-middle">{remainingQuantity}</td>
+                <td className="text-center align-middle">
+                  <small className="text-muted">
+                    {shippedDetails.map((shipping) => shipping.vehicleNumber).join(", ")}
+                  </small>
+                </td>
+                {index === 0 && (
+                  <td className="text-center align-middle">
+                    <button
+                      onClick={() => generatePDF(order)}
+                      className="btn btn-primary btn-sm"
+                    >
+                      PDF
+                    </button>
+                  </td>
+                )}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  ))}
 </div>
+
+
 
       </div>
     </div>

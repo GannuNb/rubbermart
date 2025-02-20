@@ -541,11 +541,11 @@ function Sidebar() {
                 className="bttop"
                 style={{ color: "black", fontWeight: 530 }}
                 onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = "#218a79";
-                  e.target.style.transform = "scale(1.05)";
+                  e.target.style.backgroundColor = "rgb(25, 187, 219)";
+                  e.target.style.transform = " rgb(78, 195, 219)";
                 }}
                 onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = "#28c699";
+                  e.target.style.backgroundColor = "rgb(78, 195, 219)";
                   e.target.style.transform = "scale(1)";
                 }}
               >

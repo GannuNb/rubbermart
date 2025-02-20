@@ -25,7 +25,7 @@ const Footer = () => {
               <ul className="quick-links list-unstyled"> {/* Center the list items */}
                   <li><Link to ="/"><a >Home</a></Link></li>
                   <li><Link to ="/AboutUsPage"><a >About Us</a></Link></li>
-                  <li><Link to ="/Productspage"><a >Bus</a></Link></li>
+                  <li><Link to ="/Productspage"><a >Buy</a></Link></li>
                   <li><Link to ="/Sell"><a >Sell</a></Link></li>
                   <li><Link to ="/Contact"><a >Contact</a></Link></li>
  

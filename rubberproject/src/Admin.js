@@ -15,6 +15,7 @@ const AdminPage = () => {
     const [loading, setLoading] = useState(false);  // Set initial loading to false
     const [error, setError] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const navigate = useNavigate();
 
     const [newItemFormData, setNewItemFormData] = useState({
         name: '',
@@ -235,6 +236,7 @@ const AdminPage = () => {
             const tokenKey = `admin_token`; // Using a single token key for storing the JWT token
             localStorage.setItem(tokenKey, response.data.token); // Store the JWT token
             setIsAuthenticated(true); // Set authentication to true on successful login
+            navigate("/adminshipping")
         } catch (err) {
             setLoginError('Invalid email or password.');
             setError('Login failed. Please try again.');

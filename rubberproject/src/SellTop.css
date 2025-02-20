@@ -5,8 +5,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 75vh; /* Reduced the height to 75% of the viewport */
-  padding: 30px 20px; /* Reduced padding for a more compact design */
+  min-height: 52vh; /* Reduced the height to 75% of the viewport */
+  padding: 2%; /* Reduced padding for a more compact design */
   background: linear-gradient(135deg, #0a74da 0%, #38c9a9 100%);
   border-radius: 15px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -53,6 +53,7 @@
   line-height: 1.8;
   margin-bottom: 30px;
   color: rgba(255, 255, 255, 0.85);
+  text-align: justify;
 }
 
 .cta-buttons {
