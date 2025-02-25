@@ -66,7 +66,7 @@ function RubberCrumSteel() {
         <div className="container">
           <div className="row py-5">
             <div className="col-md-6">
-              <img src={rubbercrumimg1} alt="Rubber Crumb Steel" className="img-fluid" />
+              <img src={rubbercrumimg1} alt="Rubber Crumb Steel" className="img-fluid imgmore" />
             </div>
             <div className="col-md-6">
               <h2 className="text-center">Rubber Crumb Steel</h2>

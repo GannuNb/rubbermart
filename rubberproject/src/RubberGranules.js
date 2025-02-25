@@ -38,7 +38,7 @@ function RubberGranules() {
         <div className="container py-5">
           <div className="row">
             <div className="col-md-6">
-              <img src={RubberGranulesImage} alt="Rubber Granules" className="img-fluid" />
+              <img src={RubberGranulesImage} alt="Rubber Granules" className="img-fluid imgmore" />
             </div>
             <div className="col-md-6">
               <h2 className="text-center">Rubber Granules</h2>
@@ -65,7 +65,7 @@ function RubberGranules() {
         <div className="container">
           <div className="row py-5">
             <div className="col-md-6">
-              <img src={RubberGranulesImage} alt="Rubber Granules" className="img-fluid" />
+              <img src={RubberGranulesImage} alt="Rubber Granules" className="img-fluid imgmore" />
             </div>
             <div className="col-md-6">
               <h2 className="text-center">Rubber Granules</h2>

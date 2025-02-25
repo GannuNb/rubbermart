@@ -1,235 +1,447 @@
-.img-hover-effect {
-    transition: transform 0.3s ease;
+.imgmore {
+  height: 325px !important;
+  margin-left: 5%;
 }
-.img-hover-effect:hover {
-    transform: scale(1.05);
-}
-.mulch-container {
-    margin-left: 115px;
-}
-.img-fluid {
-    height: 325px !important;
-    margin-left: 5%;
-}
-@media (max-width: 992px) and (min-width: 769px) {
-    .mulch-container {
-        margin-left: 0 !important;
-        padding: 15px;
-    }
-    .img-fluid {
-        width: 90% !important;
-        margin-left: 0 !important;
-    }
-    .mulch-container .row .col-md-6 {
-        margin-top: 20px;
-    }
-}
-@media (max-width: 768px) {
-    .mulch-container {
-        margin-left: 0 !important;
-        padding: 10px;
-    }
-    .img-fluid {
-        width: 100% !important;
-        margin-left: 0 !important;
-    }
-    .mulch-container .row .col-md-6 {
-        margin-top: 20px;
-    }
-}
-@media (max-width: 1300px) {
-
-    .container {
-        max-width: 83% !important;
-    }
-}
-@media (max-width: 600px) {
-
-    .container {
-        max-width: 100% !important;
-    }
-}
-.specifications-section {
-    background: linear-gradient(135deg, #17a2b8, #0d6efd);
-    padding: 3rem 2%;
-    margin-top: 12px;
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    box-sizing: border-box;
-    border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    animation: fadeIn 1.5s ease-in-out;
-    overflow: hidden;
-    position: relative;
-}
-@keyframes gradientAnimation {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
-}
-.specifications-section {
-    background-size: 200% 200%;
-    animation: gradientAnimation 5s infinite alternate;
-}
-.specifications-section h3 {
-    text-align: center;
-    color: white;
-    font-size: 2rem;
-    animation: bounce 2s infinite;
-    transition: transform 0.3s ease-in-out;
-    transform-origin: center center; 
-}
-.specifications-section h3:hover {
-    transform: rotate(-5deg);
-}
-@keyframes bounce {
-    0%, 100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-10px);
-    }
-}
-.spec-label {
-    color: white;
-    font-weight: bold;
-    display: block;
-    margin-bottom: 5px;
-    animation: float 3s infinite ease-in-out;
-}
-.spec-value {
-    display: block;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: white;
-    color: #333;
-    font-weight: 500;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-}
-.spec-value:hover {
-    transform: scale(1.05); 
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
-}
-.required-quantity-input {
-    width: 48%;
-    padding: 5px;
-    font-size: 0.9rem;
-    margin-top: 5px;
-    border: 2px solid #ccc;
-    border-radius: 5px;
-    transition: border 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-}
-.required-quantity-input:focus {
-    border-color: #ffc107;
-    box-shadow: 0 0 15px rgba(255, 193, 7, 0.8);
-    animation: pulseFocus 1s infinite alternate;
-}
-@keyframes pulseFocus {
-    0% {
-        border-color: #ffc107;
-    }
-    100% {
-        border-color: #ff9800;
-    }
-}
-.order-button-section .btn-primary {
-    font-size: 1rem;
-    font-weight: bold;
-    padding: 10px 20px;
-    background: linear-gradient(45deg, #007bff, #0d6efd);
-    border: none;
-    border-radius: 5px;
-    color: white;
-    cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
-    position: relative;
-    overflow: hidden;
-}
-.order-button-section .btn-primary:hover {
-    transform: translateY(-3px); 
-    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.5);
-}
-.order-button-section .btn-primary:active::after {
-    content: "";
-    position: absolute;
-    width: 300px;
-    height: 300px;
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0);
-    animation: rippleEffect 0.6s ease-out;
-}
-@keyframes rippleEffect {
-    to {
-        transform: translate(-50%, -50%) scale(4);
-        opacity: 0;
-    }
-}
-.order-button-section .btn-primary:hover,
-.required-quantity-input:hover {
-    border: 2px solid #17a2b8;
-    box-shadow: 0 0 20px #17a2b8;
-}
-@media (max-width: 768px) {
-    .specifications-section {
-        padding: 2rem 1rem; 
-    }
-    .specifications-section h3 {
-        font-size: 1.5rem; 
-    }
-    .required-quantity-input {
-        width: 100%; 
-        max-width: 400px; 
-    }
-    .order-button-section .btn-primary {
-        width: 100%; 
-        padding: 12px 16px;
-    }
-    .spec-value:hover,
-    .required-quantity-input:focus {
-        transform: scale(1.05);
-        box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-    }
-    .order-button-section .btn-primary:hover {
-        transform: translateY(-3px); 
-    }
-}
-
 .no-stock-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 10vh; /* Adjust this as needed, or set a specific height */
-    text-align: center;
-  }
-  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 10vh;
+  /* Adjust this as needed, or set a specific height */
+  text-align: center;
+}
 
-
-
-  /* Ensures proper row spacing */
-.cards-container {
+/* Ensures proper row spacing */
+/* .cards-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: left;
-  gap: 10%; /* Adds space between cards */
+  gap: 10%; 
 }
 
-
-  
   .trusted-seller-icon {
     width: 60px;
     height: auto;
     display: inline-block;
+  } */
+
+/* MAIN CONTAINER */
+.approval-cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  /* Cards start from the left side */
+  gap: 15px;
+}
+
+/* CARD STYLING */
+.approval-card {
+  background-color: #fff;
+  border-radius: 12px;
+  width: 78%;
+  max-width: 900px;
+  border: 1px solid #ddd;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 15px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* IMAGE SECTION */
+.approval-image-container {
+  flex: 0 0 35%;
+  /* Image starts from left */
+  max-width: 300px;
+}
+
+.approval-card-image {
+  border-radius: 8px;
+  max-height: 200px;
+  object-fit: contain;
+  width: 100%;
+  margin-top: 9%;
+}
+
+/* DIVIDER LINE */
+.approval-divider {
+  width: 2px;
+  height: 100%;
+  background-color: #ddd;
+  margin: 0 15px;
+}
+
+/* CONTENT SECTION */
+.approval-card-body {
+  flex-grow: 1;
+  padding: 10px;
+  text-align: left;
+  /* Content starts from left */
+}
+
+.approval-title {
+  font-weight: 600;
+  color: #333;
+}
+
+.approval-material,
+.approval-price,
+.approval-seller,
+.approval-location {
+  font-size: 90%;
+}
+
+.approval-location-icon {
+  color: red;
+  margin-right: 5px;
+}
+
+.approval-trusted-seller-icon {
+  width: 60px;
+  height: auto;
+  display: inline-block;
+}
+
+/* Button Styling */
+.approval-button-container {
+  display: flex;
+  justify-content: flex-start;
+  /* Ensures button starts from the left */
+  margin-top: 10px;
+}
+
+.approval-more-details-btn {
+  border-radius: 6px;
+  padding: 10px 15px;
+  font-size: 13px;
+  font-weight: bold;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.approval-more-details-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Parent container to maintain positioning */
+.categoriess-container {
+  position: relative;
+  /* Keeps it in the normal flow */
+  display: flex;
+  justify-content: flex-end;
+  /* Aligns content to the right */
+  width: 100%;
+  /* Full width to maintain structure */
+}
+
+/* Main Categories Box - Stays on the right side */
+.categories-box {
+  position: absolute;
+  top: 100px;
+  /* Adjust based on your layout */
+  right: 0;
+  /* Sticks to the right */
+  z-index: 999;
+  max-width: 220px;
+  /* Reduce width */
+  background: #f8f9fa;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom scrollbar */
+.category-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.category-list::-webkit-scrollbar-thumb {
+  background: #90c5c8;
+  border-radius: 10px;
+}
+
+.custom-carousel .slick-prev,
+.custom-carousel .slick-next {
+  z-index: 10;
+  font-size: 24px;
+  color: black;
+}
+
+.custom-carousel .slick-prev {
+  left: -30px;
+}
+
+.custom-carousel .slick-next {
+  right: -30px;
+}
+
+.carousel-image {
+  height: 250px;
+  object-fit: cover;
+  width: 100%;
+}
+
+.text-justify {
+  text-align: justify;
+}
+
+h2.text-center {
+  width: 100%;
+}
+
+.custom-carousel .carousel-image {
+  height: 280px;
+  object-fit: cover;
+  width: 100%;
+}
+
+h2 {
+  margin-bottom: 0px;
+  /* Reduce space below heading */
+}
+
+.approval-cards-container {
+  margin-top: 5px !important;
+  /* Bring cards closer */
+}
+
+.approval-card {
+  margin-top: 10px;
+  /* Reduce spacing */
+}
+
+.category-list {
+  width: 200px;
+  /* Set a fixed width */
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.scroll-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  /* Keeps spacing even */
+  max-height: 300px;
+  /* Set max height */
+  overflow-y: auto;
+  /* Scroll if overflow */
+}
+
+.category-item {
+  display: block;
+  padding: 10px;
+  text-align: left;
+  background: linear-gradient(to right, #d6eefc, #f4f9fc);
+  border-radius: 5px;
+  text-decoration: none;
+  color: black;
+  font-weight: 500;
+  transition: background 0.3s ease;
+  white-space: nowrap;
+  /* Prevents text from wrapping */
+}
+
+.category-item:hover {
+  background: #cce7ff;
+  text-decoration: none;
+  /* Ensure no underline on hover too */
+}
+
+/* Mobile adjustments only */
+@media (max-width: 768px) {
+  /* Main layout - Stacking and adjusting elements */
+  .approval-card {
+    flex-direction: column;
+    /* Image on top, content below */
+    align-items: center;
+    /* Centering content */
   }
-  
+
+  .approval-image-container {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .approval-card-image {
+    max-height: 200px;
+    /* Adjusted size for better fit */
+    margin-bottom: 10px;
+  }
+
+  .approval-card-body {
+    width: 100%;
+    padding-left: 0;
+  }
+
+  .approval-divider {
+    display: none;
+    /* Hide divider in mobile */
+  }
+
+  .approval-button-container {
+    justify-content: center;
+    /* Center the button */
+  }
+
+  .category-list {
+    display: none;
+    /* Hide category list by default */
+  }
+
+  .category-list.show {
+    display: block;
+    /* Show when `isOpen` is true */
+  }
+
+  .category-item {
+    display: block;
+    padding: 8px 12px;
+    text-decoration: none;
+    color: black;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .category-item:hover {
+    background-color: #f8f9fa;
+  }
+
+  /* Dropdown Button for Categories on mobile */
+  .categories-box {
+    width: 100%;
+    background: white;
+    border-radius: 8px;
+    padding: 10px;
+    top:0%
+  }
+
+  .categories-box {
+    position: relative;
+    z-index: 999;
+  }
+
+  /* Navigation toggling for Categories on mobile */
+  .categories-box button {
+    display: block;
+    margin-top: 15px;
+    width: 100%;
+  }
+
+  .view-categories-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  /* Ensuring the carousel controls do not interfere on mobile */
+  .custom-carousel .slick-prev,
+  .custom-carousel .slick-next {
+    z-index: 10;
+    font-size: 24px;
+    color: black;
+  }
+
+  .custom-carousel .slick-prev {
+    left: -30px;
+  }
+
+  .custom-carousel .slick-next {
+    right: -30px;
+  }
+
+  /* Adjust carousel image size */
+  .carousel-image {
+    height: 250px;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  /* Text justification for smaller screens */
+  .text-justify {
+    text-align: justify;
+  }
+
+  h2.text-center {
+    width: 100%;
+  }
+
+  /* Reducing the space below the heading */
+  h2 {
+    margin-bottom: 0px;
+  }
+
+  /* Adjust the spacing for the approval cards on mobile */
+  .approval-cards-container {
+    margin-top: 5px !important;
+  }
+
+  .approval-card {
+    margin-top: 10px;
+  }
+
+  /* Category List styling for better mobile view */
+  .category-list {
+    width: 200px;
+    /* Set a fixed width */
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+  }
+
+  .scroll-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .category-item {
+    display: block;
+    padding: 10px;
+    text-align: left;
+    background: linear-gradient(to right, #d6eefc, #f4f9fc);
+    border-radius: 5px;
+    text-decoration: none;
+    color: black;
+    font-weight: 500;
+    transition: background 0.3s ease;
+    white-space: nowrap;
+  }
+
+  .category-item:hover {
+    background: #cce7ff;
+    text-decoration: none;
+  }
+}
+
+/* For extra small screens */
+@media (max-width: 576px) {
+  .approval-card {
+    width: 100%;
+    /* Ensure card fits the screen */
+    margin: 0 auto;
+    padding: 10px;
+  }
+
+  .approval-card-body {
+    padding: 10px;
+  }
+
+  .approval-card-image {
+    width: 100%;
+    /* Adjust image size */
+  }
+}
+
+.btphead{
+  margin-left: 20%;
+
+}

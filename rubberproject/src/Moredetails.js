@@ -44,7 +44,7 @@ function Moredetails() {
             <img
               src={mainImage}
               alt="Main Image"
-              className="img-fluid mb-4"
+              className="img-fluid mb-4 imgmore"
               style={{
                 width: "80%",
                 height: "auto",

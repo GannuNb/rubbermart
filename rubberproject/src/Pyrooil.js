@@ -39,7 +39,7 @@ function Pyrooil() {
         <div className="container py-5">
           <div className="row">
             <div className="col-md-6">
-              <img src={pyrooilImage} alt="Pyro Oil" className="img-fluid" />
+              <img src={pyrooilImage} alt="Pyro Oil" className="img-fluid imgmore" />
             </div>
             <div className="col-md-6">
               <h2 className="text-center">Pyro Oil</h2>
@@ -66,7 +66,7 @@ function Pyrooil() {
         <div className="container">
           <div className="row py-5">
             <div className="col-md-6">
-              <img src={pyrooilImage} alt="Pyro Oil" className="img-fluid" />
+              <img src={pyrooilImage} alt="Pyro Oil" className="img-fluid imgmore" />
             </div>
             <div className="col-md-6">
               <h2 className="text-center">Pyro Oil</h2>

@@ -40,7 +40,7 @@ function BaledTyresTBR() {
         <div className="container py-5">
           <div className="row">
             <div className="col-md-6">
-              <img src={BaledTyresTBRImage} alt="Baled Tyres TBR" className="img-fluid" />
+              <img src={BaledTyresTBRImage} alt="Baled Tyres TBR" className="img-fluid imgmore" />
             </div>
             <div className="col-md-6">
               <h2 className="text-center">Baled Tyres TBR</h2>

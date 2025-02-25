@@ -5,11 +5,33 @@ import { useNavigate } from "react-router-dom";
 import "./Mulch.css";
 import ts from "./images/ts.svg"; // Trusted Seller Image
 import { FaMapMarkerAlt } from "react-icons/fa"; // Location Icon
+import { FaBars } from "react-icons/fa";
+import baledtrespcrimg1 from "./images/baledtrespcr2.jpg";
+import baledtrespcrimg2 from "./images/baledtrespcr3.jpg";
+import Slider from "react-slick"; // Carousel import
+import { Link } from "react-router-dom"; // Use Link for React Router
 
 function MultipleBaledTyresPCR() {
   const [approvals, setApprovals] = useState([]);
   const [userDetails, setUserDetails] = useState(null);
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const categories = [
+    { name: "Three Piece PCR", path: "/threepiecepcr" },
+    { name: "Shreds", path: "/shreds" },
+    { name: "Baled Tyres TBR", path: "/baledtyrestbr" },
+    { name: "Three Piece TBR", path: "/threepiecetbr" },
+    { name: "Mulch PCR", path: "/mulchpcr" },
+    { name: "Rubber Granules/Crumb", path: "/RubberGranules/Crum" },
+  ];
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     async function fetchApprovalDetails() {
@@ -44,12 +66,12 @@ function MultipleBaledTyresPCR() {
         <div className="container py-5">
           <div className="row">
             <div className="col-md-6">
-              <h2> Baled Tyres PCR</h2>
+              <h2>Baled Tyres PCR</h2>
               <p>
-                 Baled Tyres PCR (Pre-Crushed Rubber) is a versatile
-                material derived from recycled tyres. It is commonly used in
-                various industries such as construction and automotive,
-                providing an eco-friendly and cost-efficient alternative.
+                Baled Tyres PCR(Passenger Car Radia)  is a versatile material
+                derived from recycled tyres. It is commonly used in various
+                industries such as construction and automotive, providing an
+                eco-friendly and cost-efficient alternative.
               </p>
             </div>
           </div>
@@ -65,123 +87,153 @@ function MultipleBaledTyresPCR() {
     navigate("/moredetails", { state: { approval } });
   };
 
+  // Custom Arrow Components for Carousel
+  const NextArrow = ({ onClick }) => (
+    <div className="custom-arrow custom-arrow-next" onClick={onClick}>
+      ❯
+    </div>
+  );
+
+  const PrevArrow = ({ onClick }) => (
+    <div className="custom-arrow custom-arrow-prev" onClick={onClick}>
+      ❮
+    </div>
+  );
+
+  const carouselSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />,
+  };
+
   return (
     <>
       <div className="setter">
         <div className="container">
-          <div className="row py-5">
-            <div className="col-md-12">
-              <h2 className="text-primary">Baled Tyres PCR</h2>
-              <p className="text-justify">
-                Baled Tyres PCR (Pre-Crushed Rubber) is a **versatile and
-                eco-friendly material** derived from recycled tyres. It is
-                widely used in **construction, automotive, sports, and
-                agriculture** due to its **durability, shock absorption, and
-                cost-effectiveness**. In construction, it enhances road quality
-                and reduces noise, while in the automotive industry, it is used
-                for **tyres, mats, and coatings**. Sports fields and playgrounds
-                benefit from its cushioning properties, and in agriculture, it
-                is used as **rubber mulch** to retain moisture and prevent
-                weeds. By recycling tyres, this material helps **reduce landfill
-                waste, lower carbon emissions, and promote sustainability**
-                across industries.
-              </p>
+          <div className="container">
+            {/* Centered Heading at the Top */}
+            <h2 className="text-primary fw-bold text-left mt-5 btphead">Baled Tyres PCR</h2>
+            <div className="row align-items-center mt-3">
+              {/* Content Section */}
+              <div className="col-md-7">
+                <p className="text-justify">
+                  <strong>Baled Tyres PCR (Passenger Car Radian)</strong> is a <strong>versatile and eco-friendly material</strong> made from recycled tyres.
+                  It is used in <strong>construction, automotive, sports, and agriculture</strong> for its <strong>durability, shock absorption, and cost-effectiveness</strong>.
+                  In agriculture, it serves as <strong>rubber mulch</strong> to retain moisture and suppress weeds.
+                  Recycling tyres with PCR helps <strong>reduce landfill waste, lower carbon emissions, and promote sustainability</strong>.
+                </p>
+              </div>
+
+              {/* Carousel Section */}
+              <div className="col-md-5">
+                <Slider {...carouselSettings} className="custom-carousel">
+                  <div>
+                    <img
+                      src={baledtrespcrimg1}
+                      alt="Baled Tyres PCR Image 1"
+                      className="img-fluid carousel-image"
+                    />
+                  </div>
+                  <div>
+                    <img
+                      src={baledtrespcrimg2}
+                      alt="Baled Tyres PCR Image 2"
+                      className="img-fluid carousel-image"
+                    />
+                  </div>
+                </Slider>
+              </div>
             </div>
           </div>
-            <h2 > Sellers Product</h2>
-          {/* CARD SECTION */}
-          {approvals.length > 0 && userDetails && (
-            <div className="row mt-3 g-3 cards-container">
-              {" "}
-              {/* Added Bootstrap's g-3 for spacing */}
-              {approvals.map((approval) => (
-                <div
-                  key={approval._id}
-                  className="col-xl-3 col-lg-4 col-md-6 col-sm-6 d-flex justify-content-center"
-                >
-                  <div
-                    className="card shadow-sm border p-2 w-100"
-                    style={{
-                      backgroundColor: "#fff",
-                      borderRadius: "12px",
-                      maxWidth: "320px", // Increased width for laptop screens
-                      minWidth: "270px", // Ensures it doesn’t get too small
-                      borderColor: "#ddd", // Light border color
-                      margin: "10px", // Extra margin to avoid overlap
-                    }}
+
+          <h2 className="fw-bold text-dark  mt-5">Seller's Products</h2>
+          <div className="categoriess-container">
+            <div className={`categories-box shadow-sm ${isMobile ? "w-auto" : "w-25"}`}>
+              <h6 className="text-dark fw-bold border-bottom pb-2 d-flex align-items-center">
+                {isMobile && (
+                  <button
+                    className="btn btn-sm btn-dark me-2"
+                    onClick={() => setIsOpen(!isOpen)} // Toggle dropdown on click
                   >
-                    {/* IMAGE */}
-                    {approval.images?.[0] && (
-                      <div
-                        style={{
-                          borderBottom: "1px solid #ddd",
-                          paddingBottom: "10px",
-                        }}
-                      >
-                        <img
-                          src={approval.images[0]}
-                          alt="Approval Image"
-                          className="card-img-top"
-                          style={{
-                            maxHeight: "150px",
-                            objectFit: "cover",
-                            width: "100%",
-                            transition: "none", // Disables hover animations
-                            transform: "none", // Ensures no scaling effect
-                          }}
-                        />
-                      </div>
+                    <FaBars />
+                  </button>
+                )}
+                Related Categories
+              </h6>
+
+              {/* Show categories only if it's desktop or dropdown is open */}
+              {(!isMobile || isOpen) && (
+                <div className={`category-list ${isOpen ? "show" : "hide"}`}>
+                  <div className="scroll-container">
+                    {categories.map((category, index) => (
+                      <Link to={category.path} className="category-item" key={index}>
+                        {category.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Card Section */}
+          {approvals.length > 0 && userDetails && (
+            <div className="approval-cards-container">
+              {approvals.map((approval) => (
+                <div key={approval._id} className="approval-card">
+                  {/* IMAGE SECTION */}
+                  {approval.images?.[0] && (
+                    <div className="approval-image-container">
+                      <img
+                        src={approval.images[0]}
+                        alt="Approval Image"
+                        className="approval-card-image"
+                      />
+                    </div>
+                  )}
+
+                  {/* Divider Line (Only Visible in Desktop) */}
+                  <div className="approval-divider"></div>
+
+                  {/* CONTENT SECTION */}
+                  <div className="approval-card-body">
+                    <h5 className="approval-title">{approval.application}</h5>
+                    <h6 className="approval-material">{approval.material}</h6>
+
+                    {/* Price */}
+                    <p className="approval-price">
+                      <strong>Price:</strong> {approval.price} INR/MT
+                    </p>
+
+                    {/* Seller Info */}
+                    {userDetails?.businessProfiles?.[0] && (
+                      <p className="approval-seller">
+                        <strong>By:</strong>{" "}
+                        {approval.postedBy?.businessProfiles[0]?.profileId}
+                      </p>
                     )}
 
-                    {/* CARD BODY (LEFT-ALIGNED) */}
-                    <div className="card-body text-start">
-                      {/* application */}
-                      <h5 className="text-dark fw-semibold">
-                        {approval.application}
-                      </h5>
+                    {/* Location */}
+                    <p className="approval-location">
+                      <FaMapMarkerAlt className="approval-location-icon" />{" "}
+                      <strong>Loading Location:</strong> {approval.loadingLocation}
+                    </p>
 
-                      {/* material */}
-                      <h6  style={{ fontSize: "93%" }} className="text-secondary">{approval.material}</h6>
+                    {/* Trusted Seller Badge */}
+                    <img
+                      src={ts}
+                      alt="Trusted Seller"
+                      className="approval-trusted-seller-icon"
+                    />
 
-                      {/* PRICE (Smaller Font) */}
-                      <p className="mb-1" style={{ fontSize: "86%" }}>
-                        <strong>Price:</strong>{" "}
-                        <span >
-                          {approval.price} INR/Unit
-                        </span>
-                      </p>
-
-                      {/* SELLER DETAILS (Smaller Font & Gray) */}
-                      {userDetails?.businessProfiles?.[0] && (
-                        <p
-                          className="mb-2 text-secondary"
-                          style={{ fontSize: "86%" }}
-                        >
-                          <strong>By:</strong>{" "}
-                          {approval.postedBy?.businessProfiles[0]?.profileId}
-                        </p>
-                      )}
-
-                      {/* LOADING LOCATION (Smaller Font) */}
-                      <p className="mb-1" style={{ fontSize: "86%" }}>
-                      <FaMapMarkerAlt className="me-1 text-danger" />{" "}
-                        <strong>Loading Location:</strong>{" "}
-                        {approval.loadingLocation}
-                      </p>
-                     
-                     
-                    <img src={ts} alt="Trusted Seller" className="trusted-seller-icon mt-3" />
-                 
-
-
-                      {/* BUTTON - Full width, smaller size */}
+                    {/* Buttons */}
+                    <div className="approval-button-container">
                       <button
-                        className="btn btn-primary w-100 fw-bold shadow-sm mt-2"
-                        style={{
-                          borderRadius: "6px",
-                          padding: "8px",
-                          fontSize: "12px",
-                        }}
+                        className="btn btn-primary shadow-sm mt-2"
                         onClick={() => handleMoreDetailsClick(approval)}
                       >
                         More Details

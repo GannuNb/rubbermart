@@ -5,7 +5,7 @@ import './Homepage.css';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import promotional from './images/promotional.jpg';
-import group2 from './images/Group 267.jpg';
+import group2 from './images/Group 267.png';
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import VisibilityIcon from '@mui/icons-material/Visibility'; // Eye icon

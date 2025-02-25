@@ -9,7 +9,7 @@ const UserProfile = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const token = localStorage.getItem('token'); // Retrieve token from local storage
+      const token = localStorage.getItem('token');
       if (!token) {
         console.error('No token found');
         setLoading(false);
@@ -21,7 +21,7 @@ const UserProfile = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUser(response.data.user);
-        setBusinessProfiles(response.data.businessProfiles); // Set business profiles
+        setBusinessProfiles(response.data.businessProfiles);
       } catch (error) {
         console.error('Error fetching user data:', error);
       } finally {
@@ -34,7 +34,7 @@ const UserProfile = () => {
 
   if (loading) return <div>Loading...</div>;
   if (!user) return <div>No user data found.</div>;
-
+ 
   return (
     <><div  className='setter'>
     <div className="container mt-5">

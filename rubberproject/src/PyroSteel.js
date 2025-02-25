@@ -38,7 +38,7 @@ if (approvals.length === 0 || !userDetails) {
       <div className="container py-5">
         <div className="row">
           <div className="col-md-6">
-            <img src={PyroSteelImage} alt="Pyro Steel" className="img-fluid" />
+            <img src={PyroSteelImage} alt="Pyro Steel" className="img-fluid imgmore" />
           </div>
           <div className="col-md-6">
             <h2 className="text-center">Pyro Steel</h2>
@@ -69,7 +69,7 @@ if (approvals.length === 0 || !userDetails) {
         <div className="container">
           <div className="row py-5">
             <div className="col-md-6">
-              <img src={PyroSteelImage} alt="Pyro Steel" className="img-fluid" />
+              <img src={PyroSteelImage} alt="Pyro Steel" className="img-fluid imgmore" />
             </div>
             <div className="col-md-6">
               <h2 className="text-center">Pyro Steel</h2>

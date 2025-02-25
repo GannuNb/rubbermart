@@ -104,6 +104,7 @@ router.post(
       })
     );
 
+    
     try {
       const user = await User.findById(req.user.id);
       if (!user)

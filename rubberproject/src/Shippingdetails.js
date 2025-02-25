@@ -238,56 +238,57 @@ function ShippingDetails() {
     doc.setDrawColor(0, 0, 0); // Set line color (black)
     doc.line(10, 25, 200, 25);
   
-    // Billing, Shipping, and Shipment From Information
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'bold');
-  
-    // Column headers
-    doc.text('Bill To', 14, 35);
-    doc.text('Ship To', 90, 35); // Adjusted position to the left
-    doc.text('Ship From', 150, 35); // Adjusted position to the left
-  
-    // Set the font for the details
-    doc.setFontSize(8);
-    doc.setFont('helvetica', 'normal');
-  
-    let billingY = 45;
-    let shippingY = 45;
-    let shipmentFromY = 45;
-  
-    const labelX = 14; // Starting X-position for labels in the first column
-    const colonX = 30; // Reduced space closer to the label
-    const valueX = 32; // Reduced space closer to the colon
-  
-    const shippingOffsetX = 90; // Adjusted Ship To horizontal offset
-    const shipmentFromOffsetX = 150; // Adjusted Shipment From horizontal offset
-  
-    // Billing Info
-    if (profile) {
-      doc.text('Company', labelX, billingY);
-      doc.text(':', colonX, billingY);
-      doc.text(`${profile.companyName || 'N/A'}`, valueX, billingY);
-  
-      doc.text('Email', labelX, billingY + 5);
-      doc.text(':', colonX, billingY + 5);
-      doc.text(`${profile.email || 'N/A'}`, valueX, billingY + 5);
-  
-      doc.text('Phone', labelX, billingY + 10);
-      doc.text(':', colonX, billingY + 10);
-      doc.text(`${profile.phoneNumber || 'N/A'}`, valueX, billingY + 10);
-  
-      doc.text('GST', labelX, billingY + 15);
-      doc.text(':', colonX, billingY + 15);
-      doc.text(`${profile.gstNumber || 'N/A'}`, valueX, billingY + 15);
-  
-      const billingAddress = profile.billAddress || 'N/A';
-      const billingAddressLines = doc.splitTextToSize(billingAddress, 50);
-      doc.text('Address', labelX, billingY + 20);
-      doc.text(':', colonX, billingY + 20);
-      doc.text(billingAddressLines, valueX, billingY + 20);
-  
-      billingY += billingAddressLines.length * 5 + 20;
-    }
+ // Billing, Shipping, and Shipment From Information
+doc.setFontSize(10);
+doc.setFont('helvetica', 'bold');
+
+// Column headers
+doc.text('Bill To', 14, 35);
+doc.text('Ship To', 90, 35); // Adjusted position to the left
+doc.text('Ship From', 150, 35); // Adjusted position to the left
+
+// Set the font for the details
+doc.setFontSize(8);
+doc.setFont('helvetica', 'normal');
+
+let billingY = 45;
+let shippingY = 45;
+let shipmentFromY = 45;
+
+const labelX = 14; // Starting X-position for labels in the first column
+const colonX = 30; // Reduced space closer to the label
+const valueX = 32; // Reduced space closer to the colon
+
+const shippingOffsetX = 90; // Adjusted Ship To horizontal offset
+const shipmentFromOffsetX = 150; // Adjusted Shipment From horizontal offset
+
+// Billing Info (updated order)
+if (profile) {
+  doc.text('Company', labelX, billingY);
+  doc.text(':', colonX, billingY);
+  doc.text(`${profile.companyName || 'N/A'}`, valueX, billingY);
+
+  const billingAddress = profile.billAddress || 'N/A';
+  const billingAddressLines = doc.splitTextToSize(billingAddress, 50);
+  doc.text('Address', labelX, billingY + 5);
+  doc.text(':', colonX, billingY + 5);
+  doc.text(billingAddressLines, valueX, billingY + 5);
+
+  doc.text('Phone', labelX, billingY + 5 + billingAddressLines.length * 5);
+  doc.text(':', colonX, billingY + 5 + billingAddressLines.length * 5);
+  doc.text(`${profile.phoneNumber || 'N/A'}`, valueX, billingY + 5 + billingAddressLines.length * 5);
+
+  doc.text('E-mail', labelX, billingY + 10 + billingAddressLines.length * 5);
+  doc.text(':', colonX, billingY + 10 + billingAddressLines.length * 5);
+  doc.text(`${profile.email || 'N/A'}`, valueX, billingY + 10 + billingAddressLines.length * 5);
+
+  doc.text('GSTN', labelX, billingY + 15 + billingAddressLines.length * 5);
+  doc.text(':', colonX, billingY + 15 + billingAddressLines.length * 5);
+  doc.text(`${profile.gstNumber || 'N/A'}`, valueX, billingY + 15 + billingAddressLines.length * 5);
+
+  billingY += (15 + billingAddressLines.length * 5 + 20);
+}
+
   
     // Shipping Info
     const shippingAddress = order.orderId.shippingAddress || 'N/A';

@@ -39,7 +39,7 @@ function ThreePieceTBR() {
       <div className="container py-5">
         <div className="row">
           <div className="col-md-6">
-            <img src={ThreePieceTBRImage} alt="Three Piece TBR" className="img-fluid" />
+            <img src={ThreePieceTBRImage} alt="Three Piece TBR" className="img-fluid imgmore" />
           </div>
           <div className="col-md-6">
             <h2 className="text-center">Three Piece TBR</h2>
@@ -68,7 +68,7 @@ function ThreePieceTBR() {
         <div className="container">
           <div className="row py-5">
             <div className="col-md-6">
-              <img src={ThreePieceTBRImage} alt="Three Piece TBR" className="img-fluid" />
+              <img src={ThreePieceTBRImage} alt="Three Piece TBR" className="img-fluid imgmore" />
             </div>
             <div className="col-md-6">
               <h2 className="text-center">Three Piece TBR</h2>

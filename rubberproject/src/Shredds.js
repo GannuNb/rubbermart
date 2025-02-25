@@ -39,7 +39,7 @@ function Shredds() {
         <div className="container py-5">
           <div className="row">
             <div className="col-md-6">
-              <img src={ShreddsImage} alt="Shredds" className="img-fluid" />
+              <img src={ShreddsImage} alt="Shredds" className="img-fluid imgmore" />
             </div>
             <div className="col-md-6">
               <h2 className="text-center">Shredds</h2>
@@ -67,7 +67,7 @@ function Shredds() {
         <div className="container">
           <div className="row py-5">
             <div className="col-md-6">
-              <img src={ShreddsImage} alt="Shredds" className="img-fluid" />
+              <img src={ShreddsImage} alt="Shredds" className="img-fluid imgmore" />
             </div>
             <div className="col-md-6">
               <h2 className="text-center">Shredds</h2>

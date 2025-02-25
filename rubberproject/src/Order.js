@@ -544,27 +544,37 @@ const Order = () => {
     const colonX = labelX + 20; // X position for the colon alignment
     const valueX = colonX + 5; // X position for the values
     doc.setFontSize(10);
+  
+    // Company Name
     doc.text("Company", labelX, 45);
     doc.text(":", colonX, 45);
     doc.text(profile.companyName || "N/A", valueX, 45);
-    doc.text("Email", labelX, 50);
+  
+    // Address
+    doc.text("Address", labelX, 50);
     doc.text(":", colonX, 50);
-    doc.text(profile.email || "N/A", valueX, 50);
-    doc.text("Phone", labelX, 55);
-    doc.text(":", colonX, 55);
-    doc.text(profile.phoneNumber || "N/A", valueX, 55);
-    doc.text("GST", labelX, 60);
-    doc.text(":", colonX, 60);
-    doc.text(profile.gstNumber || "N/A", valueX, 60);
-    doc.text("Address", labelX, 65);
-    doc.text(":", colonX, 65);
     const billingAddress = doc.splitTextToSize(
       `${profile.billAddress || "N/A"}`,
       80
     );
     billingAddress.forEach((line, index) => {
-      doc.text(line, valueX, 65 + index * 5);
+      doc.text(line, valueX, 50 + index * 5);
     });
+  
+    // Phone Number
+    doc.text("Phone", labelX, 55 + billingAddress.length * 5);
+    doc.text(":", colonX, 55 + billingAddress.length * 5);
+    doc.text(profile.phoneNumber || "N/A", valueX, 55 + billingAddress.length * 5);
+  
+    // Email
+    doc.text("E-mail", labelX, 60 + billingAddress.length * 5);
+    doc.text(":", colonX, 60 + billingAddress.length * 5);
+    doc.text(profile.email || "N/A", valueX, 60 + billingAddress.length * 5);
+  
+    // GST Number
+    doc.text("GSTN", labelX, 65 + billingAddress.length * 5);
+    doc.text(":", colonX, 65 + billingAddress.length * 5);
+    doc.text(profile.gstNumber || "N/A", valueX, 65 + billingAddress.length * 5);
   
     // Ship To Section
     const shipToColonX = labelX + 20; // Unique name for the second colonX
@@ -579,24 +589,32 @@ const Order = () => {
       60
     );
   
-    // Add company details to "Ship To" section
+    // Company Name
     doc.text("Company", labelX + 95, 45);
     doc.text(":", shipToColonX + 95, 45);
     doc.text(profile.companyName || "N/A", valueX + 95, 45);
-    doc.text("Email", labelX + 95, 50);
-    doc.text(":", shipToColonX + 95, 50);
-    doc.text(profile.email || "N/A", valueX + 95, 50);
-    doc.text("Phone", labelX + 95, 55);
-    doc.text(":", shipToColonX + 95, 55);
-    doc.text(profile.phoneNumber || "N/A", valueX + 95, 55);
-    doc.text("GST", labelX + 95, 60);
-    doc.text(":", shipToColonX + 95, 60);
-    doc.text(profile.gstNumber || "N/A", valueX + 95, 60);
   
-    // Address Text for Ship To
+    // Address
+    doc.text("Address", labelX + 95, 50);
+    doc.text(":", shipToColonX + 95, 50);
     wrappedShippingAddress.forEach((line, index) => {
-      doc.text(line, valueX + 95, 65 + index * 5);
+      doc.text(line, valueX + 95, 50 + index * 5);
     });
+  
+    // Phone Number
+    doc.text("Phone", labelX + 95, 55 + wrappedShippingAddress.length * 5);
+    doc.text(":", shipToColonX + 95, 55 + wrappedShippingAddress.length * 5);
+    doc.text(profile.phoneNumber || "N/A", valueX + 95, 55 + wrappedShippingAddress.length * 5);
+  
+    // Email
+    doc.text("E-mail", labelX + 95, 60 + wrappedShippingAddress.length * 5);
+    doc.text(":", shipToColonX + 95, 60 + wrappedShippingAddress.length * 5);
+    doc.text(profile.email || "N/A", valueX + 95, 60 + wrappedShippingAddress.length * 5);
+  
+    // GST Number
+    doc.text("GSTN", labelX + 95, 65 + wrappedShippingAddress.length * 5);
+    doc.text(":", shipToColonX + 95, 65 + wrappedShippingAddress.length * 5);
+    doc.text(profile.gstNumber || "N/A", valueX + 95, 65 + wrappedShippingAddress.length * 5);
   
     const billingAddressHeight = 15 + billingAddress.length * 5;
     const shippingAddressHeight = 15 + wrappedShippingAddress.length * 5;
@@ -604,6 +622,7 @@ const Order = () => {
       billingAddressHeight,
       shippingAddressHeight
     ); // Maximum of both addresses
+  
   
   
 
@@ -727,7 +746,7 @@ const Order = () => {
     doc.text("Banking Details", 14, bankingY);
     doc.setDrawColor(0, 0, 0);
     doc.line(10, bankingY + 3, 200, bankingY + 3); // Underline
-    doc.setFontSize(10);
+    doc.setFontSize(8);
     doc.setFont("helvetica", "normal");
     const bankingStartX = 14;
     const colonXForBanking = bankingStartX + 45;

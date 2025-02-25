@@ -39,7 +39,7 @@ function ThreePiecePCR() {
       <div className="container py-5">
         <div className="row">
           <div className="col-md-6">
-            <img src={ThreePiecePCRImage} alt="Three Piece PCR" className="img-fluid" />
+            <img src={ThreePiecePCRImage} alt="Three Piece PCR" className="img-fluid imgmore" />
           </div>
           <div className="col-md-6">
             <h2 className="text-center">Three Piece PCR</h2>
@@ -69,7 +69,7 @@ function ThreePiecePCR() {
         <div className="container">
           <div className="row py-5">
             <div className="col-md-6">
-              <img src={ThreePiecePCRImage} alt="Three Piece PCR" className="img-fluid" />
+              <img src={ThreePiecePCRImage} alt="Three Piece PCR" className="img-fluid imgmore" />
             </div>
             <div className="col-md-6">
               <h2 className="text-center">Three Piece PCR</h2>

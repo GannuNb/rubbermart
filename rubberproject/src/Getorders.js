@@ -180,12 +180,12 @@ const Getorders = () => {
   const generatePDF = (order) => {
     const doc = new jsPDF();
 
-    // Logo - Adjusted size and position
+    // Logo
     if (logo) {
-        doc.addImage(logo, 'JPEG', 10, 13, 30, 15); // Positioned logo with size adjustment
+        doc.addImage(logo, 'JPEG', 10, 13, 30, 15);
     }
 
-    // Vikah Rubbers Address - Adjusted font size and decreased line spacing
+    // Vikah Rubbers Address
     doc.setFontSize(7);
     doc.setFont('helvetica', 'normal');
     const companyAddress = [
@@ -195,119 +195,108 @@ const Getorders = () => {
         'Nagole Hyderabad, Telangana-500035',
     ];
 
-    let addressY = 12; // Adjusted starting Y to align with logo
-    doc.text(companyAddress[0], 40, addressY + 4); // Company Name
-    doc.text(companyAddress[1], 40, addressY + 8); // Street Address
-    doc.text(companyAddress[2], 40, addressY + 12); // Additional Address
-    doc.text(companyAddress[3], 40, addressY + 16); // City, State, and Postal Code
+    let addressY = 12;
+    doc.text(companyAddress[0], 40, addressY + 4);
+    doc.text(companyAddress[1], 40, addressY + 8);
+    doc.text(companyAddress[2], 40, addressY + 12);
+    doc.text(companyAddress[3], 40, addressY + 16);
 
-    // PROFORMA INVOICE Heading - Slightly adjusted Y-position to move it down
+    // PROFORMA INVOICE Heading
     doc.setFontSize(16);
     doc.setFont('helvetica', 'bold');
-    doc.text('PROFORMA INVOICE', 115, addressY + 1, { align: 'center' }); // Moved down slightly
+    doc.text('PROFORMA INVOICE', 105, addressY + 1, { align: 'center' });
 
-    // Order ID and Date - Positioned to the left
+    // Order ID and Date
     doc.setFontSize(8);
     const formattedDate = new Date(order.orderDate).toLocaleDateString();
-    const orderLabelX = 160;  // Renamed X position for Order ID and Date section
-    const colonX = 175;  // X position for colons, directly under each other (moved left)
-    const valueX = 180;  // X position for values, reduced space after the colon (moved left)
-    const padding = 5;   // Adjust padding between Order ID and Order Date
+    const orderLabelX = 160, colonX = 175, valueX = 180;
 
-    // Aligning colons vertically with reduced space after them, shifted left
-    doc.text(`Order ID`, orderLabelX, addressY + 5); // Label for Order ID
-    doc.text(`:`, colonX, addressY + 5); // Colon for Order ID
-    doc.text(`${order._id}`, valueX, addressY + 5); // Right-aligned Order ID value
+    doc.text(`Order ID`, orderLabelX, addressY + 5);
+    doc.text(`:`, colonX, addressY + 5);
+    doc.text(`${order._id}`, valueX, addressY + 5);
 
-    doc.text(`Order Date`, orderLabelX, addressY + 5 + padding); // Label for Order Date
-    doc.text(`:`, colonX, addressY + 5 + padding); // Colon for Order Date (aligned with the previous colon)
-    doc.text(`${formattedDate}`, valueX, addressY + 5 + padding); // Right-aligned Order Date value
+    doc.text(`Order Date`, orderLabelX, addressY + 10);
+    doc.text(`:`, colonX, addressY + 10);
+    doc.text(`${formattedDate}`, valueX, addressY + 10);
 
-    // Line separating header and content
-    doc.setDrawColor(0, 0, 0);
-    doc.line(10, addressY + 25, 200, addressY + 25); // Line separating header and content
+    // Line separator
+    doc.line(10, addressY + 25, 200, addressY + 25);
 
     // Billing and Shipping Information
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
-    doc.text('Bill To', 14, addressY + 30); // Title for billing info
-    doc.text('Ship To', 140, addressY + 30); // Title for shipping info
+    doc.text('Bill To', 14, addressY + 30);
+    doc.text('Ship To', 140, addressY + 30);
     doc.setFontSize(8);
     doc.setFont('helvetica', 'normal');
 
     let billingY = addressY + 36;
     let shippingY = addressY + 36;
+    const maxAddressLength = 60;
 
     if (profile) {
-        const billingLabelX = 14; // Renamed for billing section
-        const billingColonX = 40; // Renamed for billing section
-        const billingValueX = 45; // Renamed for billing section
-        const maxAddressLength = 60; // Increased max characters per line before wrapping (set to 60)
-
         // Billing Info
+        const billingLabelX = 14, billingColonX = 40, billingValueX = 45;
         doc.text('Company', billingLabelX, billingY);
         doc.text(':', billingColonX, billingY);
         doc.text(profile.companyName || 'N/A', billingValueX, billingY);
 
-        doc.text('Email', billingLabelX, billingY + 5);
+        doc.text('Address', billingLabelX, billingY + 5);
         doc.text(':', billingColonX, billingY + 5);
-        doc.text(profile.email || 'N/A', billingValueX, billingY + 5);
-
-        doc.text('Phone', billingLabelX, billingY + 10);
-        doc.text(':', billingColonX, billingY + 10);
-        doc.text(profile.phoneNumber || 'N/A', billingValueX, billingY + 10);
-
-        doc.text('GST', billingLabelX, billingY + 15);
-        doc.text(':', billingColonX, billingY + 15);
-        doc.text(profile.gstNumber || 'N/A', billingValueX, billingY + 15);
-
-        doc.text('Address', billingLabelX, billingY + 20);
-        doc.text(':', billingColonX, billingY + 20);
-        const billingAddress = profile.billAddress || 'N/A';
-        const billingAddressLines = doc.splitTextToSize(billingAddress, maxAddressLength);
+        const billingAddressLines = doc.splitTextToSize(profile.billAddress || 'N/A', maxAddressLength);
         billingAddressLines.forEach((line, index) => {
-            doc.text(line, billingValueX, billingY + 20 + (index * 5));
+            doc.text(line, billingValueX, billingY + 5 + (index * 5));
         });
 
-        billingY += 25 + (billingAddressLines.length * 5); // Adjust Y after billing address
+        let adjustedBillingY = billingY + 5 + (billingAddressLines.length * 5);
 
-        // Shipping Info (updated to include company, email, phone, gst)
-        const shippingLabelX = 110; // Renamed for shipping section
-        const shippingColonX = 135; // Position for colons in the shipping section
-        const shippingValueX = 140; // Position for shipping values in the shipping section
+        doc.text('Phone', billingLabelX, adjustedBillingY);
+        doc.text(':', billingColonX, adjustedBillingY);
+        doc.text(profile.phoneNumber || 'N/A', billingValueX, adjustedBillingY);
 
-        // Add Company, Email, Phone, GST to the Ship To section
+        doc.text('E-mail', billingLabelX, adjustedBillingY + 5);
+        doc.text(':', billingColonX, adjustedBillingY + 5);
+        doc.text(profile.email || 'N/A', billingValueX, adjustedBillingY + 5);
+
+        doc.text('GSTN', billingLabelX, adjustedBillingY + 10);
+        doc.text(':', billingColonX, adjustedBillingY + 10);
+        doc.text(profile.gstNumber || 'N/A', billingValueX, adjustedBillingY + 10);
+
+        billingY = adjustedBillingY + 15;
+
+        // Shipping Info
+        const shippingLabelX = 110, shippingColonX = 135, shippingValueX = 140;
         doc.text('Company', shippingLabelX, shippingY);
         doc.text(':', shippingColonX, shippingY);
         doc.text(profile.companyName || 'N/A', shippingValueX, shippingY);
 
-        doc.text('Email', shippingLabelX, shippingY + 5);
+        doc.text('Address', shippingLabelX, shippingY + 5);
         doc.text(':', shippingColonX, shippingY + 5);
-        doc.text(profile.email || 'N/A', shippingValueX, shippingY + 5);
-
-        doc.text('Phone', shippingLabelX, shippingY + 10);
-        doc.text(':', shippingColonX, shippingY + 10);
-        doc.text(profile.phoneNumber || 'N/A', shippingValueX, shippingY + 10);
-
-        doc.text('GST', shippingLabelX, shippingY + 15);
-        doc.text(':', shippingColonX, shippingY + 15);
-        doc.text(profile.gstNumber || 'N/A', shippingValueX, shippingY + 15);
-
-        shippingY += 20;  // Adjust Y after adding the billing info to Ship To
-
-        const shippingAddress = order.shippingAddress || 'N/A';
-        // Split the shipping address into multiple lines if it's too long
-        const shippingAddressLines = doc.splitTextToSize(shippingAddress, maxAddressLength);
-
-        // Add the shipping address directly under the Shipping Info
+        const shippingAddressLines = doc.splitTextToSize(order.shippingAddress || 'N/A', maxAddressLength);
         shippingAddressLines.forEach((line, index) => {
-            doc.text(line, shippingValueX, shippingY + (index * 5)); // Adjusted Y for line spacing
+            doc.text(line, shippingValueX, shippingY + 5 + (index * 5));
         });
 
-        shippingY += (shippingAddressLines.length * 5); // Adjust Y after shipping address
+        let adjustedShippingY = shippingY + 5 + (shippingAddressLines.length * 5);
+
+        doc.text('Phone', shippingLabelX, adjustedShippingY);
+        doc.text(':', shippingColonX, adjustedShippingY);
+        doc.text(profile.phoneNumber || 'N/A', shippingValueX, adjustedShippingY);
+
+        doc.text('E-mail', shippingLabelX, adjustedShippingY + 5);
+        doc.text(':', shippingColonX, adjustedShippingY + 5);
+        doc.text(profile.email || 'N/A', shippingValueX, adjustedShippingY + 5);
+
+        doc.text('GSTN', shippingLabelX, adjustedShippingY + 10);
+        doc.text(':', shippingColonX, adjustedShippingY + 10);
+        doc.text(profile.gstNumber || 'N/A', shippingValueX, adjustedShippingY + 10);
+
+        shippingY = adjustedShippingY + 20;
     }
 
     const contentY = Math.max(billingY, shippingY);
+
+
 
 
 
@@ -392,7 +381,7 @@ doc.text('Banking Details:', 14, bankingY);
 doc.line(10, bankingY + 3, 200, bankingY + 3);
 
 // Content
-doc.setFontSize(10);
+doc.setFontSize(8);
 doc.setFont('helvetica', 'normal');
 
 // Define label positions and corresponding values
