@@ -28,10 +28,9 @@ const SrenComponent = () => {
     },
   ];
   // #dbffd6
-
   return (
-    <div className="mt-5 " >
-      <h2 className="sren-heading mt-3">How It Works for Sellers</h2>
+    <div className="mt-5 hiwfs"  >
+      <h2 className="sren-heading mt-4 text-black">How It Works for Sellers</h2>
       <div className="sren-container">
         {cards.map((card, index) => (
           <div className="sren-card" key={index}>

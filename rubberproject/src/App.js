@@ -48,6 +48,7 @@ import ForgetMailPass from './forgetmailpass.js';
 import Moredetails from './Moredetails.js';
 import Homepage from './Homepage.js';
 import Cate from './Cate.js';
+import Scrapstyles from './Scrapstyles.js';
 
 
 
@@ -64,7 +65,8 @@ function App() {
       {!isSidebarHidden && <Sidebar />}
       <div className="container">
         <Routes>
-          <Route exact path="/" element={<Homepage />} />
+          <Route exact path="/" element={<Scrapstyles />} />
+          {/* <Route exact path="/scrap" element={<Scrapstyles />} /> */}
           <Route exact path="/registered" element={<Registeredgst />} />
           <Route exact path="/unregistered" element={<Unregisteredgst />} />
           <Route exact path="/getpay" element={<GetPay />} />

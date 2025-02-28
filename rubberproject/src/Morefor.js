@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 function Morefor() {
   return (
-    <Container className="my-5">
+    <Container className="my-5" >
       <h2 className="mb-4 text-center">More for You</h2>
       <div className="morefor-card p-4 shadow-sm rounded">
         <Row className="text-center">

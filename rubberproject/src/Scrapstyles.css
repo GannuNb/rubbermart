@@ -1,0 +1,643 @@
+.abtback{
+    background: url('./images/videos/back.webp') no-repeat center center;
+}
+
+
+
+
+
+
+.scrap-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 8%;
+    background: url('./images/videos/back.webp') no-repeat center center;
+    background-size: cover;
+    width: 100%;
+    min-height: 70vh; /* Adjusts height to fill the screen */
+    overflow: hidden;
+    background-attachment: fixed; /* Optional: Keeps the background in place while scrolling */
+   
+}
+
+/* For large screens (desktop) */
+@media screen and (min-width: 1025px) {
+    .scrap-container {
+        display: flex;
+    }
+    
+    .scrap-image {
+        flex: 1;
+        max-width: 30%;
+        display: flex;
+        justify-content: flex-end;
+        margin-right: 8%;
+    }
+    
+    .scrap-image img {
+        width: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 2px solid #0a1f44;
+        max-width: 300px;
+        height: 300px;
+    }
+}
+
+/* For tablets and smaller devices (768px and below) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .scrap-container {
+        padding: 5px 8%;
+        flex-direction: column; /* Stack the content and image vertically */
+    }
+
+    .scrap-content {
+        max-width: 100%; /* Allow content to take full width */
+        margin-bottom: 20px; /* Space between content and image */
+        margin-top: 4%;
+    }
+
+    .scrap-image {
+        flex: 1;
+        max-width: 100%; /* Image should take full width of the container */
+        display: flex;
+        justify-content: center;
+    }
+
+    .scrap-image img {
+        width: 80%; /* Reduce image size for mobile screens */
+        object-fit: contain;
+        border-radius: 50%;
+        border: 2px solid #0a1f44;
+        height: auto; /* Keep the image's aspect ratio */
+    }
+}
+
+/* For mobile screens (below 768px) */
+@media  (min-width: 300px) and (max-width: 768px) {
+    .scrap-container {
+        padding: 5px 4%; /* Further reduce padding for mobile view */
+        flex-direction: column; /* Stack the content and image vertically */
+    }
+
+    .scrap-content {
+        max-width: 100% !important; /* Allow content to take full width */
+        margin-bottom: 20px; /* Space between content and image */
+    }
+   
+
+    .scrap-image {
+        flex: 1;
+        max-width: 100% !important; /* Image should take full width of the container */
+        display: flex;
+        justify-content: center;
+        margin-right: 55% !important;
+    }
+
+    .scrap-image img {
+        width: 80% !important; /* Adjust image size on small screens */
+        object-fit: contain !important;
+        border-radius: 50% !important;
+        border: 2px solid #0a1f44 !important;
+        height: auto !important; /* Ensure image height adjusts to maintain aspect ratio */
+    }
+}
+
+
+
+  
+  /* Left-side content */
+  .scrap-content {
+    flex: 1;
+    max-width: 100%;
+    color: #000;
+  }
+  
+  .scrap-highlight {
+    color: #00d2ab;
+    font-weight: bold;
+  }
+  
+  .scrap-content h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .scrap-description {
+    font-size: 1rem;
+    margin-bottom: 20px;
+  }
+  
+  /* Buttons */
+  .scrap-buttons {
+    display: flex;
+    gap: 15px;
+  }
+  
+  .request-demo {
+    background: #0a1f44;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .learn-more {
+    background: transparent;
+    border: 2px solid #0a1f44;
+    color: #0a1f44;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  /* Right-side image */
+  .scrap-image {
+    flex: 1;
+    max-width: 30%; /* Adjusted width to fit properly */
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 8%;
+  }
+
+  .scrap-image img {
+    width: 100%;
+    object-fit: cover; /* Ensures the image fills the circular frame */
+    border-radius: 50%; /* Makes the image circular */
+    border: 2px solid #0a1f44; /* Optional: Adds a border */
+    max-width: 300px; /* Adjust size as needed */
+    height: 300px; /* Ensure it stays circular */
+}
+
+  
+  .scrap-image img {
+    width: 100%;
+    object-fit: contain;
+  }
+  
+/* New Section - Improved Layout */
+.new-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 60px 10%;
+    background-color: #082349; /* Dark blue for a professional look */
+    color: white;
+    width: 100%;
+    min-height: 60vh;
+    overflow: hidden;
+    gap: 2%; /* Ensures spacing between text and image */
+}
+
+/* Left Content */
+.new-content {
+    flex: 1;
+    max-width: 65%;
+}
+
+.new-content h2 {
+    font-size: 2.4rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: white;
+}
+
+.new-content p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.new-content ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.new-content ul li {
+    font-size: 1rem;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.new-content ul li strong {
+    color: #13afd2;
+    margin-right: 5px;
+}
+
+/* Buttons */
+.scrap-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.buying-btn, .selling-btn {
+    background: white;
+    color: #102a42;
+    padding: 12px 25px;
+    border: 2px solid #13afd2;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.buying-btn:hover, .selling-btn:hover {
+    background: #13afd2;
+    color: white;
+    transform: scale(1.05);
+}
+
+/* Right Image */
+.new-image {
+    flex: 1 1;
+    max-width: 32%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    margin-right: 1%;
+}
+
+.new-image img {
+    width: 90%; /* Adjust width for responsiveness */
+    max-width: 380px;
+    border-radius: 10px;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive Design for Tablets and Smaller Devices */
+@media (max-width: 1024px) {
+    .new-section {
+        flex-direction: column;
+        text-align: center;
+        padding: 40px 5%; /* Adjust padding for smaller screens */
+    }
+    .new-content {
+        max-width: 100%; /* Full width for content on tablets */
+        margin-bottom: 30px; /* Space between content and image */
+    }
+    .new-image {
+        max-width: 80%; /* Image takes more width on smaller screens */
+        margin: 0 auto; /* Center the image */
+        justify-content: center; /* Align image properly */
+    }
+    .new-image img {
+        width: 100%; /* Make the image fully responsive */
+        max-width: 300px; /* Restrict the max-width to 300px */
+    }
+    .buying-btn, .selling-btn {
+        padding: 10px 20px; /* Adjust button size for smaller screens */
+    }
+}
+
+/* Responsive Design for Mobile Devices */
+@media (max-width: 768px) {
+    .new-section {
+        padding: 30px 4%; /* Reduce padding for mobile */
+        flex-direction: column;
+        text-align: left;
+    }
+    .new-content {
+        max-width: 100%;
+        margin-bottom: 25px;
+    }
+    .new-image {
+        max-width: 80%;
+        margin: 0 auto;
+    }
+    .new-image img {
+        width: 100%;
+        max-width: 280px; /* Restrict image width further for mobile */
+    }
+    .buying-btn, .selling-btn {
+        padding: 10px 20px; /* Adjust buttons for mobile view */
+    }
+}
+
+/* Cards Section - Improved Styling */
+.cards-container {
+    text-align: center;
+    padding: 60px 10%;
+    background: url('./images/videos/trs.png') no-repeat center center; 
+    background-size: cover;
+    color: white;
+    height: 400px; /* Default height */
+}
+
+/* Title */
+.cards-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+/* Cards Grid */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+    justify-items: center;
+    margin-top: 0%;
+}
+
+/* Individual Card */
+.card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    transition: transform 0.3s ease-in-out;
+    max-width: 280px;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* Card Icon */
+.card-icon {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 15px;
+    border-radius: 50%;
+    border: 2px solid #a3d200;
+    padding: 5px;
+    background-color: white;
+}
+
+/* Card Title */
+.card h3 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #102a42;
+    margin-bottom: 10px;
+}
+
+/* Card Description */
+.card p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #444;
+}
+
+/* Responsive Design for Tablets and Smaller Devices */
+@media (max-width: 1024px) {
+    .cards-container {
+        padding: 50px 5%; /* Reduce padding for tablets */
+        height: 450px; /* Adjust height for better display */
+    }
+    
+    .cards-title {
+        font-size: 1.8rem; /* Adjust title size for smaller screens */
+    }
+
+    /* Adjust card grid layout */
+    .cards-grid {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* More responsive grid */
+    }
+
+    .card {
+        max-width: 260px; /* Reduce max-width of the card */
+    }
+
+    .card-icon {
+        width: 50px; /* Smaller icon on tablets */
+        height: 50px;
+    }
+
+    .card h3 {
+        font-size: 1.1rem; /* Smaller font size for card titles */
+    }
+
+    .card p {
+        font-size: 0.9rem; /* Slightly smaller description text */
+    }
+}
+
+/* Responsive Design for Mobile Devices */
+@media (max-width: 768px) {
+    .cards-container {
+        padding: 40px 4%; /* Reduce padding for mobile */
+        height: 90%; /* Increase height to make background image more prominent */
+        background-position: center top; /* Ensure image fits well */
+    }
+    
+    .cards-title {
+        font-size: 1.5rem; /* Adjust title size */
+    }
+
+    /* Adjust card grid layout */
+    .cards-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Stack cards in 1-2 columns */
+    }
+
+    .card {
+        max-width: 220px; /* Further reduce max-width of cards for mobile */
+    }
+
+    .card-icon {
+        width: 40px; /* Smaller icons for mobile screens */
+        height: 40px;
+    }
+
+    .card h3 {
+        font-size: 1rem; /* Smaller titles on mobile */
+    }
+
+    .card p {
+        font-size: 0.85rem; /* Smaller descriptions for mobile */
+    }
+}
+
+.hiwfs{
+    
+   
+    background: url('./images/videos/des2.jpg') no-repeat center center;
+    background-size: cover;
+    width: 100%; /* Ensures full width */
+    min-height: 60vh; /* Adjusts height to fill the screen */
+    overflow: hidden; /* Prevents unwanted scrolling */
+}
+
+
+/* About Us Section */
+.about-us-section {
+    background: url('./images/videos/des9.jpg') no-repeat center center; /* Background image */
+    background-size: cover; /* Ensures the image covers the whole section */
+    padding: 80px 10%; /* Padding to ensure content has space around */
+    text-align: center;
+    color: white;
+    min-height: 60vh; /* Adjust height to fill the section properly */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Content within the About Us Section */
+.about-us-content {
+  
+    padding: 40px 10px;
+    border-radius: 10px;
+    max-width: 800px; /* Limit content width */
+    width: 100%; /* Make sure the content adjusts based on screen size */
+}
+
+/* Title */
+.about-us-title {
+    font-size: 2.5rem; /* Adjust font size */
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Paragraph */
+.about-us-description {
+    font-size: 1.1rem; /* Adjust font size */
+    line-height: 1.6;
+    margin-bottom: 20px;
+    text-align: justify;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .about-us-section {
+        padding: 60px 5%; /* Reduce padding for tablets */
+    }
+    
+    .about-us-title {
+        font-size: 2rem; /* Adjust title size for tablets */
+    }
+
+    .about-us-description {
+        font-size: 1rem; /* Adjust description size for tablets */
+        text-align: justify;
+    }
+}
+
+@media (max-width: 768px) {
+    .about-us-section {
+        padding: 40px 4%; /* Reduce padding for mobile */
+    }
+
+    .about-us-title {
+        font-size: 1.6rem; /* Further reduce title size for mobile */
+    }
+
+    .about-us-description {
+        font-size: 0.95rem; /* Reduce font size for better readability on mobile */
+        text-align: justify;
+    }
+}
+
+
+
+/* Sell Your Scrap Section */
+.sell-your-scrap-section {
+    text-align: center;
+    padding: 60px 10%;
+    background-color: #f4f4f4;
+    color: #102a42;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 40px;
+    color: #0a1f44;
+}
+
+/* Cards Container */
+.cards-containerss {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    justify-items: center;
+}
+
+/* Individual Card */
+.cardsel {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+    width: 100%;
+    max-width: 350px;
+    position: relative;
+}
+
+/* Hover Effect */
+.cardsel:hover {
+    transform: translateY(-5px);
+    background-color: #28c9fd; /* Background color change on hover */
+    color: white; /* Text color change on hover */
+}
+
+/* Card Icon */
+.card-icon {
+    font-size: 3rem;
+    color: #0a1f44;
+    margin-bottom: 20px;
+}
+
+/* Card Title */
+.cardsel h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* Card Description */
+.cardsel p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #555;
+    text-align: justify;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .sell-your-scrap-section {
+        padding: 50px 5%; 
+    }
+    
+    .section-title {
+        font-size: 2rem; 
+    }
+
+    .cardsel h3 {
+        font-size: 1.3rem;
+    }
+
+    .cardsel p {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .sell-your-scrap-section {
+        padding: 40px 4%;
+    }
+    
+    .section-title {
+        font-size: 1.6rem;
+    }
+
+    .cards-containerss {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+
+    .cardsel h3 {
+        font-size: 1.1rem;
+    }
+
+    .cardsel p {
+        font-size: 0.85rem;
+    }
+}
+
