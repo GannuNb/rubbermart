@@ -3,6 +3,9 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
 import PyroSteelImage from './images/PyroSteel.jpeg'; // Ensure the image path is correct
+import Slider from "react-slick"; // Carousel import
+import ts from "./images/ts.svg"; // Trusted Seller Image
+import { FaMapMarkerAlt } from "react-icons/fa"; // Location Icon
 
 function PyroSteel() {
   const [approvals, setApprovals] = useState([]);
@@ -34,6 +37,7 @@ function PyroSteel() {
 // If approvals are empty or userDetails are unavailable, show only the image and description
 if (approvals.length === 0 || !userDetails) {
   return (
+    <div className='productleftside'>
     <div className="setter">
       <div className="container py-5">
         <div className="row">
@@ -53,6 +57,7 @@ if (approvals.length === 0 || !userDetails) {
       <h1>No Stock Availble</h1>
       </div>
     </div>
+    </div>
   );
 }
 
@@ -62,105 +67,136 @@ if (approvals.length === 0 || !userDetails) {
     // Navigate to the /moredetails page and pass the approval data
     navigate('/moredetails', { state: { approval } });
   };
+      // Custom Arrow Components for Carousel
+      const NextArrow = ({ onClick }) => (
+        <div className="custom-arrow custom-arrow-next" onClick={onClick}>
+          ❯
+        </div>
+      );
+    
+      const PrevArrow = ({ onClick }) => (
+        <div className="custom-arrow custom-arrow-prev" onClick={onClick}>
+          ❮
+        </div>
+      );
+      const carouselSettings = {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        nextArrow: <NextArrow />,
+        prevArrow: <PrevArrow />,
+      };
+  
 
   return (
     <>
-      <div className="setter">
+    <div className='productleftside'>
+      <div className="setter ">
         <div className="container">
-          <div className="row py-5">
-            <div className="col-md-6">
-              <img src={PyroSteelImage} alt="Pyro Steel" className="img-fluid imgmore" />
-            </div>
-            <div className="col-md-6">
-              <h2 className="text-center">Pyro Steel</h2>
-              <p>
-                Pyro Steel is a high-quality product made from recycled materials that meets stringent industry standards. It is widely used in various applications, including manufacturing and construction.
+          <div className="container">
+            {/* Centered Heading at the Top */}
+            <h2 className="text-primary fw-bold text-left mt-5 btphead">Pyro Steel</h2>
+            <div className="row align-items-center mt-3">
+              {/* Content Section */}
+              <div className="col-md-6">
+                <p className="text-justify">
+                Pyro Steel is a high-quality product made from recycled materials that meets stringent industry standards. 
+                It is widely used in various applications, including manufacturing and construction.
                 This material is ideal for those seeking an environmentally friendly and cost-effective solution.
-              </p>
+
+                </p>
+              </div>
+
+              {/* Carousel Section */}
+              <div className="col-md-5">
+                <Slider {...carouselSettings} className="custom-carousel">
+                  <div>
+                    <img
+                      src={PyroSteelImage}
+                      alt="Baled Tyres PCR Image 1"
+                      className="img-fluid carousel-image"
+                    />
+                  </div>
+                  <div>
+                    <img
+                      src={PyroSteelImage}
+                      alt="Baled Tyres PCR Image 2"
+                      className="img-fluid carousel-image"
+                    />
+                  </div>
+                </Slider>
+              </div>
             </div>
           </div>
 
-          <div className="container mt-5 d-flex justify-content-center">
-            <div className="w-100">
-              <h3 className="mb-4 text-primary fw-bold text-center">Approval Details</h3>
-
+          <h2 className="fw-bold text-dark  mt-5">Seller's Products</h2>
+          {approvals.length > 0 && userDetails && (
+            <div className="approval-cards-container">
               {approvals.map((approval) => (
-                <div
-                  key={approval._id}
-                  className="card mb-3 shadow-sm border-0 p-2"
-                  style={{
-                    backgroundColor: "#f9f9f9",
-                    borderRadius: "12px",
-                    width: "85%", // Maintain width
-                    margin: "0 auto",
-                  }}
-                >
-                  <div className="card-body p-3">
-                    <div className="row align-items-center">
-                      {/* Left: Image Section */}
-                      <div className="col-md-4 text-center">
-                        {approval.images?.[0] && (
-                          <img
-                            src={approval.images[0]}
-                            alt="Approval Image"
-                            className="img-fluid rounded shadow-sm"
-                            style={{
-                              maxHeight: "200px", // Reduced image height
-                              maxWidth: "100%",
-                              borderRadius: "10px",
-                            }}
-                          />
-                        )}
-                      </div>
+                <div key={approval._id} className="approval-card">
+                  {/* IMAGE SECTION */}
+                  {approval.images?.[0] && (
+                    <div className="approval-image-container">
+                      <img
+                        src={approval.images[0]}
+                        alt="Approval Image"
+                        className="approval-card-image"
+                      />
+                    </div>
+                  )}
 
-                      {/* Right: Details Section */}
-                      <div className="col-md-8">
-                        <div className="row">
-                          {/* Scrap Details */}
-                          <div className="col-md-6">
-                            <h5 className="mb-1 text-dark fw-semibold">{approval.material}</h5>
-                            <h6 className="text-secondary mb-1">{approval.application}</h6>
-                            <p className="mb-1">
-                              <strong>Price:</strong> <span className="text-success">{approval.price} INR</span>
-                            </p>
-                            <p className="mb-1">
-                              <strong>Loading Location:</strong> {approval.loadingLocation}
-                            </p>
-                            <p className="mb-1">
-                              <strong>Country of Origin:</strong> {approval.countryOfOrigin}
-                            </p>
-                          </div>
+                  {/* Divider Line (Only Visible in Desktop) */}
+                  <div className="approval-divider"></div>
 
-                          {/* User Details */}
-                          {userDetails?.businessProfiles?.[0] && (
-                            <div className="col-md-6">
-                              <h6 className="text-primary">Seller Details:</h6>
-                              <p className="mb-1">
-                                <strong>Seller ID:</strong> {approval.postedBy?.businessProfiles[0]?.profileId}
-                              </p>
-                            </div>
-                          )}
-                        </div>
+                  {/* CONTENT SECTION */}
+                  <div className="approval-card-body">
+                    <h5 className="approval-title">{approval.application}</h5>
+                    <h6 className="approval-material">{approval.material}</h6>
 
-                        {/* Buttons Section */}
-                        <div className="mt-3 d-flex gap-2">
-                          <button
-                            className="btn btn-primary px-3 py-1 fw-bold shadow-sm"
-                            style={{ borderRadius: "8px" }}
-                            onClick={() => handleMoreDetailsClick(approval)}
-                          >
-                            More Details
-                          </button>
-                        </div>
-                      </div>
+                    {/* Price */}
+                    <p className="approval-price">
+                      <strong>Price:</strong> {approval.price} INR/MT
+                    </p>
+
+                    {/* Seller Info */}
+                    {userDetails?.businessProfiles?.[0] && (
+                      <p className="approval-seller">
+                        <strong>By:</strong>{" "}
+                        {approval.postedBy?.businessProfiles[0]?.profileId}
+                      </p>
+                    )}
+
+                    {/* Location */}
+                    <p className="approval-location">
+                      <FaMapMarkerAlt className="approval-location-icon" />{" "}
+                      <strong>Loading Location:</strong> {approval.loadingLocation}
+                    </p>
+
+                    {/* Trusted Seller Badge */}
+                    <img
+                      src={ts}
+                      alt="Trusted Seller"
+                      className="approval-trusted-seller-icon"
+                    />
+
+                    {/* Buttons */}
+                    <div className="approval-button-container">
+                      <button
+                        className="btn btn-primary shadow-sm mt-2"
+                        onClick={() => handleMoreDetailsClick(approval)}
+                      >
+                        More Details
+                      </button>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
-          </div>
-
+          )}
         </div>
+      </div>
       </div>
     </>
   );

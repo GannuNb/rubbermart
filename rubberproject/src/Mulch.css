@@ -140,7 +140,8 @@
 /* Main Categories Box - Stays on the right side */
 .categories-box {
   position: absolute;
-  top: 100px;
+  top: 0px;
+ 
   /* Adjust based on your layout */
   right: 0;
   /* Sticks to the right */
@@ -195,7 +196,7 @@ h2.text-center {
 
 .custom-carousel .carousel-image {
   height: 280px;
-  object-fit: cover;
+  object-fit: contain;
   width: 100%;
 }
 
@@ -444,4 +445,9 @@ h2 {
 .btphead{
   margin-left: 20%;
 
+}
+
+.productleftside{
+  margin-left: 4%;
+  margin-right: 4%;
 }

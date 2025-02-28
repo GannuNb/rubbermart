@@ -1,168 +1,272 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import ThreePiecePCRImage from './images/ThreePiecePCR.jpeg'; // Three Piece PCR Image
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { useNavigate } from 'react-router-dom';
-import './Mulch.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { useNavigate } from "react-router-dom";
+import "./Mulch.css";
+import ts from "./images/ts.svg"; // Trusted Seller Image
+import { FaMapMarkerAlt } from "react-icons/fa"; // Location Icon
+import { FaBars } from "react-icons/fa";
+import ThreePiecePCRImage from './images/ThreePiecePCR.jpeg';
+import Slider from "react-slick"; // Carousel import
+import { Link } from "react-router-dom"; // Use Link for React Router
 
 function ThreePiecePCR() {
   const [approvals, setApprovals] = useState([]);
   const [userDetails, setUserDetails] = useState(null);
-  const navigate = useNavigate(); // Hook to navigate to another route
+  const [isOpen, setIsOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const navigate = useNavigate();
+
+  const categories = [
+    { name: "Three Piece PCR", path: "/threepiecepcr" },
+    { name: "Shreds", path: "/shreds" },
+    { name: "Baled Tyres TBR", path: "/baledtyrestbr" },
+    { name: "Three Piece TBR", path: "/threepiecetbr" },
+    { name: "Mulch PCR", path: "/mulchpcr" },
+    { name: "Rubber Granules/Crumb", path: "/RubberGranules/Crum" },
+  ];
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     async function fetchApprovalDetails() {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/approvals`, {
-          params: { application: 'Three Piece PCR' }
-        });
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/approvals`,
+          { params: { application: "Three Piece PCR" } }
+        );
 
         const approvalsData = response.data.approvals;
         setApprovals(approvalsData);
 
         if (approvalsData.length > 0 && approvalsData[0].postedBy) {
-          const userResponse = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/${approvalsData[0].postedBy._id}`);
+          const userResponse = await axios.get(
+            `${process.env.REACT_APP_API_URL}/api/users/${approvalsData[0].postedBy._id}`
+          );
           setUserDetails(userResponse.data);
         }
       } catch (error) {
-        console.error('Error fetching approval details:', error);
+        console.error("Error fetching approval details:", error);
       }
     }
 
     fetchApprovalDetails();
   }, []);
+// Custom Arrow Components for Carousel
+const NextArrow = ({ onClick }) => (
+  <div className="custom-arrow custom-arrow-next" onClick={onClick}>
+    ❯
+  </div>
+);
 
-  // If no approvals or user details are available, just show the image and description
+const PrevArrow = ({ onClick }) => (
+  <div className="custom-arrow custom-arrow-prev" onClick={onClick}>
+    ❮
+  </div>
+);
+
+const carouselSettings = {
+  dots: true,
+  infinite: true,
+  speed: 500,
+  slidesToShow: 1,
+  slidesToScroll: 1,
+  nextArrow: <NextArrow />,
+  prevArrow: <PrevArrow />,
+};
+
   if (approvals.length === 0 || !userDetails) {
     return (
-      <div className='setter'>
-      <div className="container py-5">
-        <div className="row">
-          <div className="col-md-6">
-            <img src={ThreePiecePCRImage} alt="Three Piece PCR" className="img-fluid imgmore" />
+      <div className='productleftside'>
+      <div className="setter">
+        {/* Centered Heading at the Top */}
+        <h2 className="text-primary fw-bold text-left mt-5 btphead">Three Piece PCR</h2>
+          <div className="row align-items-center mt-3">
+            {/* Content Section */}
+            <div className="col-md-7">
+              <p className="text-justify">
+                <strong>Three Piece PCR (Post Consumer Recycled)</strong> is a highly
+                durable and eco-friendly material created using recycled materials. It
+                ensures both cost-effectiveness and environmental responsibility, widely
+                used in various industries.
+              </p>
+            </div>
+
+              {/* Carousel Section */}
+              <div className="col-md-5">
+                <Slider {...carouselSettings} className="custom-carousel">
+                  <div>
+                    <img
+                      src={ThreePiecePCRImage}
+                      alt="Baled Tyres PCR Image 1"
+                      className="img-fluid carousel-image"
+                    />
+                  </div>
+                  <div>
+                    <img
+                      src={ThreePiecePCRImage}
+                      alt="Baled Tyres PCR Image 2"
+                      className="img-fluid carousel-image"
+                    />
+                  </div>
+                </Slider>
+              </div>
           </div>
-          <div className="col-md-6">
-            <h2 className="text-center">Three Piece PCR</h2>
-            <p>
-              Three Piece PCR (Post Consumer Recycled) is a highly durable and eco-friendly material used primarily in manufacturing processes.
-              It is created using recycled materials, ensuring both cost-effectiveness and environmental responsibility.
-              This material is highly sought after for its performance and sustainability in various industries.
-            </p>
-          </div>
+        <div className="no-stock-wrapper">
+          <h1>No Stock Available</h1>
         </div>
-      </div>
-      <div className="no-stock-wrapper">
-      <h1>No Stock Availble</h1>
       </div>
       </div>
     );
   }
 
   const handleMoreDetailsClick = (approval) => {
-    // Navigate to the /moredetails page and pass the approval data
-    navigate('/moredetails', { state: { approval } });
+    navigate("/moredetails", { state: { approval } });
   };
 
+  
   return (
     <>
+        <div className='productleftside'>
       <div className="setter">
         <div className="container">
-          <div className="row py-5">
+          {/* Centered Heading at the Top */}
+          <h2 className="text-primary fw-bold text-left mt-5 btphead">Three Piece PCR</h2>
+          <div className="row align-items-center mt-3">
+            {/* Content Section */}
             <div className="col-md-6">
-              <img src={ThreePiecePCRImage} alt="Three Piece PCR" className="img-fluid imgmore" />
-            </div>
-            <div className="col-md-6">
-              <h2 className="text-center">Three Piece PCR</h2>
-              <p>
-                Three Piece PCR (Post Consumer Recycled) is a highly durable and eco-friendly material used primarily in manufacturing processes.
-                It is created using recycled materials, ensuring both cost-effectiveness and environmental responsibility.
-                This material is highly sought after for its performance and sustainability in various industries.
+              <p className="text-justify">
+                <strong>Three Piece PCR (Post Consumer Recycled)</strong> is a highly
+                durable and eco-friendly material created using recycled materials. It
+                ensures both cost-effectiveness and environmental responsibility, widely
+                used in various industries.
               </p>
+            </div>
+
+              {/* Carousel Section */}
+              <div className="col-md-5">
+                <Slider {...carouselSettings} className="custom-carousel">
+                  <div>
+                    <img
+                      src={ThreePiecePCRImage}
+                      alt="Baled Tyres PCR Image 1"
+                      className="img-fluid carousel-image"
+                    />
+                  </div>
+                  <div>
+                    <img
+                      src={ThreePiecePCRImage}
+                      alt="Baled Tyres PCR Image 2"
+                      className="img-fluid carousel-image"
+                    />
+                  </div>
+                </Slider>
+              </div>
+          </div>
+
+          {/* Related Categories */}
+          <h2 className="fw-bold text-dark mt-5">Related Categories</h2>
+          <div className="categoriess-container">
+            <div className={`categories-box shadow-sm ${isMobile ? "w-auto" : "w-25"}`}>
+              <h6 className="text-dark fw-bold border-bottom pb-2 d-flex align-items-center">
+                {isMobile && (
+                  <button
+                    className="btn btn-sm btn-dark me-2"
+                    onClick={() => setIsOpen(!isOpen)} // Toggle dropdown on click
+                  >
+                    <FaBars />
+                  </button>
+                )}
+                Related Categories
+              </h6>
+
+              {/* Show categories only if it's desktop or dropdown is open */}
+              {(!isMobile || isOpen) && (
+                <div className={`category-list ${isOpen ? "show" : "hide"}`}>
+                  <div className="scroll-container">
+                    {categories.map((category, index) => (
+                      <Link to={category.path} className="category-item" key={index}>
+                        {category.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Only show the approval details if they are available */}
+          {/* Approval Cards */}
           {approvals.length > 0 && userDetails && (
-            <div className="container mt-5 d-flex justify-content-center">
-              <div className="w-100">
+            <div className="approval-cards-container">
+              {approvals.map((approval) => (
+                <div key={approval._id} className="approval-card">
+                  {/* IMAGE SECTION */}
+                  {approval.images?.[0] && (
+                    <div className="approval-image-container">
+                      <img
+                        src={approval.images[0]}
+                        alt="Approval Image"
+                        className="approval-card-image"
+                      />
+                    </div>
+                  )}
 
-                {approvals.map((approval) => (
-                  <div
-                    key={approval._id}
-                    className="card mb-3 shadow-sm border-0 p-2"
-                    style={{
-                      backgroundColor: "#f9f9f9",
-                      borderRadius: "12px",
-                      width: "85%", // Maintain width
-                      margin: "0 auto",
-                    }}
-                  >
-                    <div className="card-body p-3">
-                      <div className="row align-items-center">
-                        {/* Left: Image Section */}
-                        <div className="col-md-4 text-center">
-                          {approval.images?.[0] && (
-                            <img
-                              src={approval.images[0]}
-                              alt="Approval Image"
-                              className="img-fluid rounded shadow-sm"
-                              style={{
-                                maxHeight: "200px", // Reduced image height
-                                maxWidth: "100%",
-                                borderRadius: "10px",
-                              }}
-                            />
-                          )}
-                        </div>
+                  {/* Divider Line (Only Visible in Desktop) */}
+                  <div className="approval-divider"></div>
 
-                        {/* Right: Details Section */}
-                        <div className="col-md-8">
-                          <div className="row">
-                            {/* Scrap Details */}
-                            <div className="col-md-6">
-                              <h5 className="mb-1 text-dark fw-semibold">{approval.material}</h5>
-                              <h6 className="text-secondary mb-1">{approval.application}</h6>
-                              <p className="mb-1">
-                                <strong>Price:</strong> <span className="text-success">{approval.price} INR</span>
-                              </p>
-                              <p className="mb-1">
-                                <strong>Loading Location:</strong> {approval.loadingLocation}
-                              </p>
-                              <p className="mb-1">
-                                <strong>Country of Origin:</strong> {approval.countryOfOrigin}
-                              </p>
-                            </div>
+                  {/* CONTENT SECTION */}
+                  <div className="approval-card-body">
+                    <h5 className="approval-title">{approval.application}</h5>
+                    <h6 className="approval-material">{approval.material}</h6>
 
-                            {/* User Details */}
-                            {userDetails?.businessProfiles?.[0] && (
-                              <div className="col-md-6">
-                                <h6 className="text-primary">Seller Details:</h6>
-                                <p className="mb-1">
-                                  <strong>Seller ID:</strong> {approval.postedBy?.businessProfiles[0]?.profileId}
-                                </p>
-                              </div>
-                            )}
-                          </div>
+                    {/* Price */}
+                    <p className="approval-price">
+                      <strong>Price:</strong> {approval.price} INR/MT
+                    </p>
 
-                          {/* Buttons Section */}
-                          <div className="mt-3 d-flex gap-2">
-                            <button
-                              className="btn btn-primary px-3 py-1 fw-bold shadow-sm"
-                              style={{ borderRadius: "8px" }}
-                              onClick={() => handleMoreDetailsClick(approval)}
-                            >
-                              More Details
-                            </button>
-                          </div>
-                        </div>
-                      </div>
+                    {/* Seller Info */}
+                    {userDetails?.businessProfiles?.[0] && (
+                      <p className="approval-seller">
+                        <strong>By:</strong>{" "}
+                        {approval.postedBy?.businessProfiles[0]?.profileId}
+                      </p>
+                    )}
+
+                    {/* Location */}
+                    <p className="approval-location">
+                      <FaMapMarkerAlt className="approval-location-icon" />{" "}
+                      <strong>Loading Location:</strong> {approval.loadingLocation}
+                    </p>
+
+                    {/* Trusted Seller Badge */}
+                    <img
+                      src={ts}
+                      alt="Trusted Seller"
+                      className="approval-trusted-seller-icon"
+                    />
+
+                    {/* Buttons */}
+                    <div className="approval-button-container">
+                      <button
+                        className="btn btn-primary shadow-sm mt-2"
+                        onClick={() => handleMoreDetailsClick(approval)}
+                      >
+                        More Details
+                      </button>
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
+      </div>
       </div>
     </>
   );

@@ -60,33 +60,6 @@ function MultipleBaledTyresPCR() {
     fetchApprovalDetails();
   }, []);
 
-  if (approvals.length === 0 || !userDetails) {
-    return (
-      <div className="setter">
-        <div className="container py-5">
-          <div className="row">
-            <div className="col-md-6">
-              <h2>Baled Tyres PCR</h2>
-              <p>
-                Baled Tyres PCR(Passenger Car Radia)  is a versatile material
-                derived from recycled tyres. It is commonly used in various
-                industries such as construction and automotive, providing an
-                eco-friendly and cost-efficient alternative.
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="no-stock-wrapper">
-          <h1>No Stock Available</h1>
-        </div>
-      </div>
-    );
-  }
-
-  const handleMoreDetailsClick = (approval) => {
-    navigate("/moredetails", { state: { approval } });
-  };
-
   // Custom Arrow Components for Carousel
   const NextArrow = ({ onClick }) => (
     <div className="custom-arrow custom-arrow-next" onClick={onClick}>
@@ -109,9 +82,63 @@ function MultipleBaledTyresPCR() {
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
   };
+  
+  if (approvals.length === 0 || !userDetails) {
+    return (
+      <div className='productleftside'>
+      <div className="setter">
+        <div className="container">
+            {/* Centered Heading at the Top */}
+            <h2 className="text-primary fw-bold text-left mt-5 btphead">Baled Tyres PCR</h2>
+            <div className="row align-items-center mt-3">
+              {/* Content Section */}
+              <div className="col-md-7">
+                <p className="text-justify">
+                  <strong>Baled Tyres PCR (Passenger Car Radian)</strong> is a <strong>versatile and eco-friendly material</strong> made from recycled tyres.
+                  It is used in <strong>construction, automotive, sports, and agriculture</strong> for its <strong>durability, shock absorption, and cost-effectiveness</strong>.
+                  In agriculture, it serves as <strong>rubber mulch</strong> to retain moisture and suppress weeds.
+                  Recycling tyres with PCR helps <strong>reduce landfill waste, lower carbon emissions, and promote sustainability</strong>.
+                </p>
+              </div>
+
+              {/* Carousel Section */}
+              <div className="col-md-5">
+                <Slider {...carouselSettings} className="custom-carousel">
+                  <div>
+                    <img
+                      src={baledtrespcrimg1}
+                      alt="Baled Tyres PCR Image 1"
+                      className="img-fluid carousel-image"
+                    />
+                  </div>
+                  <div>
+                    <img
+                      src={baledtrespcrimg2}
+                      alt="Baled Tyres PCR Image 2"
+                      className="img-fluid carousel-image"
+                    />
+                  </div>
+                </Slider>
+              </div>
+            </div>
+          </div>
+        <div className="no-stock-wrapper">
+          <h1>No Stock Available</h1>
+        </div>
+      </div>
+      </div>
+    );
+  }
+
+  const handleMoreDetailsClick = (approval) => {
+    navigate("/moredetails", { state: { approval } });
+  };
+
+  
 
   return (
     <>
+        <div className='productleftside'>
       <div className="setter">
         <div className="container">
           <div className="container">
@@ -246,8 +273,10 @@ function MultipleBaledTyresPCR() {
           )}
         </div>
       </div>
+      </div>
     </>
   );
 }
 
 export default MultipleBaledTyresPCR;
+

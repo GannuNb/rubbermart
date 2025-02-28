@@ -1,20 +1,44 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import ThreePieceTBRImage from './images/ThreePieceTBR.jpeg'; // Ensure to have an image for ThreePieceTBR
-import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 import { useNavigate } from 'react-router-dom'; // useNavigate instead of useHistory
+import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
+import { FaMapMarkerAlt } from 'react-icons/fa'; // Location Icon
+import { FaBars } from 'react-icons/fa'; // Menu Icon
+import Slider from 'react-slick'; // Carousel import
+import tbr2 from './images/3piecetbr2.jpg';
+import ts from './images/ts.svg'; // Trusted Seller Image
 import './Mulch.css'; // Import your CSS file
+import { Link } from 'react-router-dom';
 
 function ThreePieceTBR() {
   const [approvals, setApprovals] = useState([]);
   const [userDetails, setUserDetails] = useState(null);
-  const navigate = useNavigate(); // Hook to navigate to another route
+  const [isOpen, setIsOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const navigate = useNavigate();
+
+  const categories = [
+    { name: "Three Piece PCR", path: "/threepiecepcr" },
+    { name: "Shreds", path: "/shreds" },
+    { name: "Baled Tyres TBR", path: "/baledtyrestbr" },
+    { name: "Three Piece TBR", path: "/threepiecetbr" },
+    { name: "Mulch PCR", path: "/mulchpcr" },
+    { name: "Rubber Granules/Crumb", path: "/RubberGranules/Crum" },
+  ];
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     async function fetchApprovalDetails() {
       try {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/approvals`, {
-          params: { application: 'Three Piece TBR' }
+          params: { application: 'Three Piece TBR' },
         });
 
         const approvalsData = response.data.approvals;
@@ -32,135 +56,208 @@ function ThreePieceTBR() {
     fetchApprovalDetails();
   }, []);
 
-  // If no approvals or user details are available, show loading or fallback content
+  
+  // Custom Arrow Components for Carousel
+  const NextArrow = ({ onClick }) => (
+    <div className="custom-arrow custom-arrow-next" onClick={onClick}>
+      ❯
+    </div>
+  );
+
+  const PrevArrow = ({ onClick }) => (
+    <div className="custom-arrow custom-arrow-prev" onClick={onClick}>
+      ❮
+    </div>
+  );
+
+  const carouselSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />,
+  };
+  
   if (approvals.length === 0 || !userDetails) {
     return (
-      <div className='setter'>
-      <div className="container py-5">
-        <div className="row">
-          <div className="col-md-6">
-            <img src={ThreePieceTBRImage} alt="Three Piece TBR" className="img-fluid imgmore" />
+      <div className='productleftside'>
+      <div className="setter">
+        <div className="row py-5">
+            {/* Left Column */}
+            <div className="col-md-6">
+              <h2 className="text-primary fw-bold text-left mt-5 btphead">Three Piece TBR</h2>
+              <p className="text-justify">
+                <strong>Three Piece TBR</strong> is a durable, high-performance product designed for use in automotive and industrial applications.
+                Made with top-quality materials, this product is perfect for those seeking reliability and longevity in their tires.
+              </p>
+            </div>
+
+              {/* Carousel Section */}
+              <div className="col-md-5">
+                <Slider {...carouselSettings} className="custom-carousel">
+                  <div>
+                    <img
+                      src={tbr2}
+                      alt="Baled Tyres PCR Image 1"
+                      className="img-fluid carousel-image"
+                    />
+                  </div>
+                  <div>
+                    <img
+                      src={tbr2}
+                      alt="Baled Tyres PCR Image 2"
+                      className="img-fluid carousel-image"
+                    />
+                  </div>
+                </Slider>
+              </div>
           </div>
-          <div className="col-md-6">
-            <h2 className="text-center">Three Piece TBR</h2>
-            <p>
-              Three Piece TBR is a durable, high-performance product designed for use in automotive and industrial applications.
-              Made with top-quality materials, this product is perfect for those seeking reliability and longevity in their tires.
-            </p>
-          </div>
+        <div className="no-stock-wrapper">
+          <h1>No Stock Available</h1>
         </div>
-      </div>
-      <div className="no-stock-wrapper">
-      <h1>No Stock Availble</h1>
       </div>
       </div>
     );
   }
 
   const handleMoreDetailsClick = (approval) => {
-    // Navigate to the /moredetails page and pass the approval data
     navigate('/moredetails', { state: { approval } });
   };
 
+
   return (
     <>
+    <div className='productleftside'>
       <div className="setter">
         <div className="container">
           <div className="row py-5">
-            <div className="col-md-6">
-              <img src={ThreePieceTBRImage} alt="Three Piece TBR" className="img-fluid imgmore" />
-            </div>
-            <div className="col-md-6">
-              <h2 className="text-center">Three Piece TBR</h2>
-              <p>
-                Three Piece TBR is a durable, high-performance product designed for use in automotive and industrial applications.
+            {/* Left Column */}
+            <div className="col-md-7">
+              <h2 className="text-primary fw-bold text-left  btphead">Three Piece TBR</h2>
+              <p className="text-justify">
+                <strong>Three Piece TBR</strong> is a durable, high-performance product designed for use in automotive and industrial applications.
                 Made with top-quality materials, this product is perfect for those seeking reliability and longevity in their tires.
               </p>
             </div>
+
+              {/* Carousel Section */}
+              <div className="col-md-5">
+                <Slider {...carouselSettings} className="custom-carousel">
+                  <div>
+                    <img
+                      src={tbr2}
+                      alt="Baled Tyres PCR Image 1"
+                      className="img-fluid carousel-image"
+                    />
+                  </div>
+                  <div>
+                    <img
+                      src={tbr2}
+                      alt="Baled Tyres PCR Image 2"
+                      className="img-fluid carousel-image"
+                    />
+                  </div>
+                </Slider>
+              </div>
           </div>
 
-          {/* Show approval details if available */}
-          {approvals.length > 0 && userDetails && (
-            <div className="container mt-5 d-flex justify-content-center">
-              <div className="w-100">
-
-                {approvals.map((approval) => (
-                  <div
-                    key={approval._id}
-                    className="card mb-3 shadow-sm border-0 p-2"
-                    style={{
-                      backgroundColor: "#f9f9f9",
-                      borderRadius: "12px",
-                      width: "85%", // Maintain width
-                      margin: "0 auto",
-                    }}
+          {/* Related Categories Section */}
+          <h2 className="fw-bold text-dark mt-5">Seller's Products</h2>
+          <div className="categoriess-container">
+            <div className={`categories-box shadow-sm ${isMobile ? "w-auto" : "w-25"}`}>
+              <h6 className="text-dark fw-bold border-bottom pb-2 d-flex align-items-center">
+                {isMobile && (
+                  <button
+                    className="btn btn-sm btn-dark me-2"
+                    onClick={() => setIsOpen(!isOpen)}
                   >
-                    <div className="card-body p-3">
-                      <div className="row align-items-center">
-                        {/* Left: Image Section */}
-                        <div className="col-md-4 text-center">
-                          {approval.images?.[0] && (
-                            <img
-                              src={approval.images[0]}
-                              alt="Approval Image"
-                              className="img-fluid rounded shadow-sm"
-                              style={{
-                                maxHeight: "200px", // Reduced image height
-                                maxWidth: "100%",
-                                borderRadius: "10px",
-                              }}
-                            />
-                          )}
-                        </div>
+                    <FaBars />
+                  </button>
+                )}
+                Related Categories
+              </h6>
 
-                        {/* Right: Details Section */}
-                        <div className="col-md-8">
-                          <div className="row">
-                            {/* Scrap Details */}
-                            <div className="col-md-6">
-                              <h5 className="mb-1 text-dark fw-semibold">{approval.material}</h5>
-                              <h6 className="text-secondary mb-1">{approval.application}</h6>
-                              <p className="mb-1">
-                                <strong>Price:</strong> <span className="text-success">{approval.price} INR</span>
-                              </p>
-                              <p className="mb-1">
-                                <strong>Loading Location:</strong> {approval.loadingLocation}
-                              </p>
-                              <p className="mb-1">
-                                <strong>Country of Origin:</strong> {approval.countryOfOrigin}
-                              </p>
-                            </div>
+              {(!isMobile || isOpen) && (
+                <div className={`category-list ${isOpen ? "show" : "hide"}`}>
+                  <div className="scroll-container">
+                    {categories.map((category, index) => (
+                      <Link to={category.path} className="category-item" key={index}>
+                        {category.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
 
-                            {/* User Details */}
-                            {userDetails?.businessProfiles?.[0] && (
-                              <div className="col-md-6">
-                                <h6 className="text-primary">Seller Details:</h6>
-                                <p className="mb-1">
-                                  <strong>Seller ID:</strong> {approval.postedBy?.businessProfiles[0]?.profileId}
-                                </p>
-                              </div>
-                            )}
-                          </div>
+          {/* Approvals Section */}
+          {approvals.length > 0 && userDetails && (
+            <div className="approval-cards-container">
+              {approvals.map((approval) => (
+                <div key={approval._id} className="approval-card">
+                  {/* Image Section */}
+                  {approval.images?.[0] && (
+                    <div className="approval-image-container">
+                      <img
+                        src={approval.images[0]}
+                        alt="Approval Image"
+                        className="approval-card-image"
+                      />
+                    </div>
+                  )}
 
-                          {/* Buttons Section */}
-                          <div className="mt-3 d-flex gap-2">
-                            <button
-                              className="btn btn-primary px-3 py-1 fw-bold shadow-sm"
-                              style={{ borderRadius: "8px" }}
-                              onClick={() => handleMoreDetailsClick(approval)}
-                            >
-                              More Details
-                            </button>
-                          </div>
-                        </div>
-                      </div>
+                  {/* Divider Line */}
+                  <div className="approval-divider"></div>
+
+                  {/* Content Section */}
+                  <div className="approval-card-body">
+                    <h5 className="approval-title">{approval.application}</h5>
+                    <h6 className="approval-material">{approval.material}</h6>
+
+                    {/* Price */}
+                    <p className="approval-price">
+                      <strong>Price:</strong> {approval.price} INR/MT
+                    </p>
+
+                    {/* Seller Info */}
+                    {userDetails?.businessProfiles?.[0] && (
+                      <p className="approval-seller">
+                        <strong>By:</strong> {approval.postedBy?.businessProfiles[0]?.profileId}
+                      </p>
+                    )}
+
+                    {/* Location */}
+                    <p className="approval-location">
+                      <FaMapMarkerAlt className="approval-location-icon" />{" "}
+                      <strong>Loading Location:</strong> {approval.loadingLocation}
+                    </p>
+
+                    {/* Trusted Seller Badge */}
+                    <img
+                      src={ts}
+                      alt="Trusted Seller"
+                      className="approval-trusted-seller-icon"
+                    />
+
+                    {/* Buttons */}
+                    <div className="approval-button-container">
+                      <button
+                        className="btn btn-primary shadow-sm mt-2"
+                        onClick={() => handleMoreDetailsClick(approval)}
+                      >
+                        More Details
+                      </button>
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
+      </div>
       </div>
     </>
   );

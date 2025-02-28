@@ -301,8 +301,9 @@ const AdminPage = () => {
             <Adminnav />
 
         <div>
-        <div className=" mt-5">
-            <h2 className="mb-4">Admin Dashboard</h2>
+        <h2 className="mb-4">Admin Dashboard</h2>
+        {/* <div className=" mt-5">
+          
 
          
 
@@ -618,7 +619,7 @@ const AdminPage = () => {
                 </Modal.Body>
             </Modal>
 
-        </div>
+        </div> */}
 
         </div>
         </>

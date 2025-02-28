@@ -5,7 +5,7 @@
   width: 100%; */
   margin-left: 8%;
   margin-top: 6%;
-  width: 104%;
+  width: 100%;
 }
 
 
@@ -61,7 +61,7 @@ h2.text-center {
 /* Medium Devices: Small Navbar for 990px to 1350px */
 @media (max-width: 1350px) and (min-width: 991px){
     .setter {
-        margin-left: 11%;
+        margin-left: 12%;
         margin-top: 7%;
     }
 
@@ -87,6 +87,5 @@ h2.text-center {
         width: 30%;
     }
 }
-
 
 

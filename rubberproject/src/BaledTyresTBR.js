@@ -1,14 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import BaledTyresTBRImage from './images/BaledTyresTBR.jpg';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from 'react-router-dom';
-import './Mulch.css';
+import Slider from "react-slick"; // Carousel import
+import { FaMapMarkerAlt } from 'react-icons/fa'; // Location Icon
+import { FaBars } from 'react-icons/fa';
+import ts from './images/ts.svg'; // Trusted Seller Image
+import baledtrespcrimg1 from './images/baledtrespcr2.jpg';
+import baledtrespcrimg2 from './images/baledtrespcr3.jpg'; // You can replace these with relevant images for TBR
+import { Link } from "react-router-dom"; // Use Link for React Router
+
+// Same category structure as the other page
+const categories = [
+  { name: "Three Piece PCR", path: "/threepiecepcr" },
+  { name: "Shreds", path: "/shreds" },
+  { name: "Baled Tyres TBR", path: "/baledtyrestbr" },
+  { name: "Three Piece TBR", path: "/threepiecetbr" },
+  { name: "Mulch PCR", path: "/mulchpcr" },
+  { name: "Rubber Granules/Crumb", path: "/RubberGranules/Crum" },
+];
 
 function BaledTyresTBR() {
   const [approvals, setApprovals] = useState([]);
   const [userDetails, setUserDetails] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     async function fetchApprovalDetails() {
@@ -26,143 +51,169 @@ function BaledTyresTBR() {
         }
       } catch (error) {
         console.error('Error fetching approval details:', error);
-        // If there's an error (like 404), still render the page with just the image and description
       }
     }
 
     fetchApprovalDetails();
   }, []);
 
-  // If approvals is empty or userDetails is unavailable, show the image and description only
-  if (approvals.length === 0 || !userDetails) {
-    return (
-      <div className="setter">
-        <div className="container py-5">
-          <div className="row">
-            <div className="col-md-6">
-              <img src={BaledTyresTBRImage} alt="Baled Tyres TBR" className="img-fluid imgmore" />
-            </div>
-            <div className="col-md-6">
-              <h2 className="text-center">Baled Tyres TBR</h2>
-              <p>
-                Baled Tyres TBR (Truck and Bus Radial tyres) are high-quality tyres that have been processed and baled for easy handling and transport.
-                They are ideal for recycling or reuse in various industries, such as construction and manufacturing.
-                This material offers an eco-friendly solution to tyre disposal and provides substantial cost savings.
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="no-stock-wrapper">
-      <h1>No Stock Availble</h1>
-      </div>
-      </div>
-    );
-  }
-
   const handleMoreDetailsClick = (approval) => {
     navigate('/moredetails', { state: { approval } });
   };
 
+  // Custom Arrow Components for Carousel
+  const NextArrow = ({ onClick }) => (
+    <div className="custom-arrow custom-arrow-next" onClick={onClick}>
+      ❯
+    </div>
+  );
+
+  const PrevArrow = ({ onClick }) => (
+    <div className="custom-arrow custom-arrow-prev" onClick={onClick}>
+      ❮
+    </div>
+  );
+
+  const carouselSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />,
+  };
+
+  if (approvals.length === 0 || !userDetails) {
+    return (
+      <div className='productleftside'>
+      <div className="setter">
+        <h2 className="text-primary fw-bold text-left mt-5 btphead">Baled Tyres TBR</h2>
+          <div className="row align-items-center mt-3">
+            <div className="col-md-7">
+              <p className="text-justify">
+                <strong>Baled Tyres TBR (Truck and Bus Radial tyres)</strong> are high-quality tyres that have been processed and baled for easy handling and transport. They are ideal for recycling or reuse in various industries such as construction, manufacturing, and more.
+              </p>
+            </div>
+            <div className="col-md-5">
+              <Slider {...carouselSettings} className="custom-carousel">
+                <div>
+                  <img src={baledtrespcrimg1} alt="Baled Tyres TBR Image 1" className="img-fluid carousel-image" />
+                </div>
+                <div>
+                  <img src={baledtrespcrimg2} alt="Baled Tyres TBR Image 2" className="img-fluid carousel-image" />
+                </div>
+              </Slider>
+            </div>
+          </div>
+        <div className="no-stock-wrapper">
+          <h1>No Stock Available</h1>
+        </div>
+      </div>
+      </div>
+
+    );
+  }
+
   return (
     <>
+        <div className='productleftside'>
       <div className="setter">
         <div className="container">
-          <div className="row py-5">
-            <div className="col-md-6">
-              <img src={BaledTyresTBRImage} alt="Baled Tyres TBR" className="img-fluid" />
-            </div>
-            <div className="col-md-6">
-              <h2 className="text-center">Baled Tyres TBR</h2>
-              <p>
-                Baled Tyres TBR (Truck and Bus Radial tyres) are high-quality tyres that have been processed and baled for easy handling and transport.
-                They are ideal for recycling or reuse in various industries, such as construction and manufacturing.
-                This material offers an eco-friendly solution to tyre disposal and provides substantial cost savings.
+          <h2 className="text-primary fw-bold text-left mt-5 btphead">Baled Tyres TBR</h2>
+          <div className="row align-items-center mt-3">
+            <div className="col-md-7">
+              <p className="text-justify">
+                <strong>Baled Tyres TBR (Truck and Bus Radial tyres)</strong> are high-quality tyres that have been processed and baled for easy handling and transport. They are ideal for recycling or reuse in various industries such as construction, manufacturing, and more.
               </p>
+            </div>
+            <div className="col-md-5">
+              <Slider {...carouselSettings} className="custom-carousel">
+                <div>
+                  <img src={baledtrespcrimg1} alt="Baled Tyres TBR Image 1" className="img-fluid carousel-image" />
+                </div>
+                <div>
+                  <img src={baledtrespcrimg2} alt="Baled Tyres TBR Image 2" className="img-fluid carousel-image" />
+                </div>
+              </Slider>
             </div>
           </div>
 
-          {/* Only show this section if there are approval details */}
-          {approvals.length > 0 && userDetails && (
-            <div className="container mt-5 d-flex justify-content-center">
-              <div className="w-100">
-
-                {approvals.map((approval) => (
-                  <div
-                    key={approval._id}
-                    className="card mb-3 shadow-sm border-0 p-2"
-                    style={{
-                      backgroundColor: "#f9f9f9",
-                      borderRadius: "12px",
-                      width: "85%", // Maintain width
-                      margin: "0 auto",
-                    }}
+          <h2 className="fw-bold text-dark mt-5">Seller's Products</h2>
+          <div className="categoriess-container">
+            <div className={`categories-box shadow-sm ${isMobile ? "w-auto" : "w-25"}`}>
+              <h6 className="text-dark fw-bold border-bottom pb-2 d-flex align-items-center">
+                {isMobile && (
+                  <button
+                    className="btn btn-sm btn-dark me-2"
+                    onClick={() => setIsOpen(!isOpen)}
                   >
-                    <div className="card-body p-3">
-                      <div className="row align-items-center">
-                        {/* Left: Image Section */}
-                        <div className="col-md-4 text-center">
-                          {approval.images?.[0] && (
-                            <img
-                              src={approval.images[0]}
-                              alt="Approval Image"
-                              className="img-fluid rounded shadow-sm"
-                              style={{
-                                maxHeight: "200px", // Reduced image height
-                                maxWidth: "100%",
-                                borderRadius: "10px",
-                              }}
-                            />
-                          )}
-                        </div>
+                    <FaBars />
+                  </button>
+                )}
+                Related Categories
+              </h6>
 
-                        {/* Right: Details Section */}
-                        <div className="col-md-8">
-                          <div className="row">
-                            {/* Scrap Details */}
-                            <div className="col-md-6">
-                              <h5 className="mb-1 text-dark fw-semibold">{approval.material}</h5>
-                              <h6 className="text-secondary mb-1">{approval.application}</h6>
-                              <p className="mb-1">
-                                <strong>Price:</strong> <span className="text-success">{approval.price} INR</span>
-                              </p>
-                              <p className="mb-1">
-                                <strong>Loading Location:</strong> {approval.loadingLocation}
-                              </p>
-                              <p className="mb-1">
-                                <strong>Country of Origin:</strong> {approval.countryOfOrigin}
-                              </p>
-                            </div>
+              {(!isMobile || isOpen) && (
+                <div className={`category-list ${isOpen ? "show" : "hide"}`}>
+                  <div className="scroll-container">
+                    {categories.map((category, index) => (
+                      <Link to={category.path} className="category-item" key={index}>
+                        {category.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
 
-                            {/* User Details */}
-                            {userDetails?.businessProfiles?.[0] && (
-                              <div className="col-md-6">
-                                <h6 className="text-primary">Seller Details:</h6>
-                                <p className="mb-1">
-                                  <strong>Seller ID:</strong> {approval.postedBy?.businessProfiles[0]?.profileId}
-                                </p>
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Buttons Section */}
-                          <div className="mt-3 d-flex gap-2">
-                            <button
-                              className="btn btn-primary px-3 py-1 fw-bold shadow-sm"
-                              style={{ borderRadius: "8px" }}
-                              onClick={() => handleMoreDetailsClick(approval)}
-                            >
-                              More Details
-                            </button>
-                          </div>
-                        </div>
-                      </div>
+          {approvals.length > 0 && userDetails && (
+            <div className="approval-cards-container">
+              {approvals.map((approval) => (
+                <div key={approval._id} className="approval-card">
+                  {approval.images?.[0] && (
+                    <div className="approval-image-container">
+                      <img
+                        src={approval.images[0]}
+                        alt="Approval Image"
+                        className="approval-card-image"
+                      />
+                    </div>
+                  )}
+                  <div className="approval-divider"></div>
+                  <div className="approval-card-body">
+                    <h5 className="approval-title">{approval.application}</h5>
+                    <h6 className="approval-material">{approval.material}</h6>
+                    <p className="approval-price">
+                      <strong>Price:</strong> {approval.price} INR/MT
+                    </p>
+                    {userDetails?.businessProfiles?.[0] && (
+                      <p className="approval-seller">
+                        <strong>By:</strong>{" "}
+                        {approval.postedBy?.businessProfiles[0]?.profileId}
+                      </p>
+                    )}
+                    <p className="approval-location">
+                      <FaMapMarkerAlt className="approval-location-icon" />{" "}
+                      <strong>Loading Location:</strong> {approval.loadingLocation}
+                    </p>
+                    <img src={ts} alt="Trusted Seller" className="approval-trusted-seller-icon" />
+                    <div className="approval-button-container">
+                      <button
+                        className="btn btn-primary shadow-sm mt-2"
+                        onClick={() => handleMoreDetailsClick(approval)}
+                      >
+                        More Details
+                      </button>
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
+      </div>
       </div>
     </>
   );
