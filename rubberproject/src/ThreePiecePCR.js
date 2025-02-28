@@ -9,6 +9,7 @@ import { FaBars } from "react-icons/fa";
 import ThreePiecePCRImage from './images/ThreePiecePCR.jpeg';
 import Slider from "react-slick"; // Carousel import
 import { Link } from "react-router-dom"; // Use Link for React Router
+import pcr2 from './images/3piecepcr2.jpg';
 
 function ThreePiecePCR() {
   const [approvals, setApprovals] = useState([]);
@@ -110,7 +111,7 @@ const carouselSettings = {
                   </div>
                   <div>
                     <img
-                      src={ThreePiecePCRImage}
+                      src={pcr2}
                       alt="Baled Tyres PCR Image 2"
                       className="img-fluid carousel-image"
                     />
@@ -161,7 +162,7 @@ const carouselSettings = {
                   </div>
                   <div>
                     <img
-                      src={ThreePiecePCRImage}
+                      src={pcr2}
                       alt="Baled Tyres PCR Image 2"
                       className="img-fluid carousel-image"
                     />

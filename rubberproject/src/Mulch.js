@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import mulchImage from './images/mulch.jpeg'; // Image for Mulch
+import mulchImage from './images/mulch.jpeg';
+import mulchImage1 from './images/mulch1.jpg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
 import Slider from 'react-slick'; // Carousel import
@@ -89,12 +90,12 @@ function Mulch() {
       <div className='setter '>
         <div className='container'>
             {/* Centered Heading at the Top */}
-            <h2 className='text-primary fw-bold text-left mt-5 btphead'>Mulch</h2>
+            <h2 className='text-primary fw-bold text-left mt-5 btphead'>Mulch PCR</h2>
             <div className='row align-items-center mt-3'>
               {/* Content Section */}
               <div className='col-md-7'>
                 <p className='text-justify'>
-                  <strong>Mulch</strong> is a popular landscaping material used to retain soil moisture, suppress weeds, and improve the overall health of your garden. Made from natural materials such as wood chips, bark, or grass clippings, it is an environmentally friendly choice that also adds an aesthetic appeal to outdoor spaces.
+                  <strong>Mulch PCR</strong> is a popular landscaping material used to retain soil moisture, suppress weeds, and improve the overall health of your garden. Made from natural materials such as wood chips, bark, or grass clippings, it is an environmentally friendly choice that also adds an aesthetic appeal to outdoor spaces.
                 </p>
               </div>
 
@@ -105,7 +106,7 @@ function Mulch() {
                     <img src={mulchImage} alt='Mulch Image 1' className='img-fluid carousel-image' />
                   </div>
                   <div>
-                    <img src={mulchImage} alt='Mulch Image 2' className='img-fluid carousel-image' />
+                    <img src={mulchImage1} alt='Mulch Image 2' className='img-fluid carousel-image' />
                   </div>
                 </Slider>
               </div>
@@ -132,12 +133,12 @@ function Mulch() {
         <div className='container'>
           <div className='container'>
             {/* Centered Heading at the Top */}
-            <h2 className='text-primary fw-bold text-left mt-5 btphead'>Mulch</h2>
+            <h2 className='text-primary fw-bold text-left mt-5 btphead'>Mulch PCR</h2>
             <div className='row align-items-center mt-3'>
               {/* Content Section */}
               <div className='col-md-7'>
                 <p className='text-justify'>
-                  <strong>Mulch</strong> is a popular landscaping material used to retain soil moisture, suppress weeds, and improve the overall health of your garden. Made from natural materials such as wood chips, bark, or grass clippings, it is an environmentally friendly choice that also adds an aesthetic appeal to outdoor spaces.
+                  <strong>Mulch PCR</strong> is a popular landscaping material used to retain soil moisture, suppress weeds, and improve the overall health of your garden. Made from natural materials such as wood chips, bark, or grass clippings, it is an environmentally friendly choice that also adds an aesthetic appeal to outdoor spaces.
                 </p>
               </div>
 
@@ -148,7 +149,7 @@ function Mulch() {
                     <img src={mulchImage} alt='Mulch Image 1' className='img-fluid carousel-image' />
                   </div>
                   <div>
-                    <img src={mulchImage} alt='Mulch Image 2' className='img-fluid carousel-image' />
+                    <img src={mulchImage1} alt='Mulch Image 2' className='img-fluid carousel-image' />
                   </div>
                 </Slider>
               </div>

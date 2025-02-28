@@ -6,6 +6,7 @@ import { FaMapMarkerAlt } from 'react-icons/fa'; // Location Icon
 import { FaBars } from 'react-icons/fa'; // Menu Icon
 import Slider from 'react-slick'; // Carousel import
 import tbr2 from './images/3piecetbr2.jpg';
+import ThreePieceTBRImage from './images/ThreePieceTBR.jpeg';
 import ts from './images/ts.svg'; // Trusted Seller Image
 import './Mulch.css'; // Import your CSS file
 import { Link } from 'react-router-dom';
@@ -84,10 +85,11 @@ function ThreePieceTBR() {
     return (
       <div className='productleftside'>
       <div className="setter">
-        <div className="row py-5">
-            {/* Left Column */}
+        <div className='container'>
+        <h2 className="text-primary fw-bold text-left mt-5 btphead">Three Piece TBR</h2>
+        <div className="row align-items-center mt-3">
+        {/* Left Column */}
             <div className="col-md-6">
-              <h2 className="text-primary fw-bold text-left mt-5 btphead">Three Piece TBR</h2>
               <p className="text-justify">
                 <strong>Three Piece TBR</strong> is a durable, high-performance product designed for use in automotive and industrial applications.
                 Made with top-quality materials, this product is perfect for those seeking reliability and longevity in their tires.
@@ -99,7 +101,7 @@ function ThreePieceTBR() {
                 <Slider {...carouselSettings} className="custom-carousel">
                   <div>
                     <img
-                      src={tbr2}
+                      src={ThreePieceTBRImage }
                       alt="Baled Tyres PCR Image 1"
                       className="img-fluid carousel-image"
                     />
@@ -119,6 +121,7 @@ function ThreePieceTBR() {
         </div>
       </div>
       </div>
+      </div>
     );
   }
 
@@ -132,10 +135,11 @@ function ThreePieceTBR() {
     <div className='productleftside'>
       <div className="setter">
         <div className="container">
-          <div className="row py-5">
-            {/* Left Column */}
+          <div className='container'>
+          <h2 className="text-primary fw-bold text-left  btphead">Three Piece TBR</h2>
+          <div className="row align-items-center mt-3">
+          {/* Left Column */}
             <div className="col-md-7">
-              <h2 className="text-primary fw-bold text-left  btphead">Three Piece TBR</h2>
               <p className="text-justify">
                 <strong>Three Piece TBR</strong> is a durable, high-performance product designed for use in automotive and industrial applications.
                 Made with top-quality materials, this product is perfect for those seeking reliability and longevity in their tires.
@@ -147,7 +151,7 @@ function ThreePieceTBR() {
                 <Slider {...carouselSettings} className="custom-carousel">
                   <div>
                     <img
-                      src={tbr2}
+                      src={ThreePieceTBRImage }
                       alt="Baled Tyres PCR Image 1"
                       className="img-fluid carousel-image"
                     />
@@ -161,6 +165,7 @@ function ThreePieceTBR() {
                   </div>
                 </Slider>
               </div>
+          </div>
           </div>
 
           {/* Related Categories Section */}

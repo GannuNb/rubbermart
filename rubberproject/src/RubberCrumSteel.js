@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
-import rubbercrumimg1 from './images/rubbercrumbtw3.jpg'; // Rubber Crumb Image
 import './Mulch.css';
 import Slider from "react-slick"; // Carousel import
 import ts from "./images/ts.svg"; // Trusted Seller Image
 import { FaMapMarkerAlt } from "react-icons/fa"; // Location Icon
+import RubberCrumSteelImage from './images/RubberCrumSteel.jpeg';
+import rubbercrumimg1 from "./images/rubbercrumbtw3.jpg";
 
 function RubberCrumSteel() {
   const [approvals, setApprovals] = useState([]);
@@ -80,7 +81,7 @@ function RubberCrumSteel() {
                 <Slider {...carouselSettings} className="custom-carousel">
                   <div>
                     <img
-                      src={rubbercrumimg1}
+                      src={RubberCrumSteelImage}
                       alt="Baled Tyres PCR Image 1"
                       className="img-fluid carousel-image"
                     />
@@ -131,7 +132,7 @@ function RubberCrumSteel() {
                 <Slider {...carouselSettings} className="custom-carousel">
                   <div>
                     <img
-                      src={rubbercrumimg1}
+                      src={RubberCrumSteelImage}
                       alt="Baled Tyres PCR Image 1"
                       className="img-fluid carousel-image"
                     />

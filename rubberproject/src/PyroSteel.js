@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
-import PyroSteelImage from './images/PyroSteel.jpeg'; // Ensure the image path is correct
 import Slider from "react-slick"; // Carousel import
 import ts from "./images/ts.svg"; // Trusted Seller Image
 import { FaMapMarkerAlt } from "react-icons/fa"; // Location Icon
+import PyroSteelImage from './images/PyroSteel.jpeg';
+import PyroSteelImage2 from './images/PyroSteel2.webp';
 
 function PyroSteel() {
   const [approvals, setApprovals] = useState([]);
@@ -121,7 +122,7 @@ if (approvals.length === 0 || !userDetails) {
                   </div>
                   <div>
                     <img
-                      src={PyroSteelImage}
+                      src={PyroSteelImage2}
                       alt="Baled Tyres PCR Image 2"
                       className="img-fluid carousel-image"
                     />

@@ -6,10 +6,10 @@ import Slider from "react-slick";
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import { FaBars } from 'react-icons/fa';
 import RubberGranuelsimg2 from './images/RubberGranules2.jpeg';
-
 import ts from './images/ts.svg'; // Trusted Seller Image
 import './Mulch';  // Add any custom CSS styling if needed
 import { Link } from "react-router-dom"; // Use Link for React Router
+import RubberCrumSteelImage1 from './images/RubberCrumSteel1.jpg';
 
 function RubberGranules() {
   const [approvals, setApprovals] = useState([]);
@@ -89,14 +89,13 @@ function RubberGranules() {
     return (
       <div className='productleftside'>
       <div className="setter">
-        <div className="container py-5">
-          <div className="row">
-            <div className="col-md-6">
-              <h2>Rubber Granules</h2>
-              <p>
+        <div className="container">
+        <h2 className="text-primary fw-bold text-left mt-5 btphead">Rubber Granules/Crum</h2>
+        <div className="row align-items-center mt-3">
+        <div className="col-md-7">
+            <p className='text-justify'>
                 Rubber Granules are a sustainable material made from recycled rubber, commonly used in sports fields, playgrounds, and industrial applications. It provides excellent shock absorption and durability.
               </p>
-              
             </div>
             {/* Carousel Section */}
             <div className="col-md-5">
@@ -110,7 +109,7 @@ function RubberGranules() {
                 </div>
                 <div>
                   <img
-                    src={RubberGranuelsimg2}
+                    src={RubberCrumSteelImage1}
                     alt="Baled Tyres PCR Image 2"
                     className="img-fluid carousel-image"
                   />
@@ -127,13 +126,14 @@ function RubberGranules() {
     );
   }
 
+
   return (
     <>
         <div className='productleftside'>
       <div className="setter">
         <div className="container">
           {/* Centered Heading and Content Section */}
-          <h2 className="text-primary fw-bold text-left mt-5 btphead">Rubber Granules</h2>
+          <h2 className="text-primary fw-bold text-left mt-5 btphead">Rubber Granules/Crum</h2>
           <div className="row align-items-center mt-3">
             <div className="col-md-6">
               <p className="text-justify">
@@ -152,7 +152,7 @@ function RubberGranules() {
                 </div>
                 <div>
                   <img
-                    src={RubberGranuelsimg2}
+                    src={RubberCrumSteelImage1}
                     alt="Baled Tyres PCR Image 2"
                     className="img-fluid carousel-image"
                   />

@@ -1,19 +1,16 @@
-
 .setter {
     /* margin-left: 11%;
   margin-top: 10%;
   width: 100%; */
-  margin-left: 8%;
-  margin-top: 6%;
+  margin-left: 11%;
+  margin-top: 8%;
   width: 100%;
 }
-
 
 h2.text-center {
     font-size: 2rem; 
     margin-bottom: 20px;
 }
-
 
 @media (max-width: 991px) {
     .setter {
@@ -27,7 +24,6 @@ h2.text-center {
     }
 }
 
-
 @media (max-width: 767px) {
     .setter {
         margin-left: 0%;
@@ -40,23 +36,19 @@ h2.text-center {
         text-align: center;
     }
 
-
     form {
         padding: 0 10px; 
     }
     
-   
     .card {
         margin-bottom: 30px;
     }
 
-  
     .card-img-top {
         max-height: 60px; 
         width: 30%;
     }
 }
-
 
 /* Medium Devices: Small Navbar for 990px to 1350px */
 @media (max-width: 1350px) and (min-width: 991px){
@@ -71,21 +63,16 @@ h2.text-center {
         text-align: center;
     }
 
-
     form {
         padding: 0 10px; 
     }
     
-   
     .card {
         margin-bottom: 30px;
     }
 
-  
     .card-img-top {
         max-height: 60px; 
         width: 30%;
     }
 }
-
-

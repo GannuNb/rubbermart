@@ -6,8 +6,8 @@ import Slider from "react-slick"; // Carousel import
 import { FaMapMarkerAlt } from 'react-icons/fa'; // Location Icon
 import { FaBars } from 'react-icons/fa';
 import ts from './images/ts.svg'; // Trusted Seller Image
-import baledtrespcrimg1 from './images/baledtrespcr2.jpg';
-import baledtrespcrimg2 from './images/baledtrespcr3.jpg'; // You can replace these with relevant images for TBR
+import BaledTyresTBRImage from './images/BaledTyresTBR.jpg';
+import BaledTyresTBRImage2 from './images/BaledTyresTBR_2.jpg';
 import { Link } from "react-router-dom"; // Use Link for React Router
 
 // Same category structure as the other page
@@ -98,10 +98,10 @@ function BaledTyresTBR() {
             <div className="col-md-5">
               <Slider {...carouselSettings} className="custom-carousel">
                 <div>
-                  <img src={baledtrespcrimg1} alt="Baled Tyres TBR Image 1" className="img-fluid carousel-image" />
+                  <img src={BaledTyresTBRImage} alt="Baled Tyres TBR Image 1" className="img-fluid carousel-image" />
                 </div>
                 <div>
-                  <img src={baledtrespcrimg2} alt="Baled Tyres TBR Image 2" className="img-fluid carousel-image" />
+                  <img src={BaledTyresTBRImage2} alt="Baled Tyres TBR Image 2" className="img-fluid carousel-image" />
                 </div>
               </Slider>
             </div>
@@ -130,10 +130,10 @@ function BaledTyresTBR() {
             <div className="col-md-5">
               <Slider {...carouselSettings} className="custom-carousel">
                 <div>
-                  <img src={baledtrespcrimg1} alt="Baled Tyres TBR Image 1" className="img-fluid carousel-image" />
+                  <img src={BaledTyresTBRImage} alt="Baled Tyres TBR Image 1" className="img-fluid carousel-image" />
                 </div>
                 <div>
-                  <img src={baledtrespcrimg2} alt="Baled Tyres TBR Image 2" className="img-fluid carousel-image" />
+                  <img src={BaledTyresTBRImage2} alt="Baled Tyres TBR Image 2" className="img-fluid carousel-image" />
                 </div>
               </Slider>
             </div>
