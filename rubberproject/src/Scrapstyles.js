@@ -137,11 +137,11 @@ function Scrapstyles() {
           <h2 className="cards-title">Available to Buy</h2>
           <div className="cards-grid">
             <Link to="/Tyrescrap" className="linkstyle">
-            <div className="card">
+            <div className="cardbu">
               <img
                 src={cardIcon1}
                 alt="Comprehensive Service"
-                className="card-icon"
+                className="cardbu-icon"
               />
               <h3>Tyre Scrap</h3>
               <p>
@@ -150,11 +150,11 @@ function Scrapstyles() {
               </p>
             </div></Link>
             <Link to="/pyrooil" className="linkstyle">
-            <div className="card">
+            <div className="cardbu">
               <img
                 src={pyrooilImage}
                 alt="Sustainability"
-                className="card-icon"
+                className="cardbu-icon"
               />
               <h3>Pyro Oil</h3>
               <p>
@@ -163,8 +163,8 @@ function Scrapstyles() {
               </p>
             </div></Link>
             <Link to="/TyresteelScrap" className="linkstyle">
-            <div className="card">
-              <img src={PyroSteelImage} alt="Expertise" className="card-icon" />
+            <div className="cardbu">
+              <img src={PyroSteelImage} alt="Expertise" className="cardbu-icon" />
               <h3>Tyre Steel Scrap</h3>
               <p>
                 Expert recycling of tyre steel scrap for efficient material

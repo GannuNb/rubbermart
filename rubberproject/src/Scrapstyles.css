@@ -348,7 +348,7 @@
 }
 
 /* Individual Card */
-.card {
+.cardbu {
     background: rgba(255, 255, 255, 0.9);
     border-radius: 15px;
     padding: 20px;
@@ -358,12 +358,12 @@
     max-width: 280px;
 }
 
-.card:hover {
+.cardbu:hover {
     transform: translateY(-5px);
 }
 
 /* Card Icon */
-.card-icon {
+.cardbu-icon {
     width: 60px;
     height: 60px;
     margin-bottom: 15px;
@@ -374,7 +374,7 @@
 }
 
 /* Card Title */
-.card h3 {
+.cardbu h3 {
     font-size: 1.2rem;
     font-weight: bold;
     color: #102a42;
@@ -382,7 +382,7 @@
 }
 
 /* Card Description */
-.card p {
+.cardbu p {
     font-size: 0.95rem;
     line-height: 1.5;
     color: #444;
@@ -404,20 +404,20 @@
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* More responsive grid */
     }
 
-    .card {
+    .cardbu {
         max-width: 260px; /* Reduce max-width of the card */
     }
 
-    .card-icon {
+    .cardbu-icon {
         width: 50px; /* Smaller icon on tablets */
         height: 50px;
     }
 
-    .card h3 {
+    .cardbu h3 {
         font-size: 1.1rem; /* Smaller font size for card titles */
     }
 
-    .card p {
+    .cardbu p {
         font-size: 0.9rem; /* Slightly smaller description text */
     }
 }
@@ -439,20 +439,20 @@
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Stack cards in 1-2 columns */
     }
 
-    .card {
+    .cardbu {
         max-width: 220px; /* Further reduce max-width of cards for mobile */
     }
 
-    .card-icon {
+    .cardbu-icon {
         width: 40px; /* Smaller icons for mobile screens */
         height: 40px;
     }
 
-    .card h3 {
+    .cardbu h3 {
         font-size: 1rem; /* Smaller titles on mobile */
     }
 
-    .card p {
+    .cardbu p {
         font-size: 0.85rem; /* Smaller descriptions for mobile */
     }
 }

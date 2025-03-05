@@ -1,213 +1,202 @@
-/* Gradient Background */
-.about-bg {
-  background: linear-gradient(135deg, #6a11cb, #2575fc);
+/* Custom CSS for AboutUsPage */
+.about-us-page {
+  font-family: 'Arial', sans-serif;
+  margin-left: 3%;
+}
+
+@media (min-width:300px) and (max-width:700px){
+  .about-us-page {
+    margin-left: 1%;
+  }
+}
+
+/* About Section with Background Gradient */
+.about-header {
+  background: linear-gradient(45deg, #00b894, #8e44ad);
   color: white;
-  animation: fadeIn 2s ease-in-out;
-}
-
-/* Heading Animation */
-.animate-heading {
-  animation: slideDown 1s ease-out;
-}
-
-@keyframes slideDown {
-  from {
-    transform: translateY(-50px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-/* Paragraph Animation */
-.animate-paragraph {
-  animation: fadeIn 2s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-/* Sliding Animation Section */
-.about-us-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background-color: #f4f4f4;
-  overflow: hidden;
-  position: relative;
-  width: 100%;
-  padding: 0 15px; /* Added padding for small screens */
-  margin-bottom: 0px; /* Added margin-bottom to give space for controls */
-
-}
-
-/* Each slide */
-/* .slide {
-  position: absolute;
-  width: 80%;
-  max-width: 800px;
-  padding: 20px;
-  background: #24defc;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
-  text-align: center; */
-  /* opacity: 0; */
-  /* display: none;
-  transition: opacity 1s ease-in-out;
-  pointer-events: none;
-  animation-play-state: running;
-  padding: 3%; */
-
-/* Active slide that will be shown */
-.active {
-  opacity: 1;
-  display: block; /* Show active slide */
-  pointer-events: auto; /* Enable interaction for active slide */
+  margin-bottom: 50px;
 }
 
-/* Slide Animations */
-.slide-left {
-  animation-name: slideInLeft;
-  animation-duration: 3s;
-  animation-fill-mode: forwards;
+/* Heading Styles */
+.about-heading {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 20px;
 }
 
-.slide-bottom {
-  animation-name: slideInBottom;
-  animation-duration: 3s;
-  animation-fill-mode: forwards;
+/* Section Titles */
+.section-title {
+  font-size: 2rem;
+  color: #2c3e50;
+  font-weight: 600;
+  margin-bottom: 20px;
 }
 
-.slide-right {
-  animation-name: slideInRight;
-  animation-duration: 3s;
-  animation-fill-mode: forwards;
+.section-subtitle {
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: #2980b9;
+  margin-bottom: 30px;
 }
 
-/* Animations for slides coming from different directions */
-@keyframes slideInLeft {
-  0% {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
-  50% {
-    transform: translateX(0);
-    opacity: 1;
-  }
-  100% {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
+/* Section Descriptions */
+.section-description {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #34495e;
+  margin-bottom: 20px;
 }
 
-@keyframes slideInBottom {
-  0% {
-    transform: translateY(100%);
-    opacity: 0;
-  }
-  50% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(100%);
-    opacity: 0;
-  }
+/* Offer Card Styles */
+.offer-card {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  transition: all 0.3s ease;
 }
 
-@keyframes slideInRight {
-  0% {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  50% {
-    transform: translateX(0);
-    opacity: 1;
-  }
-  100% {
-    transform: translateX(100%);
-    opacity: 0;
-  }
+.offer-card:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transform: translateY(-5px);
 }
 
-/* Controls */
-.controls {
-  display: flex;
-  justify-content: center;
-  margin-top: 30%;
-  width: 100%;
-  position: relative; /* Ensures buttons are positioned below the slides */
-  padding: 0 15px; /* Added padding for small screens */
+.offer-icon {
+  font-size: 2rem;
+  color: #2980b9;
+  margin-bottom: 15px;
 }
 
-.controls button {
-  padding: 10px 20px;
-  margin: 0 10px;
-  background-color: #007bff;
+.offer-card i {
+  font-size: 3rem;
+  color: #2c3e50;
+}
+
+/* Mission and Vision Section */
+.mission-vision-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* Button Styles */
+.btn-lg {
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  border-radius: 50px;
+}
+
+.shadow-lg {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Join Us Section Styling */
+.join-us-section {
+  background: linear-gradient(45deg, #00b894, #272cb7);
   color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
+  border-radius: 15px;
+  padding: 50px 0;
+  margin-top: 50px;
 }
 
-.controls button:hover {
-  background-color: #0056b3;
+.join-us-heading {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
 }
 
-/* Responsive Styles */
-
-/* For medium screens like tablets */
-@media (max-width: 1024px) {
-  .about-us-container {
-    height: auto;
-    padding: 20px;
-    position: relative; /* Added relative positioning */
-  }
-  .slide {
-    width: 90%;
-    position: relative; /* Ensures no overlap */
-  }
-  .controls button {
-    font-size: 14px;
-    padding: 8px 16px;
-  }
+.join-us-description {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  margin-bottom: 20px;
 }
 
-/* For small screens like mobile devices */
+.join-us-btn {
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  border-radius: 50px;
+  background-color: #ffffff;
+  color: #16a085;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.join-us-btn:hover {
+  background-color: #16a085;
+  color: white;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  transform: translateY(-5px);
+}
+
 @media (max-width: 768px) {
-  .about-us-container {
-    height: auto;
-    padding: 20px;
-    position: relative; /* Added relative positioning */
-    margin-bottom: 120px; /* Give more space for controls */
+  .join-us-heading {
+    font-size: 2rem;
   }
-  .slide {
-    width: 100%; /* Make the slides fit the screen */
-    padding: 10px;
-    position: relative; /* Added relative positioning to avoid overlap */
-    margin-bottom: 20px; /* Added margin to prevent overlap with content */
-  }
-  .controls button {
-    font-size: 14px;
-    padding: 8px 16px;
+
+  .join-us-description {
+    font-size: 1rem;
   }
 }
 
-/* For very small mobile screens */
-@media (max-width: 320px) {
-  .controls button {
-    font-size: 12px;
-    padding: 6px 12px;
+/* Icon Colors */
+.offer-icon.fa-exchange-alt {
+  color: #007bff; /* Blue */
+}
+
+.offer-icon.fa-check-circle {
+  color: #28a745; /* Green */
+}
+
+.offer-icon.fa-tags {
+  color: #ffc107; /* Yellow */
+}
+
+.offer-icon.fa-leaf {
+  color: #17a2b8; /* Teal */
+}
+
+.mission-vision-title i.fa-bullseye {
+  color: #28a745; /* Green */
+}
+
+.mission-vision-title i.fa-eye {
+  color: #dc3545; /* Red */
+}
+
+
+.scroll-to-top {
+  position: fixed;
+  bottom: 12%; /* Adjust bottom space as needed */
+  right: 2%;   /* Adjust right space as needed */
+  width: 50px;  /* Set fixed width */
+  height: 60px; /* Set fixed height */
+  font-size: 1.5rem; /* Adjust font size as needed */
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 1rem;
+  border-radius: 50%; /* Ensures the button is round */
+  cursor: pointer;
+  z-index: 10000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2 s ease;
+  display: flex;
+  align-items: center; /* Vertically center the arrow */
+  justify-content: center; /* Horizontally center the arrow */
+}
+
+.scroll-to-top:hover {
+  transform: scale(1.1); /* Slightly increase size on hover */
+}
+
+
+@media (min-width:300px) and (max-width:700px){
+  .scroll-to-top{
+    margin-left: 1%;
+    right: 8%;
+    width: 35px;
+    height: 45px;
+    bottom: 14%;
   }
 }

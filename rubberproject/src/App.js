@@ -49,9 +49,7 @@ import Moredetails from './Moredetails.js';
 import Homepage from './Homepage.js';
 import Cate from './Cate.js';
 import Scrapstyles from './Scrapstyles.js';
-
-
-
+import ScrollToTopButton from './ScrollToTopButton';
 
 function App() {
   const location = useLocation();
@@ -66,7 +64,6 @@ function App() {
       <div className="container">
         <Routes>
           <Route exact path="/" element={<Scrapstyles />} />
-          {/* <Route exact path="/scrap" element={<Scrapstyles />} /> */}
           <Route exact path="/registered" element={<Registeredgst />} />
           <Route exact path="/unregistered" element={<Unregisteredgst />} />
           <Route exact path="/getpay" element={<GetPay />} />
@@ -109,11 +106,15 @@ function App() {
           <Route exact path="/moredetails" element={<Moredetails />} />
           <Route exact path="/homepage" element={<Homepage/>}/>
           <Route exact path="/cate" element={<Cate/>}/>
+         
 
         </Routes>
       </div>
       <Footer />
+      <ScrollToTopButton />
       <ChatWidget />
+      <ScrollToTop />
+       
     </>
   );
 }

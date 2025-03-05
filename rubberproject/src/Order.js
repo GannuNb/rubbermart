@@ -287,10 +287,11 @@ const Order = () => {
 
                   {/* Quantity Input if an application is selected */}
                   {!orderAdded && selectedApplication && (
-                    <div className="mb-3 text-black">
+                    <div className="mb-3 ">
                       <label
                         htmlFor="quantity"
                         className={orderAdded ? 'text-muted' : ''} // Disable label if order is added
+                        style={{ color: 'black' }}
                       >
                         Required Quantity
                       </label>
