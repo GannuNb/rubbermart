@@ -69,16 +69,30 @@ export default function AboutUsPage() {
                 margin: '0 auto',
               }}
             >
-              At <span className="brand-name">Vikah Rubber</span>, We are committed to being a leading provider of high-quality
-              rubber products that meet the diverse needs of our customers. Our focus on innovation and sustainability drives
-              us to develop solutions that not only enhance performance but also minimize environmental impact. With a team of
-              experienced professionals and a dedication to excellence, We strive to exceed customer expectations through
-              reliable service and superior products. Join us on our journey to a greener, more sustainable future.
+             Rubberscrapmart.com is an India's exclusive leading B2B marketplace dedicated to the buying, selling, and trading of rubber scrap-derived products. Our platform connects recyclers, manufacturers, suppliers, and buyers from all over India, promoting sustainability and innovation in the rubber industry.
+We Rubberacrapmart.com, is committed in creating a sustainable and profitable ecosystem for rubber waste and its recycled products. By leveraging cutting-edge technology and an extensive global network, we help businesses source high-quality reclaimed rubber materials, rubber scrap, rubber belt scrap, rubber granules, rubber crumb of different sizes, rubberized flooring, tire-derived products, and more.
+<p>
+What rubberacrapmart.com offer is
+Buy & Sell Rubber Scrap & Recycled Products: A seamless platform for trading rubber waste, crumb rubber, rubber sheets, mats, flooring, and other derived products.
+Verified Suppliers & Buyers: Ensuring trust and reliability in every transaction.
+Competitive Pricing & Bulk Deals: Direct access to manufacturers and recyclers for cost-effective solutions.
+Sustainability Focus: Promoting circular economy solutions by reducing rubber waste and encouraging eco-friendly alternatives.
+</p>
+<p>
+Rubberacrapmart main aim is:
+To bridge the gap between rubber waste suppliers, recyclers, and manufacturers by providing a transparent, efficient, and eco-conscious trading platform.
+
+Our Vision
+To be the #1 India's marketplace for rubber scrap-derived products, driving a zero-waste future through innovation and collaboration.
+
+Join Us Today!
+Whether you're a rubber recycler, manufacturer, or industrial buyer, rubberacrapmart.com is your one-stop destination for all rubber scrap and recycled product needs.
+</p>
 
             </p>
 
             <button className="btn btn-lg btn-light mt-4 animate-button">
-              Learn More
+            Sign up today and become part of a growing sustainable industry!
             </button>
           </div>
         </div>

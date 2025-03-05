@@ -133,15 +133,10 @@ router.get('/adminorders', authenticate, async (req, res) => {
 
 
 
-
-
-
-
-
 router.post('/Adminorder', authenticate, async (req, res) => {
   console.log('Received order request:', req.body);
   try {
-    const { items, billingAddress, shippingAddress, isSameAsBilling, id } = req.body;
+    const { items, billingAddress, shippingAddress, isSameAsBilling, id, gstNumber } = req.body;
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       console.log('Validation failed: Missing or invalid items array');
@@ -154,18 +149,24 @@ router.post('/Adminorder', authenticate, async (req, res) => {
 
     const processedItems = [];
 
+    // Determine the GST rate based on the GST number
+    let gstRate = 0.18;  // Default to 18%
+    if (gstNumber && gstNumber.slice(0, 2) === '36') {
+      gstRate = 0.09;  // Apply 9% GST if GST number starts with '36'
+    }
+
     // Iterate through all items in the order
     for (const item of items) {
-      const { name: itemName, quantity: requiredQuantity, price: pricePerTon, loading_location, scrapid,sellerid:sellerid } = item;
+      const { name: itemName, quantity: requiredQuantity, price: pricePerTon, loading_location, scrapid, sellerid } = item;
 
       // Validate item properties
       if (!itemName || !requiredQuantity || !pricePerTon || !loading_location || !scrapid) {
-        console.log('Validation failed: Missing itemName, requiredQuantity, price, loading_location, or scrapid');
+        console.log('Validation failed: Missing itemName, requiredQuantity, price, loading location, or scrapid');
         return res.status(400).json({ message: 'Each item must have a name, required quantity, price, loading location, and scrapid' });
       }
 
       console.log(`Looking for Approval record with scrapid: ${scrapid} and application: ${itemName}`);
-      
+
       // Find the approval record for the given scrapid and application
       const approvalRecord = await Approval.findOne({
         _id: new mongoose.Types.ObjectId(scrapid),
@@ -192,7 +193,7 @@ router.post('/Adminorder', authenticate, async (req, res) => {
 
       // Calculate subtotal, GST, and total price for this item
       const subtotal = pricePerTon * requiredQuantity;
-      const gst = subtotal * 0.18; // Assuming GST is 18%
+      const gst = subtotal * gstRate;  // Apply the dynamic GST rate
       const itemTotalPrice = subtotal + gst;
 
       // Accumulate totals for the entire order
@@ -202,7 +203,7 @@ router.post('/Adminorder', authenticate, async (req, res) => {
 
       // Push the processed item details into the array for the order
       processedItems.push({
-        sellerid:sellerid,
+        sellerid,
         name: itemName,
         price: pricePerTon,
         quantity: requiredQuantity,
@@ -220,7 +221,7 @@ router.post('/Adminorder', authenticate, async (req, res) => {
       return res.status(400).json({ message: 'Shipping address is required' });
     }
 
-    // Create a new order in the Adminorder collection
+    // Create a new order in the Adminorder collection, including gstNumber
     const newOrder = new Adminorder({
       user: req.user.id, // User from the authenticated session
       items: processedItems,
@@ -230,6 +231,7 @@ router.post('/Adminorder', authenticate, async (req, res) => {
       billingAddress,
       shippingAddress: finalShippingAddress,
       isSameAsBilling,
+      gstNumber, // Add the gstNumber to the order
     });
 
     // Save the new order to the database
@@ -246,10 +248,6 @@ router.post('/Adminorder', authenticate, async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
-
-
-
-
 
 
 

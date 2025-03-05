@@ -16,6 +16,8 @@ function Shredds() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const navigate = useNavigate();
+      const [loading, setLoading] = useState(true); // New state to track loading status
+  
   const categories = [
     { name: "Three Piece PCR", path: "/threepiecepcr" },
     { name: "Shreds", path: "/shreds" },
@@ -49,6 +51,8 @@ function Shredds() {
         }
       } catch (error) {
         console.error("Error fetching approval details:", error);
+      }finally {
+        setLoading(false); // Set loading to false once the request completes
       }
     }
 
@@ -79,59 +83,10 @@ function Shredds() {
   };
 
   // If approvals or userDetails are empty or unavailable, show only the image and description
-  if (approvals.length === 0 || !userDetails) {
+  if (loading) {
     return (
       <div className='productleftside'>
-      <div className="setter">
-                  <div className="container">
-            {/* Centered Heading at the Top */}
-            <h2 className="text-primary fw-bold text-left mt-5 btphead">Shredds</h2>
-            <div className="row align-items-center mt-3">
-              {/* Content Section */}
-              <div className="col-md-7">
-                <p className="text-justify">
-                  <strong>Shredds</strong> are finely shredded recycled materials used in landscaping, construction, road-making, and other industries.
-                  These materials offer an eco-friendly, cost-effective, and durable alternative to traditional materials.
-                  <strong>Shredds</strong> play a significant role in reducing landfill waste, conserving natural resources, and supporting sustainability efforts.
-                </p>
-              </div>
-
-              {/* Carousel Section */}
-              <div className="col-md-5">
-                <Slider {...carouselSettings} className="custom-carousel">
-                  <div>
-                    <img
-                      src={ShreddsImage}
-                      alt="ShreddsImage"
-                      className="img-fluid carousel-image"
-                    />
-                  </div>
-                  <div>
-                    <img
-                      src={ShreddsImage}
-                      alt="ShreddsImage"
-                      className="img-fluid carousel-image"
-                    />
-                  </div>
-                </Slider>
-              </div>
-            </div>
-          </div>
-      </div>
-      </div>
-
-    );
-  }
-
-  const handleMoreDetailsClick = (approval) => {
-    navigate("/moredetails", { state: { approval } });
-  };
-
-  return (
-    <>
-        <div className='productleftside'>
-      <div className="setter">
-        <div className="container">
+        <div className="setter">
           <div className="container">
             {/* Centered Heading at the Top */}
             <h2 className="text-primary fw-bold text-left mt-5 btphead">Shredds</h2>
@@ -166,103 +121,201 @@ function Shredds() {
               </div>
             </div>
           </div>
-
-          <h2 className="fw-bold text-dark  mt-5">Seller's Products</h2>
-          <div className="categoriess-container">
-            <div className={`categories-box shadow-sm ${isMobile ? "w-auto" : "w-25"}`}>
-              <h6 className="text-dark fw-bold border-bottom pb-2 d-flex align-items-center">
-                {isMobile && (
-                  <button
-                    className="btn btn-sm btn-dark me-2"
-                    onClick={() => setIsOpen(!isOpen)} // Toggle dropdown on click
-                  >
-                    <FaBars />
-                  </button>
-                )}
-                Related Categories
-              </h6>
-
-              {/* Show categories only if it's desktop or dropdown is open */}
-              {(!isMobile || isOpen) && (
-                <div className={`category-list ${isOpen ? "show" : "hide"}`}>
-                  <div className="scroll-container">
-                    {categories.map((category, index) => (
-                      <Link to={category.path} className="category-item" key={index}>
-                        {category.name}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Card Section */}
-          {approvals.length > 0 && userDetails && (
-            <div className="approval-cards-container">
-              {approvals.map((approval) => (
-                <div key={approval._id} className="approval-card">
-                  {/* IMAGE SECTION */}
-                  {approval.images?.[0] && (
-                    <div className="approval-image-container">
-                      <img
-                        src={approval.images[0]}
-                        alt="Approval Image"
-                        className="approval-card-image"
-                      />
-                    </div>
-                  )}
-
-                  {/* Divider Line (Only Visible in Desktop) */}
-                  <div className="approval-divider"></div>
-
-                  {/* CONTENT SECTION */}
-                  <div className="approval-card-body">
-                    <h5 className="approval-title">{approval.application}</h5>
-                    <h6 className="approval-material">{approval.material}</h6>
-
-                    {/* Price */}
-                    <p className="approval-price">
-                      <strong>Price:</strong> {approval.price} INR/MT
-                    </p>
-
-                    {/* Seller Info */}
-                    {userDetails?.businessProfiles?.[0] && (
-                      <p className="approval-seller">
-                        <strong>By:</strong>{" "}
-                        {approval.postedBy?.businessProfiles[0]?.profileId}
-                      </p>
-                    )}
-
-                    {/* Location */}
-                    <p className="approval-location">
-                      <FaMapMarkerAlt className="approval-location-icon" />{" "}
-                      <strong>Loading Location:</strong> {approval.loadingLocation}
-                    </p>
-
-                    {/* Trusted Seller Badge */}
-                    <img
-                      src={ts}
-                      alt="Trusted Seller"
-                      className="approval-trusted-seller-icon"
-                    />
-
-                    {/* Buttons */}
-                    <div className="approval-button-container">
-                      <button
-                        className="btn btn-primary shadow-sm mt-2"
-                        onClick={() => handleMoreDetailsClick(approval)}
-                      >
-                        More Details
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+          <div className="no-stock-wrapper">
+          <h1>Loading...</h1>
+        </div>
         </div>
       </div>
+    );
+  }
+
+  // If approvals or userDetails are empty or unavailable, show only the image and description
+  if (approvals.length === 0 || !userDetails) {
+    return (
+      <div className='productleftside'>
+        <div className="setter">
+          <div className="container">
+            {/* Centered Heading at the Top */}
+            <h2 className="text-primary fw-bold text-left mt-5 btphead">Shredds</h2>
+            <div className="row align-items-center mt-3">
+              {/* Content Section */}
+              <div className="col-md-7">
+                <p className="text-justify">
+                  <strong>Shredds</strong> are finely shredded recycled materials used in landscaping, construction, road-making, and other industries.
+                  These materials offer an eco-friendly, cost-effective, and durable alternative to traditional materials.
+                  <strong>Shredds</strong> play a significant role in reducing landfill waste, conserving natural resources, and supporting sustainability efforts.
+                </p>
+              </div>
+
+              {/* Carousel Section */}
+              <div className="col-md-5">
+                <Slider {...carouselSettings} className="custom-carousel">
+                  <div>
+                    <img
+                      src={ShreddsImage}
+                      alt="ShreddsImage"
+                      className="img-fluid carousel-image"
+                    />
+                  </div>
+                  <div>
+                    <img
+                      src={ShreddsImage}
+                      alt="ShreddsImage"
+                      className="img-fluid carousel-image"
+                    />
+                  </div>
+                </Slider>
+              </div>
+            </div>
+          </div>
+          <div className="no-stock-wrapper">
+          <h1>No Stock Available</h1>
+        </div>
+        </div>
+      </div>
+    );
+  }
+
+  const handleMoreDetailsClick = (approval) => {
+    navigate("/moredetails", { state: { approval } });
+  };
+
+  return (
+    <>
+      <div className='productleftside'>
+        <div className="setter">
+          <div className="container">
+            <div className="container">
+              {/* Centered Heading at the Top */}
+              <h2 className="text-primary fw-bold text-left mt-5 btphead">Shredds</h2>
+              <div className="row align-items-center mt-3">
+                {/* Content Section */}
+                <div className="col-md-7">
+                  <p className="text-justify">
+                    <strong>Shredds</strong> are finely shredded recycled materials used in landscaping, construction, road-making, and other industries.
+                    These materials offer an eco-friendly, cost-effective, and durable alternative to traditional materials.
+                    <strong>Shredds</strong> play a significant role in reducing landfill waste, conserving natural resources, and supporting sustainability efforts.
+                  </p>
+                </div>
+
+                {/* Carousel Section */}
+                <div className="col-md-5">
+                  <Slider {...carouselSettings} className="custom-carousel">
+                    <div>
+                      <img
+                        src={ShreddsImage}
+                        alt="ShreddsImage"
+                        className="img-fluid carousel-image"
+                      />
+                    </div>
+                    <div>
+                      <img
+                        src={ShreddsImage}
+                        alt="ShreddsImage"
+                        className="img-fluid carousel-image"
+                      />
+                    </div>
+                  </Slider>
+                </div>
+              </div>
+            </div>
+
+            <h2 className="fw-bold text-dark  mt-5">Seller's Products</h2>
+            <div className="categoriess-container">
+              <div className={`categories-box shadow-sm ${isMobile ? "w-auto" : "w-25"}`}>
+                <h6 className="text-dark fw-bold border-bottom pb-2 d-flex align-items-center">
+                  {isMobile && (
+                    <button
+                      className="btn btn-sm btn-dark me-2"
+                      onClick={() => setIsOpen(!isOpen)} // Toggle dropdown on click
+                    >
+                      <FaBars />
+                    </button>
+                  )}
+                  Related Categories
+                </h6>
+
+                {/* Show categories only if it's desktop or dropdown is open */}
+                {(!isMobile || isOpen) && (
+                  <div className={`category-list ${isOpen ? "show" : "hide"}`}>
+                    <div className="scroll-container">
+                      {categories.map((category, index) => (
+                        <Link to={category.path} className="category-item" key={index}>
+                          {category.name}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Card Section */}
+            {approvals.length > 0 && userDetails && (
+              <div className="approval-cards-container">
+                {approvals.map((approval) => (
+                  <div key={approval._id} className="approval-card">
+                    {/* IMAGE SECTION */}
+                    {approval.images?.[0] && (
+                      <div className="approval-image-container">
+                        <img
+                          src={approval.images[0]}
+                          alt="Approval Image"
+                          className="approval-card-image"
+                        />
+                      </div>
+                    )}
+
+                    {/* Divider Line (Only Visible in Desktop) */}
+                    <div className="approval-divider"></div>
+
+                    {/* CONTENT SECTION */}
+                    <div className="approval-card-body">
+                      <h5 className="approval-title">{approval.application}</h5>
+                      <h6 className="approval-material">{approval.material}</h6>
+
+                      {/* Price */}
+                      <p className="approval-price">
+                        <strong>Price:</strong> {approval.price} INR/MT
+                      </p>
+
+                      {/* Seller Info */}
+                      {userDetails?.businessProfiles?.[0] && (
+                        <p className="approval-seller">
+                          <strong>By:</strong>{" "}
+                          {approval.postedBy?.businessProfiles[0]?.profileId}
+                        </p>
+                      )}
+
+                      {/* Location */}
+                      <p className="approval-location">
+                        <FaMapMarkerAlt className="approval-location-icon" />{" "}
+                        <strong>Loading Location:</strong> {approval.loadingLocation}
+                      </p>
+
+                      {/* Trusted Seller Badge */}
+                      <img
+                        src={ts}
+                        alt="Trusted Seller"
+                        className="approval-trusted-seller-icon"
+                      />
+
+                      {/* Buttons */}
+                      <div className="approval-button-container">
+                        <button
+                          className="btn btn-primary shadow-sm mt-2"
+                          onClick={() => handleMoreDetailsClick(approval)}
+                        >
+                          More Details
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </>
   );

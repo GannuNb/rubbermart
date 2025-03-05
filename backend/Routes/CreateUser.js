@@ -158,8 +158,8 @@ router.post('/forgot-password', async (req, res) => {
                     <p>This link will expire in 1 hour. If you have any issues, please contact our support team.</p>
                     <br>
                     <p>Kind regards,</p>
-                    <p><strong>Vikahrubber Team</strong></p>
-                    <p>For assistance, feel free to contact us at <a href="mailto:support@vikahrubber.com">support@vikahrubber.com</a></p>
+                    <p><strong>Rubberscrapmart Team</strong></p>
+                    <p>For assistance, feel free to contact us at <a href="mailto:info@rubberscrapmart">info@rubberscrapmart.com</a></p>
                 </div>
             `,
         };

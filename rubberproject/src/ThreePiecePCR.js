@@ -17,6 +17,7 @@ function ThreePiecePCR() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const navigate = useNavigate();
+    const [loading, setLoading] = useState(true); // New state to track loading status
 
   const categories = [
     { name: "Three Piece PCR", path: "/threepiecepcr" },
@@ -54,6 +55,8 @@ function ThreePiecePCR() {
         }
       } catch (error) {
         console.error("Error fetching approval details:", error);
+      }finally {
+        setLoading(false); // Set loading to false once the request completes
       }
     }
 
@@ -81,6 +84,51 @@ const carouselSettings = {
   nextArrow: <NextArrow />,
   prevArrow: <PrevArrow />,
 };
+
+if (loading) {
+  return (
+    <div className='productleftside'>
+    <div className="setter">
+      {/* Centered Heading at the Top */}
+      <h2 className="text-primary fw-bold text-left mt-5 btphead">Three Piece PCR</h2>
+        <div className="row align-items-center mt-3">
+          {/* Content Section */}
+          <div className="col-md-7">
+            <p className="text-justify">
+              <strong>Three Piece PCR (Post Consumer Recycled)</strong> is a highly
+              durable and eco-friendly material created using recycled materials. It
+              ensures both cost-effectiveness and environmental responsibility, widely
+              used in various industries.
+            </p>
+          </div>
+
+            {/* Carousel Section */}
+            <div className="col-md-5">
+              <Slider {...carouselSettings} className="custom-carousel">
+                <div>
+                  <img
+                    src={ThreePiecePCRImage}
+                    alt="Baled Tyres PCR Image 1"
+                    className="img-fluid carousel-image"
+                  />
+                </div>
+                <div>
+                  <img
+                    src={pcr2}
+                    alt="Baled Tyres PCR Image 2"
+                    className="img-fluid carousel-image"
+                  />
+                </div>
+              </Slider>
+            </div>
+        </div>
+      <div className="no-stock-wrapper">
+        <h1>Loading...</h1>
+      </div>
+    </div>
+    </div>
+  );
+}
 
   if (approvals.length === 0 || !userDetails) {
     return (

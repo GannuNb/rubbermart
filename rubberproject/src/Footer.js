@@ -60,7 +60,7 @@ const Footer = () => {
         {/* Copyright Row */}
         <Row className="mt-4 justify-content-center"> {/* Centering the row */}
           <Col className="text-center"> {/* Center text in the column */}
-            <p className="mb-0">Copyright &copy; {new Date().getFullYear()} Vikah-Rubber | All rights reserved</p>
+            <p className="mb-0">Copyright &copy; {new Date().getFullYear()} Rubberscrapmart | All rights reserved</p>
           </Col>
         </Row>
       </Container>

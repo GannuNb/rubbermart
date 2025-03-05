@@ -12,6 +12,7 @@ function PyroSteel() {
   const [approvals, setApprovals] = useState([]);
   const [userDetails, setUserDetails] = useState(null);
   const navigate = useNavigate(); // Hook to navigate to another route
+    const [loading, setLoading] = useState(true); // New state to track loading status
 
   useEffect(() => {
     async function fetchApprovalDetails() {
@@ -29,11 +30,39 @@ function PyroSteel() {
         }
       } catch (error) {
         console.error('Error fetching approval details:', error);
+      }finally {
+        setLoading(false); // Set loading to false once the request completes
       }
     }
 
     fetchApprovalDetails();
   }, []);
+
+  if (loading) {
+    return (
+      <div className='productleftside'>
+      <div className="setter">
+        <div className="container py-5">
+          <div className="row">
+            <div className="col-md-6">
+              <img src={PyroSteelImage} alt="Pyro Steel" className="img-fluid imgmore" />
+            </div>
+            <div className="col-md-6">
+              <h2 className="text-center">Pyro Steel</h2>
+              <p>
+                Pyro Steel is a high-quality product made from recycled materials that meets stringent industry standards. It is widely used in various applications, including manufacturing and construction.
+                This material is ideal for those seeking an environmentally friendly and cost-effective solution.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="no-stock-wrapper">
+        <h1>Loading...</h1>
+        </div>
+      </div>
+      </div>
+    );
+  }
 
 // If approvals are empty or userDetails are unavailable, show only the image and description
 if (approvals.length === 0 || !userDetails) {

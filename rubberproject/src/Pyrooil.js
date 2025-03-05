@@ -13,6 +13,7 @@ function Pyrooil() {
   const [approvals, setApprovals] = useState([]);
   const [userDetails, setUserDetails] = useState(null);
   const navigate = useNavigate();
+    const [loading, setLoading] = useState(true); // New state to track loading status
 
   useEffect(() => {
     async function fetchApprovalDetails() {
@@ -30,6 +31,8 @@ function Pyrooil() {
         }
       } catch (error) {
         console.error('Error fetching approval details:', error);
+      }finally {
+        setLoading(false); // Set loading to false once the request completes
       }
     }
 
@@ -56,6 +59,51 @@ function Pyrooil() {
       nextArrow: <NextArrow />,
       prevArrow: <PrevArrow />,
     };
+
+    if (loading) {
+      return (
+        <div className='productleftside'>
+        <div className="setter">
+                   <div className="container">
+              {/* Centered Heading at the Top */}
+              <h2 className="text-primary fw-bold text-left mt-5 btphead">Pyro Oil</h2>
+              <div className="row align-items-center mt-3">
+                {/* Content Section */}
+                <div className="col-md-6">
+                  <p className="text-justify">
+                  Pyro Oil is a premium by-product obtained from the pyrolysis of rubber. It is used in various industrial applications,
+                   offering both cost savings and environmental benefits. This product is ideal for those seeking a sustainable energy solution.
+                  </p>
+                </div>
+  
+                {/* Carousel Section */}
+                <div className="col-md-5">
+                  <Slider {...carouselSettings} className="custom-carousel">
+                    <div>
+                      <img
+                        src={pyrooilImage}
+                        alt="Baled Tyres PCR Image 1"
+                        className="img-fluid carousel-image"
+                      />
+                    </div>
+                    <div>
+                      <img
+                        src={pyrooilImage}
+                        alt="Baled Tyres PCR Image 2"
+                        className="img-fluid carousel-image"
+                      />
+                    </div>
+                  </Slider>
+                </div>
+              </div>
+            </div>
+            <div className="no-stock-wrapper">
+          <h1>Loading...</h1>
+        </div>
+        </div>
+        </div>
+      );
+    }
 
   // If approvals or user details are unavailable, show the image and description only
   if (approvals.length === 0 || !userDetails) {
@@ -95,6 +143,9 @@ function Pyrooil() {
               </div>
             </div>
           </div>
+          <div className="no-stock-wrapper">
+          <h1>No Stock Available</h1>
+        </div>
       </div>
       </div>
     );

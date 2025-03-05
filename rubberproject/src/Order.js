@@ -84,7 +84,7 @@ const Order = () => {
 
     if (selectedApp) {
       const newItem = {
-        sellerid:sellerid,
+        sellerid: sellerid,
         name: selectedApp.application,
         price: selectedApp.price,
         hsn: selectedApp.hsn,
@@ -116,7 +116,7 @@ const Order = () => {
 
       if (selectedApp) {
         const item = {
-          sellerid:sellerid,
+          sellerid: sellerid,
           name: selectedApp.application,
           price: selectedApp.price,
           hsn: "40040000", // Static HSN for additional items, replace '40040000' with the actual HSN code.
@@ -153,8 +153,8 @@ const Order = () => {
 
   // Render Order Summary
   const renderOrderSummary = () => {
-    const gstRate = 0.18; // GST rate of 18%
-
+    const gstNumber = profile?.gstNumber || '';
+    const gstRate = gstNumber.startsWith('36') ? 0.09 : 0.18;
     // baseItems contains the main order item (the one passed in the location state)
     const baseItems = [
       {
@@ -189,21 +189,25 @@ const Order = () => {
     // Determine which applications are already in the order
     const addedApplications = allItems.map((item) => item.name);
 
+
+
+
+
     return (
       <div className="border p-4 rounded bg-white mt-4">
         <h4>Order Details</h4>
         <div
           className="table-responsive"
           style={{
-            overflowX: "scroll",
-            display: "block",
-            whiteSpace: "nowrap",
+            overflowX: 'scroll',
+            display: 'block',
+            whiteSpace: 'nowrap',
           }}
         >
           <table className="table table-bordered">
             <thead>
               <tr>
-              <th>Seller ID</th>
+                <th>Seller ID</th>
                 <th>Item</th>
                 <th>Price/Ton</th>
                 <th>Loading Location</th>
@@ -254,14 +258,12 @@ const Order = () => {
                   {/* Show the dropdown only if it's visible and order is not added */}
                   {!orderAdded && dropdownVisible && (
                     <div className="mb-3 mt-4">
-                      
                       <label
-                            htmlFor="applicationDropdown"
-                            className={orderAdded ? "text-muted text-black" : "text-black"} // Apply black color by default, muted if order is added
-                          >
-                            Add Applications from this Seller
-                          </label>
-
+                        htmlFor="applicationDropdown"
+                        className={orderAdded ? 'text-muted text-black' : 'text-black'} // Apply black color by default, muted if order is added
+                      >
+                        Add Applications from this Seller
+                      </label>
                       <select
                         id="applicationDropdown"
                         className="form-select"
@@ -285,10 +287,10 @@ const Order = () => {
 
                   {/* Quantity Input if an application is selected */}
                   {!orderAdded && selectedApplication && (
-                    <div className="mb-3">
+                    <div className="mb-3 text-black">
                       <label
                         htmlFor="quantity"
-                        className={orderAdded ? "text-muted" : ""} // Disable label if order is added
+                        className={orderAdded ? 'text-muted' : ''} // Disable label if order is added
                       >
                         Required Quantity
                       </label>
@@ -311,7 +313,6 @@ const Order = () => {
                           <small className="text-danger">
                             Required quantity exceeds available quantity!
                           </small>
-
                         )}
                       {/* Button to add item to order */}
                       <div className="text-end">
@@ -324,12 +325,8 @@ const Order = () => {
                         </button>
                       </div>
                     </div>
-
                   )}
-
-
                 </td>
-
               </tr>
 
               {/* Calculation rows */}
@@ -341,7 +338,7 @@ const Order = () => {
               </tr>
               <tr>
                 <td colSpan="4" className="text-right">
-                  <strong>GST (18%):</strong>
+                  <strong>GST ({gstRate * 100}%):</strong>
                 </td>
                 <td>₹{gst.toFixed(2)}</td>
               </tr>
@@ -352,13 +349,6 @@ const Order = () => {
                 <td>₹{total.toFixed(2)}</td>
               </tr>
             </tfoot>
-
-
-
-
-
-
-
           </table>
         </div>
       </div>
@@ -495,35 +485,38 @@ const Order = () => {
     seal
   ) => {
     const doc = new jsPDF();
-  
+
     // Add logo to PDF
     if (logo) {
       doc.addImage(logo, "PNG", 8, 6, 35, 15); // Adjust the width and height of the logo
     }
-  
+
     // Set font for header
     doc.setFontSize(8);
     doc.setFont("helvetica", "normal");
-  
+
     // Company address
     const companyAddress = [
-      "VIKAH RUBBERS",
-      "406, 4th Floor, Patel Towers,",
-      "Above EasyBuy Beside Nagole RTO Office,",
-      "Nagole Hyderabad, Telangana-500035",
+      'Rubberscrapmart',
+      'Ground Floor, Shop No - 52 / Plot 44,',
+      'Sai Chamber CHS Wing A, Sector -11',
+      'Sai Chambers, CBD Belapur, Navi Mumbai,',
+      'Thane, Maharashtra, 400614',
     ];
-  
+
     let addressYy = 9; // Adjusted starting Y to align with logo
     doc.text(companyAddress[0], 40, addressYy + 2); // Company Name
     doc.text(companyAddress[1], 40, addressYy + 5); // Street Address
     doc.text(companyAddress[2], 40, addressYy + 8); // Additional Address
     doc.text(companyAddress[3], 40, addressYy + 11); // City, State, and Postal Code
-  
+    doc.text(companyAddress[4], 40, addressYy + 14); // City, State, and Postal Code
+
+
     // Invoice Title
     doc.setFontSize(16);
     doc.setFont("helvetica", "bold");
     doc.text("PROFORMA INVOICE", 115, addressYy + 1, { align: "center" });
-  
+
     // Order Date
     doc.setFontSize(10);
     doc.text(`Order Date: ${new Date().toLocaleDateString()}`, 190, 20, {
@@ -531,51 +524,51 @@ const Order = () => {
     });
     doc.setDrawColor(0, 0, 0);
     doc.line(10, 25, 200, 25); // Underline
-  
+
     // Billing and Shipping Information
     doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
     doc.text("Bill To", 14, 35);
     doc.text("Ship To", 133, 35);
     doc.line(10, 38, 200, 38); // Underline
-  
+
     // Bill To Section
     const labelX = 14; // X position for the left side
     const colonX = labelX + 20; // X position for the colon alignment
     const valueX = colonX + 5; // X position for the values
     doc.setFontSize(10);
-  
+
     // Company Name
     doc.text("Company", labelX, 45);
     doc.text(":", colonX, 45);
     doc.text(profile.companyName || "N/A", valueX, 45);
-  
+
     // Address
     doc.text("Address", labelX, 50);
     doc.text(":", colonX, 50);
     const billingAddress = doc.splitTextToSize(
       `${profile.billAddress || "N/A"}`,
-      80
+      60
     );
     billingAddress.forEach((line, index) => {
       doc.text(line, valueX, 50 + index * 5);
     });
-  
+
     // Phone Number
-    doc.text("Phone", labelX, 55 + billingAddress.length * 5);
-    doc.text(":", colonX, 55 + billingAddress.length * 5);
-    doc.text(profile.phoneNumber || "N/A", valueX, 55 + billingAddress.length * 5);
-  
+    doc.text("Phone", labelX, 50 + billingAddress.length * 5);
+    doc.text(":", colonX, 50 + billingAddress.length * 5);
+    doc.text(profile.phoneNumber || "N/A", valueX, 50 + billingAddress.length * 5);
+
     // Email
-    doc.text("E-mail", labelX, 60 + billingAddress.length * 5);
-    doc.text(":", colonX, 60 + billingAddress.length * 5);
-    doc.text(profile.email || "N/A", valueX, 60 + billingAddress.length * 5);
-  
+    doc.text("E-mail", labelX, 55 + billingAddress.length * 5);
+    doc.text(":", colonX, 55 + billingAddress.length * 5);
+    doc.text(profile.email || "N/A", valueX, 55 + billingAddress.length * 5);
+
     // GST Number
-    doc.text("GSTN", labelX, 65 + billingAddress.length * 5);
-    doc.text(":", colonX, 65 + billingAddress.length * 5);
-    doc.text(profile.gstNumber || "N/A", valueX, 65 + billingAddress.length * 5);
-  
+    doc.text("GSTN", labelX, 60 + billingAddress.length * 5);
+    doc.text(":", colonX, 60 + billingAddress.length * 5);
+    doc.text(profile.gstNumber || "N/A", valueX, 60 + billingAddress.length * 5);
+
     // Ship To Section
     const shipToColonX = labelX + 20; // Unique name for the second colonX
     let finalShippingAddress = "";
@@ -588,43 +581,43 @@ const Order = () => {
       `${finalShippingAddress}`,
       60
     );
-  
+
     // Company Name
     doc.text("Company", labelX + 95, 45);
     doc.text(":", shipToColonX + 95, 45);
     doc.text(profile.companyName || "N/A", valueX + 95, 45);
-  
+
     // Address
     doc.text("Address", labelX + 95, 50);
     doc.text(":", shipToColonX + 95, 50);
     wrappedShippingAddress.forEach((line, index) => {
       doc.text(line, valueX + 95, 50 + index * 5);
     });
-  
+
     // Phone Number
-    doc.text("Phone", labelX + 95, 55 + wrappedShippingAddress.length * 5);
-    doc.text(":", shipToColonX + 95, 55 + wrappedShippingAddress.length * 5);
-    doc.text(profile.phoneNumber || "N/A", valueX + 95, 55 + wrappedShippingAddress.length * 5);
-  
+    doc.text("Phone", labelX + 95, 50 + wrappedShippingAddress.length * 5);
+    doc.text(":", shipToColonX + 95, 50 + wrappedShippingAddress.length * 5);
+    doc.text(profile.phoneNumber || "N/A", valueX + 95, 50 + wrappedShippingAddress.length * 5);
+
     // Email
-    doc.text("E-mail", labelX + 95, 60 + wrappedShippingAddress.length * 5);
-    doc.text(":", shipToColonX + 95, 60 + wrappedShippingAddress.length * 5);
-    doc.text(profile.email || "N/A", valueX + 95, 60 + wrappedShippingAddress.length * 5);
-  
+    doc.text("E-mail", labelX + 95, 55 + wrappedShippingAddress.length * 5);
+    doc.text(":", shipToColonX + 95, 55 + wrappedShippingAddress.length * 5);
+    doc.text(profile.email || "N/A", valueX + 95, 55 + wrappedShippingAddress.length * 5);
+
     // GST Number
-    doc.text("GSTN", labelX + 95, 65 + wrappedShippingAddress.length * 5);
-    doc.text(":", shipToColonX + 95, 65 + wrappedShippingAddress.length * 5);
-    doc.text(profile.gstNumber || "N/A", valueX + 95, 65 + wrappedShippingAddress.length * 5);
-  
-    const billingAddressHeight = 15 + billingAddress.length * 5;
-    const shippingAddressHeight = 15 + wrappedShippingAddress.length * 5;
+    doc.text("GSTN", labelX + 95, 60 + wrappedShippingAddress.length * 5);
+    doc.text(":", shipToColonX + 95, 60 + wrappedShippingAddress.length * 5);
+    doc.text(profile.gstNumber || "N/A", valueX + 95, 60 + wrappedShippingAddress.length * 5);
+
+    const billingAddressHeight = 20 + billingAddress.length * 5;
+    const shippingAddressHeight = 20 + wrappedShippingAddress.length * 5;
     const totalAddressHeight = Math.max(
       billingAddressHeight,
       shippingAddressHeight
     ); // Maximum of both addresses
-  
-  
-  
+
+
+
 
     // Products Section
     let productsStartY = 50 + totalAddressHeight;
@@ -634,17 +627,17 @@ const Order = () => {
     doc.setDrawColor(0, 0, 0);
     doc.line(10, productsStartY + 3, 200, productsStartY + 3); // Underline
 
-    // GST Calculation
-    const gstRate = 0.18;
+    const gstRate = profile.gstNumber && profile.gstNumber.startsWith("36") ? 0.09 : 0.18;
     const subtotalBase = [...baseItems, ...orderItems].reduce(
-      (sum, item) => sum + (item.total || 0),
-      0
+      (sum, item) => sum + (item.total || 0), 0
     ); // Ensure item.total is defined
     const subtotal = subtotalBase;
+
     const gst = subtotal * gstRate;
     const total = subtotal + gst;
-    const totalAmountInWords = numberToWords(total); // Correct function call
+    const totalAmountInWords = numberToWords(total); // Ensure correct function call
 
+    // Combine items for both baseItems and orderItems
     const combinedItems = [
       ...baseItems,
       ...orderItems.map((item) => {
@@ -652,7 +645,7 @@ const Order = () => {
         const gst = total * gstRate; // GST calculation
 
         return {
-          sellerid:sellerid,
+          sellerid: sellerid,
           name: item.name,
           price: item.price,
           hsn: item.hsn,
@@ -665,6 +658,7 @@ const Order = () => {
       }),
     ];
 
+
     doc.autoTable({
       startY: productsStartY + 5,
       head: [
@@ -676,13 +670,13 @@ const Order = () => {
           "HSN",
           "Quantity",
           "Subtotal",
-          "GST (18%)",
+          "GST",
           "Total",
         ],
       ],
       body: combinedItems.map((item) => {
         // Calculate GST if not provided
-        const gst = item.gst !== undefined ? item.gst : item.total * 0.18;
+        const gst = item.gst !== undefined ? item.gst : item.total * gstRate;
         const totalWithGST = item.total + gst;
 
         return [
@@ -701,33 +695,37 @@ const Order = () => {
       styles: { fontSize: 8 },
     });
 
+
     // Second Table for Total Amounts
     const firstTableFinalY = doc.lastAutoTable.finalY + 5;
     const secondTableStartY = firstTableFinalY + 2;
-    doc.autoTable({
-      startY: secondTableStartY,
-      head: [["Description", "Amount"]],
-      body: [
-        ["Taxable value", `RS ${subtotal.toFixed(2)}`],
-        ["Total GST (18%)", `RS ${gst.toFixed(2)}`],
-        ["Total", `RS ${total.toFixed(2)}`],
-      ],
-      theme: "grid",
-      styles: {
-        fontSize: 8,
-        cellPadding: 2,
-      },
-      columnStyles: {
-        0: { cellWidth: 80, halign: "left" },
-        1: { cellWidth: 40, halign: "right" },
-      },
-      headStyles: {
-        fontSize: 9,
-        fontStyle: "bold",
-        fillColor: [240, 240, 240],
-        textColor: [0, 0, 0],
-      },
-    });
+    const gstRateText = gstRate === 0.09 ? "9%" : "18%"; // Dynamically decide whether it's 9% or 18%
+
+doc.autoTable({
+  startY: secondTableStartY,
+  head: [["Description", "Amount"]],
+  body: [
+    ["Taxable value", `RS ${subtotal.toFixed(2)}`],
+    [`Total GST (${gstRateText})`, `RS ${gst.toFixed(2)}`], // Use dynamic GST label
+    ["Total", `RS ${total.toFixed(2)}`],
+  ],
+  theme: "grid",
+  styles: {
+    fontSize: 8,
+    cellPadding: 2,
+  },
+  columnStyles: {
+    0: { cellWidth: 80, halign: "left" },
+    1: { cellWidth: 40, halign: "right" },
+  },
+  headStyles: {
+    fontSize: 9,
+    fontStyle: "bold",
+    fillColor: [240, 240, 240],
+    textColor: [0, 0, 0],
+  },
+});
+
 
     // Total Amount in Words and Total Balance
     const totalAmountY = doc.lastAutoTable.finalY + 10;
@@ -815,7 +813,7 @@ const Order = () => {
       const gstRate = 0.18; // GST rate of 18%
       const baseItems = [
         {
-          sellerid:sellerid,
+          sellerid: sellerid,
           name,
           price,
           hsn,
@@ -829,7 +827,7 @@ const Order = () => {
       const combinedItems = [
         ...baseItems,
         ...orderItems.map((item) => ({
-          sellerid:sellerid,
+          sellerid: sellerid,
           name: item.name,
           price: item.price,
           hsn: item.hsn,
@@ -861,15 +859,17 @@ const Order = () => {
       }
 
       // Step 4: Create order data to send to the backend
-      const orderData = {
-        items: combinedItems,
-        billingAddress: profile?.billAddress || "", // Ensure fallback for missing address
-        shippingAddress: isSameAsBilling
-          ? profile?.billAddress || ""
-          : shippingAddress,
-        isSameAsBilling,
-        id, // Assuming id is the order ID or another required identifier
-      };
+const orderData = {
+  items: combinedItems,
+  billingAddress: profile?.billAddress || "", // Ensure fallback for missing address
+  shippingAddress: isSameAsBilling
+    ? profile?.billAddress || ""
+    : shippingAddress,
+  isSameAsBilling,
+  id, // Assuming id is the order ID or another required identifier
+  gstNumber: profile?.gstNumber || "", // Add GST number field
+};
+
 
       // Step 5: Send the order data to the API for storing the order
       const response = await axios.post(
@@ -947,6 +947,7 @@ const Order = () => {
       `;
     }
   };
+
   if (loading) return <div className="text-center mt-5">Loading...</div>;
   if (error)
     return <div className="alert alert-danger text-center mt-5">{error}</div>;
@@ -999,7 +1000,7 @@ const Order = () => {
                   <p style={{ wordWrap: "break-word", maxWidth: "300px" }}>
                     <strong>GSTN:</strong> {profile?.gstNumber || "N/A"}
                   </p>
-                  
+
                 </div>
               </div>
             </div>

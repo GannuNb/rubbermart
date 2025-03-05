@@ -120,10 +120,13 @@
   }
   
   .scrap-content h1 {
-    font-size: 2.5rem;
+    font-size: 1.6rem;
     font-weight: bold;
     margin-bottom: 20px;
+    line-height: 130%;
+    margin-right: 7%;
   }
+
   
   .scrap-description {
     font-size: 1rem;
@@ -137,7 +140,7 @@
   }
   
   .request-demo {
-    background: #0a1f44;
+    background: #35b182;
     color: #fff;
     padding: 10px 20px;
     border: none;
@@ -641,3 +644,12 @@
     }
 }
 
+.linkstyle {
+    text-decoration: none;
+    color: inherit; /* Prevents default link color */
+}
+
+.linkstyle:hover {
+    text-decoration: none; /* Ensures no hover styles are applied */
+    color: inherit; /* Ensures color stays the same on hover */
+}

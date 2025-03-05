@@ -13,6 +13,7 @@ function RubberCrumSteel() {
   const [approvals, setApprovals] = useState([]);
   const [userDetails, setUserDetails] = useState(null);
   const navigate = useNavigate();
+    const [loading, setLoading] = useState(true); // New state to track loading status
 
   useEffect(() => {
     async function fetchApprovalDetails() {
@@ -30,6 +31,8 @@ function RubberCrumSteel() {
         }
       } catch (error) {
         console.error('Error fetching approval details:', error);
+      }finally {
+        setLoading(false); // Set loading to false once the request completes
       }
     }
 
@@ -56,6 +59,53 @@ function RubberCrumSteel() {
       nextArrow: <NextArrow />,
       prevArrow: <PrevArrow />,
     };
+
+    if (loading) {
+      return (
+        <div className='productleftside'>
+        <div className='setter'>
+                  <div className="container">
+              {/* Centered Heading at the Top */}
+              <h2 className="text-primary fw-bold text-left mt-5 btphead">Rubber Crumb Steel</h2>
+              <div className="row align-items-center mt-3">
+                {/* Content Section */}
+                <div className="col-md-6">
+                  <p className="text-justify">
+                  Rubber Crumb Steel is an advanced material made by combining rubber crumb and steel. 
+                  It is widely used for various applications, including in construction and manufacturing. This product is durable, cost-effective, 
+                  and an environmentally friendly alternative to conventional materials.
+  
+                  </p>
+                </div>
+  
+                {/* Carousel Section */}
+                <div className="col-md-5">
+                  <Slider {...carouselSettings} className="custom-carousel">
+                    <div>
+                      <img
+                        src={RubberCrumSteelImage}
+                        alt="Baled Tyres PCR Image 1"
+                        className="img-fluid carousel-image"
+                      />
+                    </div>
+                    <div>
+                      <img
+                        src={rubbercrumimg1}
+                        alt="Baled Tyres PCR Image 2"
+                        className="img-fluid carousel-image"
+                      />
+                    </div>
+                  </Slider>
+                </div>
+              </div>
+            </div>
+            <div className="no-stock-wrapper">
+          <h1>Loading...</h1>
+        </div>
+        </div>
+        </div>
+      );
+    }
 
   // If no approvals or user details are available, show the image and description
   if (approvals.length === 0 || !userDetails) {
@@ -97,6 +147,9 @@ function RubberCrumSteel() {
               </div>
             </div>
           </div>
+          <div className="no-stock-wrapper">
+          <h1>No Stock Available</h1>
+        </div>
       </div>
       </div>
     );

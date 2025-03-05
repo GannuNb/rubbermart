@@ -105,7 +105,7 @@ function Moredetails() {
                   <td>{approval.loadingLocation}</td>
                 </tr>
                 <tr>
-                  <th style={{ fontWeight: "bold" }}>Hsn</th>
+                  <th style={{ fontWeight: "bold" }}>HSN</th>
                   <td>40040000</td>
                 </tr>
                 <tr>

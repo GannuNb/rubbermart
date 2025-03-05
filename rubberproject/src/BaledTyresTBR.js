@@ -26,6 +26,7 @@ function BaledTyresTBR() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true); // New state to track loading status
 
   useEffect(() => {
     const handleResize = () => {
@@ -51,6 +52,8 @@ function BaledTyresTBR() {
         }
       } catch (error) {
         console.error('Error fetching approval details:', error);
+      }finally {
+        setLoading(false); // Set loading to false once the request completes
       }
     }
 
@@ -83,6 +86,37 @@ function BaledTyresTBR() {
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
   };
+
+  if (loading) {
+    return (
+      <div className='productleftside'>
+      <div className="setter">
+        <h2 className="text-primary fw-bold text-left mt-5 btphead">Baled Tyres TBR</h2>
+          <div className="row align-items-center mt-3">
+            <div className="col-md-7">
+              <p className="text-justify">
+                <strong>Baled Tyres TBR (Truck and Bus Radial tyres)</strong> are high-quality tyres that have been processed and baled for easy handling and transport. They are ideal for recycling or reuse in various industries such as construction, manufacturing, and more.
+              </p>
+            </div>
+            <div className="col-md-5">
+              <Slider {...carouselSettings} className="custom-carousel">
+                <div>
+                  <img src={BaledTyresTBRImage} alt="Baled Tyres TBR Image 1" className="img-fluid carousel-image" />
+                </div>
+                <div>
+                  <img src={BaledTyresTBRImage2} alt="Baled Tyres TBR Image 2" className="img-fluid carousel-image" />
+                </div>
+              </Slider>
+            </div>
+          </div>
+        <div className="no-stock-wrapper">
+          <h1>Loading...</h1>
+        </div>
+      </div>
+      </div>
+
+    );
+  }
 
   if (approvals.length === 0 || !userDetails) {
     return (

@@ -23,12 +23,6 @@ const Getorders = () => {
   const [profile, setProfile] = useState(null);
   const navigate = useNavigate();
   const [files, setFiles] = useState({}); // to store uploaded file data
-
-
-
-  
-
-
   const location = useLocation();
 
   useEffect(() => {
@@ -185,21 +179,23 @@ const Getorders = () => {
         doc.addImage(logo, 'JPEG', 10, 13, 30, 15);
     }
 
-    // Vikah Rubbers Address
-    doc.setFontSize(7);
-    doc.setFont('helvetica', 'normal');
-    const companyAddress = [
-        'VIKAH RUBBERS',
-        '#406, 4th Floor, Patel Towers,',
-        'Above EasyBuy Beside Nagole RTO Office,',
-        'Nagole Hyderabad, Telangana-500035',
-    ];
+// Vikah Rubbers Address
+doc.setFontSize(7);
+doc.setFont('helvetica', 'normal');
+const companyAddress = [
+    'Rubberscrapmart',
+    'Ground Floor, Shop No - 52 / Plot 44,',
+    'Sai Chamber CHS Wing A, Sector -11',
+    'Sai Chambers, CBD Belapur, Navi Mumbai,',
+    'Thane, Maharashtra, 400614',
+];
 
-    let addressY = 12;
-    doc.text(companyAddress[0], 40, addressY + 4);
-    doc.text(companyAddress[1], 40, addressY + 8);
-    doc.text(companyAddress[2], 40, addressY + 12);
-    doc.text(companyAddress[3], 40, addressY + 16);
+let addressY = 12;
+doc.text(companyAddress[0], 40, addressY + 4);
+doc.text(companyAddress[1], 40, addressY + 8);
+doc.text(companyAddress[2], 40, addressY + 12);
+doc.text(companyAddress[3], 40, addressY + 16);
+doc.text(companyAddress[4], 40, addressY + 20);
 
     // PROFORMA INVOICE Heading
     doc.setFontSize(16);
@@ -296,10 +292,6 @@ const Getorders = () => {
 
     const contentY = Math.max(billingY, shippingY);
 
-
-
-
-
     // Order Details Section
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
@@ -311,7 +303,10 @@ const Getorders = () => {
     order.items.forEach((item) => {
         subtotal += item.quantity * item.price;
     });
-    const gst = subtotal * 0.18;
+
+    // Determine GST rate based on GST number
+    const gstRate = profile.gstNumber && profile.gstNumber.startsWith('36') ? 0.09 : 0.18;
+    const gst = subtotal * gstRate;
     const total = subtotal + gst;
 
     // Table for order details
@@ -324,8 +319,8 @@ const Getorders = () => {
             `${item.quantity} tons`,
             `${item.price.toFixed(2)}`,
             `${(item.quantity * item.price).toFixed(2)}`,
-            `${(item.quantity * item.price * 0.18).toFixed(2)}`,
-            `${(item.quantity * item.price * 1.18).toFixed(2)}`,
+            `${(item.quantity * item.price * gstRate).toFixed(2)}`,
+            `${(item.quantity * item.price * (1 + gstRate)).toFixed(2)}`,
         ]),
         theme: 'striped',
         styles: {
@@ -372,49 +367,48 @@ const Getorders = () => {
     doc.text(`Total Balance: Rs ${total.toFixed(2)}`, 14, totalsTableFinalY + 18);
 
     // Banking Details Section
-const bankingY = totalsTableFinalY + 30;
+    const bankingY = totalsTableFinalY + 30;
 
-// Title
-doc.setFontSize(11);
-doc.setFont('helvetica', 'bold');
-doc.text('Banking Details:', 14, bankingY);
-doc.line(10, bankingY + 3, 200, bankingY + 3);
+    // Title
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Banking Details:', 14, bankingY);
+    doc.line(10, bankingY + 3, 200, bankingY + 3);
 
-// Content
-doc.setFontSize(8);
-doc.setFont('helvetica', 'normal');
+    // Content
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
 
-// Define label positions and corresponding values
-const bankingLabelX = 14; // Label X position
-const bankingColonX = 70; // Colon X position
-const bankingValueX = 80; // Value X position
-let currentY = bankingY + 10; // Start slightly below the title
+    // Define label positions and corresponding values
+    const bankingLabelX = 14; // Label X position
+    const bankingColonX = 70; // Colon X position
+    const bankingValueX = 80; // Value X position
+    let currentY = bankingY + 10; // Start slightly below the title
 
-// Adjust each label and value spacing
-doc.text('Bank Name', bankingLabelX, currentY);
-doc.text(':', bankingColonX, currentY);
-doc.text('IDFC FIRST BANK', bankingValueX, currentY);
-currentY += 6; // Move Y down for the next line
+    // Adjust each label and value spacing
+    doc.text('Bank Name', bankingLabelX, currentY);
+    doc.text(':', bankingColonX, currentY);
+    doc.text('IDFC FIRST BANK', bankingValueX, currentY);
+    currentY += 6; // Move Y down for the next line
 
-doc.text('Account Name', bankingLabelX, currentY);
-doc.text(':', bankingColonX, currentY);
-doc.text('VIKAH RUBBERS', bankingValueX, currentY);
-currentY += 6; // Move Y down for the next line
+    doc.text('Account Name', bankingLabelX, currentY);
+    doc.text(':', bankingColonX, currentY);
+    doc.text('VIKAH RUBBERS', bankingValueX, currentY);
+    currentY += 6; // Move Y down for the next line
 
-doc.text('Account Number', bankingLabelX, currentY);
-doc.text(':', bankingColonX, currentY);
-doc.text('10113716761', bankingValueX, currentY);
-currentY += 6; // Move Y down for the next line
+    doc.text('Account Number', bankingLabelX, currentY);
+    doc.text(':', bankingColonX, currentY);
+    doc.text('10113716761', bankingValueX, currentY);
+    currentY += 6; // Move Y down for the next line
 
-doc.text('IFSC CODE', bankingLabelX, currentY);
-doc.text(':', bankingColonX, currentY);
-doc.text('IDFB0040132', bankingValueX, currentY);
-currentY += 6; // Move Y down for the next line
+    doc.text('IFSC CODE', bankingLabelX, currentY);
+    doc.text(':', bankingColonX, currentY);
+    doc.text('IDFB0040132', bankingValueX, currentY);
+    currentY += 6; // Move Y down for the next line
 
-doc.text('Branch', bankingLabelX, currentY);
-doc.text(':', bankingColonX, currentY);
-doc.text('NERUL BRANCH', bankingValueX, currentY);
-
+    doc.text('Branch', bankingLabelX, currentY);
+    doc.text(':', bankingColonX, currentY);
+    doc.text('NERUL BRANCH', bankingValueX, currentY);
 
     // Terms and Conditions Section
     const termsY = bankingY + 50;
@@ -437,36 +431,6 @@ doc.text('NERUL BRANCH', bankingValueX, currentY);
     // Save the PDF
     doc.save(`Invoice_${order._id}.pdf`);
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
 
 
   const handleFileChange = (orderId, e) => {
@@ -532,13 +496,6 @@ doc.text('NERUL BRANCH', bankingValueX, currentY);
     }
   };
   
-  
-  
-  
-
-  
-
-  
   return (
     <div className="setter">
       <div className="container">
@@ -562,65 +519,69 @@ doc.text('NERUL BRANCH', bankingValueX, currentY);
               </tr>
             </thead>
             <tbody>
-              {filteredOrders.map((order) => (
-                <>
-                  {order.items.map((item, index) => {
-                    const itemSubtotal = item.quantity * item.price;
-                    const itemGST = itemSubtotal * 0.18;
-                    const itemTotal = itemSubtotal + itemGST;
-  
-                    return (
-                      <tr key={item._id}>
-                        {index === 0 && (
-                          <td rowSpan={order.items.length}>{order._id}</td>
-                        )}
-                        <td>{item.name}</td>
-                        <td>{item.quantity} tons</td>
-                        <td>₹{item.price.toFixed(2)}</td>
-                        <td>{item.loading_location}</td>
-                        <td>₹{itemSubtotal.toFixed(2)}</td>
-                        <td>₹{itemGST.toFixed(2)}</td>
-                        <td>₹{itemTotal.toFixed(2)}</td>
-                        {index === 0 && (
-                          <td rowSpan={order.items.length}>
-                            {new Date(order.orderDate).toLocaleDateString()}
-                          </td>
-                        )}
-                        {index === 0 && (
-                          <td rowSpan={order.items.length}>
-                           
-                            <button className="btn btn-primary" onClick={() => generatePDF(order)}>
-                                                            <FaFilePdf />
-                                                          </button>
-                          </td>
-                        )}
-                        {/* File Upload Section */}
-                        {index === 0 && (
-                          <td rowSpan={order.items.length}>
-                            <input
-                              type="file"
-                              onChange={(e) => handleFileChange(order._id, e)}
-                              className="form-control"
-                              accept="image/jpeg, image/png, application/pdf"
-                            />
-                            {files[order._id] && files[order._id].fileName && (
-                              <div>{files[order._id].fileName}</div>
-                            )}
-                            <button
-                              className="btn btn-sm btn-success mt-2"
-                              onClick={() => handleFileUpload(order._id)}
-                            >
-                              Upload File
-                            </button>
-                          </td>
-                        )}
+  {filteredOrders.map((order) => (
+    <>
+      {order.items.map((item, index) => {
+        const itemSubtotal = item.quantity * item.price;
 
-                      </tr>
-                    );
-                  })}
-                </>
-              ))}
-            </tbody>
+        // Fetch GST number from profile and check the first two characters
+        const gstNumber = profile?.gstNumber || ''; // Ensure you have the gstNumber in profile
+        const gstRate = gstNumber.startsWith('36') ? 0.09 : 0.18; // 9% if GST number starts with '36', otherwise 18%
+
+        const itemGST = itemSubtotal * gstRate;
+        const itemTotal = itemSubtotal + itemGST;
+
+        return (
+          <tr key={item._id}>
+            {index === 0 && (
+              <td rowSpan={order.items.length}>{order._id}</td>
+            )}
+            <td>{item.name}</td>
+            <td>{item.quantity} tons</td>
+            <td>₹{item.price.toFixed(2)}</td>
+            <td>{item.loading_location}</td>
+            <td>₹{itemSubtotal.toFixed(2)}</td>
+            <td>₹{itemGST.toFixed(2)}</td>
+            <td>₹{itemTotal.toFixed(2)}</td>
+            {index === 0 && (
+              <td rowSpan={order.items.length}>
+                {new Date(order.orderDate).toLocaleDateString()}
+              </td>
+            )}
+            {index === 0 && (
+              <td rowSpan={order.items.length}>
+                <button className="btn btn-primary" onClick={() => generatePDF(order)}>
+                  <FaFilePdf />
+                </button>
+              </td>
+            )}
+            {/* File Upload Section */}
+            {index === 0 && (
+              <td rowSpan={order.items.length}>
+                <input
+                  type="file"
+                  onChange={(e) => handleFileChange(order._id, e)}
+                  className="form-control"
+                  accept="image/jpeg, image/png, application/pdf"
+                />
+                {files[order._id] && files[order._id].fileName && (
+                  <div>{files[order._id].fileName}</div>
+                )}
+                <button
+                  className="btn btn-sm btn-success mt-2"
+                  onClick={() => handleFileUpload(order._id)}
+                >
+                  Upload File
+                </button>
+              </td>
+            )}
+          </tr>
+        );
+      })}
+    </>
+  ))}
+</tbody>
+
           </table>
         </div>
       </div>

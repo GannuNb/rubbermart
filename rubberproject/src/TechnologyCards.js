@@ -35,7 +35,7 @@ const TechnologyCards = () => {
   return (
     <div className="trb-technology-container">
       <h3 className="trb-section-title">
-        Transform Your Business With <span>Vikah Rubber</span>
+        Transform Your Business With <span>Rubberscrapmart.com</span>
       </h3>
       <div className="trb-technology-grid">
         {technologies1.map((tech, index) => (

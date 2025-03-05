@@ -17,6 +17,7 @@ function ThreePieceTBR() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const navigate = useNavigate();
+    const [loading, setLoading] = useState(true); // New state to track loading status
 
   const categories = [
     { name: "Three Piece PCR", path: "/threepiecepcr" },
@@ -51,6 +52,8 @@ function ThreePieceTBR() {
         }
       } catch (error) {
         console.error('Error fetching approval details:', error);
+      }finally {
+        setLoading(false); // Set loading to false once the request completes
       }
     }
 
@@ -81,6 +84,51 @@ function ThreePieceTBR() {
     prevArrow: <PrevArrow />,
   };
   
+
+  if (loading) {
+    return (
+      <div className='productleftside'>
+      <div className="setter">
+        <div className='container'>
+        <h2 className="text-primary fw-bold text-left mt-5 btphead">Three Piece TBR</h2>
+        <div className="row align-items-center mt-3">
+        {/* Left Column */}
+            <div className="col-md-6">
+              <p className="text-justify">
+                <strong>Three Piece TBR</strong> is a durable, high-performance product designed for use in automotive and industrial applications.
+                Made with top-quality materials, this product is perfect for those seeking reliability and longevity in their tires.
+              </p>
+            </div>
+
+              {/* Carousel Section */}
+              <div className="col-md-5">
+                <Slider {...carouselSettings} className="custom-carousel">
+                  <div>
+                    <img
+                      src={ThreePieceTBRImage }
+                      alt="Baled Tyres PCR Image 1"
+                      className="img-fluid carousel-image"
+                    />
+                  </div>
+                  <div>
+                    <img
+                      src={tbr2}
+                      alt="Baled Tyres PCR Image 2"
+                      className="img-fluid carousel-image"
+                    />
+                  </div>
+                </Slider>
+              </div>
+          </div>
+        <div className="no-stock-wrapper">
+          <h1>Loading...</h1>
+        </div>
+      </div>
+      </div>
+      </div>
+    );
+  }
+
   if (approvals.length === 0 || !userDetails) {
     return (
       <div className='productleftside'>

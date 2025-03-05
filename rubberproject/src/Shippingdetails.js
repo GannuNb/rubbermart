@@ -196,10 +196,11 @@ function ShippingDetails() {
     }
   
     // Add Address Details to the right of the logo
-    doc.setFontSize(8); // Reduced font size further
+    doc.setFontSize(7); // Reduced font size further
     doc.setFont('helvetica', 'normal');
   
-    const addressDetails = `VIKAH RUBBERS\n#406, 4th Floor, Patel Towers,\nAbove EasyBuy Beside Nagole RTO Office,\nNagole Hyderabad, Telangana-500035.`;
+    const addressDetails = `Rubberscrapmart\nGround Floor, Shop No - 52 / Plot 44,\nSai Chamber CHS Wing A, Sector -11,\nSai Chambers, CBD Belapur, Navi Mumbai,\nThane, Maharashtra, 400614`;
+
     const addressLines = doc.splitTextToSize(addressDetails, 130); // Increased width to 140 for more room
     addressLines.forEach((line, index) => {
       doc.text(line, 34, 12 + index * 3); // Adjusted left margin and line height

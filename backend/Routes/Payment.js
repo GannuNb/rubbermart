@@ -297,23 +297,23 @@ Amount Received: ₹${approvalDetails.amountPaid.toFixed(2)}
 Total Paid to Date: ₹${approvalDetails.totalPaid.toFixed(2)}
 Remaining Amount: ₹${approvalDetails.remainingAmount.toFixed(2)}
 
-Thank you for choosing to work with Vikah Rubbers. Your trust and support mean a lot to us, and we are committed to providing you with the best service possible.  
+Thank you for choosing to work with Rubberscrapmart.com , Your trust and support mean a lot to us, and we are committed to providing you with the best service possible.  
 
 If you have any questions or require further assistance, please do not hesitate to contact us.  
 
 Thank you once again for your cooperation.  
 
 Best regards,  
-The Vikah Rubbers Team  
+The Rubberscrapmart Team  
 
 ---  
 Admin Office:  
-#406, 4th Floor, Patel Towers,  
-Above EasyBuy, Beside Nagole RTO Office,  
-Nagole, Hyderabad, Telangana-500035  
+Ground Floor, Shop No - 52 / Plot 44, Sai Chamber CHS Wing A, Sector -11,
+ Sai Chambers, CBD Belapur, Navi Mumbai, Thane, Maharashtra, 400614
+ 
 
 Phone: +91 4049471616  
-Email: vikahrubber@gmail.com  
+Email: info@rubberscrapmart.com 
 Website: https://rubberscrapmart.com/
 `,
 };

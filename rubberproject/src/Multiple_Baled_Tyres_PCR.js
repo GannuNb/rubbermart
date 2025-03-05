@@ -17,6 +17,8 @@ function MultipleBaledTyresPCR() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [loading, setLoading] = useState(true); // New state to track loading status
+  
   const categories = [
     { name: "Three Piece PCR", path: "/threepiecepcr" },
     { name: "Shreds", path: "/shreds" },
@@ -54,6 +56,8 @@ function MultipleBaledTyresPCR() {
         }
       } catch (error) {
         console.error("Error fetching approval details:", error);
+      }finally {
+        setLoading(false); // Set loading to false once the request completes
       }
     }
 
@@ -83,6 +87,54 @@ function MultipleBaledTyresPCR() {
     prevArrow: <PrevArrow />,
   };
   
+  if (loading) {
+    return (
+      <div className='productleftside'>
+      <div className="setter">
+        <div className="container">
+            {/* Centered Heading at the Top */}
+            <h2 className="text-primary fw-bold text-left mt-5 btphead">Baled Tyres PCR</h2>
+            <div className="row align-items-center mt-3">
+              {/* Content Section */}
+              <div className="col-md-7">
+                <p className="text-justify"> 
+                  <strong>Baled Tyres PCR (Passenger Car Radian)</strong> is a <strong>versatile and eco-friendly material</strong> made from recycled tyres.
+                  It is used in <strong>construction, automotive, sports, and agriculture</strong> for its <strong>durability, shock absorption, and cost-effectiveness</strong>.
+                  In agriculture, it serves as <strong>rubber mulch</strong> to retain moisture and suppress weeds.
+                  Recycling tyres with PCR helps <strong>reduce landfill waste, lower carbon emissions, and promote sustainability</strong>.
+                </p>
+              </div>
+
+              {/* Carousel Section */}
+              <div className="col-md-5">
+                <Slider {...carouselSettings} className="custom-carousel">
+                  <div>
+                    <img
+                      src={baledtrespcrimg1}
+                      alt="Baled Tyres PCR Image 1"
+                      className="img-fluid carousel-image"
+                    />
+                  </div>
+                  <div>
+                    <img
+                      src={baledtrespcrimg2}
+                      alt="Baled Tyres PCR Image 2"
+                      className="img-fluid carousel-image"
+                    />
+                  </div>
+                </Slider>
+              </div>
+            </div>
+          </div>
+        <div className="no-stock-wrapper">
+          <h1>Loading...</h1>
+        </div>
+      </div>
+      </div>
+    );
+  }
+
+
   if (approvals.length === 0 || !userDetails) {
     return (
       <div className='productleftside'>

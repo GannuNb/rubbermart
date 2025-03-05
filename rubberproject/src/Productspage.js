@@ -80,13 +80,13 @@ function Productspage() {
                         <div className="flip-card-back">
                           <h3>Products</h3>
                           <ul className="product-list text-start">
-                            <li>Multiple_Baled_Tyres_PCR</li>
+                            <li>Baled Tyres PCR</li>
                             <li>Baled Tyres TBR</li>
-                            <li>ThreePiecePCR</li>
-                            <li>ThreePieceTBR</li>
+                            <li>Three Piece PCR</li>
+                            <li>Three Piece TBR</li>
                             <li>Shredds</li>
                             <li>Mulch</li>
-                            <li>RubberGranules/crum</li>
+                            <li>Rubber Granules/crumb</li>
                           </ul>
                           <Link to="/Tyrescrap">
                             <button className="btn btn-light btn-sm">

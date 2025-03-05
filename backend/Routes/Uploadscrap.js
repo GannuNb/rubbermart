@@ -388,11 +388,12 @@ router.post("/denyScrap/:id", async (req, res) => {
             <p><strong>Rubberscrapmart</strong></p>
             <div style="margin-top: 20px; padding: 10px; background-color: #f4f4f4; border-radius: 5px;">
               <p><strong>Admin Office:</strong></p>
-              <p>#406, 4th Floor, Patel Towers,<br>
-                 Above EasyBuy, Beside Nagole RTO Office,<br>
-                 Nagole, Hyderabad, Telangana-500035</p>
+              <p>Ground Floor, Shop No - 52 / Plot 44, <br>
+                Sai Chamber CHS Wing A, Sector -11,
+                Sai Chambers, CBD Belapur, <br>
+                Navi Mumbai, Thane, Maharashtra, 400614</p>
               <p><strong>Phone:</strong> +91 4049471616</p>
-              <p><strong>Email:</strong> <a href="mailto:vikahrubber@gmail.com" style="color: #1e88e5;">vikahrubber@gmail.com</a></p>
+              <p><strong>Email:</strong> <a href="mailto:info@rubberscrapmart.com" style="color: #1e88e5;">info@rubberscrapmart.com</a></p>
               <p><strong>Website:</strong> <a href="https://rubberscrapmart.com/" style="color: #1e88e5;">https://rubberscrapmart.com</a></p>
             </div>
           </div>

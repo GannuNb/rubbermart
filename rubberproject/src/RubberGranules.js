@@ -17,6 +17,7 @@ function RubberGranules() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true); // Track loading status
 
   const categories = [
     { name: "Three Piece PCR", path: "/threepiecepcr" },
@@ -41,21 +42,24 @@ function RubberGranules() {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/approvals`, {
           params: { application: 'Rubber Granules/Crum' }
         });
-
+  
         const approvalsData = response.data.approvals;
         setApprovals(approvalsData);
-
+  
         if (approvalsData.length > 0 && approvalsData[0].postedBy) {
           const userResponse = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/${approvalsData[0].postedBy._id}`);
           setUserDetails(userResponse.data);
         }
       } catch (error) {
         console.error('Error fetching approval details:', error);
+      } finally {
+        setLoading(false); // Set loading to false once the request completes
       }
     }
-
+  
     fetchApprovalDetails();
   }, []);
+  
 
   // Handle mobile resizing for categories dropdown
   const handleMoreDetailsClick = (approval) => {
@@ -85,46 +89,89 @@ function RubberGranules() {
     prevArrow: <PrevArrow />,
   };
 
-  if (approvals.length === 0 || !userDetails) {
+  
+  // Display "Loading" state when fetching
+  if (loading) {
     return (
-      <div className='productleftside'>
-      <div className="setter">
-        <div className="container">
-        <h2 className="text-primary fw-bold text-left mt-5 btphead">Rubber Granules/Crum</h2>
-        <div className="row align-items-center mt-3">
-        <div className="col-md-7">
-            <p className='text-justify'>
-                Rubber Granules are a sustainable material made from recycled rubber, commonly used in sports fields, playgrounds, and industrial applications. It provides excellent shock absorption and durability.
-              </p>
+      <div className="productleftside">
+        <div className="setter">
+          <div className="container">
+            <h2 className="text-primary fw-bold text-left mt-5 btphead">Rubber Granules/Crum</h2>
+            <div className="row align-items-center mt-3">
+              <div className="col-md-7">
+                <p className="text-justify">
+                  Rubber Granules are a sustainable material made from recycled rubber, commonly used in sports fields, playgrounds, and industrial applications. It provides excellent shock absorption and durability.
+                </p>
+              </div>
+              <div className="col-md-5">
+                <Slider {...carouselSettings} className="custom-carousel">
+                  <div>
+                    <img
+                      src={RubberGranuelsimg2}
+                      alt="Baled Tyres PCR Image 1"
+                      className="img-fluid carousel-image"
+                    />
+                  </div>
+                  <div>
+                    <img
+                      src={RubberCrumSteelImage1}
+                      alt="Baled Tyres PCR Image 2"
+                      className="img-fluid carousel-image"
+                    />
+                  </div>
+                </Slider>
+              </div>
             </div>
-            {/* Carousel Section */}
-            <div className="col-md-5">
-              <Slider {...carouselSettings} className="custom-carousel">
-                <div>
-                  <img
-                    src={RubberGranuelsimg2}
-                    alt="Baled Tyres PCR Image 1"
-                    className="img-fluid carousel-image"
-                  />
-                </div>
-                <div>
-                  <img
-                    src={RubberCrumSteelImage1}
-                    alt="Baled Tyres PCR Image 2"
-                    className="img-fluid carousel-image"
-                  />
-                </div>
-              </Slider>
+            <div className="no-stock-wrapper">
+              <h1>Loading...</h1>
             </div>
           </div>
         </div>
-        <div className="no-stock-wrapper">
-          <h1>No Stock Available</h1>
-        </div>
-      </div>
       </div>
     );
   }
+
+   // Display "No Stock Available" if no approvals found
+  if (approvals.length === 0) {
+    return (
+      <div className="productleftside">
+        <div className="setter">
+          <div className="container">
+            <h2 className="text-primary fw-bold text-left mt-5 btphead">Rubber Granules/Crum</h2>
+            <div className="row align-items-center mt-3">
+              <div className="col-md-7">
+                <p className="text-justify">
+                  Rubber Granules are a sustainable material made from recycled rubber, commonly used in sports fields, playgrounds, and industrial applications. It provides excellent shock absorption and durability.
+                </p>
+              </div>
+              <div className="col-md-5">
+                <Slider {...carouselSettings} className="custom-carousel">
+                  <div>
+                    <img
+                      src={RubberGranuelsimg2}
+                      alt="Baled Tyres PCR Image 1"
+                      className="img-fluid carousel-image"
+                    />
+                  </div>
+                  <div>
+                    <img
+                      src={RubberCrumSteelImage1}
+                      alt="Baled Tyres PCR Image 2"
+                      className="img-fluid carousel-image"
+                    />
+                  </div>
+                </Slider>
+              </div>
+            </div>
+            <div className="no-stock-wrapper">
+              <h1>No Stock Available</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
 
 
   return (

@@ -18,6 +18,7 @@ function Mulch() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true); // New state to track loading status
 
   const categories = [
     { name: 'Three Piece PCR', path: '/threepiecepcr' },
@@ -42,23 +43,27 @@ function Mulch() {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/approvals`, {
           params: { application: 'Mulch PCR' },
         });
-
+  
         const approvalsData = response.data.approvals;
         setApprovals(approvalsData);
-
+  
         if (approvalsData.length > 0 && approvalsData[0].postedBy) {
           const userResponse = await axios.get(
             `${process.env.REACT_APP_API_URL}/api/users/${approvalsData[0].postedBy._id}`
           );
           setUserDetails(userResponse.data);
         }
+        
+        setLoading(false); // Set loading to false after data is fetched
       } catch (error) {
         console.error('Error fetching approval details:', error);
+        setLoading(false); // Set loading to false in case of an error
       }
     }
-
+  
     fetchApprovalDetails();
   }, []);
+  
 
   
   // Custom Arrow Components for Carousel
@@ -84,22 +89,18 @@ function Mulch() {
     prevArrow: <PrevArrow />,
   };
   
-  if (approvals.length === 0 || !userDetails) {
+  if (loading) {
     return (
       <div className='productleftside'>
-      <div className='setter '>
-        <div className='container'>
-            {/* Centered Heading at the Top */}
-            <h2 className='text-primary fw-bold text-left mt-5 btphead'>Mulch PCR</h2>
+        <div className='setter'>
+          <div className='container'>
+            <h2 className='text-primary fw-bold text-left mt-5 btphead'>Mulch</h2>
             <div className='row align-items-center mt-3'>
-              {/* Content Section */}
               <div className='col-md-7'>
                 <p className='text-justify'>
-                  <strong>Mulch PCR</strong> is a popular landscaping material used to retain soil moisture, suppress weeds, and improve the overall health of your garden. Made from natural materials such as wood chips, bark, or grass clippings, it is an environmentally friendly choice that also adds an aesthetic appeal to outdoor spaces.
+                  <strong>Mulc PCR</strong> is a popular landscaping material used to retain soil moisture, suppress weeds, and improve the overall health of your garden. Made from natural materials such as wood chips, bark, or grass clippings, it is an environmentally friendly choice that also adds an aesthetic appeal to outdoor spaces.
                 </p>
               </div>
-
-              {/* Carousel Section */}
               <div className='col-md-5'>
                 <Slider {...carouselSettings} className='custom-carousel'>
                   <div>
@@ -111,14 +112,47 @@ function Mulch() {
                 </Slider>
               </div>
             </div>
+            <div className='no-stock-wrapper'>
+              <h1>Loading...</h1> {/* Show this message while loading */}
+            </div>
           </div>
-        <div className='no-stock-wrapper'>
-          <h1>No Stock Available</h1>
         </div>
-      </div>
       </div>
     );
   }
+  
+  if (approvals.length === 0) {
+    return (
+      <div className='productleftside'>
+        <div className='setter'>
+          <div className='container'>
+            <h2 className='text-primary fw-bold text-left mt-5 btphead'>Mulch</h2>
+            <div className='row align-items-center mt-3'>
+              <div className='col-md-7'>
+                <p className='text-justify'>
+                  <strong>Mulch</strong> is a popular landscaping material used to retain soil moisture, suppress weeds, and improve the overall health of your garden. Made from natural materials such as wood chips, bark, or grass clippings, it is an environmentally friendly choice that also adds an aesthetic appeal to outdoor spaces.
+                </p>
+              </div>
+              <div className='col-md-5'>
+                <Slider {...carouselSettings} className='custom-carousel'>
+                  <div>
+                    <img src={mulchImage} alt='Mulch Image 1' className='img-fluid carousel-image' />
+                  </div>
+                  <div>
+                    <img src={mulchImage1} alt='Mulch Image 2' className='img-fluid carousel-image' />
+                  </div>
+                </Slider>
+              </div>
+            </div>
+            <div className='no-stock-wrapper'>
+              <h1>No Stock Available</h1> {/* Show this message when there are no approvals */}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  
 
   const handleMoreDetailsClick = (approval) => {
     navigate('/moredetails', { state: { approval } });
@@ -133,12 +167,12 @@ function Mulch() {
         <div className='container'>
           <div className='container'>
             {/* Centered Heading at the Top */}
-            <h2 className='text-primary fw-bold text-left mt-5 btphead'>Mulch PCR</h2>
+            <h2 className='text-primary fw-bold text-left mt-5 btphead'>Mulch</h2>
             <div className='row align-items-center mt-3'>
               {/* Content Section */}
               <div className='col-md-7'>
                 <p className='text-justify'>
-                  <strong>Mulch PCR</strong> is a popular landscaping material used to retain soil moisture, suppress weeds, and improve the overall health of your garden. Made from natural materials such as wood chips, bark, or grass clippings, it is an environmentally friendly choice that also adds an aesthetic appeal to outdoor spaces.
+                  <strong>Mulch</strong> is a popular landscaping material used to retain soil moisture, suppress weeds, and improve the overall health of your garden. Made from natural materials such as wood chips, bark, or grass clippings, it is an environmentally friendly choice that also adds an aesthetic appeal to outdoor spaces.
                 </p>
               </div>
 
