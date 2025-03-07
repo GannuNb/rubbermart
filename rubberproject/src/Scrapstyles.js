@@ -32,7 +32,7 @@ function Scrapstyles() {
         {/* First Section */}
         <div className="scrap-container">
           <div className="scrap-content">
-            <p className="scrap-highlight">BUY AND SELL RUBBERSCRAP</p>
+            <p className="scrap-highlight mt-2">BUY AND SELL RUBBERSCRAP</p>
             <h1>India’s premier digital Rubberscrap marketplace for sustainable scrap
               management, offering an online platform to buy, sell, and trade
               scrap materials through eco-friendly recycling processes</h1>
@@ -94,8 +94,8 @@ function Scrapstyles() {
       <h3>Waste Management</h3>
       <p>
         Rubberscrapmart.com provides outstanding WASTE MANAGEMENT/SCRAP DISPOSAL services. 
-        This includes collecting, segregating, and disposing of dry waste, along with monitoring the waste management process. 
-        Our waste management services are designed to reduce the harmful effects of waste on human health and the environment.
+        This includes collecting, segregating, and disposing of Rubber waste, along with monitoring the waste management process. 
+        Our waste management services are designed to reduce the harmful effects of Rubber waste on human health and the environment.
       </p>
     </div>
   </div>

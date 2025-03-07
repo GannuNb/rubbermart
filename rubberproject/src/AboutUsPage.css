@@ -1,12 +1,18 @@
 /* Custom CSS for AboutUsPage */
 .about-us-page {
   font-family: 'Arial', sans-serif;
-  margin-left: 3%;
+  margin-left: 1%;
 }
 
 @media (min-width:300px) and (max-width:700px){
   .about-us-page {
     margin-left: 1%;
+  }
+}
+@media (min-width:700px) and (max-width:1400px){
+  .about-us-page {
+    margin-left: 3%;
+    margin-right: 3%;
   }
 }
 
@@ -20,7 +26,7 @@
 
 /* Heading Styles */
 .about-heading {
-  font-size: 3rem;
+  font-size: 2.2rem;
   font-weight: bold;
   margin-bottom: 20px;
 }
@@ -169,7 +175,7 @@
 .scroll-to-top {
   position: fixed;
   bottom: 12%; /* Adjust bottom space as needed */
-  right: 2%;   /* Adjust right space as needed */
+  right: 1.6%;   /* Adjust right space as needed */
   width: 50px;  /* Set fixed width */
   height: 60px; /* Set fixed height */
   font-size: 1.5rem; /* Adjust font size as needed */
@@ -195,8 +201,8 @@
   .scroll-to-top{
     margin-left: 1%;
     right: 8%;
-    width: 35px;
-    height: 45px;
+    width: 25px;
+    height: 35px;
     bottom: 14%;
   }
 }

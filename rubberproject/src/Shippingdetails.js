@@ -114,7 +114,7 @@ function ShippingDetails() {
       <div className='setter'>
       <div className="text-center">
         <div className="spinner-border" role="status">
-          <span className="visually-hidden">Loading...</span>
+          <span style={{ marginTop: '12%' }} className="visually-hidden">Loading...</span>
         </div>
       </div>
 
@@ -428,7 +428,7 @@ if (profile) {
       <div className="container mt-5">
         <h2 className="text-center mb-4">Shipping Details</h2>
         {Object.keys(groupedByOrder).length === 0 ? (
-          <p className="text-center">No shipping details available.</p>
+          <p style={{ marginTop: '12%' }} className="text-center mt-5">No shipping details available.</p>
         ) : (
           <div>
             {Object.keys(groupedByOrder).map((orderId) => (
