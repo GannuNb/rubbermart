@@ -145,7 +145,7 @@ function ContactUs() {
 
             <div className="map-container mb-4">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3807.9044812055836!2d78.55505387422595!3d17.36832870335573!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb99eeab8a7795%3A0x89760778e2498478!2sPatel%20Towers!5e0!3m2!1sen!2sin!4v1728364217182!5m2!1sen!2sin"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3772.0781076452013!2d73.0372743742669!3d19.016279553846417!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c33aedbd37ad%3A0x5e9915029446713f!2sSai%20Chambers!5e0!3m2!1sen!2sin!4v1741590949059!5m2!1sen!2sin"
                 width="100%"
                 height="250"
                 style={{ border: 0 }}
@@ -248,10 +248,9 @@ function ContactUs() {
                   data-bs-parent="#faqAccordion"
                 >
                   <div className="accordion-body">
-                    Our office is located at Ground Floor,
-                Office No-52/ Plot No-44, Sai Chamber CHS, Wing A, Sector 11,
-                Sai Chambers, CBD Belapur, Navi Mumbai, Thane, Maharashtra -
-                400614
+                    Our office is located at Ground Floor, Office No-52/ Plot
+                    No-44, Sai Chamber CHS, Wing A, Sector 11, Sai Chambers, CBD
+                    Belapur, Navi Mumbai, Thane, Maharashtra - 400614
                   </div>
                 </div>
               </div>
