@@ -491,8 +491,8 @@ function Adminshipping() {
                 className="form-select mb-2"
               >
                 <option value="">Select Shipment From</option>
-                <option value="#406, 4th Floor, Patel Towers, Above EasyBuy Beside Nagole RTO Office, Nagole Hyderabad, Telangana-500068">
-                  #406, 4th Floor, Patel Towers, Above EasyBuy Beside Nagole RTO Office, Nagole Hyderabad, Telangana-500068
+                <option value="Ground Floor,Office No-52/ Plot No-44, Sai Chamber CHS, Wing A, Sector 11,Sai Chambers, CBD Belapur, Navi Mumbai, Thane, Maharashtra -400614">
+                Ground Floor,Office No-52/ Plot No-44, Sai Chamber CHS, Wing A, Sector 11,Sai Chambers, CBD Belapur, Navi Mumbai, Thane, Maharashtra -400614
                 </option>
               </select>
               <textarea

@@ -388,7 +388,7 @@ router.post("/denyScrap/:id", async (req, res) => {
             <p><strong>Rubberscrapmart</strong></p>
             <div style="margin-top: 20px; padding: 10px; background-color: #f4f4f4; border-radius: 5px;">
               <p><strong>Admin Office:</strong></p>
-              <p>Ground Floor, Shop No - 52 / Plot 44, <br>
+              <p>Ground Floor, Office No-52/ Plot No-44, <br>
                 Sai Chamber CHS Wing A, Sector -11,
                 Sai Chambers, CBD Belapur, <br>
                 Navi Mumbai, Thane, Maharashtra, 400614</p>

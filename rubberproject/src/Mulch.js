@@ -25,7 +25,7 @@ function Mulch() {
     { name: 'Shreds', path: '/shreds' },
     { name: 'Baled Tyres TBR', path: '/baledtyrestbr' },
     { name: 'Three Piece TBR', path: '/threepiecetbr' },
-    { name: 'Mulch PCR', path: '/mulchpcr' },
+    { name: 'Baled Tyres PCR', path: '/BaledTyresPcr' },
     { name: 'Rubber Granules/Crumb', path: '/RubberGranules/Crum' },
   ];
 
@@ -94,7 +94,7 @@ function Mulch() {
       <div className='productleftside'>
         <div className='setter'>
           <div className='container'>
-            <h2 className='text-primary fw-bold text-left mt-5 btphead'>Mulch</h2>
+            <h2 className='text-primary fw-bold text-left mt-5 btphead'>Mulch PCR</h2>
             <div className='row align-items-center mt-3'>
               <div className='col-md-7'>
                 <p className='text-justify'>
@@ -126,11 +126,11 @@ function Mulch() {
       <div className='productleftside'>
         <div className='setter'>
           <div className='container'>
-            <h2 className='text-primary fw-bold text-left mt-5 btphead'>Mulch</h2>
+            <h2 className='text-primary fw-bold text-left mt-5 btphead'>Mulch PCR</h2>
             <div className='row align-items-center mt-3'>
               <div className='col-md-7'>
                 <p className='text-justify'>
-                  <strong>Mulch</strong> is a popular landscaping material used to retain soil moisture, suppress weeds, and improve the overall health of your garden. Made from natural materials such as wood chips, bark, or grass clippings, it is an environmentally friendly choice that also adds an aesthetic appeal to outdoor spaces.
+                  <strong>Mulch PCR</strong> is a popular landscaping material used to retain soil moisture, suppress weeds, and improve the overall health of your garden. Made from natural materials such as wood chips, bark, or grass clippings, it is an environmentally friendly choice that also adds an aesthetic appeal to outdoor spaces.
                 </p>
               </div>
               <div className='col-md-5'>
@@ -167,12 +167,12 @@ function Mulch() {
         <div className='container'>
           <div className='container'>
             {/* Centered Heading at the Top */}
-            <h2 className='text-primary fw-bold text-left mt-5 btphead'>Mulch</h2>
+            <h2 className='text-primary fw-bold text-left mt-5 btphead'>Mulch PCR</h2>
             <div className='row align-items-center mt-3'>
               {/* Content Section */}
               <div className='col-md-7'>
                 <p className='text-justify'>
-                  <strong>Mulch</strong> is a popular landscaping material used to retain soil moisture, suppress weeds, and improve the overall health of your garden. Made from natural materials such as wood chips, bark, or grass clippings, it is an environmentally friendly choice that also adds an aesthetic appeal to outdoor spaces.
+                  <strong>Mulch PCR</strong> is a popular landscaping material used to retain soil moisture, suppress weeds, and improve the overall health of your garden. Made from natural materials such as wood chips, bark, or grass clippings, it is an environmentally friendly choice that also adds an aesthetic appeal to outdoor spaces.
                 </p>
               </div>
 

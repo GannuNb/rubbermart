@@ -25,7 +25,7 @@ function RubberGranules() {
     { name: "Baled Tyres TBR", path: "/baledtyrestbr" },
     { name: "Three Piece TBR", path: "/threepiecetbr" },
     { name: "Mulch PCR", path: "/mulchpcr" },
-    { name: "Rubber Granules/Crumb", path: "/rubbergranules" },
+    { name: "Baled Tyres PCR", path: "/BaledTyresPcr" },
   ];
 
   useEffect(() => {
@@ -96,7 +96,7 @@ function RubberGranules() {
       <div className="productleftside">
         <div className="setter">
           <div className="container">
-            <h2 className="text-primary fw-bold text-left mt-5 btphead">Rubber Granules/Crum</h2>
+            <h2 className="text-primary fw-bold text-left mt-5 btphead">Rubber Granules/Crumb</h2>
             <div className="row align-items-center mt-3">
               <div className="col-md-7">
                 <p className="text-justify">

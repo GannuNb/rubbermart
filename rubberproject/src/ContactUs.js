@@ -128,9 +128,10 @@ function ContactUs() {
             <h2 className="mb-4">Contact Information</h2>
             <ul className="list-unstyled">
               <li>
-                <i className="fas fa-map-marker-alt me-2"></i>Admin Off : #406,
-                4th Floor, Patel Towers, Above EasyBuy Beside Nagole RTO Office,
-                Nagole Hyderabad, Telangana-500068
+                <i className="fas fa-map-marker-alt me-2"></i>Ground Floor,
+                Office No-52/ Plot No-44, Sai Chamber CHS, Wing A, Sector 11,
+                Sai Chambers, CBD Belapur, Navi Mumbai, Thane, Maharashtra -
+                400614
               </li>
               <br />
               <li>
@@ -247,9 +248,10 @@ function ContactUs() {
                   data-bs-parent="#faqAccordion"
                 >
                   <div className="accordion-body">
-                    Our office is located at #406, 4th Floor, Patel Towers,
-                    Above EasyBuy Beside Nagole RTO Office, Nagole Hyderabad,
-                    Telangana-500068, India.
+                    Our office is located at Ground Floor,
+                Office No-52/ Plot No-44, Sai Chamber CHS, Wing A, Sector 11,
+                Sai Chambers, CBD Belapur, Navi Mumbai, Thane, Maharashtra -
+                400614
                   </div>
                 </div>
               </div>

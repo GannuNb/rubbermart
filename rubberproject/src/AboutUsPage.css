@@ -175,9 +175,9 @@
 .scroll-to-top {
   position: fixed;
   bottom: 12%; /* Adjust bottom space as needed */
-  right: 1.6%;   /* Adjust right space as needed */
-  width: 50px;  /* Set fixed width */
-  height: 60px; /* Set fixed height */
+  right: 2.4%;   /* Adjust right space as needed */
+  width: 25px;  /* Set fixed width */
+  height: 35px; /* Set fixed height */
   font-size: 1.5rem; /* Adjust font size as needed */
   background-color: rgba(0, 0, 0, 0.7);
   color: white;

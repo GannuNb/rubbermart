@@ -100,7 +100,7 @@ router.post('/upload-pdf', authenticate, upload.single('pdf'), async (req, res) 
             </div>
             <div style="margin-top: 40px; padding: 20px; background-color: #f9f9f9; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
               <p style="font-size: 16px; margin-bottom: 10px;"><strong>Admin Office:</strong></p>
-              <p style="font-size: 14px; margin-bottom: 10px;">Ground Floor, Shop No - 52 / Plot 44, Sai Chamber CHS Wing A, Sector -11,Sai Chambers, CBD Belapur, Navi Mumbai, Thane, Maharashtra, 400614</p>
+              <p style="font-size: 14px; margin-bottom: 10px;">Ground Floor, Office No-52/ Plot No-44, Sai Chamber CHS Wing A, Sector -11,Sai Chambers, CBD Belapur, Navi Mumbai, Thane, Maharashtra, 400614</p>
               <p style="font-size: 14px; margin-bottom: 10px;"><strong>Phone:</strong> +91 4049471616</p>
               <p style="font-size: 14px; margin-bottom: 10px;"><strong>Email:</strong> <a href="mailto:info@rubberscrapmart.com" style="color: #1e88e5;">info@rubberscrapmart.com</a></p>
             </div>

@@ -199,7 +199,7 @@ function ShippingDetails() {
     doc.setFontSize(7); // Reduced font size further
     doc.setFont('helvetica', 'normal');
   
-    const addressDetails = `Rubberscrapmart\nGround Floor, Shop No - 52 / Plot 44,\nSai Chamber CHS Wing A, Sector -11,\nSai Chambers, CBD Belapur, Navi Mumbai,\nThane, Maharashtra, 400614`;
+    const addressDetails = `Rubberscrapmart\nGround Floor, Office No-52/ Plot No-44,\nSai Chamber CHS Wing A, Sector -11,\nSai Chambers, CBD Belapur, Navi Mumbai,\nThane, Maharashtra, 400614`;
 
     const addressLines = doc.splitTextToSize(addressDetails, 130); // Increased width to 140 for more room
     addressLines.forEach((line, index) => {

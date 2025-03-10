@@ -20,7 +20,7 @@ function Shredds() {
   
   const categories = [
     { name: "Three Piece PCR", path: "/threepiecepcr" },
-    { name: "Shreds", path: "/shreds" },
+    { name: "Baled Tyres PCR", path: "/BaledTyresPcr" },
     { name: "Baled Tyres TBR", path: "/baledtyrestbr" },
     { name: "Three Piece TBR", path: "/threepiecetbr" },
     { name: "Mulch PCR", path: "/mulchpcr" },
@@ -89,14 +89,14 @@ function Shredds() {
         <div className="setter">
           <div className="container">
             {/* Centered Heading at the Top */}
-            <h2 className="text-primary fw-bold text-left mt-5 btphead">Shredds</h2>
+            <h2 className="text-primary fw-bold text-left mt-5 btphead">Shreds</h2>
             <div className="row align-items-center mt-3">
               {/* Content Section */}
               <div className="col-md-7">
                 <p className="text-justify">
-                  <strong>Shredds</strong> are finely shredded recycled materials used in landscaping, construction, road-making, and other industries.
+                  <strong>Shreds</strong> are finely shredded recycled materials used in landscaping, construction, road-making, and other industries.
                   These materials offer an eco-friendly, cost-effective, and durable alternative to traditional materials.
-                  <strong>Shredds</strong> play a significant role in reducing landfill waste, conserving natural resources, and supporting sustainability efforts.
+                  <strong>Shreds</strong> play a significant role in reducing landfill waste, conserving natural resources, and supporting sustainability efforts.
                 </p>
               </div>
 
@@ -136,14 +136,14 @@ function Shredds() {
         <div className="setter">
           <div className="container">
             {/* Centered Heading at the Top */}
-            <h2 className="text-primary fw-bold text-left mt-5 btphead">Shredds</h2>
+            <h2 className="text-primary fw-bold text-left mt-5 btphead">Shreds</h2>
             <div className="row align-items-center mt-3">
               {/* Content Section */}
               <div className="col-md-7">
                 <p className="text-justify">
-                  <strong>Shredds</strong> are finely shredded recycled materials used in landscaping, construction, road-making, and other industries.
+                  <strong>Shreds</strong> are finely shredded recycled materials used in landscaping, construction, road-making, and other industries.
                   These materials offer an eco-friendly, cost-effective, and durable alternative to traditional materials.
-                  <strong>Shredds</strong> play a significant role in reducing landfill waste, conserving natural resources, and supporting sustainability efforts.
+                  <strong>Shreds</strong> play a significant role in reducing landfill waste, conserving natural resources, and supporting sustainability efforts.
                 </p>
               </div>
 
@@ -192,9 +192,9 @@ function Shredds() {
                 {/* Content Section */}
                 <div className="col-md-7">
                   <p className="text-justify">
-                    <strong>Shredds</strong> are finely shredded recycled materials used in landscaping, construction, road-making, and other industries.
+                    <strong>Shreds</strong> are finely shredded recycled materials used in landscaping, construction, road-making, and other industries.
                     These materials offer an eco-friendly, cost-effective, and durable alternative to traditional materials.
-                    <strong>Shredds</strong> play a significant role in reducing landfill waste, conserving natural resources, and supporting sustainability efforts.
+                    <strong>Shreds</strong> play a significant role in reducing landfill waste, conserving natural resources, and supporting sustainability efforts.
                   </p>
                 </div>
 

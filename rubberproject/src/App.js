@@ -106,8 +106,7 @@ function App() {
           <Route exact path="/moredetails" element={<Moredetails />} />
           <Route exact path="/homepage" element={<Homepage/>}/>
           <Route exact path="/cate" element={<Cate/>}/>
-         
-
+          
         </Routes>
       </div>
       <Footer />

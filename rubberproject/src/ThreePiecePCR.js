@@ -20,7 +20,7 @@ function ThreePiecePCR() {
     const [loading, setLoading] = useState(true); // New state to track loading status
 
   const categories = [
-    { name: "Three Piece PCR", path: "/threepiecepcr" },
+    { name: "Baled Tyres PCR", path: "/BaledTyresPcr" },
     { name: "Shreds", path: "/shreds" },
     { name: "Baled Tyres TBR", path: "/baledtyrestbr" },
     { name: "Three Piece TBR", path: "/threepiecetbr" },
@@ -95,7 +95,7 @@ if (loading) {
           {/* Content Section */}
           <div className="col-md-7">
             <p className="text-justify">
-              <strong>Three Piece PCR (Post Consumer Recycled)</strong> is a highly
+              <strong>Three Piece PCR (Passenger Car Radian)</strong> is a highly
               durable and eco-friendly material created using recycled materials. It
               ensures both cost-effectiveness and environmental responsibility, widely
               used in various industries.
@@ -140,7 +140,7 @@ if (loading) {
             {/* Content Section */}
             <div className="col-md-7">
               <p className="text-justify">
-                <strong>Three Piece PCR (Post Consumer Recycled)</strong> is a highly
+                <strong>Three Piece PCR (Passenger Car Radian)</strong> is a highly
                 durable and eco-friendly material created using recycled materials. It
                 ensures both cost-effectiveness and environmental responsibility, widely
                 used in various industries.
@@ -191,7 +191,7 @@ if (loading) {
             {/* Content Section */}
             <div className="col-md-6">
               <p className="text-justify">
-                <strong>Three Piece PCR (Post Consumer Recycled)</strong> is a highly
+                <strong>Three Piece PCR (Passenger Car Radian)</strong> is a highly
                 durable and eco-friendly material created using recycled materials. It
                 ensures both cost-effectiveness and environmental responsibility, widely
                 used in various industries.

@@ -308,7 +308,7 @@ The Rubberscrapmart Team
 
 ---  
 Admin Office:  
-Ground Floor, Shop No - 52 / Plot 44, Sai Chamber CHS Wing A, Sector -11,
+Ground Floor, Office No-52/ Plot No-44, Sai Chamber CHS Wing A, Sector -11,
  Sai Chambers, CBD Belapur, Navi Mumbai, Thane, Maharashtra, 400614
  
 

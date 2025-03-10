@@ -85,7 +85,7 @@ function Productspage() {
                             <li>Three Piece PCR</li>
                             <li>Three Piece TBR</li>
                             <li>Shredds</li>
-                            <li>Mulch</li>
+                            <li>Mulch PCR</li>
                             <li>Rubber Granules/crumb</li>
                           </ul>
                           <Link to="/Tyrescrap">

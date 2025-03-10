@@ -14,7 +14,7 @@ import { Link } from "react-router-dom"; // Use Link for React Router
 const categories = [
   { name: "Three Piece PCR", path: "/threepiecepcr" },
   { name: "Shreds", path: "/shreds" },
-  { name: "Baled Tyres TBR", path: "/baledtyrestbr" },
+  { name: "Baled Tyres PCR", path: "/BaledTyresPcr" },
   { name: "Three Piece TBR", path: "/threepiecetbr" },
   { name: "Mulch PCR", path: "/mulchpcr" },
   { name: "Rubber Granules/Crumb", path: "/RubberGranules/Crum" },
@@ -95,7 +95,7 @@ function BaledTyresTBR() {
           <div className="row align-items-center mt-3">
             <div className="col-md-7">
               <p className="text-justify">
-                <strong>Baled Tyres TBR (Truck and Bus Radial tyres)</strong> are high-quality tyres that have been processed and baled for easy handling and transport. They are ideal for recycling or reuse in various industries such as construction, manufacturing, and more.
+                <strong>Baled Tyres TBR (Truck and Bus Radian)</strong> are high-quality tyres that have been processed and baled for easy handling and transport. They are ideal for recycling or reuse in various industries such as construction, manufacturing, and more.
               </p>
             </div>
             <div className="col-md-5">
@@ -126,7 +126,7 @@ function BaledTyresTBR() {
           <div className="row align-items-center mt-3">
             <div className="col-md-7">
               <p className="text-justify">
-                <strong>Baled Tyres TBR (Truck and Bus Radial tyres)</strong> are high-quality tyres that have been processed and baled for easy handling and transport. They are ideal for recycling or reuse in various industries such as construction, manufacturing, and more.
+                <strong>Baled Tyres TBR (Truck and Bus Radian)</strong> are high-quality tyres that have been processed and baled for easy handling and transport. They are ideal for recycling or reuse in various industries such as construction, manufacturing, and more.
               </p>
             </div>
             <div className="col-md-5">
@@ -158,7 +158,7 @@ function BaledTyresTBR() {
           <div className="row align-items-center mt-3">
             <div className="col-md-7">
               <p className="text-justify">
-                <strong>Baled Tyres TBR (Truck and Bus Radial tyres)</strong> are high-quality tyres that have been processed and baled for easy handling and transport. They are ideal for recycling or reuse in various industries such as construction, manufacturing, and more.
+                <strong>Baled Tyres TBR (Truck and Bus Radian)</strong> are high-quality tyres that have been processed and baled for easy handling and transport. They are ideal for recycling or reuse in various industries such as construction, manufacturing, and more.
               </p>
             </div>
             <div className="col-md-5">

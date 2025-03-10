@@ -23,7 +23,7 @@ function ThreePieceTBR() {
     { name: "Three Piece PCR", path: "/threepiecepcr" },
     { name: "Shreds", path: "/shreds" },
     { name: "Baled Tyres TBR", path: "/baledtyrestbr" },
-    { name: "Three Piece TBR", path: "/threepiecetbr" },
+    { name: "Baled Tyres PCR", path: "/BaledTyresPcr" },
     { name: "Mulch PCR", path: "/mulchpcr" },
     { name: "Rubber Granules/Crumb", path: "/RubberGranules/Crum" },
   ];
