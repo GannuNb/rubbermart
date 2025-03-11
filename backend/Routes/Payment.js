@@ -289,39 +289,41 @@ const mailOptions = {
   from: '"Rubberscrapmart" <' + process.env.EMAIL_USER + '>',
   to: payment.user.email, // Receiver email (user's email from payment data)
   subject: 'Payment Approval Confirmation and Details', // Refined email subject
-  text: `
-Dear ${payment.user.name},
+  html: `
+    <p>Dear ${payment.user.name},</p>
 
-We are pleased to inform you that your payment has been approved. Below are the details of your payment approval for your reference:
+    <p>We are pleased to inform you that your payment has been approved. Below are the details of your payment approval for your reference:</p>
 
-Order ID: ${payment.order._id || 'Not Available'}
-Approval Notes: ${approvalDetails.notes}
-Amount Received: ₹${approvalDetails.amountPaid.toFixed(2)}
-Total Paid to Date: ₹${approvalDetails.totalPaid.toFixed(2)}
-Remaining Amount: ₹${approvalDetails.remainingAmount.toFixed(2)}
-  
+    <ul>
+      <li><strong>Order ID:</strong> ${payment.order._id || 'Not Available'}</li>
+      <li><strong>Approval Notes:</strong> ${approvalDetails.notes}</li>
+      <li><strong>Amount Received:</strong> ₹${approvalDetails.amountPaid.toFixed(2)}</li>
+      <li><strong>Total Paid to Date:</strong> ₹${approvalDetails.totalPaid.toFixed(2)}</li>
+      <li><strong>Remaining Amount:</strong> ₹${approvalDetails.remainingAmount.toFixed(2)}</li>
+    </ul>
 
-<p>Thank you for choosing to work with <strong><a href="https://rubberscrapmart.com" style="color: #1e88e5;">Rubberscrapmart.com</a></strong></p>
+    <p>Thank you for choosing to work with <strong><a href="https://rubberscrapmart.com" style="color: #1e88e5;">Rubberscrapmart.com</a></strong></p>
 
     <p>Your trust and support mean a lot to us, and we are committed to providing you with the best service possible.</p>
 
-If you have any questions or require further assistance, please do not hesitate to contact us.  
+    <p>If you have any questions or require further assistance, please do not hesitate to contact us.</p>
 
-Thank you once again for your cooperation.  
+    <p>Thank you once again for your cooperation.</p>
 
-Best regards,  
-The Rubberscrapmart Team  
+    <p>Best regards, <br> The Rubberscrapmart Team</p>
 
----  
-Admin Office:  
-Ground Floor, Office No-52/ Plot No-44, Sai Chamber CHS Wing A, Sector -11,
- Sai Chambers, CBD Belapur, Navi Mumbai, Thane, Maharashtra, 400614,
- GSTN:27AAVFV4635R1ZY
-Tel: 022-46030343  
-Email: info@rubberscrapmart.com 
-Website: https://rubberscrapmart.com/
-`,
+    <hr>
+
+    <p><strong>Admin Office:</strong><br>
+    Ground Floor, Office No-52/ Plot No-44, Sai Chamber CHS Wing A, Sector -11,<br>
+    Sai Chambers, CBD Belapur, Navi Mumbai, Thane, Maharashtra, 400614,<br>
+    GSTN:27AAVFV4635R1ZY<br>
+    Tel: 022-46030343<br>
+    Email: info@rubberscrapmart.com<br>
+    Website: <a href="https://rubberscrapmart.com">https://rubberscrapmart.com</a></p>
+  `,
 };
+
 
 
     // Send the email
