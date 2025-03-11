@@ -138,11 +138,11 @@ function ContactUs() {
                 <i className="fas fa-map-marker-alt me-2"></i>Ground Floor,
                 Office No-52/ Plot No-44, Sai Chamber CHS, Wing A, Sector 11,
                 Sai Chambers, CBD Belapur, Navi Mumbai, Thane, Maharashtra -
-                400614
+                400614, GSTN:27AAVFV4635R1ZY
               </li>
               <br />
               <li>
-                <i className="fas fa-phone-alt me-2"></i>+914049471616
+                <i className="fas fa-phone-alt me-2"></i>022-46030343
               </li>
               <li>
                 <i className="fas fa-envelope me-2"></i>{" "}
@@ -228,8 +228,8 @@ function ContactUs() {
                   data-bs-parent="#faqAccordion"
                 >
                   <div className="accordion-body">
-                    You can reach us via the form above or by calling
-                    +914049471616 during business hours.
+                    You can reach us via the form above or by calling Tel: 022-46030343
+                     during business hours.
                   </div>
                 </div>
               </div>
@@ -257,7 +257,7 @@ function ContactUs() {
                     Our office is located at Ground Floor,
                     Office No-52/ Plot No-44, Sai Chamber CHS, Wing A, Sector 11,
                     Sai Chambers, CBD Belapur, Navi Mumbai, Thane, Maharashtra -
-                    400614
+                    400614,GSTN:27AAVFV4635R1ZY
                   </div>
                 </div>
               </div>

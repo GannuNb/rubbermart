@@ -36,7 +36,7 @@ const Footer = () => {
           <Col xs={12} md={6} lg={4} className="mb-4 text-center text-lg-end">
             <h5 className="fw-bold">Contact Information</h5>
             <p>Email: info@rubberscrapmart.com</p>
-            <p>Phone: +91 4049471616</p>
+            <p>TEL: 022-46030343</p>
             <h5 className="fw-bold">Follow Us</h5>
             <div className="text-center text-lg-end">
               <a href="https://www.facebook.com/profile.php?id=61574102936310" className="social-icon me-3" target="_blank" rel="noopener noreferrer" style={{ color: '#1877F2' }}>

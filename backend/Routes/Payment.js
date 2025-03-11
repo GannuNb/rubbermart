@@ -299,8 +299,11 @@ Approval Notes: ${approvalDetails.notes}
 Amount Received: ₹${approvalDetails.amountPaid.toFixed(2)}
 Total Paid to Date: ₹${approvalDetails.totalPaid.toFixed(2)}
 Remaining Amount: ₹${approvalDetails.remainingAmount.toFixed(2)}
+  
 
-Thank you for choosing to work with <strong><a href="https://rubberscrapmart.com" style="color: #1e88e5;">Rubberscrapmart.com</a></strong> , Your trust and support mean a lot to us, and we are committed to providing you with the best service possible.  
+<p>Thank you for choosing to work with <strong><a href="https://rubberscrapmart.com" style="color: #1e88e5;">Rubberscrapmart.com</a></strong></p>
+
+    <p>Your trust and support mean a lot to us, and we are committed to providing you with the best service possible.</p>
 
 If you have any questions or require further assistance, please do not hesitate to contact us.  
 
@@ -314,7 +317,7 @@ Admin Office:
 Ground Floor, Office No-52/ Plot No-44, Sai Chamber CHS Wing A, Sector -11,
  Sai Chambers, CBD Belapur, Navi Mumbai, Thane, Maharashtra, 400614,
  GSTN:27AAVFV4635R1ZY
-Tel: 040-49511293  
+Tel: 022-46030343  
 Email: info@rubberscrapmart.com 
 Website: https://rubberscrapmart.com/
 `,
