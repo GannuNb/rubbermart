@@ -39,6 +39,14 @@ const Order = () => {
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [orderAdded, setOrderAdded] = useState(false); // Tracks if the order has been added
+
+    useEffect(() => {
+        // Directly set the scroll position to the top of the page
+        document.documentElement.scrollTop = 0; 
+        document.body.scrollTop = 0;  // For compatibility with older browsers
+      }, []); // Empty dependency array ensures it runs only once on page load
+  
+      
   useEffect(() => {
     const fetchApplications = async () => {
       try {
@@ -487,10 +495,13 @@ const Order = () => {
   ) => {
     const doc = new jsPDF();
 
-    // Add logo to PDF
-    if (logo) {
-      doc.addImage(logo, "PNG", 8, 6, 35, 15); // Adjust the width and height of the logo
-    }
+    // Add text instead of the logo
+if (logo) {
+  doc.setFontSize(10); // Set font size for the logo text
+  doc.setFont("helvetica", "bold"); // Optional: Set font style (bold)
+  doc.text("Rubberscrapmart", 6, 18); // Position the text (x, y coordinates)
+}
+
 
     // Set font for header
     doc.setFontSize(8);
@@ -503,6 +514,7 @@ const Order = () => {
       'Sai Chamber CHS Wing A, Sector -11',
       'Sai Chambers, CBD Belapur, Navi Mumbai,',
       'Thane, Maharashtra, 400614',
+      'GSTN : 27AAVFV4635R1ZY',
     ];
 
     let addressYy = 9; // Adjusted starting Y to align with logo
@@ -511,6 +523,8 @@ const Order = () => {
     doc.text(companyAddress[2], 40, addressYy + 8); // Additional Address
     doc.text(companyAddress[3], 40, addressYy + 11); // City, State, and Postal Code
     doc.text(companyAddress[4], 40, addressYy + 14); // City, State, and Postal Code
+    doc.text(companyAddress[5], 40, addressYy + 17); // City, State, and Postal Code
+
 
 
     // Invoice Title
@@ -524,7 +538,7 @@ const Order = () => {
       align: "right",
     });
     doc.setDrawColor(0, 0, 0);
-    doc.line(10, 25, 200, 25); // Underline
+    doc.line(10, 30, 200, 30); // Underline
 
     // Billing and Shipping Information
     doc.setFontSize(12);

@@ -36,7 +36,7 @@ const UploadscrapSchema = new Schema({
     },
     loadingLocation: {
         type: String,
-        enum: ['ex_chennai', 'ex_mundra', 'ex_nhavasheva'],
+        enum: ['Ex_Chennai', 'Ex_Mundra', 'Ex_Nhavasheva'],
         required: true
     },
     countryOfOrigin: {
@@ -47,6 +47,10 @@ const UploadscrapSchema = new Schema({
         type: Number,
         required: true,
         min: [0, 'Price cannot be negative']
+    },
+    description: {
+        type: String,  // Adding description field
+        required: false // Optional field, user can provide it or leave it empty
     },
     images: [{ 
         data: Buffer,  // Store the binary data
@@ -59,4 +63,3 @@ const UploadscrapSchema = new Schema({
 });
 
 module.exports = mongoose.model('Uploadscrap', UploadscrapSchema);
-

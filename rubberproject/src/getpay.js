@@ -16,6 +16,13 @@ function GetPay() {
   const navigate = useNavigate();
   const location = useLocation();
 
+    useEffect(() => {
+        // Directly set the scroll position to the top of the page
+        document.documentElement.scrollTop = 0; 
+        document.body.scrollTop = 0;  // For compatibility with older browsers
+      }, []); // Empty dependency array ensures it runs only once on page load
+  
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -135,10 +142,15 @@ function GetPay() {
   
     const doc = new jsPDF();
   
-    // Add logo with padding, positioning it at the top-left corner
-    if (logo) {
-      doc.addImage(logo, 'JPEG', 10, 10, 30, 15);
-    }
+    // // Add logo with padding, positioning it at the top-left corner
+    // if (logo) {
+    //   doc.addImage(logo, 'JPEG', 10, 10, 30, 15);
+    // }
+
+// Add text "Rubberscrapmart" with padding, positioning it at the top-left corner
+doc.setFontSize(14); // Set font size
+doc.setFont("helvetica", "bold"); // Set font style
+doc.text("Rubberscrapmart", 10, 12); // Add the text at position (10, 10)
   
     // Title Section: "Approval Details" in bold and centered
     doc.setFontSize(20);

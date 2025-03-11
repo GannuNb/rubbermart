@@ -27,6 +27,13 @@ function ThreePiecePCR() {
     { name: "Mulch PCR", path: "/mulchpcr" },
     { name: "Rubber Granules/Crumb", path: "/RubberGranules/Crum" },
   ];
+  
+  useEffect(() => {
+      // Directly set the scroll position to the top of the page
+      document.documentElement.scrollTop = 0; 
+      document.body.scrollTop = 0;  // For compatibility with older browsers
+    }, []); // Empty dependency array ensures it runs only once on page load
+
 
   useEffect(() => {
     const handleResize = () => {

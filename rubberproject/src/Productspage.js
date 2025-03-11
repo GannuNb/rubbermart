@@ -10,7 +10,15 @@ import { useNavigate } from "react-router-dom";
 import TechnologyCards from "./TechnologyCards";
 
 function Productspage() {
+
+
   const [scrapItems, setScrapItems] = useState([]);
+
+  useEffect(() => {
+      // Directly set the scroll position to the top of the page
+      document.documentElement.scrollTop = 0; 
+      document.body.scrollTop = 0;  // For compatibility with older browsers
+    }, []); // Empty dependency array ensures it runs only once on page load
 
   useEffect(() => {
     const fetchData = async () => {

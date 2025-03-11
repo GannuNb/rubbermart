@@ -271,18 +271,22 @@ router.post('/approve/:orderId', async (req, res) => {
       remainingAmount: remainingAmount,
     };
 
-    // Create the transporter for sending email
-    const transporter = nodemailer.createTransport({
-      service: 'gmail', // Use any service, Gmail for example
-      auth: {
-        user: process.env.EMAIL_USER, // Replace with your email (e.g., 'your-email@gmail.com')
-        pass: process.env.EMAIL_PASS, // Replace with your email password
-      },
-    });
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail', // Use any service, Gmail for example
+  auth: {
+    user: process.env.EMAIL_USER, // Replace with your email (e.g., 'your-email@gmail.com')
+    pass: process.env.EMAIL_PASS, // Replace with your email password
+  },
+  tls: {
+    rejectUnauthorized: false, // Disable rejection of self-signed certificates
+  },
+});
+    
 
 // Define the email options
 const mailOptions = {
-  from: process.env.EMAIL_USER, // Sender address
+  from: '"Rubberscrapmart" <' + process.env.EMAIL_USER + '>',
   to: payment.user.email, // Receiver email (user's email from payment data)
   subject: 'Payment Approval Confirmation and Details', // Refined email subject
   text: `
@@ -292,12 +296,11 @@ We are pleased to inform you that your payment has been approved. Below are the 
 
 Order ID: ${payment.order._id || 'Not Available'}
 Approval Notes: ${approvalDetails.notes}
-
 Amount Received: ₹${approvalDetails.amountPaid.toFixed(2)}
 Total Paid to Date: ₹${approvalDetails.totalPaid.toFixed(2)}
 Remaining Amount: ₹${approvalDetails.remainingAmount.toFixed(2)}
 
-Thank you for choosing to work with Rubberscrapmart.com , Your trust and support mean a lot to us, and we are committed to providing you with the best service possible.  
+Thank you for choosing to work with <strong><a href="https://rubberscrapmart.com" style="color: #1e88e5;">Rubberscrapmart.com</a></strong> , Your trust and support mean a lot to us, and we are committed to providing you with the best service possible.  
 
 If you have any questions or require further assistance, please do not hesitate to contact us.  
 
@@ -309,10 +312,9 @@ The Rubberscrapmart Team
 ---  
 Admin Office:  
 Ground Floor, Office No-52/ Plot No-44, Sai Chamber CHS Wing A, Sector -11,
- Sai Chambers, CBD Belapur, Navi Mumbai, Thane, Maharashtra, 400614
- 
-
-Phone: +91 4049471616  
+ Sai Chambers, CBD Belapur, Navi Mumbai, Thane, Maharashtra, 400614,
+ GSTN:27AAVFV4635R1ZY
+Tel: 040-49511293  
 Email: info@rubberscrapmart.com 
 Website: https://rubberscrapmart.com/
 `,

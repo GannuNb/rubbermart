@@ -125,6 +125,7 @@ const Uploaded = () => {
                   <th>Country of origin</th>
                   <th>Loading Location</th>
                   <th>Price</th>
+                  <th>Description</th>
                   <th>Uploaded At</th>
                   <th>Images</th>
                   <th>Actions</th>
@@ -142,6 +143,7 @@ const Uploaded = () => {
                     <td>{scrap.countryOfOrigin}</td>
                     <td>{scrap.loadingLocation}</td>
                     <td>{scrap.price}</td>
+                    <td>{scrap.description}</td>
                     <td>{new Date(scrap.uploadedAt).toLocaleString()}</td>
                     <td>
                       {scrap.imagesBase64 && scrap.imagesBase64.length > 0 ? (

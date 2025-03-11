@@ -112,7 +112,6 @@ function App() {
       <Footer />
       <ScrollToTopButton />
       <ChatWidget />
-      <ScrollToTop />
        
     </>
   );

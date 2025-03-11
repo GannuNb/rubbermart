@@ -53,7 +53,7 @@ router.post(
     body("phoneNumber").notEmpty().withMessage("Phone Number is required"),
     body("email").isEmail().withMessage("Valid Email is required"),
     body("loadingLocation")
-      .isIn(["ex_chennai", "ex_mundra", "ex_nhavasheva"])
+      .isIn(["Ex_Chennai", "Ex_Mundra", "Ex_Nhavasheva"])
       .withMessage("Invalid loading location"),
     body("countryOfOrigin")
       .notEmpty()
@@ -61,6 +61,7 @@ router.post(
     body("price")
       .isFloat({ gt: 0 })
       .withMessage("Price must be a positive number"),
+    body("description").optional().isString().withMessage("Description must be a string"), // Validate description (optional)
   ],
   async (req, res) => {
     console.log("Received request body:", req.body);
@@ -82,6 +83,7 @@ router.post(
       loadingLocation,
       countryOfOrigin,
       price,
+      description, // Add description field from body
     } = req.body;
 
     if (!req.files || req.files.length === 0) {
@@ -104,7 +106,6 @@ router.post(
       })
     );
 
-    
     try {
       const user = await User.findById(req.user.id);
       if (!user)
@@ -112,6 +113,7 @@ router.post(
           .status(404)
           .json({ success: false, message: "User not found" });
 
+      // Save the scrap details, including the description
       const newScrap = new Uploadscrap({
         user: req.user.id,
         material,
@@ -123,6 +125,7 @@ router.post(
         loadingLocation,
         countryOfOrigin,
         price,
+        description, // Save description
         images,
       });
 
@@ -144,6 +147,7 @@ router.post(
     }
   }
 );
+
 
 
 
@@ -213,6 +217,7 @@ const transporter = nodemailer.createTransport({
         price,
         loadingLocation,
         countryOfOrigin,
+        description,
         images,
       } = uploadedScrap;
   
@@ -277,6 +282,7 @@ const transporter = nodemailer.createTransport({
           price,
           loadingLocation,
           countryOfOrigin,
+          description,
           images: imageBuffers,
         });
   
@@ -292,7 +298,7 @@ const transporter = nodemailer.createTransport({
   
       // Send the approval confirmation email after successful commit
       const mailOptions = {
-        from: process.env.EMAIL_USER, // sender address
+        from: '"Rubberscrapmart" <' + process.env.EMAIL_USER + '>', 
         to: email, // recipient's email address
         subject: "Scrap Approval Confirmation", // email subject
         html: `
@@ -373,7 +379,7 @@ router.post("/denyScrap/:id", async (req, res) => {
   
       // Send denial email
       const mailOptions = {
-        from: process.env.ADMIN_EMAIL,
+        from: '"Rubberscrapmart" <' + process.env.ADMIN_EMAIL + '>', 
         to: email,
         subject: "Scrap Product Denial Notification – Rubberscrapmart",
         html: `
@@ -391,8 +397,10 @@ router.post("/denyScrap/:id", async (req, res) => {
               <p>Ground Floor, Office No-52/ Plot No-44, <br>
                 Sai Chamber CHS Wing A, Sector -11,
                 Sai Chambers, CBD Belapur, <br>
-                Navi Mumbai, Thane, Maharashtra, 400614</p>
-              <p><strong>Phone:</strong> +91 4049471616</p>
+                Navi Mumbai, Thane, Maharashtra, 400614,
+                GSTN:27AAVFV4635R1ZY
+                </p>
+              <p><strong>Tel:</strong> 040-49511293</p>
               <p><strong>Email:</strong> <a href="mailto:info@rubberscrapmart.com" style="color: #1e88e5;">info@rubberscrapmart.com</a></p>
               <p><strong>Website:</strong> <a href="https://rubberscrapmart.com/" style="color: #1e88e5;">https://rubberscrapmart.com</a></p>
             </div>
@@ -445,6 +453,7 @@ router.get("/getApprovedScrap", authenticateToken, async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 });
+
 
 // Updated route for fetching approval details with image
 router.get("/approvals", async (req, res) => {

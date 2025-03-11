@@ -37,9 +37,12 @@ const TyreScrap = () => {
         "Mulch PCR": [mulchImage, mulchImage2],
     };
 
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, []);
+      useEffect(() => {
+          // Directly set the scroll position to the top of the page
+          document.documentElement.scrollTop = 0; 
+          document.body.scrollTop = 0;  // For compatibility with older browsers
+        }, []); // Empty dependency array ensures it runs only once on page load
+    
 
     useEffect(() => {
         const fetchData = async () => {

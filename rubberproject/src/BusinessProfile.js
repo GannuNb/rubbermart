@@ -30,19 +30,24 @@ const BusinessProfile = () => {
         setLoading(false);
         return;
       }
-  
+    
       try {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/userdetails`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setProfile({ ...profile, email: response.data.user.email }); // Set email in profile state
-       
+    
+        setProfile((prevProfile) => ({
+          ...prevProfile,
+          email: response.data.user.email, // Set email correctly in profile state
+        }));
+        
       } catch (error) {
         console.error('Error fetching user data:', error);
       } finally {
         setLoading(false);
       }
     };
+    
   
     fetchUserData();
   }, []);
@@ -91,16 +96,15 @@ const BusinessProfile = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
+      setLoading(true); // Set loading true when fetching profile data
       try {
         const token = localStorage.getItem('token');
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/business-profile`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
-
+    
         if (response.data.profileExists) {
-          setProfile(response.data.businessProfile);
+          setProfile(response.data.businessProfile); // Update profile with the new data directly
           setProfileExists(true);
         } else {
           setProfileExists(false);
@@ -112,6 +116,7 @@ const BusinessProfile = () => {
         setLoading(false);
       }
     };
+    
 
     fetchProfile();
   }, []);

@@ -39,16 +39,16 @@ const Footer = () => {
             <p>Phone: +91 4049471616</p>
             <h5 className="fw-bold">Follow Us</h5>
             <div className="text-center text-lg-end">
-              <a href="https://www.facebook.com/people/Vikah-Ecotech/61562484014600/?mibextid=qi2Omg&rdid=DtTaZ8FyfC8gsDCh&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1Mxsd16XWYMsvCyi%2F%3Fmibextid%3Dqi2Omg" className="social-icon me-3" target="_blank" rel="noopener noreferrer" style={{ color: '#1877F2' }}>
+              <a href="https://www.facebook.com/profile.php?id=61574102936310" className="social-icon me-3" target="_blank" rel="noopener noreferrer" style={{ color: '#1877F2' }}>
                 <FaFacebook />
               </a>
-              <a href="https://x.com/i/flow/login?redirect_after_login=%2Fvikahecotech" className="social-icon me-3" target="_blank" rel="noopener noreferrer" style={{ color: '#1DA1F2' }}>
+              <a href="https://x.com/Rubberscrapmart" className="social-icon me-3" target="_blank" rel="noopener noreferrer" style={{ color: '#1DA1F2' }}>
                 <FaTwitter />
               </a>
-              <a href="https://www.youtube.com/@vikahecotech" className="social-icon me-3" target="_blank" rel="noopener noreferrer" style={{ color: '#FF0000' }}>
+              <a href="https://www.youtube.com/@Rubberscrapmart" className="social-icon me-3" target="_blank" rel="noopener noreferrer" style={{ color: '#FF0000' }}>
                 <FaYoutube />
               </a>
-              <a href="https://www.instagram.com/vikahecotech/" className="social-icon" target="_blank" rel="noopener noreferrer" style={{ color: '#E4405F' }}>
+              <a href="https://www.instagram.com/rubberscrapmart/" className="social-icon" target="_blank" rel="noopener noreferrer" style={{ color: '#E4405F' }}>
                 <FaInstagram />
               </a>
             </div>

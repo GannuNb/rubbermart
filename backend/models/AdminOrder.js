@@ -61,7 +61,7 @@ const AdminOrderItemSchema = new mongoose.Schema({
   loading_location: {  // New field to store the loading location
     type: String,
     required: true,
-    enum: ['ex_chennai', 'ex_mundra', 'ex_nhavasheva'], // Add the allowed locations
+    enum: ['Ex_Chennai', 'Ex_Mundra', 'Ex_Nhavasheva'], // Add the allowed locations
   },
 });
 

@@ -1,4 +1,5 @@
 import React from "react";
+import { useEffect } from "react";
 import myGif from "./images/videos/top2.gif"; // Import the local GIF
 import scrapImage from "./images/baledtrespcr2.jpg"; // Replace with your actual image path
 import rightImage from "./images/baledtrespcr2.jpg"; // Add your new right-side image
@@ -20,6 +21,14 @@ import {
 import { Link } from "react-router-dom";
 
 function Scrapstyles() {
+
+    useEffect(() => {
+        // Directly set the scroll position to the top of the page
+        document.documentElement.scrollTop = 0; 
+        document.body.scrollTop = 0;  // For compatibility with older browsers
+      }, []); // Empty dependency array ensures it runs only once on page load
+  
+
   return (
     <>
       <div className="setter">

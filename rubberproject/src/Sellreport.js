@@ -17,9 +17,12 @@ const Sellreport = () => {
     const navigate = useNavigate();
     const [profile, setProfile] = useState(null);
     const location = useLocation(); // Get current route location
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, []);
+    
+     useEffect(() => {
+            // Directly set the scroll position to the top of the page
+            document.documentElement.scrollTop = 0; 
+            document.body.scrollTop = 0;  // For compatibility with older browsers
+          }, []); // Empty dependency array ensures it runs only once on page load
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -99,17 +102,23 @@ const Sellreport = () => {
 
     const generatePDF = (scrap) => {
         const doc = new jsPDF();
+    
+        // if (logo) {
+        //     doc.addImage(logo, 'JPEG', 11, 6, 40, 20);
+        // }
 
-        if (logo) {
-            doc.addImage(logo, 'JPEG', 11, 6, 40, 20);
-        }
-
+        // Add text "Rubberscrapmart" with padding, positioning it at the top-left corner
+doc.setFontSize(14); // Set font size
+doc.setFont("helvetica", "bold"); // Set font style
+doc.text("Rubberscrapmart", 10, 12); // Add the text at position (10, 10)
+    
         // Header Section
         doc.setFontSize(20);
         doc.text('MY PRODUCT DETAILS', 105, 20, { align: 'center' });
         doc.setFontSize(10);
         doc.setDrawColor(0, 0, 0);
         doc.line(10, 25, 200, 25);
+    
         // Billing Information Section
         let startY = 35;
         doc.setFontSize(12);
@@ -117,39 +126,42 @@ const Sellreport = () => {
         doc.text('Billing Information', 14, startY);
         doc.setDrawColor(0, 0, 0);
         doc.line(10, startY + 3, 200, startY + 3);
-
+    
         doc.setFontSize(10);
         doc.setFont('helvetica', 'normal');
         if (profile) {
+            const leftX = 14;
+            const labelX = 50; // Aligned position for colons
+            const valueX = 60; // Value starts here
+    
             // Company Name
-            doc.text(`Company: ${validateText(profile.companyName)}`, 14, startY + 8);
-
-            // Email (Moved above Address with some spacing)
-            const email = validateText(profile.email);
-            doc.text(`Email: ${email}`, 14, startY + 13);
-
-            // Add some spacing between email and address
-            const emailSpacing = 5;
-
+            doc.text('Company', leftX, startY + 8);
+            doc.text(':', labelX, startY + 8);
+            doc.text(validateText(profile.companyName), valueX, startY + 8);
+    
+            // Email
+            doc.text('Email', leftX, startY + 13);
+            doc.text(':', labelX, startY + 13);
+            doc.text(validateText(profile.email), valueX, startY + 13);
+    
             // Address with proper wrapping
+            doc.text('Address', leftX, startY + 18);
+            doc.text(':', labelX, startY + 18);
             const address = validateText(profile.billAddress);
-            const wrappedAddress = doc.splitTextToSize(address, 120); // Wrap text within 120 units
-            doc.text('Address:', 14, startY + 13 + emailSpacing); // Add spacing between email and address
-            doc.text(wrappedAddress, 30, startY + 13 + emailSpacing); // Adjust Y position accordingly
+            const wrappedAddress = doc.splitTextToSize(address, 120);
+            doc.text(wrappedAddress, valueX, startY + 18);
         }
-
-
-
-        startY += 40; // Increase spacing after Billing Information
-
-        // "DETAIL OF MY PRODUCT" Heading Section
+    
+        startY += 40;
+    
+        // "DETAILS OF MY PRODUCT" Heading
         doc.setFontSize(14);
         doc.setFont('helvetica', 'bold');
-        doc.setTextColor(0); // Black color for heading
+        doc.setTextColor(0);
         doc.text('DETAILS OF MY PRODUCT', 105, startY, { align: 'center' });
-
-        startY += 3; // Decrease spacing between the heading and table
-
+    
+        startY += 3;
+    
         // Table Data
         const tableColumn = ['Field', 'Value'];
         const tableRows = [
@@ -160,10 +172,9 @@ const Sellreport = () => {
             ['Email', validateText(scrap.email)],
             ['Approved At', new Date(scrap.approvedAt).toLocaleString()],
         ];
-
-        // Add the Table with fields and values
+    
         doc.autoTable({
-            startY: startY + 10, // Start the table right after the heading with less space
+            startY: startY + 10,
             head: [tableColumn],
             body: tableRows,
             theme: 'grid',
@@ -171,23 +182,23 @@ const Sellreport = () => {
                 fontSize: 10,
                 cellPadding: 5,
                 textColor: [0, 0, 0],
-                halign: 'center', // Center-align text in cells
+                halign: 'center',
             },
             headStyles: {
-                fillColor: [0, 102, 0], // Green header background
-                textColor: [255, 255, 255], // White text color for header
+                fillColor: [0, 102, 0],
+                textColor: [255, 255, 255],
             },
             bodyStyles: {
-                fillColor: [255, 255, 255], // White background for table rows
+                fillColor: [255, 255, 255],
             },
             alternateRowStyles: {
-                fillColor: [240, 240, 240], // Light grey for alternate rows
+                fillColor: [240, 240, 240],
             },
         });
-
-        startY = doc.previousAutoTable.finalY + 10; // Adjust Y position after table
-
-        // Terms and Conditions Section
+    
+        startY = doc.previousAutoTable.finalY + 10;
+    
+        // Terms and Conditions
         doc.setFont('helvetica', 'bold');
         doc.text('Terms and Conditions:', 14, startY);
         doc.setFont('helvetica', 'normal');
@@ -195,10 +206,12 @@ const Sellreport = () => {
         doc.text('1. The Seller shall not be liable to the Buyer for any loss or damage.', 14, startY + 5);
         doc.text('2. The Seller warrants the product for one (1) year from the date of shipment.', 14, startY + 10);
         doc.text('3. The purchase order will be interpreted as acceptance of this offer.', 14, startY + 15);
-
+    
         // Save PDF
         doc.save(`scrap-report-${scrap._id}.pdf`);
     };
+    
+    
 
 
 

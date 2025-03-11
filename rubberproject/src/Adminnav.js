@@ -6,6 +6,7 @@ import "./Adminnav.css";
 import { Link, useNavigate } from "react-router-dom"; // Added useNavigate for redirection
 
 function Adminnav() {
+
   const [isNavbarCollapsed, setIsNavbarCollapsed] = useState(true);
   const navigate = useNavigate(); // Hook to redirect after logout
 
@@ -34,12 +35,15 @@ function Adminnav() {
               to="/"
               onClick={() => setIsNavbarCollapsed(true)}
             >
-              <img
+              {/* <img
                 style={{ width: "100%" }}
                 className="logo"
                 src={logo}
                 alt="LG Industry Logo"
-              />
+              /> */}
+              <span style={{ fontSize: "1.1rem", fontWeight: "bold", color: "#000" }}>
+                Rubberscrapmart
+              </span>
             </Link>
 
             <button

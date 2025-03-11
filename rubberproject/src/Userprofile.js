@@ -7,6 +7,13 @@ const UserProfile = () => {
   const [businessProfiles, setBusinessProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
 
+    useEffect(() => {
+        // Directly set the scroll position to the top of the page
+        document.documentElement.scrollTop = 0; 
+        document.body.scrollTop = 0;  // For compatibility with older browsers
+      }, []); // Empty dependency array ensures it runs only once on page load
+  
+
   useEffect(() => {
     const fetchUserData = async () => {
       const token = localStorage.getItem('token');

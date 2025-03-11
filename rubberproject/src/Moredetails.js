@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+
 
 function Moredetails() {
   const location = useLocation();
@@ -7,10 +9,18 @@ function Moredetails() {
   const { approval } = location.state || {};
   const [mainImage, setMainImage] = useState(approval?.images?.[0] || "");
   const [requiredQuantity, setRequiredQuantity] = useState("");
+  
+  useEffect(() => {
+    // Directly set the scroll position to the top of the page
+    document.documentElement.scrollTop = 0; 
+    document.body.scrollTop = 0;  // For compatibility with older browsers
+  }, []); // Empty dependency array ensures it runs only once on page load
 
   if (!approval) {
     return <div>No approval data available.</div>;
   }
+
+     
 
   const handleImageClick = (image) => {
     setMainImage(image);
@@ -112,6 +122,11 @@ function Moredetails() {
                   <th style={{ fontWeight: "bold" }}>Country of Origin</th>
                   <td>{approval.countryOfOrigin}</td>
                 </tr>
+                <tr>
+                  <th style={{ fontWeight: "bold" }}>Description</th>
+                  <td>{approval.description ? approval.description : "N/A"}</td>
+                </tr>
+
                 <tr>
                   <th
                     colSpan="2"

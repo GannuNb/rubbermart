@@ -25,6 +25,14 @@ const Getorders = () => {
   const [files, setFiles] = useState({}); // to store uploaded file data
   const location = useLocation();
 
+
+    useEffect(() => {
+        // Directly set the scroll position to the top of the page
+        document.documentElement.scrollTop = 0; 
+        document.body.scrollTop = 0;  // For compatibility with older browsers
+      }, []); // Empty dependency array ensures it runs only once on page load
+  
+      
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -174,9 +182,10 @@ const Getorders = () => {
   const generatePDF = (order) => {
     const doc = new jsPDF();
 
-    // Logo
     if (logo) {
-        doc.addImage(logo, 'JPEG', 10, 13, 30, 15);
+      doc.setFontSize(10); // Set font size for the logo text
+      doc.setFont("helvetica", "bold"); // Optional: Set font style (bold)
+      doc.text("Rubberscrapmart", 5, 24); // Position the text (x, y coordinates)
     }
 
 // Vikah Rubbers Address
@@ -188,6 +197,8 @@ const companyAddress = [
     'Sai Chamber CHS Wing A, Sector -11',
     'Sai Chambers, CBD Belapur, Navi Mumbai,',
     'Thane, Maharashtra, 400614',
+    'GSTN : 27AAVFV4635R1ZY',
+
 ];
 
 let addressY = 12;
@@ -196,6 +207,8 @@ doc.text(companyAddress[1], 40, addressY + 8);
 doc.text(companyAddress[2], 40, addressY + 12);
 doc.text(companyAddress[3], 40, addressY + 16);
 doc.text(companyAddress[4], 40, addressY + 20);
+doc.text(companyAddress[5], 40, addressY + 24); // City, State, and Postal Code
+
 
     // PROFORMA INVOICE Heading
     doc.setFontSize(16);

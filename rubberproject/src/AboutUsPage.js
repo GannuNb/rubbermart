@@ -1,11 +1,20 @@
 import React from 'react';
+import { useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './AboutUsPage.css'; // Custom CSS for advanced styling
 import scrapImage from './images/baledtrespcr2.jpg';
 import '@fortawesome/fontawesome-free/css/all.min.css';  // Import FontAwesome icons
+import { Link } from 'react-router-dom';
 
 
 const AboutUsPage = () => {
+
+  useEffect(() => {
+    // Directly set the scroll position to the top of the page
+    document.documentElement.scrollTop = 0; 
+    document.body.scrollTop = 0;  // For compatibility with older browsers
+  }, []); // Empty dependency array ensures it runs only once on page load
+
   return (
     <div className="setter">
       <div className="about-us-page">
@@ -13,7 +22,7 @@ const AboutUsPage = () => {
         <div className="about-header">
           <div className="container text-center py-5">
             <h1 className="about-heading">About RubberScrapMart</h1>
-            <p className="lead text-white">Your One-Stop Marketplace for Rubber Scrap and Recycled Products</p>
+            <p className="lead text-white">Your One-Stop Marketplace for Rubber Scrap Derived Products</p>
           </div>
         </div>
 
@@ -23,10 +32,10 @@ const AboutUsPage = () => {
             <div className="col-lg-6">
               <h2 className="section-title">Who We Are</h2>
               <p className="section-description">
-                RubberScrapMart.com is India's exclusive leading B2B marketplace dedicated to the buying, selling, and trading of rubber scrap-derived products. Our platform connects recyclers, manufacturers, suppliers, and buyers from all over India, promoting sustainability and innovation in the rubber industry.
+              <Link to="/" style={{ textDecoration: "none" }}>RubberScrapMart.com</Link> is India's exclusive leading B2B marketplace dedicated to the buying, selling, and trading of rubber scrap-derived products. Our platform connects recyclers, manufacturers, suppliers, and buyers from all over India, promoting sustainability and innovation in the rubber industry.
               </p>
               <p>
-                At RubberScrapMart.com, we are committed to creating a sustainable and profitable ecosystem for rubber waste and its recycled products. By leveraging cutting-edge technology and an extensive global network, we help businesses source high-quality reclaimed rubber materials, rubber scrap, rubber belt scrap, rubber granules, rubber crumb of different sizes, rubberized flooring, tire-derived products, and more.
+              <Link to="/" style={{ textDecoration: "none" }}>RubberScrapMart.com</Link>, we are committed to creating a sustainable and profitable ecosystem for rubber waste and its recycled products. By leveraging cutting-edge technology and an extensive global network, we help businesses source high-quality reclaimed rubber materials, rubber scrap, rubber belt scrap, rubber granules, rubber crumb of different sizes, rubberized flooring, tire-derived products, and more.
               </p>
             </div>
             <div className="col-lg-6">

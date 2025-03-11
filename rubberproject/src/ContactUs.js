@@ -8,6 +8,13 @@ function ContactUs() {
     email: "",
     message: "",
   });
+
+   useEffect(() => {
+          // Directly set the scroll position to the top of the page
+          document.documentElement.scrollTop = 0; 
+          document.body.scrollTop = 0;  // For compatibility with older browsers
+        }, []); // Empty dependency array ensures it runs only once on page load
+        
   const [formStatus, setFormStatus] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -145,8 +152,7 @@ function ContactUs() {
 
             <div className="map-container mb-4">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3772.0781076452013!2d73.0372743742669!3d19.016279553846417!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c33aedbd37ad%3A0x5e9915029446713f!2sSai%20Chambers!5e0!3m2!1sen!2sin!4v1741590949059!5m2!1sen!2sin"
-                width="100%"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3772.0781076452013!2d73.0372743742669!3d19.016279553846417!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c33aedbd37ad%3A0x5e9915029446713f!2sSai%20Chambers!5e0!3m2!1sen!2sin!4v1741590949059!5m2!1sen!2sin" width="100%"
                 height="250"
                 style={{ border: 0 }}
                 allowFullScreen=""
@@ -159,7 +165,7 @@ function ContactUs() {
             <div className="social-icons">
               <h4>Follow Us</h4>
               <a
-                href="https://www.facebook.com/people/Vikah-Ecotech/61562484014600/?mibextid=qi2Omg&rdid=DtTaZ8FyfC8gsDCh&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1Mxsd16XWYMsvCyi%2F%3Fmibextid%3Dqi2Omg"
+                href="https://www.facebook.com/profile.php?id=61574102936310"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="me-3"
@@ -168,7 +174,7 @@ function ContactUs() {
                 {/* Facebook - Blue */}
               </a>
               <a
-                href="https://x.com/i/flow/login?redirect_after_login=%2Fvikahecotech"
+                href="https://x.com/Rubberscrapmart"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="me-3"
@@ -177,7 +183,7 @@ function ContactUs() {
                 {/* Twitter - Light Blue */}
               </a>
               <a
-                href="https://www.instagram.com/vikahecotech/"
+                href="https://www.instagram.com/rubberscrapmart/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="me-3"
@@ -186,7 +192,7 @@ function ContactUs() {
                 {/* Instagram - Red */}
               </a>
               <a
-                href="https://www.youtube.com/@vikahecotech"
+                href="https://www.youtube.com/@Rubberscrapmart"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -248,9 +254,10 @@ function ContactUs() {
                   data-bs-parent="#faqAccordion"
                 >
                   <div className="accordion-body">
-                    Our office is located at Ground Floor, Office No-52/ Plot
-                    No-44, Sai Chamber CHS, Wing A, Sector 11, Sai Chambers, CBD
-                    Belapur, Navi Mumbai, Thane, Maharashtra - 400614
+                    Our office is located at Ground Floor,
+                    Office No-52/ Plot No-44, Sai Chamber CHS, Wing A, Sector 11,
+                    Sai Chambers, CBD Belapur, Navi Mumbai, Thane, Maharashtra -
+                    400614
                   </div>
                 </div>
               </div>

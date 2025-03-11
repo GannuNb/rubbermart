@@ -474,13 +474,22 @@ function Sidebar() {
           >
             <i className="fas fa-bars"></i>
           </button>
-          <Link className="navbar-brand" to="/">
+          {/* <Link className="navbar-brand" to="/">
             <div className="logoset">
-              {/* Brand Logo */}
-
               <img src={logo} alt="Logo" />
             </div>
+          </Link> */}
+
+          <Link className="navbar-brand" to="/">
+            <div className="logoset mx-1">
+              {/* Brand Text instead of Logo */}
+              <span style={{ fontSize: "0.9rem", fontWeight: "bold", color: "#000" }}>
+                Rubber <br />
+                scrapmart
+              </span>
+            </div>
           </Link>
+
 
           {/* Search Form */}
           <div
@@ -577,7 +586,7 @@ function Sidebar() {
             <li className="nav-item">
               <Link
                 className="nav-link me-3 me-lg-0"
-                to="https://www.youtube.com/@vikahecotech"
+                to="https://www.youtube.com/@Rubberscrapmart"
               >
                 <i className="fab fa-youtube" style={{ color: "#FF0000" }}></i>
               </Link>
@@ -585,7 +594,7 @@ function Sidebar() {
             <li className="nav-item">
               <Link
                 className="nav-link me-3 me-lg-0"
-                to="https://x.com/i/flow/login?redirect_after_login=%2Fvikahecotech"
+                to="https://x.com/Rubberscrapmart"
               >
                 <i className="fab fa-twitter" style={{ color: "#1DA1F2" }}></i>
               </Link>
@@ -593,7 +602,7 @@ function Sidebar() {
             <li className="nav-item">
               <Link
                 className="nav-link me-3 me-lg-0"
-                to="https://www.facebook.com/people/Vikah-Ecotech/61562484014600/?mibextid=qi2Omg&rdid=DtTaZ8FyfC8gsDCh&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1Mxsd16XWYMsvCyi%2F%3Fmibextid%3Dqi2Omg"
+                to="https://www.facebook.com/profile.php?id=61574102936310"
               >
                 <i className="fab fa-facebook" style={{ color: "#1877F2" }}></i>
               </Link>
@@ -601,7 +610,7 @@ function Sidebar() {
             <li className="nav-item">
               <Link
                 className="nav-link me-3 me-lg-0"
-                to="https://www.instagram.com/vikahecotech/ "
+                to="https://www.instagram.com/rubberscrapmart/ "
               >
                 <i
                   className="fab fa-instagram"

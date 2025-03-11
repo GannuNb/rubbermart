@@ -19,6 +19,13 @@ function ShippingDetails() {
   const navigate = useNavigate();
     const location = useLocation(); // Get current route location
 
+      useEffect(() => {
+          // Directly set the scroll position to the top of the page
+          document.documentElement.scrollTop = 0; 
+          document.body.scrollTop = 0;  // For compatibility with older browsers
+        }, []); // Empty dependency array ensures it runs only once on page load
+    
+
   // Check user authentication
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -145,10 +152,10 @@ function ShippingDetails() {
     if (num === 0) return 'zero rupees only';
   
     const a = [
-      '', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve',
-      'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen',
+      '', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve',
+      'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen',
     ];
-    const b = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+    const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
   
     const numToWords = (n) => {
       if (n < 20) return a[n];
@@ -157,7 +164,7 @@ function ShippingDetails() {
       return '';
     };
   
-    const units = ['crore', 'lakh', 'thousand', 'hundred'];
+    const units = ['Crore', 'Lakh', 'Thousand', 'Hundred'];
     const divisors = [10000000, 100000, 1000, 100];
   
     let result = '';
@@ -180,26 +187,27 @@ function ShippingDetails() {
   
     // Add fractional part (paise)
     if (fractionalPart > 0) {
-      result += ` and ${numToWords(fractionalPart)} paise`;
+      result += ` and ${numToWords(fractionalPart)} Paise`;
     }
   
-    return result.trim() + ' rupees only';
+    return result.trim() + ' Rupees Only';
   };
 
   
   const generatePDF = (order) => {
     const doc = new jsPDF();
     
-    // Add logo
-    if (logo) {
-      doc.addImage(logo, 'JPEG', 5, 9, 30, 15); // Position logo at the top left
+  if (logo) {
+      doc.setFontSize(9); // Set font size for the logo text
+      doc.setFont("helvetica", "bold"); // Optional: Set font style (bold)
+      doc.text("Rubberscrapmart", 5, 18); // Position the text (x, y coordinates)
     }
   
     // Add Address Details to the right of the logo
     doc.setFontSize(7); // Reduced font size further
     doc.setFont('helvetica', 'normal');
   
-    const addressDetails = `Rubberscrapmart\nGround Floor, Office No-52/ Plot No-44,\nSai Chamber CHS Wing A, Sector -11,\nSai Chambers, CBD Belapur, Navi Mumbai,\nThane, Maharashtra, 400614`;
+    const addressDetails = `Rubberscrapmart\nGround Floor, Office No-52/ Plot No-44,\nSai Chamber CHS Wing A, Sector -11,\nSai Chambers, CBD Belapur, Navi Mumbai,\nThane, Maharashtra, 400614,GSTN : 27AAVFV4635R1ZY`;
 
     const addressLines = doc.splitTextToSize(addressDetails, 130); // Increased width to 140 for more room
     addressLines.forEach((line, index) => {

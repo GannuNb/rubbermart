@@ -22,9 +22,9 @@ const SellTop = () => {
   return (
     <div className="sell-top-container">
       <div className="sell-top-content">
-        <h1 className="title mb-3">Become a RubberScrapMart</h1>
+        <h1 className="title mb-3">Become a RubberScrap Seller</h1>
         <p className="description">
-          Sell your scrap materials quickly and easily through India’s leading scrap marketplace. Whether you have metal, plastic, or other materials, our platform connects you to reliable buyers, ensuring a smooth and profitable selling experience.
+          Sell your scrap materials quickly and easily through India’s leading scrap marketplace. Whether you have Rubber,Pyro oil or Tyre Steel  our platform connects you to reliable buyers, ensuring a smooth and profitable selling experience.
         </p>
 
 

@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-
 const ApprovalSchema = new Schema({
     scrapItem: {
         type: Schema.Types.ObjectId,
@@ -44,6 +43,10 @@ const ApprovalSchema = new Schema({
         type: String,  // Add country of origin to the schema
         required: true
     },
+    description: {
+        type: String,  // Add description to the schema
+        required: false  // Optional field (if available)
+    },
     postedBy: {
         type: Schema.Types.ObjectId,
         ref: 'User',
@@ -56,7 +59,5 @@ const ApprovalSchema = new Schema({
         }
     ]
 });
-
-
 
 module.exports = mongoose.model('Approval', ApprovalSchema);

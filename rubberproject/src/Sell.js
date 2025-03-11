@@ -21,13 +21,18 @@ const Sell = () => {
   const [countryOfOrigin, setCountryOfOrigin] = useState("");
   const [price, setPrice] = useState("");
   const [images, setImages] = useState([]);
+  const [description, setDescription] = useState(""); // Add state for description
   const [imagePreviewUrls, setImagePreviewUrls] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [location]);
+      // Directly set the scroll position to the top of the page
+      document.documentElement.scrollTop = 0; 
+      document.body.scrollTop = 0;  // For compatibility with older browsers
+    }, []); // Empty dependency array ensures it runs only once on page load
+
+ 
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -116,6 +121,10 @@ const Sell = () => {
     fetchProfile();
   }, []);
 
+  const handleDescriptionChange = (e) => {
+    setDescription(e.target.value);
+  };
+  
   const handleMaterialChange = (e) => setMaterial(e.target.value);
   const handleImageChange = (e) => {
     const files = e.target.files;
@@ -134,6 +143,7 @@ const Sell = () => {
     const previewUrls = fileArray.map((file) => URL.createObjectURL(file));
     setImagePreviewUrls(previewUrls);
   };
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -150,6 +160,7 @@ const Sell = () => {
     formData.append("loadingLocation", loadingLocation);
     formData.append("countryOfOrigin", countryOfOrigin);
     formData.append("price", parseFloat(price));
+    formData.append("description", description); // Add this line before sending the request
     Array.from(images).forEach((image) => formData.append("images", image));
 
     try {
@@ -364,9 +375,9 @@ const Sell = () => {
                 }}
               >
                 <option value="">Select Loading Location</option>
-                <option value="ex_chennai">Ex Chennai</option>
-                <option value="ex_mundra">Ex Mundra</option>
-                <option value="ex_nhavasheva">Ex Nhavasheva</option>
+                <option value="Ex_Chennai">Ex Chennai</option>
+                <option value="Ex_Mundra">Ex Mundra</option>
+                <option value="Ex_Nhavasheva">Ex Nhavasheva</option>
               </select>
             </div>
             <div className="mb-3" style={{ marginBottom: "1.5rem" }}>
@@ -456,6 +467,28 @@ const Sell = () => {
                 ))}
               </div>
             )}
+            <div className="mb-3" style={{ marginBottom: "1.5rem" }}>
+    <label
+      htmlFor="description"
+      className="form-label"
+      style={{ fontWeight: "bold", color: "white" }}
+    >
+      Description
+    </label>
+    <textarea
+      id="description"
+      className="form-control"
+      value={description}
+      onChange={handleDescriptionChange}
+      required
+      rows="4" // You can adjust the number of rows for better visibility
+      style={{
+        padding: "10px",
+        fontSize: "1rem",
+        borderRadius: "5px",
+      }}
+    />
+  </div>
             <button
               type="submit"
               className="btn btn-primary"
