@@ -52,17 +52,17 @@ import Scrapstyles from './Scrapstyles.js';
 import ScrollToTopButton from './ScrollToTopButton';
 
 function App() {
-  const location = useLocation();
 
+  const location = useLocation();
   // Check if the current path is "/Admin" or "/Uploaded", case-insensitive
   const isSidebarHidden = /^\/(admin|uploaded|Adminshipping|adminpayment)$/i.test(location.pathname);
-
   return (
     <>
       {/* Conditionally render Sidebar based on the current route */}
       {!isSidebarHidden && <Sidebar />}
       <div className="container">
         <Routes>
+          
           <Route exact path="/" element={<Scrapstyles />} />
           <Route exact path="/registered" element={<Registeredgst />} />
           <Route exact path="/unregistered" element={<Unregisteredgst />} />
@@ -106,7 +106,7 @@ function App() {
           <Route exact path="/moredetails" element={<Moredetails />} />
           <Route exact path="/homepage" element={<Homepage/>}/>
           <Route exact path="/cate" element={<Cate/>}/>
-          
+
         </Routes>
       </div>
       <Footer />

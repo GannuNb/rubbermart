@@ -201,7 +201,7 @@ const BusinessProfile = () => {
     return (
       <>
         <div className="setter">
-          <div className="container mx-3">
+          <div className="container ">
             <div className="business-profile-container">
               <h2 className="text-center mb-4  tyre-scrap-heading mr-5 ">Your Business Profile</h2>
               <div className="row">

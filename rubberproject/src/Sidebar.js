@@ -480,10 +480,10 @@ function Sidebar() {
             </div>
           </Link> */}
 
-          <Link className="navbar-brand" to="/">
-            <div className="logoset mx-1">
+          <Link className="navbar-brand mx-1" to="/">
+            <div className="logoset ">
               {/* Brand Text instead of Logo */}
-              <span style={{ fontSize: "0.9rem", fontWeight: "bold", color: "#000" }}>
+              <span style={{ fontSize: "0.8rem", fontWeight: "bold", color: "#000" }}>
                 Rubber <br />
                 scrapmart
               </span>
