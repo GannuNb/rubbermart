@@ -11,40 +11,45 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
-      e.preventDefault();
-      setLoading(true);
-      setError(null);
-
-      try {
-          const response = await fetch(`${process.env.REACT_APP_API_URL}/api/login`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ email: credentials.email, password: credentials.password }),
-          });
-
-          if (!response.ok) throw new Error("Network response was not ok");
-
-          const json = await response.json();
-
-          if (json.success) {
-              localStorage.setItem('userEmail', credentials.email);
-              localStorage.setItem('token', json.authToken);
-
-           
-
-              const redirectPath = location.state?.from || '/'; // Defaults to home if 'from' is undefined
-navigate(redirectPath, { state: location.state }); // Pass state forward to retain shreddsData
-
-          } else {
-              setError("Invalid credentials. Please try again.");
-          }
-      } catch (err) {
-          console.error("An error occurred during login:", err);
-          setError("An error occurred. Please try again later.");
-      } finally {
-          setLoading(false);
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+  
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: credentials.email, password: credentials.password }),
+      });
+  
+      if (!response.ok) throw new Error("Network response was not ok");
+  
+      const json = await response.json();
+  
+      if (json.success) {
+        localStorage.setItem('userEmail', credentials.email);
+        localStorage.setItem('token', json.authToken);
+  
+        // Check if the user has a business profile
+        const profileResponse = await fetch(`${process.env.REACT_APP_API_URL}/business-profile`, {
+          headers: { Authorization: `Bearer ${json.authToken}` },
+        });
+  
+        const profileData = await profileResponse.json();
+        const hasBusinessProfile = profileData.profileExists;
+  
+        navigate(hasBusinessProfile ? '/' : '/BusinessProfile'); // Redirect accordingly
+      } else {
+        setError("Invalid credentials. Please try again.");
       }
+    } catch (err) {
+      console.error("An error occurred during login:", err);
+      setError("An error occurred. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
   };
+  
 
 
   const onChange = (e) => {

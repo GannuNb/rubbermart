@@ -162,7 +162,7 @@ const Order = () => {
   // Render Order Summary
   const renderOrderSummary = () => {
     const gstNumber = profile?.gstNumber || '';
-    const gstRate = gstNumber.startsWith('36') ? 0.09 : 0.18;
+    const gstRate = gstNumber.startsWith('27') ? 0.09 : 0.18;
     // baseItems contains the main order item (the one passed in the location state)
     const baseItems = [
       {
@@ -366,14 +366,35 @@ const Order = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+
     if (!token) {
       setTimeout(() => {
-        alert("Please log in to Order");
+        if (!document.querySelector(".custom-alert")) { // Prevent multiple alerts
+          const alertDiv = document.createElement("div");
+          alertDiv.className = "custom-alert";
+
+          const logoImg = document.createElement("img");
+          logoImg.src = logo1;
+          logoImg.alt = "Company Logo";
+          logoImg.className = "alert-logo";
+
+          const alertMessage = document.createElement("span");
+          alertMessage.textContent = "Please log in to Order ";
+          alertMessage.className = "alert-message";
+
+          alertDiv.appendChild(logoImg);
+          alertDiv.appendChild(alertMessage);
+          document.body.appendChild(alertDiv);
+
+          setTimeout(() => {
+            alertDiv.remove();
+          }, 5000);
+        }
+
         navigate("/Login", { state: { from: location.pathname } });
       }, 0);
-      return;
     }
-  }, [navigate, location]);
+  }, [navigate, location]);
   // Redirect to home if required data is missing
   useEffect(() => {
     if (!name || !price || !required_quantity || !hsn) {
@@ -642,7 +663,7 @@ if (logo) {
     doc.setDrawColor(0, 0, 0);
     doc.line(10, productsStartY + 3, 200, productsStartY + 3); // Underline
 
-    const gstRate = profile.gstNumber && profile.gstNumber.startsWith("36") ? 0.09 : 0.18;
+    const gstRate = profile.gstNumber && profile.gstNumber.startsWith("27") ? 0.09 : 0.18;
     const subtotalBase = [...baseItems, ...orderItems].reduce(
       (sum, item) => sum + (item.total || 0), 0
     ); // Ensure item.total is defined

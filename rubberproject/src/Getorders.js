@@ -318,7 +318,7 @@ doc.text(companyAddress[5], 40, addressY + 24); // City, State, and Postal Code
     });
 
     // Determine GST rate based on GST number
-    const gstRate = profile.gstNumber && profile.gstNumber.startsWith('36') ? 0.09 : 0.18;
+    const gstRate = profile.gstNumber && profile.gstNumber.startsWith('27') ? 0.09 : 0.18;
     const gst = subtotal * gstRate;
     const total = subtotal + gst;
 
@@ -539,7 +539,7 @@ doc.text(companyAddress[5], 40, addressY + 24); // City, State, and Postal Code
 
         // Fetch GST number from profile and check the first two characters
         const gstNumber = profile?.gstNumber || ''; // Ensure you have the gstNumber in profile
-        const gstRate = gstNumber.startsWith('36') ? 0.09 : 0.18; // 9% if GST number starts with '36', otherwise 18%
+        const gstRate = gstNumber.startsWith('27') ? 0.09 : 0.18; // 9% if GST number starts with '36', otherwise 18%
 
         const itemGST = itemSubtotal * gstRate;
         const itemTotal = itemSubtotal + itemGST;

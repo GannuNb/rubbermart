@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import verify from "./images/verify.jpeg";
-import sell from "./images/sell.jpeg";
 import "./Sell.css";
 import { useNavigate, useLocation } from "react-router-dom";
-import SrenComponent from "./SrenComponent";
 import SellTop from "./SellTop";
 import logo1 from "./images/logo.png";
+import WhyChooseUs from "./WhyChooseUs";
 
 const Sell = () => {
   const [material, setMaterial] = useState("Tyre scrap");
@@ -27,12 +25,12 @@ const Sell = () => {
   const location = useLocation();
 
   useEffect(() => {
-      // Directly set the scroll position to the top of the page
-      document.documentElement.scrollTop = 0; 
-      document.body.scrollTop = 0;  // For compatibility with older browsers
-    }, []); // Empty dependency array ensures it runs only once on page load
+    // Directly set the scroll position to the top of the page
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;  // For compatibility with older browsers
+  }, []); // Empty dependency array ensures it runs only once on page load
 
- 
+
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -124,7 +122,7 @@ const Sell = () => {
   const handleDescriptionChange = (e) => {
     setDescription(e.target.value);
   };
-  
+
   const handleMaterialChange = (e) => setMaterial(e.target.value);
   const handleImageChange = (e) => {
     const files = e.target.files;
@@ -143,7 +141,7 @@ const Sell = () => {
     const previewUrls = fileArray.map((file) => URL.createObjectURL(file));
     setImagePreviewUrls(previewUrls);
   };
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -468,27 +466,27 @@ const Sell = () => {
               </div>
             )}
             <div className="mb-3" style={{ marginBottom: "1.5rem" }}>
-    <label
-      htmlFor="description"
-      className="form-label"
-      style={{ fontWeight: "bold", color: "white" }}
-    >
-      Description
-    </label>
-    <textarea
-      id="description"
-      className="form-control"
-      value={description}
-      onChange={handleDescriptionChange}
-      required
-      rows="4" // You can adjust the number of rows for better visibility
-      style={{
-        padding: "10px",
-        fontSize: "1rem",
-        borderRadius: "5px",
-      }}
-    />
-  </div>
+              <label
+                htmlFor="description"
+                className="form-label"
+                style={{ fontWeight: "bold", color: "white" }}
+              >
+                Description
+              </label>
+              <textarea
+                id="description"
+                className="form-control"
+                value={description}
+                onChange={handleDescriptionChange}
+                required
+                rows="4" // You can adjust the number of rows for better visibility
+                style={{
+                  padding: "10px",
+                  fontSize: "1rem",
+                  borderRadius: "5px",
+                }}
+              />
+            </div>
             <button
               type="submit"
               className="btn btn-primary"
@@ -503,6 +501,8 @@ const Sell = () => {
             </button>
           </form>
         </div>
+        <WhyChooseUs/>
+
       </div>
     </>
   );

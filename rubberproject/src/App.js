@@ -50,6 +50,7 @@ import Homepage from './Homepage.js';
 import Cate from './Cate.js';
 import Scrapstyles from './Scrapstyles.js';
 import ScrollToTopButton from './ScrollToTopButton';
+import WhyChooseUs from './WhyChooseUs.js'
 
 function App() {
 
@@ -106,6 +107,7 @@ function App() {
           <Route exact path="/moredetails" element={<Moredetails />} />
           <Route exact path="/homepage" element={<Homepage/>}/>
           <Route exact path="/cate" element={<Cate/>}/>
+          <Route exact path="/WhyChooseUs" element={<WhyChooseUs/>} />
 
         </Routes>
       </div>

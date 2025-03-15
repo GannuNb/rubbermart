@@ -151,7 +151,7 @@ router.post('/Adminorder', authenticate, async (req, res) => {
 
     // Determine the GST rate based on the GST number
     let gstRate = 0.18;  // Default to 18%
-    if (gstNumber && gstNumber.slice(0, 2) === '36') {
+    if (gstNumber && gstNumber.slice(0, 2) === '27') {
       gstRate = 0.09;  // Apply 9% GST if GST number starts with '36'
     }
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect } from "react";
-import myGif from "./images/videos/top2.gif"; // Import the local GIF
+import myGif from "./images/videos/blueyellow.gif"; // Import the local GIF
 import scrapImage from "./images/baledtrespcr2.jpg"; // Replace with your actual image path
 import rightImage from "./images/baledtrespcr2.jpg"; // Add your new right-side image
 import cardIcon1 from "./images/baledtrespcr2.jpg"; // Replace with actual icon paths

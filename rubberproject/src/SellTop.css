@@ -1,168 +1,81 @@
-
-
-/* Main Section */
-.sell-top-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 52vh; /* Reduced the height to 75% of the viewport */
-  padding: 2%; /* Reduced padding for a more compact design */
-  background: linear-gradient(135deg, #0a74da 0%, #38c9a9 100%);
-  border-radius: 15px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  color: #fff;
-  text-align: center;
-  position: relative;
-  flex-direction: row; /* Ensure content and image are side by side */
+/* General Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in {
+  animation: fadeIn 1s ease-out;
 }
 
-.sell-top-content {
-  max-width: 600px;
-  z-index: 2;
-  padding-right: 40px; /* Space between text and image */
+/* Bounce In Button */
+@keyframes bounceIn {
+  0% { transform: scale(0.8); opacity: 0; }
+  60% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); }
+}
+.bounce-in {
+  animation: bounceIn 0.6s ease-out;
 }
 
-.title {
-  font-size: 3.5rem;
-  font-weight: 700;
-  letter-spacing: 0.8px;
-  margin-bottom: 30px;
-  margin-top: 40px;
-  line-height: 1.3;
-  position: relative;
-  padding: 20px 30px;
-  display: inline-block;
-  background: #005f8d; /* Solid background color before hovering */
-  color: white; /* Solid color text before hover */
-  border-radius: 8px;
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
-}
-
-/* Hover Effect for Title */
-.title:hover {
-  transform: scale(1.05);
-  background: linear-gradient(135deg, #38c9a9, #005f8d);
-  color: #fff;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
-}
-
-/* Description Styling */
-.description {
-  font-size: 1.1rem;
-  line-height: 1.8;
-  margin-bottom: 30px;
-  color: rgba(255, 255, 255, 0.85);
-  text-align: justify;
-}
-
-.cta-buttons {
-  display: flex;
-  gap: 15px;
-  justify-content: center;
-  margin-bottom: 30px;
-}
-
-.get-started-btn,
-.learn-more-btn {
-  background-color: #fff;
-  color: #32cd32;
-  font-size: 1.1rem;
-  font-weight: 600;
-  border: 2px solid #32cd32;
-  padding: 12px 36px;
-  border-radius: 50px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-}
-
-.get-started-btn:hover,
-.learn-more-btn:hover {
-  background-color: #32cd32;
-  color: #fff;
-  transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-}
-
-.learn-more-btn {
-  background-color: transparent;
-  color: #fff;
-  border-color: #fff;
-}
-
-.learn-more-btn:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: #fff;
-}
-
-/* Icon Section */
-.sell-top-image {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-}
-
-.sell-top-image svg {
-  background-color: #fff;
-  padding: 18px;
-  border-radius: 50%;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
-  width: 120px;
-  height: 120px;
-}
-
-.sell-top-image svg:hover {
-  transform: rotate(360deg);
-}
-
-/* Keyframes for Animations */
-@keyframes fadeInUp {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
+/* Slide In for Headings */
 @keyframes slideIn {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { transform: translateX(-100px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+.slide-in {
+  animation: slideIn 0.8s ease-out;
 }
 
-/* Responsive design for mobile */
-@media (max-width: 768px) {
-  .sell-top-container {
-    flex-direction: column; /* Stack content and image vertically on smaller screens */
-    align-items: center;
-  }
+/* Spin In for Cards */
+@keyframes spinIn {
+  from { transform: rotateY(90deg); opacity: 0; }
+  to { transform: rotateY(0); opacity: 1; }
+}
+.spin-in {
+  animation: spinIn 0.8s ease-out;
+}
 
-  .sell-top-content {
-    padding: 20px;
-    text-align: center;
-  }
+/* Zoom In for Category Cards */
+@keyframes zoomIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.zoom-in {
+  animation: zoomIn 0.8s ease-out;
+}
 
-  .cta-buttons {
-    flex-direction: column;
-  }
+/* Full List Animation */
+.full-list-container {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.7s ease, opacity 0.7s ease;
+}
+.full-list-container.show {
+  max-height: 1000px;
+  opacity: 1;
+}
 
-  .get-started-btn,
-  .learn-more-btn {
-    width: 100%;
-  }
+/* Card Glow Effect */
+@keyframes glow {
+  from { box-shadow: 0 0 5px rgba(72, 219, 251, 0.5); }
+  to { box-shadow: 0 0 20px rgba(72, 219, 251, 0.8); }
+}
+.card-glow {
+  animation: glow 1.5s infinite alternate;
+}
 
-  .sell-top-image {
-    margin-top: 20px;
-  }
+/* Scale Effect for Full List Items */
+.scale-in {
+  animation: scaleIn 0.5s ease-out;
+}
+@keyframes scaleIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* Hover Effects */
+.scale-on-hover:hover {
+  transform: scale(1.1);
+  transition: transform 0.2s;
 }
