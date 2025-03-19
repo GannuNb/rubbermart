@@ -577,7 +577,6 @@ function Sidebar() {
                 SELL
               </button>
             </Link>
-                
           </div>
 
           {/* Social Icons and User Actions */}

@@ -1,81 +1,178 @@
-/* General Animations */
+/* ======= General ======= */
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+}
+.selltop-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  color: #333;
+  background: #f4f4f9;
+  padding-bottom: 50px;
+}
+
+/* ======= Animations ======= */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
-.fade-in {
+.animate-fade-in {
   animation: fadeIn 1s ease-out;
 }
 
-/* Bounce In Button */
-@keyframes bounceIn {
-  0% { transform: scale(0.8); opacity: 0; }
-  60% { transform: scale(1.1); opacity: 1; }
-  100% { transform: scale(1); }
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(50px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-.bounce-in {
-  animation: bounceIn 0.6s ease-out;
+.animate-slide-up {
+  animation: slideUp 1s ease-out;
 }
 
-/* Slide In for Headings */
-@keyframes slideIn {
-  from { transform: translateX(-100px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-10px); }
+  60% { transform: translateY(-5px); }
 }
-.slide-in {
-  animation: slideIn 0.8s ease-out;
-}
-
-/* Spin In for Cards */
-@keyframes spinIn {
-  from { transform: rotateY(90deg); opacity: 0; }
-  to { transform: rotateY(0); opacity: 1; }
-}
-.spin-in {
-  animation: spinIn 0.8s ease-out;
+.animate-bounce {
+  animation: bounce 1.5s infinite;
 }
 
-/* Zoom In for Category Cards */
 @keyframes zoomIn {
   from { transform: scale(0.8); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
-.zoom-in {
-  animation: zoomIn 0.8s ease-out;
+.animate-zoom-in {
+  animation: zoomIn 0.5s ease-out;
 }
 
-/* Full List Animation */
-.full-list-container {
-  overflow: hidden;
-  max-height: 0;
-  opacity: 0;
-  transition: max-height 0.7s ease, opacity 0.7s ease;
+/* ======= Hero Section ======= */
+.hero-section {
+  text-align: center;
+  padding: 80px 20px;
+  background: linear-gradient(135deg, #007bff, #00d4ff);
+  color: white;
+  border-bottom-left-radius: 50% 20px;
+  border-bottom-right-radius: 50% 20px;
 }
-.full-list-container.show {
-  max-height: 1000px;
-  opacity: 1;
+.hero-section h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
 }
-
-/* Card Glow Effect */
-@keyframes glow {
-  from { box-shadow: 0 0 5px rgba(72, 219, 251, 0.5); }
-  to { box-shadow: 0 0 20px rgba(72, 219, 251, 0.8); }
+.hero-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
 }
-.card-glow {
-  animation: glow 1.5s infinite alternate;
-}
-
-/* Scale Effect for Full List Items */
-.scale-in {
-  animation: scaleIn 0.5s ease-out;
-}
-@keyframes scaleIn {
-  from { transform: scale(0.8); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+.hero-btn:hover {
+  background: #218838;
 }
 
-/* Hover Effects */
-.scale-on-hover:hover {
-  transform: scale(1.1);
+/* ======= About Section ======= */
+.about-section {
+  background: #fff;
+  padding: 40px 20px;
+  text-align: center;
+  margin: 40px 0;
+}
+.about-section h2 {
+  color: #007bff;
+  margin-bottom: 20px;
+}
+
+/* ======= Categories Section ======= */
+.categories-section {
+  text-align: center;
+  padding: 40px 20px;
+  background: #e9ecef;
+}
+.categories-section h2 {
+  color: #007bff;
+  margin-bottom: 30px;
+}
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+.category-card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s;
+}
+.category-card:hover {
+  transform: translateY(-5px);
+}
+.category-card h3 {
+  color: #007bff;
+}
+.item-pill {
+  background: #007bff;
+  color: white;
+  padding: 6px 12px;
+  margin: 4px;
+  border-radius: 20px;
+  display: inline-block;
+  font-size: 0.9rem;
+}
+
+/* ======= Process Section ======= */
+.process-section {
+  padding: 40px 20px;
+  background: white;
+  text-align: center;
+}
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+.step {
+  background: #007bff;
+  color: white;
+  padding: 15px;
+  border-radius: 5px;
+  font-size: 1.1rem;
+}
+
+/* ======= CTA Section ======= */
+.cta-section {
+  text-align: center;
+  padding: 50px 20px;
+}
+.cta-section h2 {
+  margin-bottom: 20px;
+  color: #007bff;
+}
+.sell-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.sell-btn:hover {
+  background: #218838;
+}
+
+/* ======= Responsive Design ======= */
+@media (max-width: 768px) {
+  .hero-section h1 {
+    font-size: 2rem;
+  }
+  .hero-btn {
+    padding: 12px 30px;
+    font-size: 1rem;
+  }
 }

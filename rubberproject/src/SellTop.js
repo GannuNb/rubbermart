@@ -1,16 +1,14 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './SellTop.css';
 
 const SellTop = () => {
-  const [showFullList, setShowFullList] = useState(false);
-  const scrapSectionRef = useRef(null);  // Ref for smooth scrolling
-
   const categories = [
     {
       title: 'Tyre Scrap',
       items: [
-        'Mulch pcr',
+        'Mulch PCR',
         'Baled Tyres PCR',
         'Three Piece PCR',
         'Baled Tyres TBR',
@@ -21,7 +19,7 @@ const SellTop = () => {
     },
     {
       title: 'Pyro Oil',
-      items: ['Pyro oil'],
+      items: ['Pyro Oil'],
     },
     {
       title: 'Tyre Steel Scrap',
@@ -29,80 +27,50 @@ const SellTop = () => {
     },
   ];
 
-  // Scroll to scrap section
-  const handleScrollToScrapSection = () => {
-    scrapSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
-    <div className="container my-5">
+    <div className="selltop-wrapper">
       {/* Hero Section */}
-      <section className="text-center py-5 bg-light rounded shadow-sm fade-in">
-        <h1 className="text-primary fw-bold display-4">♻️ Sell Your Scrap — Quick & Easy! 💰</h1>
-        <p className="lead text-muted">
-          Turn your old scrap into cash while helping the environment. We offer the best rates and hassle-free pickup.
-        </p>
-        <button
-          className="btn btn-success btn-lg mt-3 bounce-in"
-          onClick={handleScrollToScrapSection}  // Scroll action
-        >
-          Get Started Now
-        </button>
+      <section className="hero-section">
+        <h1 className="animate-fade-in">Become a RubberScrap Partner</h1>
+<p className="animate-fade-in">
+  Sell your scrap effortlessly while making a positive impact on the environment. By choosing to recycle your scrap materials, you're not only clearing out unwanted items but also contributing to a sustainable future. Join us in the effort to reduce waste, conserve resources, and lower carbon footprints. Our easy, hassle-free process ensures that you can sell your scrap quickly and responsibly, all while supporting eco-friendly practices that benefit our planet. Together, we can create a cleaner, greener world for generations to come.
+</p>
+          <button className="hero-btn animate-bounce" aria-label="Sell scrap now">Sell Now</button>
       </section>
 
-
-      {/* What We Accept Section */}
-      <section className="my-5" ref={scrapSectionRef}> {/* Scroll Target */}
-        <h2 className="text-success text-center mb-4 fade-in">What We Accept</h2>
-        <div className="row text-center">
+      {/* Categories Section */}
+      <section className="categories-section animate-slide-up">
+        <h2>What We Accept</h2>
+        <div className="category-grid">
           {categories.map((category, index) => (
-            <div key={index} className="col-md-4 mb-3">
-              <div className="card shadow-sm h-100 zoom-in">
-                <div className="card-body">
-                  <h5 className="card-title text-warning fw-bold">{category.title}</h5>
-                </div>
-              </div>
+            <div key={index} className="category-card animate-zoom-in">
+              <h3>{category.title}</h3>
+              <ul>
+                {category.items.map((item, idx) => (
+                  <li key={idx} className="item-pill">{item}</li>
+                ))}
+              </ul>
             </div>
           ))}
         </div>
+      </section>
 
-        {/* Toggle Full List */}
-        <div className="text-center mt-4">
-          <button className="btn btn-outline-primary scale-on-hover" onClick={() => setShowFullList(!showFullList)}>
-            {showFullList ? ' Full List' : 'See Full List'}
-          </button>
-        </div>
-
-        {/* Full List */}
-        <div className={`full-list-container mt-4 ${showFullList ? 'show' : ''}`}>
-          <div className="row">
-            {categories.map((category, index) => (
-              <div key={index} className="col-md-4 mb-4 scale-in">
-                <div className="card h-100 shadow-sm card-glow">
-                  <div className="card-header bg-primary text-white fw-bold">{category.title}</div>
-                  <ul className="list-group list-group-flush">
-                    {category.items.map((item, idx) => (
-                      <li key={idx} className="list-group-item">{item}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Call to Action */}
-        <section className="text-center">
-          <button
-            className="btn btn-success btn-lg bounce-in"
-            onClick={handleScrollToScrapSection}  // Same scroll action here
-          >
-            Sell Your Scrap Now
-          </button>
-        </section>
+      {/* Call to Action */}
+      <section className="cta-section animate-fade-in">
+        <h2>Ready to Get Started?</h2>
+        <button className="sell-btn" aria-label="Sell your scrap now">Sell Your Scrap Now</button>
       </section>
     </div>
   );
+};
+
+SellTop.propTypes = {
+  categories: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      items: PropTypes.arrayOf(PropTypes.string).isRequired,
+    })
+  ),
 };
 
 export default SellTop;

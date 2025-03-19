@@ -63,7 +63,6 @@ function App() {
       {!isSidebarHidden && <Sidebar />}
       <div className="container">
         <Routes>
-          
           <Route exact path="/" element={<Scrapstyles />} />
           <Route exact path="/registered" element={<Registeredgst />} />
           <Route exact path="/unregistered" element={<Unregisteredgst />} />
@@ -108,7 +107,6 @@ function App() {
           <Route exact path="/homepage" element={<Homepage/>}/>
           <Route exact path="/cate" element={<Cate/>}/>
           <Route exact path="/WhyChooseUs" element={<WhyChooseUs/>} />
-
         </Routes>
       </div>
       <Footer />
