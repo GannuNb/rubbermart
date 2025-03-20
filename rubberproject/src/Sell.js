@@ -5,6 +5,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import SellTop from "./SellTop";
 import logo1 from "./images/logo.png";
 import WhyChooseUs from "./WhyChooseUs";
+import myGif from "./images/videos/bluepink.gif";
 
 const Sell = () => {
   const [material, setMaterial] = useState("Tyre scrap");
@@ -27,10 +28,8 @@ const Sell = () => {
   useEffect(() => {
     // Directly set the scroll position to the top of the page
     document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;  // For compatibility with older browsers
+    document.body.scrollTop = 0; // For compatibility with older browsers
   }, []); // Empty dependency array ensures it runs only once on page load
-
-
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -212,7 +211,11 @@ const Sell = () => {
   return (
     <>
       <div className="setter">
+        <div style={{ width: "100%", overflow: "hidden" }}>
+          <img src={myGif} alt="A cool GIF" style={{ width: "100%" }} />
+        </div>
         <SellTop />
+
         <div
           className="container"
           style={{
@@ -501,8 +504,7 @@ const Sell = () => {
             </button>
           </form>
         </div>
-        <WhyChooseUs/>
-
+        <WhyChooseUs />
       </div>
     </>
   );

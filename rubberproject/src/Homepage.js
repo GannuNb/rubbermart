@@ -4,8 +4,7 @@ import SrenComponent from './SrenComponent';
 import './Homepage.css'; 
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import promotional from './images/promotional.jpg';
-import group2 from './images/Group 267.png';
+
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import VisibilityIcon from '@mui/icons-material/Visibility'; // Eye icon
@@ -53,7 +52,7 @@ function Homepage() {
   return (
     <div className='setter'>
       {/* Top Carousel */}
-      <Carousel 
+      {/* <Carousel 
         showThumbs={false} 
         autoPlay 
         infiniteLoop 
@@ -67,7 +66,7 @@ function Homepage() {
         <div>
           <img src={group2} alt="Promotional 2" />
         </div>
-      </Carousel>
+      </Carousel> */}
 
       <p className="products-heading">Available to Buy</p>
 

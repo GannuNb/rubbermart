@@ -39,7 +39,7 @@ const SellTop = () => {
       </section>
 
       {/* Categories Section */}
-      <section className="categories-section animate-slide-up">
+      {/* <section className="categories-section animate-slide-up">
         <h2>What We Accept</h2>
         <div className="category-grid">
           {categories.map((category, index) => (
@@ -53,13 +53,13 @@ const SellTop = () => {
             </div>
           ))}
         </div>
-      </section>
+      </section> */}
 
       {/* Call to Action */}
-      <section className="cta-section animate-fade-in">
+      {/* <section className="cta-section animate-fade-in">
         <h2>Ready to Get Started?</h2>
         <button className="sell-btn" aria-label="Sell your scrap now">Sell Your Scrap Now</button>
-      </section>
+      </section> */}
     </div>
   );
 };

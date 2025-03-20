@@ -1,13 +1,13 @@
 import React from "react";
 import { useEffect } from "react";
-import myGif from "./images/videos/blueyellow.gif"; // Import the local GIF
-import scrapImage from "./images/baledtrespcr2.jpg"; // Replace with your actual image path
-import rightImage from "./images/baledtrespcr2.jpg"; // Add your new right-side image
-import cardIcon1 from "./images/baledtrespcr2.jpg"; // Replace with actual icon paths
+import myGif from "./images/videos/blueyellow.gif"; 
+import scrapImage from "./images/baledtrespcr2.jpg";
+import rightImage from "./images/baledtrespcr2.jpg";
+import cardIcon1 from "./images/baledtrespcr2.jpg";
 import cardIcon2 from "./images/baledtrespcr2.jpg";
 import cardIcon3 from "./images/baledtrespcr2.jpg";
 import cardIcon4 from "./images/baledtrespcr2.jpg";
-import "./Scrapstyles.css"; // Import CSS for styling
+import "./Scrapstyles.css"; 
 import Morefor from "./Morefor";
 import SrenComponent from "./SrenComponent";
 import PyroSteelImage from "./images/PyroSteel.jpeg";
