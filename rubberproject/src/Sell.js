@@ -7,6 +7,7 @@ import logo1 from "./images/logo.png";
 import WhyChooseUs from "./WhyChooseUs";
 import myGif from "./images/videos/bluepink.gif";
 
+
 const Sell = () => {
   const [material, setMaterial] = useState("Tyre scrap");
   const [applications, setApplications] = useState([]);
@@ -215,6 +216,38 @@ const Sell = () => {
           <img src={myGif} alt="A cool GIF" style={{ width: "100%" }} />
         </div>
         <SellTop />
+        {/* Get Started Button */}
+        <div style={{
+          display: "flex",
+          justifyContent: "center",
+          margin: "30px 0" // Adjust this margin as needed
+        }}>
+          <a
+            href="#upload-form" // Link to the form section by ID
+            style={{
+              display: "inline-block",
+              padding: "10px 20px",
+              backgroundColor: "#0d6efd",
+              color: "white",
+              fontSize: "1.2rem",
+              fontWeight: "bold",
+              borderRadius: "5px",
+              textDecoration: "none",
+              transition: "background-color 0.3s, transform 0.3s", // Smooth transition
+              transform: "scale(1)", // Initial scale
+            }}
+            onMouseOver={(e) => {
+              e.target.style.backgroundColor = "#0056b3"; // Hover effect color
+              e.target.style.transform = "scale(1.1)"; // Slightly enlarge the button on hover
+            }}
+            onMouseOut={(e) => {
+              e.target.style.backgroundColor = "#0d6efd"; // Revert hover effect color
+              e.target.style.transform = "scale(1)"; // Reset the scale
+            }}
+          >
+            Get Started
+          </a>
+        </div>
 
         <div
           className="container"
@@ -269,240 +302,201 @@ const Sell = () => {
               {error}
             </div>
           )}
+  <form onSubmit={handleSubmit} style={{ marginBottom: "40px" }} id="upload-form">
+  <div
+    className="row"
+    style={{
+      display: "grid",
+      gridTemplateColumns: "1fr 1fr", // Default grid for desktop and tablets
+      gap: "20px",
+      marginBottom: "20px", // Add some space between form fields
+    }}
+  >
+    <div className="mb-3">
+      <label htmlFor="material" className="form-label" style={{ fontWeight: "bold", color: "white" }}>
+        Choose Category
+      </label>
+      <select
+        id="material"
+        className="form-select"
+        value={material}
+        onChange={handleMaterialChange}
+        required
+        style={{ padding: "10px", fontSize: "1rem", borderRadius: "5px" }}
+      >
+        <option value="Tyre scrap">Tyre scrap</option>
+        <option value="pyro oil">Pyro Oil</option>
+        <option value="Tyre steel scrap">Tyre Steel Scrap</option>
+      </select>
+    </div>
 
-          <form onSubmit={handleSubmit} style={{ marginBottom: "40px" }}>
-            <div className="mb-3" style={{ marginBottom: "1.5rem" }}>
-              <label
-                htmlFor="material"
-                className="form-label"
-                style={{ fontWeight: "bold", color: "white" }}
-              >
-                Choose Category
-              </label>
-              <select
-                id="material"
-                className="form-select"
-                value={material}
-                onChange={handleMaterialChange}
-                required
-                style={{
-                  padding: "10px",
-                  fontSize: "1rem",
-                  borderRadius: "5px",
-                }}
-              >
-                <option value="Tyre scrap">Tyre scrap</option>
-                <option value="pyro oil">Pyro Oil</option>
-                <option value="Tyre steel scrap">Tyre Steel Scrap</option>
-              </select>
-            </div>
+    <div className="mb-3">
+      <label htmlFor="quantity" className="form-label" style={{ fontWeight: "bold", color: "white" }}>
+        Quantity
+      </label>
+      <input
+        type="number"
+        id="quantity"
+        className="form-control"
+        value={quantity}
+        onChange={(e) => setQuantity(e.target.value)}
+        required
+        min="0"
+        step="0.01"
+        style={{ padding: "10px", fontSize: "1rem", borderRadius: "5px" }}
+      />
+    </div>
 
-            {material && (
-              <div className="mb-3" style={{ marginBottom: "1.5rem" }}>
-                <label
-                  htmlFor="applications"
-                  className="form-label"
-                  style={{ fontWeight: "bold", color: "white" }}
-                >
-                  Type of Scrap
-                </label>
-                <select
-                  id="applications"
-                  className="form-select"
-                  value={selectedApplication}
-                  onChange={(e) => setSelectedApplication(e.target.value)}
-                  required
-                  style={{
-                    padding: "10px",
-                    fontSize: "1rem",
-                    borderRadius: "5px",
-                  }}
-                >
-                  <option value="">Select Application</option>
-                  {applications.length > 0 ? (
-                    applications.map((app, index) => (
-                      <option key={index} value={app}>
-                        {app}
-                      </option>
-                    ))
-                  ) : (
-                    <option value="">No applications available.</option>
-                  )}
-                </select>
-              </div>
+    {material && (
+      <>
+        <div className="mb-3">
+          <label htmlFor="applications" className="form-label" style={{ fontWeight: "bold", color: "white" }}>
+            Type of Scrap
+          </label>
+          <select
+            id="applications"
+            className="form-select"
+            value={selectedApplication}
+            onChange={(e) => setSelectedApplication(e.target.value)}
+            required
+            style={{ padding: "10px", fontSize: "1rem", borderRadius: "5px" }}
+          >
+            <option value="">Select Application</option>
+            {applications.length > 0 ? (
+              applications.map((app, index) => (
+                <option key={index} value={app}>
+                  {app}
+                </option>
+              ))
+            ) : (
+              <option value="">No applications available.</option>
             )}
-            <div className="mb-3" style={{ marginBottom: "1.5rem" }}>
-              <label
-                htmlFor="quantity"
-                className="form-label"
-                style={{ fontWeight: "bold", color: "white" }}
-              >
-                Quantity
-              </label>
-              <input
-                type="number"
-                id="quantity"
-                className="form-control"
-                value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
-                required
-                min="0"
-                step="0.01"
-                style={{
-                  padding: "10px",
-                  fontSize: "1rem",
-                  borderRadius: "5px",
-                }}
-              />
-            </div>
-            <div className="mb-3" style={{ marginBottom: "1.5rem" }}>
-              <label
-                htmlFor="loadingLocation"
-                className="form-label"
-                style={{ fontWeight: "bold", color: "white" }}
-              >
-                Loading Location
-              </label>
-              <select
-                id="loadingLocation"
-                className="form-select"
-                value={loadingLocation}
-                onChange={(e) => setLoadingLocation(e.target.value)}
-                required
-                style={{
-                  padding: "10px",
-                  fontSize: "1rem",
-                  borderRadius: "5px",
-                }}
-              >
-                <option value="">Select Loading Location</option>
-                <option value="Ex_Chennai">Ex Chennai</option>
-                <option value="Ex_Mundra">Ex Mundra</option>
-                <option value="Ex_Nhavasheva">Ex Nhavasheva</option>
-              </select>
-            </div>
-            <div className="mb-3" style={{ marginBottom: "1.5rem" }}>
-              <label
-                htmlFor="countryOfOrigin"
-                className="form-label"
-                style={{ fontWeight: "bold", color: "white" }}
-              >
-                Country of Origin
-              </label>
-              <input
-                type="text"
-                id="countryOfOrigin"
-                className="form-control"
-                value={countryOfOrigin}
-                onChange={(e) => setCountryOfOrigin(e.target.value)}
-                required
-                style={{
-                  padding: "10px",
-                  fontSize: "1rem",
-                  borderRadius: "5px",
-                }}
-              />
-            </div>
-            <div className="mb-3" style={{ marginBottom: "1.5rem" }}>
-              <label
-                htmlFor="price"
-                className="form-label"
-                style={{ fontWeight: "bold", color: "white" }}
-              >
-                Price per MT
-              </label>
-              <input
-                type="number"
-                id="price"
-                className="form-control"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                required
-                min="0"
-                step="0.01"
-                style={{
-                  padding: "10px",
-                  fontSize: "1rem",
-                  borderRadius: "5px",
-                }}
-              />
-            </div>
-            <div className="mb-3" style={{ marginBottom: "1.5rem" }}>
-              <label
-                htmlFor="images"
-                className="form-label"
-                style={{ fontWeight: "bold", color: "white" }}
-              >
-                Upload Images (Max 3)
-              </label>
-              <input
-                type="file"
-                id="images"
-                className="form-control"
-                multiple
-                onChange={handleImageChange}
-                accept="image/*"
-                style={{
-                  padding: "10px",
-                  fontSize: "1rem",
-                  borderRadius: "5px",
-                }}
-              />
-            </div>
-            {imagePreviewUrls.length > 0 && (
-              <div
-                className="image-previews"
-                style={{ marginBottom: "1.5rem" }}
-              >
-                {imagePreviewUrls.map((url, index) => (
-                  <img
-                    key={index}
-                    src={url}
-                    alt={`Preview ${index + 1}`}
-                    style={{
-                      maxWidth: "200px",
-                      marginRight: "10px",
-                      borderRadius: "5px",
-                    }}
-                  />
-                ))}
-              </div>
-            )}
-            <div className="mb-3" style={{ marginBottom: "1.5rem" }}>
-              <label
-                htmlFor="description"
-                className="form-label"
-                style={{ fontWeight: "bold", color: "white" }}
-              >
-                Description
-              </label>
-              <textarea
-                id="description"
-                className="form-control"
-                value={description}
-                onChange={handleDescriptionChange}
-                required
-                rows="4" // You can adjust the number of rows for better visibility
-                style={{
-                  padding: "10px",
-                  fontSize: "1rem",
-                  borderRadius: "5px",
-                }}
-              />
-            </div>
-            <button
-              type="submit"
-              className="btn btn-primary"
-              style={{
-                padding: "10px 20px",
-                fontSize: "1rem",
-                borderRadius: "5px",
-              }}
-              disabled={loading}
-            >
-              {loading ? "Uploading..." : "Upload Scrap"}
-            </button>
-          </form>
+          </select>
+        </div>
+
+        <div className="mb-3">
+          <label htmlFor="loadingLocation" className="form-label" style={{ fontWeight: "bold", color: "white" }}>
+            Loading Location
+          </label>
+          <select
+            id="loadingLocation"
+            className="form-select"
+            value={loadingLocation}
+            onChange={(e) => setLoadingLocation(e.target.value)}
+            required
+            style={{ padding: "10px", fontSize: "1rem", borderRadius: "5px" }}
+          >
+            <option value="">Select Loading Location</option>
+            <option value="Ex_Chennai">Ex Chennai</option>
+            <option value="Ex_Mundra">Ex Mundra</option>
+            <option value="Ex_Nhavasheva">Ex Nhavasheva</option>
+          </select>
+        </div>
+      </>
+    )}
+
+    <div className="mb-3">
+      <label htmlFor="countryOfOrigin" className="form-label" style={{ fontWeight: "bold", color: "white" }}>
+        Country of Origin
+      </label>
+      <input
+        type="text"
+        id="countryOfOrigin"
+        className="form-control"
+        value={countryOfOrigin}
+        onChange={(e) => setCountryOfOrigin(e.target.value)}
+        required
+        style={{ padding: "10px", fontSize: "1rem", borderRadius: "5px" }}
+      />
+    </div>
+
+    <div className="mb-3">
+      <label htmlFor="price" className="form-label" style={{ fontWeight: "bold", color: "white" }}>
+        Price per MT
+      </label>
+      <input
+        type="number"
+        id="price"
+        className="form-control"
+        value={price}
+        onChange={(e) => setPrice(e.target.value)}
+        required
+        min="0"
+        step="0.01"
+        style={{ padding: "10px", fontSize: "1rem", borderRadius: "5px" }}
+      />
+    </div>
+  </div>
+
+  <div className="mb-3" style={{ marginBottom: "1.5rem" }}>
+    <label htmlFor="images" className="form-label" style={{ fontWeight: "bold", color: "white" }}>
+      Upload Images (Max 3)
+    </label>
+    <input
+      type="file"
+      id="images"
+      className="form-control"
+      multiple
+      onChange={handleImageChange}
+      accept="image/*"
+      style={{ padding: "10px", fontSize: "1rem", borderRadius: "5px" }}
+    />
+  </div>
+
+  {imagePreviewUrls.length > 0 && (
+    <div className="image-previews" style={{ marginBottom: "1.5rem" }}>
+      {imagePreviewUrls.map((url, index) => (
+        <img
+          key={index}
+          src={url}
+          alt={`Preview ${index + 1}`}
+          style={{ maxWidth: "200px", marginRight: "10px", borderRadius: "5px" }}
+        />
+      ))}
+    </div>
+  )}
+
+  <div className="mb-3">
+    <label htmlFor="description" className="form-label" style={{ fontWeight: "bold", color: "white" }}>
+      Description
+    </label>
+    <textarea
+      id="description"
+      className="form-control"
+      value={description}
+      onChange={(e) => {
+        const newDescription = e.target.value;
+        if (newDescription.length <= 1000) {
+          setDescription(newDescription);
+          setError(""); // Reset error message if within limit
+        } else {
+          setError("You can only enter up to 1000 characters.");
+        }
+      }}
+      required
+      rows="4"
+      maxLength="1000"
+      style={{ padding: "10px", fontSize: "1rem", borderRadius: "5px" }}
+    />
+    {error && <div style={{ color: "red", marginTop: "10px", fontSize: "0.9rem" }}>{error}</div>}
+    <div style={{ marginTop: "5px", fontSize: "0.9rem", color: "white" }}>
+      {description.length}/1000 characters
+    </div>
+  </div>
+
+  <button
+    type="submit"
+    className="btn btn-primary"
+    style={{ padding: "10px 20px", fontSize: "1rem", borderRadius: "5px" }}
+    disabled={loading}
+  >
+    {loading ? "Uploading..." : "Upload Scrap"}
+  </button>
+</form>
+
+
+
+
         </div>
         <WhyChooseUs />
       </div>

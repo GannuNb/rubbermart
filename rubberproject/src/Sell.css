@@ -77,3 +77,20 @@ h2.text-center {
         width: 30%;
     }
 }
+
+/* Media Queries for mobile responsiveness */
+@media (max-width: 768px) {
+    .row {
+      grid-template-columns: 1fr !important; /* Stack the form inputs in a single column on mobile */
+    }
+  
+    .form-label {
+      font-size: 0.9rem; /* Adjust label size on mobile */
+    }
+  
+    .form-control {
+      font-size: 0.9rem; /* Adjust input size on mobile */
+      padding: 8px; /* Adjust padding on mobile */
+    }
+  }
+  
