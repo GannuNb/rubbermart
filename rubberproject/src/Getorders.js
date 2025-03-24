@@ -9,6 +9,8 @@ import logo from './images/logo.png';
 import logo1 from './images/logo.png';
 import seal from './images/seal.png';
 import { FaFilePdf } from 'react-icons/fa';
+import { FaArrowRight } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 
 
@@ -527,7 +529,8 @@ doc.text(companyAddress[5], 40, addressY + 24); // City, State, and Postal Code
                 <th>Total Price (₹)</th>
                 <th>Order Date</th>
                 <th>Invoice</th>
-                <th>Upload Payment Receipt</th>
+                <th><b>Upload Payment Receipt</b></th>
+                <th>Shipping Info</th>
 
               </tr>
             </thead>
@@ -587,7 +590,15 @@ doc.text(companyAddress[5], 40, addressY + 24); // City, State, and Postal Code
                   Upload File
                 </button>
               </td>
+              
             )}
+            <td>
+              <Link to="/ShippingDetails"  >
+                <button className="btn btn-primary">
+                  <FaArrowRight />
+                </button>
+              </Link>
+            </td>
           </tr>
         );
       })}

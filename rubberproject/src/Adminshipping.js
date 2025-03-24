@@ -21,10 +21,10 @@ function Adminshipping() {
   });
 
   useEffect(() => {
-      // Directly set the scroll position to the top of the page
-      document.documentElement.scrollTop = 0; 
-      document.body.scrollTop = 0;  // For compatibility with older browsers
-    }, []); // Empty dependency array ensures it runs only once on page load
+    // Directly set the scroll position to the top of the page
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;  // For compatibility with older browsers
+  }, []); // Empty dependency array ensures it runs only once on page load
 
   useEffect(() => {
     const tokenKey = `admin_token`; // Check if any valid token exists
@@ -61,8 +61,6 @@ function Adminshipping() {
     return isCompanyNameMatch && isDateInRange;
   });
 
-
-
   // Handle searching for company names and updating dropdown
   const handleSearchChange = (e) => {
     const query = e.target.value;
@@ -87,7 +85,6 @@ function Adminshipping() {
     }
   };
 
-
   // Handle company selection from the dropdown
   const handleCompanySelect = (company) => {
     setSearchFilters((prevFilters) => ({
@@ -96,7 +93,6 @@ function Adminshipping() {
     }));
     setFilteredCompanies([]); // Close the dropdown after selection
   };
-
 
   useEffect(() => {
     const fetchOrdersWithShipping = async () => {
@@ -162,10 +158,6 @@ function Adminshipping() {
     }));
   };
 
-
-
-
-
   const handleFileChange = (orderId, e) => {
     const file = e.target.files[0];
     const fileType = e.target.name;
@@ -192,8 +184,6 @@ function Adminshipping() {
       },
     }));
   };
-
-
 
   const handleShip = async (orderId) => {
     const orderInput = inputValues[orderId] || {};
@@ -265,7 +255,31 @@ function Adminshipping() {
     }
   };
 
+  const isProductShipped = (order, productName) => {
+    const shippedDetails = order.shippingDetails.filter(
+      (shipping) => shipping.selectedProduct === productName
+    );
+    const shippedQuantity = shippedDetails.reduce(
+      (total, shipping) => total + shipping.quantity,
+      0
+    );
+    const product = order.items.find(item => item.name === productName);
+    return product && shippedQuantity >= product.quantity;
+  };
 
+  // 2. Check if all products are shipped
+const isAllProductsShipped = (order) => {
+  return order.items.every(item => {
+    const shippedDetails = order.shippingDetails.filter(
+      (shipping) => shipping.selectedProduct === item.name
+    );
+    const shippedQuantity = shippedDetails.reduce(
+      (total, shipping) => total + shipping.quantity,
+      0
+    );
+    return shippedQuantity >= item.quantity;
+  });
+};
 
 
   const generatePDF = (order) => {
@@ -336,9 +350,6 @@ function Adminshipping() {
     doc.save(`Order_${order._id}_ShippingDetails.pdf`);
   };
 
-
-
-
   if (loading) return <p>Loading orders...</p>;
   if (error) return <p>{error}</p>;
 
@@ -347,7 +358,6 @@ function Adminshipping() {
       <Adminnav />
       <div className="mt-5">
         <h3>All Orders</h3>
-
         {/* Search Filters */}
         <div className="mb-4">
           <div className="row">
@@ -376,7 +386,6 @@ function Adminshipping() {
                   ))}
                 </ul>
               )}
-
             </div>
 
             <div className="col-md-4 mb-2">
@@ -406,186 +415,207 @@ function Adminshipping() {
         </div>
 
         <div className="table-responsive">
-  {filteredOrders.map((order, index) => (
-    <div key={order._id} className="mb-4"> {/* Adds spacing between orders */}
-      <table className="table table-bordered table-hover table-striped">
-        {/* Order Headers */}
-        <thead className="table-dark">
-          <tr>
-            <th>S.No</th>
-            <th>Order ID</th>
-            <th>Company Id</th>
-            <th>Company Name</th>
-            <th>Loading Location</th>
-            <th>Subtotal</th>
-            <th>GST</th>
-            <th>Total Price</th>
-            <th>Status</th>
-            <th>Order Date</th>
-            <th>Vehicle Number</th>
-            <th>Quantity</th>
-            <th>Product</th>
-            <th>E-way Bill & Invoice</th>
-            <th>Shipment From</th>
-            <th>Ship</th>
-          </tr>
-        </thead>
+          {filteredOrders.map((order, index) => (
+            <div key={order._id} className="mb-4"> {/* Adds spacing between orders */}
+              <table className="table table-bordered table-hover table-striped">
+                {/* Order Headers */}
+                <thead className="table-dark">
+                  <tr>
+                    <th>S.No</th>
+                    <th>Order ID</th>
+                    <th>Company Id</th>
+                    <th>Company Name</th>
+                    <th>Loading Location</th>
+                    <th>Subtotal</th>
+                    <th>GST</th>
+                    <th>Total Price</th>
+                    <th>Status</th>
+                    <th>Order Date</th>
+                    <th>Vehicle Number</th>
+                    <th>Quantity</th>
+                    <th>Product</th>
+                    <th>E-way Bill & Invoice</th>
+                    <th>Shipment From</th>
+                    <th>Ship</th>
+                  </tr>
+                </thead>
 
-        {/* Order Data */}
-        <tbody>
-          <tr>
-            <td><b>{index + 1}</b></td>
-            <td>{order._id}</td>
-            <td>{order.user?.businessProfiles[0]?.profileId || 'N/A'}</td>
-            <td>{order.user?.businessProfiles[0]?.companyName || 'N/A'}</td>
-            <td>{order.items?.[0]?.loading_location || 'N/A'}</td>
-            <td>{order.subtotal}</td>
-            <td>{order.gst}</td>
-            <td>{order.totalPrice}</td>
-            <td>{order.status}</td>
-            <td>{new Date(order.orderDate).toLocaleString()}</td>
-            <td>
-              <input
-                type="text"
-                name="vehicleNumber"
-                value={inputValues[order._id]?.vehicleNumber || ''}
-                onChange={(e) => handleInputChange(order._id, e)}
-                placeholder="Enter vehicle number"
-                className="form-control"
-              />
-            </td>
-            <td>
-              <input
-                type="number"
-                name="quantity"
-                value={inputValues[order._id]?.quantity || ''}
-                onChange={(e) => handleInputChange(order._id, e)}
-                placeholder="Enter quantity"
-                className="form-control"
-              />
-            </td>
-            <td>
-              <select
-                name="selectedProduct"
-                value={inputValues[order._id]?.selectedProduct || ''}
-                onChange={(e) => handleInputChange(order._id, e)}
-                className="form-control"
-              >
-                <option value="">Select Product</option>
-                {order.items.map((item) => (
-                  <option key={item.name} value={item.name}>{item.name}</option>
-                ))}
-              </select>
-            </td>
-            <td>
-              <input
-                type="file"
-                name="bill"
-                accept="application/pdf"
-                onChange={(e) => handleFileChange(order._id, e)}
-                className="form-control"
-              />
-              {fileErrors[order._id] && (
-                <small className="text-danger">{fileErrors[order._id]}</small>
-              )}
-            </td>
-            <td>
-              <select
-                name="shipmentFromDropdown"
-                onChange={(e) => handleShipmentFromDropdownChange(order._id, e)}
-                className="form-select mb-2"
-              >
-                <option value="">Select Shipment From</option>
-                <option value="Ground Floor,Office No-52/ Plot No-44, Sai Chamber CHS, Wing A, Sector 11,Sai Chambers, CBD Belapur, Navi Mumbai, Thane, Maharashtra -400614">
-                Ground Floor,Office No-52/ Plot No-44, Sai Chamber CHS, Wing A, Sector 11,Sai Chambers, CBD Belapur, Navi Mumbai, Thane, Maharashtra -400614
-                </option>
-              </select>
-              <textarea
-                name="shipmentFrom"
-                value={inputValues[order._id]?.shipmentFrom || ''}
-                onChange={(e) => handleInputChange(order._id, e)}
-                placeholder="Enter Shipment From"
-                className="form-control"
-                style={{ resize: 'both', minHeight: '40px', minWidth: '200px' }}
-              />
-            </td>
-            <td>
-              <button
-                onClick={() => handleShip(order._id)}
-                className="btn btn-success"
-              >
-                Ship
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                {/* Order Data */}
 
-      {/* Sub-table for Order Items */}
-      <table className="table table-bordered mt-2">
-        <thead className="table text-center">
-          <tr>
-            <th>Seller Id</th>
-            <th>Item Name</th>
-            <th>Quantity</th>
-            <th>Shipped Quantity</th>
-            <th>Remaining Quantity</th>
-            <th>Vehicle Numbers</th>
-            <th>Shipping Details</th>
-          </tr>
-        </thead>
-        <tbody>
-          {order.items.map((item, index) => {
-            const shippedDetails = order.shippingDetails.filter(
-              (shipping) => shipping.selectedProduct === item.name
-            );
-            const shippedQuantity = shippedDetails.reduce(
-              (total, shipping) => total + shipping.quantity,
-              0
-            );
-            const remainingQuantity = item.quantity - shippedQuantity;
+<tbody>
+  <tr>
+    <td><b>{index + 1}</b></td>
+    <td>{order._id}</td>
+    <td>{order.user?.businessProfiles[0]?.profileId || 'N/A'}</td>
+    <td>{order.user?.businessProfiles[0]?.companyName || 'N/A'}</td>
+    <td>{order.items?.[0]?.loading_location || 'N/A'}</td>
+    <td>{order.subtotal}</td>
+    <td>{order.gst}</td>
+    <td>{order.totalPrice}</td>
+    <td>{order.status}</td>
+    <td>{new Date(order.orderDate).toLocaleString()}</td>
+    <td>
+      <input
+        type="text"
+        name="vehicleNumber"
+        value={inputValues[order._id]?.vehicleNumber || ''}
+        onChange={(e) => handleInputChange(order._id, e)}
+        placeholder="Enter vehicle number"
+        className="form-control"
+      />
+    </td>
+    <td>
+      <input
+        type="number"
+        name="quantity"
+        value={inputValues[order._id]?.quantity || ''}
+        onChange={(e) => handleInputChange(order._id, e)}
+        placeholder="Enter quantity"
+        className="form-control"
+      />
+    </td>
+    <td>
+      <select
+        name="selectedProduct"
+        value={inputValues[order._id]?.selectedProduct || ''}
+        onChange={(e) => handleInputChange(order._id, e)}
+        className="form-control"
+      >
+        <option value="">Select Product</option>
+        {order.items.map((item) => {
+          const shippedDetails = order.shippingDetails.filter(
+            (shipping) => shipping.selectedProduct === item.name
+          );
+          const shippedQuantity = shippedDetails.reduce(
+            (total, shipping) => total + shipping.quantity,
+            0
+          );
+          const remainingQuantity = item.quantity - shippedQuantity;
 
-            return (
-              <tr key={index}>
-                <td className="text-center align-middle">{item.sellerid}</td>
-                <td className="text-center align-middle">{item.name}</td>
-                <td className="text-center align-middle">{item.quantity}</td>
-                <td className="text-center align-middle">{shippedQuantity}</td>
-                <td className="text-center align-middle">{remainingQuantity}</td>
-                <td className="text-center align-middle">
-                  <small className="text-muted">
-                    {shippedDetails.map((shipping) => shipping.vehicleNumber).join(", ")}
-                  </small>
-                </td>
-                {index === 0 && (
-                  <td className="text-center align-middle">
-                    <button
-                      onClick={() => generatePDF(order)}
-                      className="btn btn-primary btn-sm"
-                    >
-                      PDF
-                    </button>
-                  </td>
-                )}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
-  ))}
-</div>
+          // Disable product if it is fully shipped
+          const isProductFullyShipped = remainingQuantity <= 0;
+          return (
+            <option key={item.name} value={item.name} disabled={isProductFullyShipped}>
+  {item.name} {isProductFullyShipped ? "(Fully Shipped)" : ""}
+</option>
+          );
+        })}
+      </select>
+    </td>
+    <td>
+      <input
+        type="file"
+        name="bill"
+        accept="application/pdf"
+        onChange={(e) => handleFileChange(order._id, e)}
+        className="form-control"
+      />
+      {fileErrors[order._id] && (
+        <small className="text-danger">{fileErrors[order._id]}</small>
+      )}
+    </td>
+    <td>
+      <select
+        name="shipmentFromDropdown"
+        onChange={(e) => handleShipmentFromDropdownChange(order._id, e)}
+        className="form-select mb-2"
+      >
+        <option value="">Select Shipment From</option>
+        <option value="Ground Floor,Office No-52/ Plot No-44, Sai Chamber CHS, Wing A, Sector 11,Sai Chambers, CBD Belapur, Navi Mumbai, Thane, Maharashtra -400614">
+          Ground Floor,Office No-52/ Plot No-44, Sai Chamber CHS, Wing A, Sector 11,Sai Chambers, CBD Belapur, Navi Mumbai, Thane, Maharashtra -400614
+        </option>
+      </select>
+      <textarea
+        name="shipmentFrom"
+        value={inputValues[order._id]?.shipmentFrom || ''}
+        onChange={(e) => handleInputChange(order._id, e)}
+        placeholder="Enter Shipment From"
+        className="form-control"
+        style={{ resize: 'both', minHeight: '40px', minWidth: '200px' }}
+      />
+    </td>
+    <td>
+      {/* Disable the Ship button if all products in the order are shipped */}
+      <button
+        onClick={() => handleShip(order._id)}
+        className="btn btn-success"
+        disabled={order.items.every((item) => {
+          const shippedDetails = order.shippingDetails.filter(
+            (shipping) => shipping.selectedProduct === item.name
+          );
+          const shippedQuantity = shippedDetails.reduce(
+            (total, shipping) => total + shipping.quantity,
+            0
+          );
+          return shippedQuantity >= item.quantity;
+        })}
+        
+      >
+        Ship
+      </button>
+    </td>
+  </tr>
+</tbody>
 
+              </table>
 
+              {/* Sub-table for Order Items */}
+              <table className="table table-bordered mt-2">
+                <thead className="table text-center">
+                  <tr>
+                    <th>Seller Id</th>
+                    <th>Item Name</th>
+                    <th>Quantity</th>
+                    <th>Shipped Quantity</th>
+                    <th>Remaining Quantity</th>
+                    <th>Vehicle Numbers</th>
+                    <th>Shipping Details</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {order.items.map((item, index) => {
+                    const shippedDetails = order.shippingDetails.filter(
+                      (shipping) => shipping.selectedProduct === item.name
+                    );
+                    const shippedQuantity = shippedDetails.reduce(
+                      (total, shipping) => total + shipping.quantity,
+                      0
+                    );
+                    const remainingQuantity = item.quantity - shippedQuantity;
 
+                    return (
+                      <tr key={index}>
+                        <td className="text-center align-middle">{item.sellerid}</td>
+                        <td className="text-center align-middle">{item.name}</td>
+                        <td className="text-center align-middle">{item.quantity}</td>
+                        <td className="text-center align-middle">{shippedQuantity}</td>
+                        <td className="text-center align-middle">{remainingQuantity}</td>
+                        <td className="text-center align-middle">
+                          <small className="text-muted">
+                            {shippedDetails.map((shipping) => shipping.vehicleNumber).join(", ")}
+                          </small>
+                        </td>
+                        {index === 0 && (
+                          <td className="text-center align-middle">
+                            <button
+                              onClick={() => generatePDF(order)}
+                              className="btn btn-primary btn-sm"
+                            >
+                              PDF
+                            </button>
+                          </td>
+                        )}
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
-
-
-
   );
-
 }
-
 
 export default Adminshipping;

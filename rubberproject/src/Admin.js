@@ -5,6 +5,8 @@ import './Admin.css';
 import './Sell.css';
 import Adminnav from './Adminnav';
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from "jwt-decode";
+
 
 const AdminPage = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -225,18 +227,31 @@ const AdminPage = () => {
         }
     }, []); // Run only once on component mount
 
+    
+
     const handleLogin = async (e) => {
         e.preventDefault();
         setLoading(true);  // Set loading state to true when submitting the login form
         setError(''); // Reset error message
         setLoginError(''); // Reset login error message
-
+    
         try {
             const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/admin/login`, { email, password });
             const tokenKey = `admin_token`; // Using a single token key for storing the JWT token
-            localStorage.setItem(tokenKey, response.data.token); // Store the JWT token
+            const token = response.data.token;
+    
+            // Store the token in localStorage
+            localStorage.setItem(tokenKey, token);
+    
+            // Decode the JWT token to check expiration time
+            const decodedToken = jwtDecode(token);
+    
+            // Store the expiry time in localStorage (in case you need it later)
+            const expiryTime = decodedToken.exp * 1000; // Convert expiry time to milliseconds
+            localStorage.setItem('token_expiry', expiryTime);
+    
             setIsAuthenticated(true); // Set authentication to true on successful login
-            navigate("/adminshipping")
+            navigate("/Adminshipping");
         } catch (err) {
             setLoginError('Invalid email or password.');
             setError('Login failed. Please try again.');
@@ -244,6 +259,7 @@ const AdminPage = () => {
             setLoading(false); // Set loading state back to false once the request is complete
         }
     };
+    
 
     // Logout handler
     const handleLogout = () => {
