@@ -266,7 +266,7 @@ body {
   padding: 10px 20px;
   flex: 1;
   font-size: 16px;
-  background-color: #28c699;
+  background-color: rgb(25, 187, 219);
   color: white;
   border: none;
   border-radius: 5px;
@@ -298,7 +298,7 @@ body {
     padding: 4px 20px;
     flex: 1 1;
     font-size: 76%;
-    background-color: #28c699;
+    background-color: rgb(78, 195, 219);
     color: white;
     border: none;
     border-radius: 5px;
@@ -388,3 +388,10 @@ body {
   }
 }
 
+.bgce{
+  background-color: rgb(203, 234, 249) !important;
+}
+
+.bgcompany{
+  background-color: #192e4d !important;
+}

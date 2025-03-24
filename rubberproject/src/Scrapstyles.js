@@ -164,8 +164,7 @@ function Scrapstyles() {
                 />
                 <h3>Tyre Scrap</h3>
                 <p>
-                  Efficient collection and processing of tyre scrap for maximum
-                  recycling potential.
+                  Efficient collection and processing of tyre scrap for maximum recycling potential.
                 </p>
               </div>
             </Link>

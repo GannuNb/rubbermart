@@ -2,11 +2,9 @@ import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
-import logo from "./images/logo.png";
 import "./Sidebar.css";
 import axios from "axios";
 
-import { Dropdown } from "react-bootstrap";
 function Sidebar() {
   const navigate = useNavigate();
   const [isGettingStartedOpen, setIsGettingStartedOpen] = useState(false);
@@ -144,30 +142,30 @@ function Sidebar() {
       {/* Sidebar Navigation */}
       <nav
         id="sidebarMenu"
-        className="collapse d-lg-block sidebar bg-white mt-4"
+        className="collapse d-lg-block sidebar bg-white mt-4 bgce"
       >
-        <div className="position-sticky">
+        <div className="position-sticky " >
           {loading ? (
-            <div className="p-3 mb-3 bg-light">
+            <div className="p-3 mb-3 bg-light bgcompany" >
               <p className="text-muted">Loading company information...</p>
             </div>
           ) : !localStorage.getItem("token") ? (
-            <div className="p-3 mb-3 bg-light">
-              <p className="text-muted">
+            <div className="p-3 mb-3 bg-light bgcompany">
+              <p className=" text-white">
                 Please login to view business profile.
               </p>
             </div>
           ) : businessProfiles.length > 0 ? (
-            <div className="p-3 mb-3 bg-light">
-              <h6 className="text-muted">
+            <div className="p-3 mb-3 bg-light bgcompany">
+              <h6 className="text-white">
                 <strong>Company Name:</strong> {businessProfiles[0].companyName}
               </h6>
-              <h6 className="text-muted">
+              <h6 className="text-white">
                 <strong>Company ID:</strong> {businessProfiles[0].profileId}
               </h6>
             </div>
           ) : (
-            <div className="p-3 mb-3 bg-light">
+            <div className="p-3 mb-3 bg-light bgcompany">
               <Link
                 to="/BusinessProfile"
                 style={{ textDecoration: "none", color: "inherit" }}
@@ -176,11 +174,11 @@ function Sidebar() {
               </Link>
             </div>
           )}
-          <div className="list-group list-group-flush mx-3 mt-4">
+          <div className="list-group list-group-flush mx-3 mt-4 " >
             {/* Home Link */}
             <Link
               to="/"
-              className="list-group-item list-group-item-action py-2 ripple"
+              className="list-group-item list-group-item-action py-2 ripple bgce" 
               aria-current="true"
               onClick={closeSidebar}
             >
@@ -190,7 +188,7 @@ function Sidebar() {
 
             <Link
               to="/AboutUsPage"
-              className="list-group-item list-group-item-action py-2 ripple"
+              className="list-group-item list-group-item-action py-2 ripple bgce" 
               onClick={closeSidebar}
             >
               <i className="fas fa-info-circle fa-fw me-3"></i>
@@ -200,7 +198,7 @@ function Sidebar() {
             {/* Business Profile Link */}
             <Link
               to="/BusinessProfile"
-              className="list-group-item list-group-item-action py-2 ripple"
+              className="list-group-item list-group-item-action py-2 ripple bgce" 
               onClick={closeSidebar}
             >
               <i className="fas fa-briefcase fa-fw me-3"></i>
@@ -209,11 +207,11 @@ function Sidebar() {
 
             {/* Products Section */}
             <div
-              className={`list-group-item list-group-item-action py-2 ripple ${
+              className={`list-group-item list-group-item-action py-2 ripple bgce ${
                 isGettingStartedOpen ? "active" : ""
               }`}
               onClick={toggleGettingStarted}
-              style={{ cursor: "pointer" }}
+              style={{ cursor: "pointer"}} 
             >
               <div className="d-flex align-items-center">
                 <i className="fas fa-box-open fa-fw me-3"></i>{" "}
@@ -248,14 +246,14 @@ function Sidebar() {
                 {isTyreScrapOpen && (
                   <div className="list-group list-group-flush ">
                     <Link
-                      className="list-group-item list-group-item-action py-2 ripple"
+                      className="list-group-item list-group-item-action py-2 ripple bgce"
                       to="/MulchPCR"
                       onClick={closeSidebar}
                     >
                       Mulch pcr
                     </Link>
                     <Link
-                      className="list-group-item list-group-item-action py-2 ripple"
+                      className="list-group-item list-group-item-action py-2 ripple bgce" 
                       to="/BaledTyresPcr"
                       onClick={closeSidebar}
                     >
@@ -263,35 +261,35 @@ function Sidebar() {
                     </Link>
 
                     <Link
-                      className="list-group-item list-group-item-action py-2 ripple"
+                      className="list-group-item list-group-item-action py-2 ripple bgce" 
                       to="/ThreePiecePcr"
                       onClick={closeSidebar}
                     >
                       Three Piece PCR
                     </Link>
                     <Link
-                      className="list-group-item list-group-item-action py-2 ripple"
+                      className="list-group-item list-group-item-action py-2 ripple bgce" 
                       to="/BaledTyresTbr"
                       onClick={closeSidebar}
                     >
                       Baled Tyres TBR
                     </Link>
                     <Link
-                      className="list-group-item list-group-item-action py-2 ripple"
+                      className="list-group-item list-group-item-action py-2 ripple bgce" 
                       to="/ThreePieceTbr"
                       onClick={closeSidebar}
                     >
                       Three Piece TBR
                     </Link>
                     <Link
-                      className="list-group-item list-group-item-action py-2 ripple"
+                      className="list-group-item list-group-item-action py-2 ripple bgce" 
                       to="/RubberGranules/Crum"
                       onClick={closeSidebar}
                     >
                       Rubber Granules/Crum
                     </Link>
                     <Link
-                      className="list-group-item list-group-item-action py-2 ripple"
+                      className="list-group-item list-group-item-action py-2 ripple bgce" 
                       to="/shreds"
                       onClick={closeSidebar}
                     >
@@ -320,7 +318,7 @@ function Sidebar() {
                 {isPyroOilOpen && (
                   <div className="list-group list-group-flush">
                     <Link
-                      className="list-group-item list-group-item-action py-2 ripple"
+                      className="list-group-item list-group-item-action py-2 ripple bgce"
                       to="/pyrooil"
                       onClick={closeSidebar}
                     >
@@ -349,14 +347,14 @@ function Sidebar() {
                 {isTyreSteelScrapOpen && (
                   <div className="list-group list-group-flush ">
                     <Link
-                      className="list-group-item list-group-item-action py-2 ripple"
+                      className="list-group-item list-group-item-action py-2 ripple bgce"
                       to="/RubberCrumsteel"
                       onClick={closeSidebar}
                     >
                       Rubber Crum Steel
                     </Link>
                     <Link
-                      className="list-group-item list-group-item-action py-2 ripple"
+                      className="list-group-item list-group-item-action py-2 ripple bgce"
                       to="/PyroSteel"
                       onClick={closeSidebar}
                     >
@@ -370,7 +368,7 @@ function Sidebar() {
             {/* Sell Link */}
             <Link
               to="/Sell"
-              className="list-group-item list-group-item-action py-2 ripple"
+              className="list-group-item list-group-item-action py-2 ripple bgce" 
               onClick={closeSidebar}
             >
               <i className="fas fa-dollar-sign fa-fw me-3"></i>
@@ -380,7 +378,7 @@ function Sidebar() {
             {/* Shipping Details */}
             <Link
               to="/ShippingDetails"
-              className="list-group-item list-group-item-action py-2 ripple"
+              className="list-group-item list-group-item-action py-2 ripple bgce" 
               onClick={closeSidebar}
             >
               <i className="fas fa-shipping-fast fa-fw me-3"></i>
@@ -393,7 +391,7 @@ function Sidebar() {
                 isReportsOpen ? "active" : ""
               }`}
               onClick={toggleReports}
-              style={{ cursor: "pointer" }}
+              style={{ cursor: "pointer" ,backgroundColor:"rgb(203, 234, 249) "}}
             >
               <div className="d-flex align-items-center">
                 <i className="fas fa-file-alt fa-fw me-3"></i>
@@ -408,14 +406,14 @@ function Sidebar() {
             {isReportsOpen && (
               <div className="list-group list-group-flush ">
                 <Link
-                  className="list-group-item list-group-item-action py-2 ripple"
+                  className="list-group-item list-group-item-action py-2 ripple bgce" 
                   to="/Buyreport"
                   onClick={closeSidebar}
                 >
                   Buy Reports
                 </Link>
                 <Link
-                  className="list-group-item list-group-item-action py-2 ripple"
+                  className="list-group-item list-group-item-action py-2 ripple bgce" 
                   to="/Sellerreport"
                   onClick={closeSidebar}
                 >
@@ -427,7 +425,7 @@ function Sidebar() {
             {/* Contact Us Link */}
             <Link
               to="/Contact"
-              className="list-group-item list-group-item-action py-2 ripple"
+              className="list-group-item list-group-item-action py-2 ripple bgce" 
               onClick={closeSidebar}
             >
               <i className="fas fa-envelope fa-fw me-3"></i>
@@ -437,7 +435,7 @@ function Sidebar() {
             {/* Orders Link */}
             <Link
               to="/Getorders"
-              className="list-group-item list-group-item-action py-2 ripple"
+              className="list-group-item list-group-item-action py-2 ripple bgce" 
               onClick={closeSidebar}
             >
               <i className="fas fa-shopping-cart fa-fw me-3"></i>
@@ -446,7 +444,7 @@ function Sidebar() {
 
             <Link
               to="/getpay"
-              className="list-group-item list-group-item-action py-2 ripple"
+              className="list-group-item list-group-item-action py-2 ripple bgce"
               onClick={closeSidebar}
             >
               <i className="fas fa-wallet fa-fw me-3"></i>
@@ -459,9 +457,9 @@ function Sidebar() {
       {/* Top Navbar */}
       <nav
         id="main-navbar"
-        className="navbar navbar-expand-lg navbar-light bg-white fixed-top tpheight ftop"
+        className="navbar navbar-expand-lg navbar-light bg-white fixed-top tpheight ftop bgce"
       >
-        <div className="container-fluid">
+        <div className="container-fluid" >
           {/* Sidebar Toggle Button */}
           <button
             className="navbar-toggler threetop"
