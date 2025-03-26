@@ -159,210 +159,239 @@ const Order = () => {
     setShippingAddress(e.target.value);
   };
 
-  // Render Order Summary
-  const renderOrderSummary = () => {
-    const gstNumber = profile?.gstNumber || '';
-    const gstRate = gstNumber.startsWith('27') ? 0.09 : 0.18;
-    // baseItems contains the main order item (the one passed in the location state)
-    const baseItems = [
-      {
-        sellerid,
-        name,
-        price,
-        hsn,
-        quantity: required_quantity,
-        loading_location: selected_location,
-        total: price * required_quantity, // Total cost of base item
-      },
-    ];
+// Render Order Summary
+const renderOrderSummary = () => {
+  const gstNumber = profile?.gstNumber || '';
+  
+  // Calculate GST rates based on the GST number
+  const isSGSTCGST = gstNumber.startsWith('27'); // Check if GST number starts with '27'
+  
+  // baseItems contains the main order item (the one passed in the location state)
+  const baseItems = [
+    {
+      sellerid,
+      name,
+      price,
+      hsn,
+      quantity: required_quantity,
+      loading_location: selected_location,
+      total: price * required_quantity, // Total cost of base item
+    },
+  ];
 
-    // Combine the baseItems with any additional items added to the order
-    const allItems = [...baseItems, ...orderItems];
+  // Combine the baseItems with any additional items added to the order
+  const allItems = [...baseItems, ...orderItems];
 
-    // Calculate subtotal (sum of all item totals)
-    const subtotal = allItems.reduce((sum, item) => sum + item.total, 0);
+  // Calculate subtotal (sum of all item totals)
+  const subtotal = allItems.reduce((sum, item) => sum + item.total, 0);
 
-    // Calculate GST (18% of the subtotal)
-    const gst = subtotal * gstRate;
+  // Declare GST variables
+  let sgst = 0, cgst = 0, igst = 0;
 
-    // Calculate the total (subtotal + GST)
-    const total = subtotal + gst;
+  // If GST number starts with '27', apply SGST + CGST of 9% each, otherwise apply IGST at 18%
+  if (isSGSTCGST) {
+    sgst = subtotal * 0.09;
+    cgst = subtotal * 0.09;
+  } else {
+    igst = subtotal * 0.18;
+  }
 
-    // Check if the applications are still loading
-    if (loadingApplications) return <div>Loading applications...</div>;
+  // Calculate the total (subtotal + GST)
+  const total = subtotal + sgst + cgst + igst;
 
-    // Handle error message if applications failed to load
-    if (error) return <div className="alert alert-danger">{error}</div>;
+  // Check if the applications are still loading
+  if (loadingApplications) return <div>Loading applications...</div>;
 
-    // Determine which applications are already in the order
-    const addedApplications = allItems.map((item) => item.name);
+  // Handle error message if applications failed to load
+  if (error) return <div className="alert alert-danger">{error}</div>;
 
+  // Determine which applications are already in the order
+  const addedApplications = allItems.map((item) => item.name);
 
-
-
-
-    return (
-      <div className="border p-4 rounded bg-white mt-4">
-        <h4>Order Details</h4>
-        <div
-          className="table-responsive"
-          style={{
-            overflowX: 'scroll',
-            display: 'block',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          <table className="table table-bordered">
-            <thead>
-              <tr>
-                <th>Seller ID</th>
-                <th>Item</th>
-                <th>Price/Ton</th>
-                <th>Loading Location</th>
-                <th>HSN</th>
-                <th>Quantity</th>
-                <th>Subtotal</th>
+  return (
+    <div className="border p-4 rounded bg-white mt-4">
+      <h4>Order Details</h4>
+      <div
+        className="table-responsive"
+        style={{
+          overflowX: 'scroll',
+          display: 'block',
+          whiteSpace: 'nowrap',
+        }}
+      >
+        <table className="table table-bordered">
+          <thead>
+            <tr>
+              <th>Seller ID</th>
+              <th>Item</th>
+              <th>Price/Ton</th>
+              <th>Loading Location</th>
+              <th>HSN</th>
+              <th>Quantity</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            {allItems.map((item, index) => (
+              <tr key={index}>
+                <td>{item.sellerid}</td>
+                <td>{item.name}</td>
+                <td>₹{item.price.toFixed(2)}</td>
+                <td>{item.loading_location}</td>
+                <td>{item.hsn}</td>
+                <td>{item.quantity} tons</td>
+                <td>₹{item.total.toFixed(2)}</td>
               </tr>
-            </thead>
-            <tbody>
-              {allItems.map((item, index) => (
-                <tr key={index}>
-                  <td>{item.sellerid}</td>
-                  <td>{item.name}</td>
-                  <td>₹{item.price.toFixed(2)}</td>
-                  <td>{item.loading_location}</td>
-                  <td>{item.hsn}</td>
-                  <td>{item.quantity} tons</td>
-                  <td>₹{item.total.toFixed(2)}</td>
-                </tr>
-              ))}
-            </tbody>
+            ))}
+          </tbody>
 
-            {/* Application and Quantity Input */}
-            <tfoot>
-              <tr>
-                <td colSpan="6">
-                  {/* "+" button to show the dropdown */}
-                  {!orderAdded && (
-                    <button
-                      className="btn btn-success rounded-circle p-4 mt-3" // Increased padding for a larger button
-                      onClick={() => setDropdownVisible(true)} // Show dropdown when clicked
-                      style={{
-                        width: '60px', // Larger width
-                        height: '60px', // Larger height
-                        fontSize: '36px', // Larger font size for the "+" symbol
-                        lineHeight: '60px', // Ensure the "+" is vertically centered
-                        display: 'flex', // Use flexbox for centering
-                        justifyContent: 'center', // Center horizontally
-                        alignItems: 'center', // Center vertically
-                        color: 'black', // Make the "+" black
-                        border: 'none', // Optional: remove any border
-                      }}
+          {/* Application and Quantity Input */}
+          <tfoot>
+            <tr>
+              <td colSpan="6">
+                {/* "+" button to show the dropdown */}
+                {!orderAdded && (
+                  <button
+                    className="btn btn-success rounded-circle p-4 mt-3" // Increased padding for a larger button
+                    onClick={() => setDropdownVisible(true)} // Show dropdown when clicked
+                    style={{
+                      width: '60px', // Larger width
+                      height: '60px', // Larger height
+                      fontSize: '36px', // Larger font size for the "+" symbol
+                      lineHeight: '60px', // Ensure the "+" is vertically centered
+                      display: 'flex', // Use flexbox for centering
+                      justifyContent: 'center', // Center horizontally
+                      alignItems: 'center', // Center vertically
+                      color: 'black', // Make the "+" black
+                      border: 'none', // Optional: remove any border
+                    }}
+                  >
+                    +
+                  </button>
+                )}
+
+                {/* Show the dropdown only if it's visible and order is not added */}
+                {!orderAdded && dropdownVisible && (
+                  <div className="mb-3 mt-4">
+                    <label
+                      htmlFor="applicationDropdown"
+                      className={orderAdded ? 'text-muted text-black' : 'text-black'} // Apply black color by default, muted if order is added
                     >
-                      +
-                    </button>
-                  )}
-
-                  {/* Show the dropdown only if it's visible and order is not added */}
-                  {!orderAdded && dropdownVisible && (
-                    <div className="mb-3 mt-4">
-                      <label
-                        htmlFor="applicationDropdown"
-                        className={orderAdded ? 'text-muted text-black' : 'text-black'} // Apply black color by default, muted if order is added
-                      >
-                        Add Applications from this Seller
-                      </label>
-                      <select
-                        id="applicationDropdown"
-                        className="form-select"
-                        value={selectedApplication}
-                        onChange={handleApplicationChange}
-                        disabled={orderAdded}  // Disable if order is added
-                      >
-                        <option value="">Select Application</option>
-                        {applications.map((app, index) => (
-                          <option
-                            key={index}
-                            value={app.application}
-                            disabled={addedApplications.includes(app.application)}
-                          >
-                            {app.application} - ₹{app.price}- Available {app.quantity} - ({app.loadingLocation})
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
-
-                  {/* Quantity Input if an application is selected */}
-                  {!orderAdded && selectedApplication && (
-                    <div className="mb-3 ">
-                      <label
-                        htmlFor="quantity"
-                        className={orderAdded ? 'text-muted' : ''} // Disable label if order is added
-                        style={{ color: 'black' }}
-                      >
-                        Required Quantity
-                      </label>
-                      <input
-                        type="number"
-                        id="quantity"
-                        className="form-control"
-                        value={quantity}
-                        onChange={handleQuantityChange}
-                        required
-                        disabled={orderAdded}  // Disable if order is added
-                      />
-
-                      {/* Show error message if required quantity exceeds available quantity */}
-                      {selectedApplication &&
-                        parseFloat(quantity) >
-                        applications.find(
-                          (app) => app.application === selectedApplication
-                        ).quantity && (
-                          <small className="text-danger">
-                            Required quantity exceeds available quantity!
-                          </small>
-                        )}
-                      {/* Button to add item to order */}
-                      <div className="text-end">
-                        <button
-                          className="btn btn-primary mt-2"
-                          onClick={addToOrder}
-                          disabled={orderAdded || addedApplications.includes(selectedApplication)}
+                      Add Applications from this Seller
+                    </label>
+                    <select
+                      id="applicationDropdown"
+                      className="form-select"
+                      value={selectedApplication}
+                      onChange={handleApplicationChange}
+                      disabled={orderAdded}  // Disable if order is added
+                    >
+                      <option value="">Select Application</option>
+                      {applications.map((app, index) => (
+                        <option
+                          key={index}
+                          value={app.application}
+                          disabled={addedApplications.includes(app.application)}
                         >
-                          Add to Order
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </td>
-              </tr>
+                          {app.application} - ₹{app.price}- Available {app.quantity} - ({app.loadingLocation})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
 
-              {/* Calculation rows */}
+                {/* Quantity Input if an application is selected */}
+                {!orderAdded && selectedApplication && (
+                  <div className="mb-3 ">
+                    <label
+                      htmlFor="quantity"
+                      className={orderAdded ? 'text-muted' : ''} // Disable label if order is added
+                      style={{ color: 'black' }}
+                    >
+                      Required Quantity
+                    </label>
+                    <input
+                      type="number"
+                      id="quantity"
+                      className="form-control"
+                      value={quantity}
+                      onChange={handleQuantityChange}
+                      required
+                      disabled={orderAdded}  // Disable if order is added
+                    />
+
+                    {/* Show error message if required quantity exceeds available quantity */}
+                    {selectedApplication &&
+                      parseFloat(quantity) >
+                      applications.find(
+                        (app) => app.application === selectedApplication
+                      ).quantity && (
+                        <small className="text-danger">
+                          Required quantity exceeds available quantity!
+                        </small>
+                      )}
+                    {/* Button to add item to order */}
+                    <div className="text-end">
+                      <button
+                        className="btn btn-primary mt-2"
+                        onClick={addToOrder}
+                        disabled={orderAdded || addedApplications.includes(selectedApplication)}
+                      >
+                        Add to Order
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </td>
+            </tr>
+
+            {/* Calculation rows */}
+            <tr>
+              <td colSpan="4" className="text-right">
+                <strong>Subtotal:</strong>
+              </td>
+              <td>₹{subtotal.toFixed(2)}</td>
+            </tr>
+
+            {/* SGST + CGST or IGST */}
+            {isSGSTCGST ? (
+              <>
+                <tr>
+                  <td colSpan="4" className="text-right">
+                    <strong>SGST (9%):</strong>
+                  </td>
+                  <td>₹{sgst.toFixed(2)}</td>
+                </tr>
+                <tr>
+                  <td colSpan="4" className="text-right">
+                    <strong>CGST (9%):</strong>
+                  </td>
+                  <td>₹{cgst.toFixed(2)}</td>
+                </tr>
+              </>
+            ) : (
               <tr>
                 <td colSpan="4" className="text-right">
-                  <strong>Subtotal:</strong>
+                  <strong>IGST (18%):</strong>
                 </td>
-                <td>₹{subtotal.toFixed(2)}</td>
+                <td>₹{igst.toFixed(2)}</td>
               </tr>
-              <tr>
-                <td colSpan="4" className="text-right">
-                  <strong>GST ({gstRate * 100}%):</strong>
-                </td>
-                <td>₹{gst.toFixed(2)}</td>
-              </tr>
-              <tr>
-                <td colSpan="4" className="text-right">
-                  <strong>Total:</strong>
-                </td>
-                <td>₹{total.toFixed(2)}</td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
+            )}
+
+            <tr>
+              <td colSpan="4" className="text-right">
+                <strong>Total:</strong>
+              </td>
+              <td>₹{total.toFixed(2)}</td>
+            </tr>
+          </tfoot>
+        </table>
       </div>
-    );
-  };
+    </div>
+  );
+};
+
+
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -515,19 +544,18 @@ const Order = () => {
     seal
   ) => {
     const doc = new jsPDF();
-
+  
     // Add text instead of the logo
-if (logo) {
-  doc.setFontSize(10); // Set font size for the logo text
-  doc.setFont("helvetica", "bold"); // Optional: Set font style (bold)
-  doc.text("Rubberscrapmart", 6, 18); // Position the text (x, y coordinates)
-}
-
-
+    if (logo) {
+      doc.setFontSize(10); // Set font size for the logo text
+      doc.setFont("helvetica", "bold"); // Optional: Set font style (bold)
+      doc.text("Rubberscrapmart", 6, 18); // Position the text (x, y coordinates)
+    }
+  
     // Set font for header
     doc.setFontSize(8);
     doc.setFont("helvetica", "normal");
-
+  
     // Company address
     const companyAddress = [
       'Rubberscrapmart',
@@ -537,7 +565,7 @@ if (logo) {
       'Thane, Maharashtra, 400614',
       'GSTN : 27AAVFV4635R1ZY',
     ];
-
+  
     let addressYy = 9; // Adjusted starting Y to align with logo
     doc.text(companyAddress[0], 40, addressYy + 2); // Company Name
     doc.text(companyAddress[1], 40, addressYy + 5); // Street Address
@@ -545,14 +573,12 @@ if (logo) {
     doc.text(companyAddress[3], 40, addressYy + 11); // City, State, and Postal Code
     doc.text(companyAddress[4], 40, addressYy + 14); // City, State, and Postal Code
     doc.text(companyAddress[5], 40, addressYy + 17); // City, State, and Postal Code
-
-
-
+  
     // Invoice Title
     doc.setFontSize(16);
     doc.setFont("helvetica", "bold");
     doc.text("PROFORMA INVOICE", 115, addressYy + 1, { align: "center" });
-
+  
     // Order Date
     doc.setFontSize(10);
     doc.text(`Order Date: ${new Date().toLocaleDateString()}`, 190, 20, {
@@ -560,25 +586,25 @@ if (logo) {
     });
     doc.setDrawColor(0, 0, 0);
     doc.line(10, 30, 200, 30); // Underline
-
+  
     // Billing and Shipping Information
     doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
     doc.text("Bill To", 14, 35);
     doc.text("Ship To", 133, 35);
     doc.line(10, 38, 200, 38); // Underline
-
+  
     // Bill To Section
     const labelX = 14; // X position for the left side
     const colonX = labelX + 20; // X position for the colon alignment
     const valueX = colonX + 5; // X position for the values
     doc.setFontSize(10);
-
+  
     // Company Name
     doc.text("Company", labelX, 45);
     doc.text(":", colonX, 45);
     doc.text(profile.companyName || "N/A", valueX, 45);
-
+  
     // Address
     doc.text("Address", labelX, 50);
     doc.text(":", colonX, 50);
@@ -589,22 +615,22 @@ if (logo) {
     billingAddress.forEach((line, index) => {
       doc.text(line, valueX, 50 + index * 5);
     });
-
+  
     // Phone Number
     doc.text("Phone", labelX, 50 + billingAddress.length * 5);
     doc.text(":", colonX, 50 + billingAddress.length * 5);
     doc.text(profile.phoneNumber || "N/A", valueX, 50 + billingAddress.length * 5);
-
+  
     // Email
     doc.text("E-mail", labelX, 55 + billingAddress.length * 5);
     doc.text(":", colonX, 55 + billingAddress.length * 5);
     doc.text(profile.email || "N/A", valueX, 55 + billingAddress.length * 5);
-
+  
     // GST Number
     doc.text("GSTN", labelX, 60 + billingAddress.length * 5);
     doc.text(":", colonX, 60 + billingAddress.length * 5);
     doc.text(profile.gstNumber || "N/A", valueX, 60 + billingAddress.length * 5);
-
+  
     // Ship To Section
     const shipToColonX = labelX + 20; // Unique name for the second colonX
     let finalShippingAddress = "";
@@ -617,44 +643,42 @@ if (logo) {
       `${finalShippingAddress}`,
       60
     );
-
+  
     // Company Name
     doc.text("Company", labelX + 95, 45);
     doc.text(":", shipToColonX + 95, 45);
     doc.text(profile.companyName || "N/A", valueX + 95, 45);
-
+  
     // Address
     doc.text("Address", labelX + 95, 50);
     doc.text(":", shipToColonX + 95, 50);
     wrappedShippingAddress.forEach((line, index) => {
       doc.text(line, valueX + 95, 50 + index * 5);
     });
-
+  
     // Phone Number
     doc.text("Phone", labelX + 95, 50 + wrappedShippingAddress.length * 5);
     doc.text(":", shipToColonX + 95, 50 + wrappedShippingAddress.length * 5);
     doc.text(profile.phoneNumber || "N/A", valueX + 95, 50 + wrappedShippingAddress.length * 5);
-
+  
     // Email
     doc.text("E-mail", labelX + 95, 55 + wrappedShippingAddress.length * 5);
     doc.text(":", shipToColonX + 95, 55 + wrappedShippingAddress.length * 5);
     doc.text(profile.email || "N/A", valueX + 95, 55 + wrappedShippingAddress.length * 5);
-
+  
     // GST Number
     doc.text("GSTN", labelX + 95, 60 + wrappedShippingAddress.length * 5);
     doc.text(":", shipToColonX + 95, 60 + wrappedShippingAddress.length * 5);
     doc.text(profile.gstNumber || "N/A", valueX + 95, 60 + wrappedShippingAddress.length * 5);
-
+  
     const billingAddressHeight = 20 + billingAddress.length * 5;
     const shippingAddressHeight = 20 + wrappedShippingAddress.length * 5;
     const totalAddressHeight = Math.max(
       billingAddressHeight,
       shippingAddressHeight
     ); // Maximum of both addresses
-
-
-
-
+  
+  
     // Products Section
     let productsStartY = 50 + totalAddressHeight;
     doc.setFontSize(12);
@@ -662,24 +686,32 @@ if (logo) {
     doc.text("Products", 14, productsStartY);
     doc.setDrawColor(0, 0, 0);
     doc.line(10, productsStartY + 3, 200, productsStartY + 3); // Underline
-
-    const gstRate = profile.gstNumber && profile.gstNumber.startsWith("27") ? 0.09 : 0.18;
+  
+    // Calculate GST rate based on GST number
+    const gstRate = profile.gstNumber && profile.gstNumber.startsWith("27") 
+      ? { SGST: 0.09, CGST: 0.09, IGST: 0 } 
+      : { SGST: 0, CGST: 0, IGST: 0.18 };
+  
+    // Calculate subtotal
     const subtotalBase = [...baseItems, ...orderItems].reduce(
       (sum, item) => sum + (item.total || 0), 0
     ); // Ensure item.total is defined
     const subtotal = subtotalBase;
-
-    const gst = subtotal * gstRate;
-    const total = subtotal + gst;
+  
+    const gstSGST = subtotal * gstRate.SGST;
+    const gstCGST = subtotal * gstRate.CGST;
+    const gstIGST = subtotal * gstRate.IGST;
+    
+    const total = subtotal + gstSGST + gstCGST + gstIGST;
     const totalAmountInWords = numberToWords(total); // Ensure correct function call
-
+  
     // Combine items for both baseItems and orderItems
     const combinedItems = [
       ...baseItems,
       ...orderItems.map((item) => {
         const total = item.total || item.price * item.quantity; // Ensure total is calculated
-        const gst = total * gstRate; // GST calculation
-
+        const gst = gstRate.SGST > 0 ? gstSGST : gstIGST; // Use appropriate GST rate
+  
         return {
           sellerid: sellerid,
           name: item.name,
@@ -693,8 +725,7 @@ if (logo) {
         };
       }),
     ];
-
-
+  
     doc.autoTable({
       startY: productsStartY + 5,
       head: [
@@ -706,15 +737,16 @@ if (logo) {
           "HSN",
           "Quantity",
           "Subtotal",
-          "GST",
+          "Total GST ",
           "Total",
         ],
       ],
       body: combinedItems.map((item) => {
-        // Calculate GST if not provided
-        const gst = item.gst !== undefined ? item.gst : item.total * gstRate;
-        const totalWithGST = item.total + gst;
-
+        // Calculate GST (18%)
+        const gstRate = 0.18; // 18%
+        const gstAmount = item.total * gstRate; // GST amount
+        const totalWithGST = item.total + gstAmount; // Total with GST
+    
         return [
           sellerid,
           item.name,
@@ -722,47 +754,51 @@ if (logo) {
           item.loading_location, // Loading Location
           item.hsn,
           `${item.quantity} tons`,
-          `RS ${item.total.toFixed(2)}`,
-          `RS ${gst.toFixed(2)}`, // Use the calculated GST value
-          `RS ${totalWithGST.toFixed(2)}`, // Total including GST
+          `RS ${item.total.toFixed(2)}`, // Subtotal (before GST)
+          `RS ${gstAmount.toFixed(2)}`, // GST (18%)
+          `RS ${totalWithGST.toFixed(2)}`, // Total after adding GST
         ];
       }),
       theme: "striped",
       styles: { fontSize: 8 },
     });
-
-
+    
+  
+  
     // Second Table for Total Amounts
     const firstTableFinalY = doc.lastAutoTable.finalY + 5;
     const secondTableStartY = firstTableFinalY + 2;
-    const gstRateText = gstRate === 0.09 ? "9%" : "18%"; // Dynamically decide whether it's 9% or 18%
-
-doc.autoTable({
-  startY: secondTableStartY,
-  head: [["Description", "Amount"]],
-  body: [
-    ["Taxable value", `RS ${subtotal.toFixed(2)}`],
-    [`Total GST (${gstRateText})`, `RS ${gst.toFixed(2)}`], // Use dynamic GST label
-    ["Total", `RS ${total.toFixed(2)}`],
-  ],
-  theme: "grid",
-  styles: {
-    fontSize: 8,
-    cellPadding: 2,
-  },
-  columnStyles: {
-    0: { cellWidth: 80, halign: "left" },
-    1: { cellWidth: 40, halign: "right" },
-  },
-  headStyles: {
-    fontSize: 9,
-    fontStyle: "bold",
-    fillColor: [240, 240, 240],
-    textColor: [0, 0, 0],
-  },
-});
-
-
+    const gstRateText = gstRate.SGST > 0 ? "9% each (SGST & CGST)" : "18% (IGST)"; // Dynamically decide whether it's SGST+CGST or IGST
+  
+    doc.autoTable({
+      startY: secondTableStartY,
+      head: [["Description", "Amount"]],
+      body: [
+        ["Taxable value", `RS ${subtotal.toFixed(2)}`],
+        // Check if the GST number starts with "27" (for SGST + CGST) or else IGST
+        profile.gstNumber && profile.gstNumber.startsWith("27")
+          ? [`Total GST (SGST & CGST)`, `RS ${gstSGST.toFixed(2)} (SGST) + RS ${gstCGST.toFixed(2)} (CGST)`]
+          : [`Total GST (IGST)`, `RS ${gstIGST.toFixed(2)} (IGST)`],
+        ["Total", `RS ${total.toFixed(2)}`],
+      ],
+      theme: "grid",
+      styles: {
+        fontSize: 8,
+        cellPadding: 2,
+      },
+      columnStyles: {
+        0: { cellWidth: 80, halign: "left" },
+        1: { cellWidth: 40, halign: "right" },
+      },
+      headStyles: {
+        fontSize: 9,
+        fontStyle: "bold",
+        fillColor: [240, 240, 240],
+        textColor: [0, 0, 0],
+      },
+    });
+    
+  
     // Total Amount in Words and Total Balance
     const totalAmountY = doc.lastAutoTable.finalY + 10;
     doc.text(
@@ -771,7 +807,7 @@ doc.autoTable({
       totalAmountY
     );
     doc.text(`Total Balance : Rs ${total.toFixed(2)}`, 14, totalAmountY + 8);
-
+  
     // Banking Details
     const addressY = totalAmountY + 18;
     const bankingY = addressY;
@@ -802,7 +838,7 @@ doc.autoTable({
     doc.text("Branch", bankingStartX, bankingY + 35);
     doc.text(":", colonXForBanking, bankingY + 35);
     doc.text("NERUL BRANCH", bankingStartX + 60, bankingY + 35);
-
+  
     // Terms and Conditions
     const termsY = bankingY + 45;
     doc.setFont("helvetica", "bold");
@@ -821,17 +857,19 @@ doc.autoTable({
       doc.text(line, 14, yOffset);
       yOffset += 5; // Adjust for next line
     });
+  
+// Seal Position Adjustment
+if (seal) {
+  const imageY = yOffset - 10; // Move the seal up by 10 units
+  const imageWidth = 80;
+  const imageHeight = 80;
+  doc.addImage(seal, "PNG", 100, imageY, imageWidth, imageHeight); // Adjust position and size
+}
 
-    // Seal Position Adjustment
-    if (seal) {
-      const imageY = yOffset + 0;
-      const imageWidth = 80;
-      const imageHeight = 80;
-      doc.addImage(seal, "PNG", 100, imageY, imageWidth, imageHeight); // Adjust position and size
-    }
-
+  
     return doc.output("blob");
   };
+  
 
   const handleOrder = async () => {
     try {

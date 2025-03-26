@@ -1,4 +1,3 @@
-// routes/Contactus.js
 const express = require('express');
 const nodemailer = require('nodemailer');
 const Contact = require('../models/Contactus'); // Import the Contact model
@@ -15,19 +14,25 @@ router.post('/contact', async (req, res) => {
 
     // Configure Nodemailer
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: 'smtp.hostinger.com',
+      port: 587, // Use port 465 if using SSL
+      secure: false, // Use true for SSL (465), false for TLS (587)
       auth: {
-        user: process.env.ADMIN_EMAIL,
-        pass: process.env.EMAIL_PASS
-      }
+        user: process.env.EMAIL_USER, // Full email address (info@rubberscrapmart.com)
+        pass: process.env.EMAIL_PASS, // Email password
+      },
+      tls: {
+        rejectUnauthorized: false, // To handle self-signed certificates if needed
+      },
     });
 
     // Email options
     const mailOptions = {
-      from: email,
-      to: process.env.ADMIN_EMAIL,
+      from: process.env.EMAIL_USER, // Send from the authenticated email address
+      to: process.env.ADMIN_EMAIL,  // Admin email to receive the contact form
       subject: 'New Contact Form Submission',
-      text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`
+      text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
+      replyTo: email,  // Reply to the user's email address
     };
 
     // Send the email

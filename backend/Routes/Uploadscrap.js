@@ -184,162 +184,226 @@ router.get("/getuploadedscrap", async (req, res) => {
 });
 
 
+// const transporter = nodemailer.createTransport({
+//     service: "Gmail",
+//     auth: {
+//       user: process.env.EMAIL_USER,
+//       pass: process.env.EMAIL_PASS,
+//     },
+//     tls: {
+//       rejectUnauthorized: false, // This allows the use of self-signed certificates
+//     },
+//   });
+
+
+// Configure the transporter with Hostinger's SMTP settings
 const transporter = nodemailer.createTransport({
-    service: "Gmail",
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-    tls: {
-      rejectUnauthorized: false, // This allows the use of self-signed certificates
-    },
-  });
+  host: 'smtp.hostinger.com',
+  port: 587, // Use port 465 if using SSL
+  secure: false, // Use true for SSL (465), false for TLS (587)
+  auth: {
+    user: process.env.EMAIL_USER, // Full email address
+    pass: process.env.EMAIL_PASS, // Email password
+  },
+  tls: {
+    rejectUnauthorized: false, // To handle self-signed certificates if needed
+  },
+});
+
+// Send test email to verify setup
+transporter.verify((error, success) => {
+  if (error) {
+    console.error('SMTP Server Error:', error);
+  } else {
+    console.log('SMTP Server is ready to take messages');
+  }
+});
+
   
+
   
-  router.post("/approveScrap/:id", async (req, res) => {
-    const session = await mongoose.startSession();
-    session.startTransaction();
-  
-    try {
-      const uploadedScrap = await Uploadscrap.findById(req.params.id).session(session);
-      if (!uploadedScrap) {
-        await session.abortTransaction();
-        session.endSession();
-        return res.status(404).json({ message: "Scrap item not found" });
-      }
-  
-      const {
+router.post("/approveScrap/:id", async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const uploadedScrap = await Uploadscrap.findById(req.params.id).session(session);
+    if (!uploadedScrap) {
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(404).json({ message: "Scrap item not found" });
+    }
+
+    const {
+      material,
+      application,
+      quantity,
+      email,
+      companyName,
+      price,
+      loadingLocation,
+      countryOfOrigin,
+      description,
+      images,
+    } = uploadedScrap;
+
+    if (!images || images.length === 0) {
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(400).json({ message: "No images provided in uploaded scrap." });
+    }
+
+    // Process images from Buffer to base64
+    const imageBuffers = images
+      .map((image) => {
+        if (image.data) {
+          const base64Image = image.data.toString("base64");
+          return {
+            contentType: image.contentType,
+            data: Buffer.from(base64Image, "base64"),
+          };
+        }
+        return null;
+      })
+      .filter((image) => image !== null);
+
+    if (imageBuffers.length === 0) {
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(400).json({ message: "No valid images found in uploaded scrap." });
+    }
+
+    // Check if an approval with the same material, application, price, loadingLocation, countryOfOrigin, companyName, and email already exists
+    const existingApproval = await Approval.findOne({
+      material,
+      application,
+      price,
+      loadingLocation,
+      countryOfOrigin,
+      companyName,
+      email,
+    }).session(session);
+
+    let approval;
+
+    if (existingApproval) {
+      // If an approval exists, just update the quantity
+      existingApproval.quantity += quantity;
+      await existingApproval.save({ session });
+
+      // Remove the approved scrap item from Uploadscrap collection
+      await Uploadscrap.findByIdAndDelete(req.params.id).session(session);
+
+      approval = existingApproval;
+    } else {
+      // If no existing approval, create a new approval record
+      approval = new Approval({
+        scrapItem: uploadedScrap._id,
+        postedBy: uploadedScrap.user,
         material,
         application,
         quantity,
-        email,
         companyName,
+        email,
         price,
         loadingLocation,
         countryOfOrigin,
         description,
-        images,
-      } = uploadedScrap;
-  
-      if (!images || images.length === 0) {
-        await session.abortTransaction();
-        session.endSession();
-        return res.status(400).json({ message: "No images provided in uploaded scrap." });
-      }
-  
-      // Process images from Buffer to base64
-      const imageBuffers = images
-        .map((image) => {
-          if (image.data) {
-            const base64Image = image.data.toString("base64");
-            return {
-              contentType: image.contentType,
-              data: Buffer.from(base64Image, "base64"),
-            };
-          }
-          return null;
-        })
-        .filter((image) => image !== null);
-  
-      if (imageBuffers.length === 0) {
-        await session.abortTransaction();
-        session.endSession();
-        return res.status(400).json({ message: "No valid images found in uploaded scrap." });
-      }
-  
-      // Check if an approval with the same material, application, price, loadingLocation, countryOfOrigin, companyName, and email already exists
-      const existingApproval = await Approval.findOne({
-        material,
-        application,
-        price,
-        loadingLocation,
-        countryOfOrigin,
-        companyName,
-        email,
-      }).session(session);
-  
-      let approval;
-  
-      if (existingApproval) {
-        // If an approval exists, just update the quantity
-        existingApproval.quantity += quantity;
-        await existingApproval.save({ session });
-  
-        // Remove the approved scrap item from Uploadscrap collection
-        await Uploadscrap.findByIdAndDelete(req.params.id).session(session);
-  
-        approval = existingApproval;
+        images: imageBuffers,
+      });
+
+      await approval.save({ session });
+
+      // Remove approved scrap item from Uploadscrap collection
+      await Uploadscrap.findByIdAndDelete(req.params.id).session(session);
+    }
+
+    // Commit the transaction only after success
+    await session.commitTransaction();
+    session.endSession();
+
+    // Send approval email to the user
+    const mailOptions = {
+      from: `"Rubberscrapmart" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: "Scrap Approval Confirmation",
+      html: `
+        <h1>Scrap Item Approved</h1>
+        <p>Dear ${companyName},</p>
+        <p>Your scrap item with the following details has been successfully approved:</p>
+        <ul>
+          <li><strong>Material:</strong> ${material}</li>
+          <li><strong>Application:</strong> ${application}</li>
+          <li><strong>Quantity:</strong> ${quantity}</li>
+          <li><strong>Price:</strong> ${price}</li>
+          <li><strong>Loading Location:</strong> ${loadingLocation}</li>
+          <li><strong>Country of Origin:</strong> ${countryOfOrigin}</li>
+        </ul>
+        <p>Thank you for your submission!</p>
+        <p>Best regards,<br/>Your Scrap Approval Team</p>
+      `,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Error sending approval email:", error);
       } else {
-        // If no existing approval, create a new approval record
-        approval = new Approval({
-          scrapItem: uploadedScrap._id,
-          postedBy: uploadedScrap.user,
-          material,
-          application,
-          quantity,
-          companyName,
-          email,
-          price,
-          loadingLocation,
-          countryOfOrigin,
-          description,
-          images: imageBuffers,
-        });
-  
-        await approval.save({ session });
-  
-        // Remove approved scrap item from Uploadscrap collection
-        await Uploadscrap.findByIdAndDelete(req.params.id).session(session);
+        console.log("Approval confirmation email sent:", info.response);
       }
-  
-      // Commit the transaction only after success
-      await session.commitTransaction();
-      session.endSession();
-  
-      // Send the approval confirmation email after successful commit
-      const mailOptions = {
-        from: '"Rubberscrapmart" <' + process.env.EMAIL_USER + '>', 
-        to: email, // recipient's email address
-        subject: "Scrap Approval Confirmation", // email subject
-        html: `
-          <h1>Scrap Item Approved</h1>
-          <p>Dear ${companyName},</p>
-          <p>Your scrap item with the following details has been successfully approved:</p>
-          <ul>
-            <li><strong>Material:</strong> ${material}</li>
-            <li><strong>Application:</strong> ${application}</li>
-            <li><strong>Quantity:</strong> ${quantity}</li>
-            <li><strong>Price:</strong> ${price}</li>
-            <li><strong>Loading Location:</strong> ${loadingLocation}</li>
-            <li><strong>Country of Origin:</strong> ${countryOfOrigin}</li>
-          </ul>
-          <p>Thank you for your submission!</p>
-          <p>Best regards,<br/>Your Scrap Approval Team</p>
-        `,
-      };
-  
-      // Send the email asynchronously, but don't wait for it here
-      transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          console.error("Error sending approval email:", error);
-        } else {
-          console.log("Approval confirmation email sent:", info.response);
+    });
+
+    // Now, match the application's selected products and notify users
+    const users = await User.find({ "businessProfiles.selectedProducts": application });
+
+    users.forEach(user => {
+      user.businessProfiles.forEach(profile => {
+        if (profile.selectedProducts.includes(application)) {
+          // Send email to the user about the new scrap item
+          const notificationMailOptions = {
+            from: `"Rubberscrapmart" <${process.env.EMAIL_USER}>`,
+            to: user.email,
+            subject: "New Scrap Item Application Match",
+            html: `
+              <h1>New Scrap Item Application</h1>
+              <p>Dear ${user.name},</p>
+              <p>A new scrap item with the following details has been approved and matches your selected product:</p>
+              <ul>
+                <li><strong>Material:</strong> ${material}</li>
+                <li><strong>Application:</strong> ${application}</li>
+                <li><strong>Quantity:</strong> ${quantity}</li>
+                <li><strong>Price:</strong> ${price}</li>
+                <li><strong>Loading Location:</strong> ${loadingLocation}</li>
+                <li><strong>Country of Origin:</strong> ${countryOfOrigin}</li>
+              </ul>
+              <p>Thank you for using Rubberscrapmart!</p>
+              <p>Best regards,<br/>Your Scrap Approval Team</p>
+            `,
+          };
+
+          transporter.sendMail(notificationMailOptions, (error, info) => {
+            if (error) {
+              console.error("Error sending notification email:", error);
+            } else {
+              console.log("Notification email sent to user:", info.response);
+            }
+          });
         }
       });
-  
-      // Send the response to the frontend after committing the transaction
-      return res.status(200).json({
-        message: "Scrap approved and images saved.",
-        approvedScrap: approval,
-      });
-    } catch (error) {
-      // Abort the transaction and end the session in case of error
-      await session.abortTransaction();
-      session.endSession();
-      console.error("Error approving scrap item:", error);
-      res.status(500).json({ message: "Server Error" });
-    }
-  });
+    });
+
+    return res.status(200).json({
+      message: "Scrap approved, images saved, and notification sent to users.",
+      approvedScrap: approval,
+    });
+  } catch (error) {
+    // Abort the transaction and end the session in case of error
+    await session.abortTransaction();
+    session.endSession();
+    console.error("Error approving scrap item:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
   
 
 

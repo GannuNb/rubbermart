@@ -62,4 +62,5 @@ const UploadscrapSchema = new Schema({
     }
 });
 
+
 module.exports = mongoose.model('Uploadscrap', UploadscrapSchema);

@@ -113,6 +113,15 @@ function Adminnav() {
                     <b>Payments</b>
                   </Link>
                 </li>
+                <li className="nav-item mx-2">
+                  <Link
+                    className="nav-link nav-hover"
+                    to="/Adminusers"
+                    onClick={() => setIsNavbarCollapsed(true)}
+                  >
+                    <b>Users</b>
+                  </Link>
+                </li>
                 {/* Conditional rendering of the Logout button */}
                 {isAuthenticated && (
                   <li className="nav-item mx-2">

@@ -275,6 +275,8 @@ body {
   min-width: 150px;
   max-width: 300px;
   margin-left: 25%;
+  border-color: #d71414;
+  border: 1px solid rgb(105, 88, 216);
 }
 
 
@@ -394,4 +396,10 @@ body {
 
 .bgcompany{
   background-color: #192e4d !important;
+}
+
+
+.boldfornavtext{
+  color: #0e0146;
+  font-weight: 300;
 }

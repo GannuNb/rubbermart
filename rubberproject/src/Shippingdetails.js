@@ -196,8 +196,8 @@ function ShippingDetails() {
   
   const generatePDF = (order) => {
     const doc = new jsPDF();
-    
-  if (logo) {
+  
+    if (logo) {
       doc.setFontSize(9); // Set font size for the logo text
       doc.setFont("helvetica", "bold"); // Optional: Set font style (bold)
       doc.text("Rubberscrapmart", 5, 18); // Position the text (x, y coordinates)
@@ -208,7 +208,7 @@ function ShippingDetails() {
     doc.setFont('helvetica', 'normal');
   
     const addressDetails = `Rubberscrapmart\nGround Floor, Office No-52/ Plot No-44,\nSai Chamber CHS Wing A, Sector -11,\nSai Chambers, CBD Belapur, Navi Mumbai,\nThane, Maharashtra, 400614,GSTN : 27AAVFV4635R1ZY`;
-
+  
     const addressLines = doc.splitTextToSize(addressDetails, 130); // Increased width to 140 for more room
     addressLines.forEach((line, index) => {
       doc.text(line, 34, 12 + index * 3); // Adjusted left margin and line height
@@ -247,57 +247,56 @@ function ShippingDetails() {
     doc.setDrawColor(0, 0, 0); // Set line color (black)
     doc.line(10, 25, 200, 25);
   
- // Billing, Shipping, and Shipment From Information
-doc.setFontSize(10);
-doc.setFont('helvetica', 'bold');
-
-// Column headers
-doc.text('Bill To', 14, 35);
-doc.text('Ship To', 90, 35); // Adjusted position to the left
-doc.text('Ship From', 150, 35); // Adjusted position to the left
-
-// Set the font for the details
-doc.setFontSize(8);
-doc.setFont('helvetica', 'normal');
-
-let billingY = 45;
-let shippingY = 45;
-let shipmentFromY = 45;
-
-const labelX = 14; // Starting X-position for labels in the first column
-const colonX = 30; // Reduced space closer to the label
-const valueX = 32; // Reduced space closer to the colon
-
-const shippingOffsetX = 90; // Adjusted Ship To horizontal offset
-const shipmentFromOffsetX = 150; // Adjusted Shipment From horizontal offset
-
-// Billing Info (updated order)
-if (profile) {
-  doc.text('Company', labelX, billingY);
-  doc.text(':', colonX, billingY);
-  doc.text(`${profile.companyName || 'N/A'}`, valueX, billingY);
-
-  const billingAddress = profile.billAddress || 'N/A';
-  const billingAddressLines = doc.splitTextToSize(billingAddress, 50);
-  doc.text('Address', labelX, billingY + 5);
-  doc.text(':', colonX, billingY + 5);
-  doc.text(billingAddressLines, valueX, billingY + 5);
-
-  doc.text('Phone', labelX, billingY + 5 + billingAddressLines.length * 5);
-  doc.text(':', colonX, billingY + 5 + billingAddressLines.length * 5);
-  doc.text(`${profile.phoneNumber || 'N/A'}`, valueX, billingY + 5 + billingAddressLines.length * 5);
-
-  doc.text('E-mail', labelX, billingY + 10 + billingAddressLines.length * 5);
-  doc.text(':', colonX, billingY + 10 + billingAddressLines.length * 5);
-  doc.text(`${profile.email || 'N/A'}`, valueX, billingY + 10 + billingAddressLines.length * 5);
-
-  doc.text('GSTN', labelX, billingY + 15 + billingAddressLines.length * 5);
-  doc.text(':', colonX, billingY + 15 + billingAddressLines.length * 5);
-  doc.text(`${profile.gstNumber || 'N/A'}`, valueX, billingY + 15 + billingAddressLines.length * 5);
-
-  billingY += (15 + billingAddressLines.length * 5 + 20);
-}
-
+    // Billing, Shipping, and Shipment From Information
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+  
+    // Column headers
+    doc.text('Bill To', 14, 35);
+    doc.text('Ship To', 90, 35); // Adjusted position to the left
+    doc.text('Ship From', 150, 35); // Adjusted position to the left
+  
+    // Set the font for the details
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+  
+    let billingY = 45;
+    let shippingY = 45;
+    let shipmentFromY = 45;
+  
+    const labelX = 14; // Starting X-position for labels in the first column
+    const colonX = 30; // Reduced space closer to the label
+    const valueX = 32; // Reduced space closer to the colon
+  
+    const shippingOffsetX = 90; // Adjusted Ship To horizontal offset
+    const shipmentFromOffsetX = 150; // Adjusted Shipment From horizontal offset
+  
+    // Billing Info (updated order)
+    if (profile) {
+      doc.text('Company', labelX, billingY);
+      doc.text(':', colonX, billingY);
+      doc.text(`${profile.companyName || 'N/A'}`, valueX, billingY);
+  
+      const billingAddress = profile.billAddress || 'N/A';
+      const billingAddressLines = doc.splitTextToSize(billingAddress, 50);
+      doc.text('Address', labelX, billingY + 5);
+      doc.text(':', colonX, billingY + 5);
+      doc.text(billingAddressLines, valueX, billingY + 5);
+  
+      doc.text('Phone', labelX, billingY + 5 + billingAddressLines.length * 5);
+      doc.text(':', colonX, billingY + 5 + billingAddressLines.length * 5);
+      doc.text(`${profile.phoneNumber || 'N/A'}`, valueX, billingY + 5 + billingAddressLines.length * 5);
+  
+      doc.text('E-mail', labelX, billingY + 10 + billingAddressLines.length * 5);
+      doc.text(':', colonX, billingY + 10 + billingAddressLines.length * 5);
+      doc.text(`${profile.email || 'N/A'}`, valueX, billingY + 10 + billingAddressLines.length * 5);
+  
+      doc.text('GSTN', labelX, billingY + 15 + billingAddressLines.length * 5);
+      doc.text(':', colonX, billingY + 15 + billingAddressLines.length * 5);
+      doc.text(`${profile.gstNumber || 'N/A'}`, valueX, billingY + 15 + billingAddressLines.length * 5);
+  
+      billingY += (15 + billingAddressLines.length * 5 + 20);
+    }
   
     // Shipping Info
     const shippingAddress = order.orderId.shippingAddress || 'N/A';
@@ -419,18 +418,6 @@ if (profile) {
   };
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-
-  
-
   return (
     <div className="setter">
       <div className="container mt-5">
@@ -450,77 +437,95 @@ if (profile) {
                         <th>Vehicle Number</th>
                         <th>Product</th>
                         <th>Shipped Quantity</th>
-                        <th>Total  Quantity</th>
+                        <th>Total Quantity</th>
                         <th>Remaining Quantity</th>
                         <th>Email</th>
                         <th>Item Prices</th>
                         <th>Subtotal</th>
-                        <th>GST</th>
+                        <th>Total GST</th>
                         <th>Total Price</th>
-                      
                         <th>Shipping Date</th>
                         <th>E-Way Bill</th>
                         <th>Invoice</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {groupedByOrder[orderId].map((detail, index) => (
-                        <tr key={detail._id}>
-                          <td>{detail.orderId?._id || 'N/A'}</td>
-                          <td>{detail.invoiceId || 'N/A'}</td>
-                          <td>{detail.vehicleNumber}</td>
-                          <td>{detail.selectedProduct}</td>
-                          <td>{detail.quantity}</td>
-                          <td>
-                            {detail.itemDetails?.find((item) => item.name === detail.selectedProduct)?.quantity || 'N/A'}
-                          </td>
-                          <td>
-                            {detail.itemDetails?.find((item) => item.name === detail.selectedProduct)
-                              ? detail.itemDetails.find((item) => item.name === detail.selectedProduct).quantity -
-                                groupedByOrder[orderId]
-                                  .filter((ship) => ship.selectedProduct === detail.selectedProduct)
-                                  .reduce((sum, ship) => sum + ship.quantity, 0)
-                              : 'N/A'}
-                          </td>
-                          <td>{detail.email}</td>
-                          <td>
-                            ₹
-                            {detail.itemDetails
-                              ?.filter((item) => item.name === detail.selectedProduct)
-                              .map((item) => item.price.toFixed(2))
-                              .join(', ')}
-                          </td>
-                          <td>₹{detail.subtotal.toFixed(2)}</td>
-                          <td>₹{detail.gst.toFixed(2)}</td>
-                          <td>₹{detail.totalPrice.toFixed(2)}</td>
-                          {/* <td>{detail.shipmentFrom ? detail.shipmentFrom : 'N/A'}</td>   */}
-                         
-                          <td>{new Date(detail.shippingDate).toLocaleDateString()}</td>
-                          <td>
-                            {detail.billPdf?.base64 ? (
-                              <button
-                                className="btn btn-info"
-                                onClick={() => {
-                                  const link = document.createElement('a');
-                                  link.href = `data:${detail.billPdf.contentType};base64,${detail.billPdf.base64}`;
-                                  link.download = `bill_${orderId}_${index}.pdf`;
-                                  link.click();
-                                }}
-                              >
-                                pdf
-                              </button>
-                            ) : (
-                              <p>No Bill PDF</p>
-                            )}
-                          </td>
-                          <td>
-                          
+                      {groupedByOrder[orderId].map((detail, index) => {
+                        // Determine GST and calculate GST value for each item
+                        const isCGSTSGST = detail.gstNumber && detail.gstNumber.startsWith("27"); // Check if CGST+SGST applies
+                        const subtotal = detail.subtotal; // Assuming subtotal is already calculated
+                        let gstAmount = 0;
+                        let gstType = '';
+  
+                        // Calculate GST amount and type
+                        if (isCGSTSGST) {
+                          gstAmount = subtotal * 0.18; // 9% CGST + 9% SGST
+                          gstType = "CGST (9%) + SGST (9%)";
+                        } else {
+                          gstAmount = subtotal * 0.18; // 18% IGST
+                          gstType = "IGST (18%)";
+                        }
+  
+                        const totalPrice = subtotal + gstAmount; // Total price after GST
+                        return (
+                          <tr key={detail._id}>
+                            <td>{detail.orderId?._id || 'N/A'}</td>
+                            <td>{detail.invoiceId || 'N/A'}</td>
+                            <td>{detail.vehicleNumber}</td>
+                            <td>{detail.selectedProduct}</td>
+                            <td>{detail.quantity}</td>
+                            <td>
+                              {detail.itemDetails?.find((item) => item.name === detail.selectedProduct)?.quantity || 'N/A'}
+                            </td>
+                            <td>
+                              {detail.itemDetails?.find((item) => item.name === detail.selectedProduct)
+                                ? detail.itemDetails.find((item) => item.name === detail.selectedProduct).quantity -
+                                  groupedByOrder[orderId]
+                                    .filter((ship) => ship.selectedProduct === detail.selectedProduct)
+                                    .reduce((sum, ship) => sum + ship.quantity, 0)
+                                : 'N/A'}
+                            </td>
+                            <td>{detail.email}</td>
+                            <td>
+                              ₹
+                              {detail.itemDetails
+                                ?.filter((item) => item.name === detail.selectedProduct)
+                                .map((item) => item.price.toFixed(2))
+                                .join(', ')}
+                            </td>
+                            <td>₹{subtotal.toFixed(2)}</td>
+                            
+                            {/* Display GST amount (calculated dynamically) */}
+                            <td>₹{gstAmount.toFixed(2)}</td>
+  
+                            <td>₹{totalPrice.toFixed(2)}</td>
+  
+                            <td>{new Date(detail.shippingDate).toLocaleDateString()}</td>
+                            <td>
+                              {detail.billPdf?.base64 ? (
+                                <button
+                                  className="btn btn-info"
+                                  onClick={() => {
+                                    const link = document.createElement('a');
+                                    link.href = `data:${detail.billPdf.contentType};base64,${detail.billPdf.base64}`;
+                                    link.download = `bill_${orderId}_${index}.pdf`;
+                                    link.click();
+                                  }}
+                                >
+                                  pdf
+                                </button>
+                              ) : (
+                                <p>No Bill PDF</p>
+                              )}
+                            </td>
+                            <td>
                               <button className="btn btn-primary" onClick={() => generatePDF(detail)}>
                                 <FaFilePdf /> {/* Display PDF icon */}
                               </button>
-                    </td>
-                        </tr>
-                      ))}
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
@@ -531,6 +536,14 @@ if (profile) {
       </div>
     </div>
   );
+  
+  
+  
+  
+  
+  
+  
+  
 }
 
 export default ShippingDetails;

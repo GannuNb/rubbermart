@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-const BusinessProfileCounter = require('./BusinessProfileCounter');
-
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -22,7 +20,7 @@ const UserSchema = new mongoose.Schema({
     },
     businessProfiles: [
         {
-            profileId: { type: String, required: true }, // Add the profileId field
+            profileId: { type: String, required: true },
             registeredgst: { type: String, required: true },
             companyName: { type: String, required: true },
             phoneNumber: { type: String, required: true },
@@ -31,6 +29,17 @@ const UserSchema = new mongoose.Schema({
             pan: { type: String, required: true },
             billAddress: { type: String, required: true },
             shipAddress: { type: String, required: true },
+            gstCertificate: {
+                file: { type: Buffer, required: true },
+                fileName: { type: String, required: true },
+                fileType: { type: String, required: true },
+            },
+            panCertificate: {
+                file: { type: Buffer, required: true },
+                fileName: { type: String, required: true },
+                fileType: { type: String, required: true },
+            },
+            selectedProducts: { type: [String] },  // Array of selected products
         }
     ],
     resetToken: { type: String },
@@ -43,5 +52,6 @@ UserSchema.pre('save', function(next) {
     }
     next();
 });
+
 
 module.exports = mongoose.model('User', UserSchema);

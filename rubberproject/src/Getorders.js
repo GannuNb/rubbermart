@@ -185,39 +185,34 @@ const Getorders = () => {
     const doc = new jsPDF();
 
     if (logo) {
-      doc.setFontSize(10); // Set font size for the logo text
-      doc.setFont("helvetica", "bold"); // Optional: Set font style (bold)
-      doc.text("Rubberscrapmart", 5, 24); // Position the text (x, y coordinates)
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "bold");
+        doc.text("Rubberscrapmart", 5, 24);
     }
 
-// Vikah Rubbers Address
-doc.setFontSize(7);
-doc.setFont('helvetica', 'normal');
-const companyAddress = [
-    'Rubberscrapmart',
-    'Ground Floor, Office No-52/ Plot No-44,',
-    'Sai Chamber CHS Wing A, Sector -11',
-    'Sai Chambers, CBD Belapur, Navi Mumbai,',
-    'Thane, Maharashtra, 400614',
-    'GSTN : 27AAVFV4635R1ZY',
+    doc.setFontSize(7);
+    doc.setFont('helvetica', 'normal');
+    const companyAddress = [
+        'Rubberscrapmart',
+        'Ground Floor, Office No-52/ Plot No-44,',
+        'Sai Chamber CHS Wing A, Sector -11',
+        'Sai Chambers, CBD Belapur, Navi Mumbai,',
+        'Thane, Maharashtra, 400614',
+        'GSTN : 27AAVFV4635R1ZY',
+    ];
 
-];
+    let addressY = 12;
+    doc.text(companyAddress[0], 40, addressY + 4);
+    doc.text(companyAddress[1], 40, addressY + 8);
+    doc.text(companyAddress[2], 40, addressY + 12);
+    doc.text(companyAddress[3], 40, addressY + 16);
+    doc.text(companyAddress[4], 40, addressY + 20);
+    doc.text(companyAddress[5], 40, addressY + 24);
 
-let addressY = 12;
-doc.text(companyAddress[0], 40, addressY + 4);
-doc.text(companyAddress[1], 40, addressY + 8);
-doc.text(companyAddress[2], 40, addressY + 12);
-doc.text(companyAddress[3], 40, addressY + 16);
-doc.text(companyAddress[4], 40, addressY + 20);
-doc.text(companyAddress[5], 40, addressY + 24); // City, State, and Postal Code
-
-
-    // PROFORMA INVOICE Heading
     doc.setFontSize(16);
     doc.setFont('helvetica', 'bold');
     doc.text('PROFORMA INVOICE', 105, addressY + 1, { align: 'center' });
 
-    // Order ID and Date
     doc.setFontSize(8);
     const formattedDate = new Date(order.orderDate).toLocaleDateString();
     const orderLabelX = 160, colonX = 175, valueX = 180;
@@ -230,10 +225,8 @@ doc.text(companyAddress[5], 40, addressY + 24); // City, State, and Postal Code
     doc.text(`:`, colonX, addressY + 10);
     doc.text(`${formattedDate}`, valueX, addressY + 10);
 
-    // Line separator
     doc.line(10, addressY + 25, 200, addressY + 25);
 
-    // Billing and Shipping Information
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
     doc.text('Bill To', 14, addressY + 30);
@@ -307,36 +300,93 @@ doc.text(companyAddress[5], 40, addressY + 24); // City, State, and Postal Code
 
     const contentY = Math.max(billingY, shippingY);
 
-    // Order Details Section
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
     doc.text('Order Details', 14, contentY);
-    doc.line(10, contentY + 3, 200, contentY + 3); // Line after Order Details section
+    doc.line(10, contentY + 3, 200, contentY + 3);
 
-    // Calculate totals
+    // Initialize totalGST and subtotal
+    let totalGST = 0;
     let subtotal = 0;
+
     order.items.forEach((item) => {
         subtotal += item.quantity * item.price;
     });
 
-    // Determine GST rate based on GST number
-    const gstRate = profile.gstNumber && profile.gstNumber.startsWith('27') ? 0.09 : 0.18;
-    const gst = subtotal * gstRate;
-    const total = subtotal + gst;
+    // GST calculation based on GST number
+    let gstRate = 0;
+    let cgstAmount = 0;
+    let sgstAmount = 0;
+    let igstAmount = 0;
+    let taxHeading = '';
+
+    if (profile.gstNumber && profile.gstNumber.startsWith('27')) {
+        // Apply CGST + SGST if GST number starts with 27 (9% each)
+        gstRate = 0.18; // Total GST is 18%
+        cgstAmount = subtotal * 0.09;  // 9% CGST
+        sgstAmount = subtotal * 0.09;  // 9% SGST
+        taxHeading = 'CGST + SGST';
+    } else {
+        // Apply IGST (18%)
+        gstRate = 0.18;  // Total GST is 18%
+        igstAmount = subtotal * 0.18;
+        taxHeading = 'IGST';
+    }
+
+    // Calculate GST for each item and accumulate the totalGST
+    let accumulatedGST = 0;
+
+    order.items.forEach((item) => {
+        const itemSubtotal = item.quantity * item.price;
+        let gstAmount = 0;
+
+        if (gstRate === 0.18) {
+            // For CGST + SGST (9% + 9% = 18%)
+            const cgst = itemSubtotal * 0.09;
+            const sgst = itemSubtotal * 0.09;
+            gstAmount = cgst + sgst;  // Total GST is 18% of the subtotal
+        } else {
+            // For IGST (18%)
+            gstAmount = itemSubtotal * 0.18;
+        }
+
+        accumulatedGST += gstAmount;  // Accumulate the GST
+    });
+
+    const total = subtotal + accumulatedGST;
 
     // Table for order details
     doc.autoTable({
         startY: contentY + 5,
-        head: [['Order ID', 'Item Name', 'Qty (tons)', 'Price/Ton', 'Subtotal', 'GST', 'Total']],
-        body: order.items.map((item) => [
-            order._id,
-            item.name,
-            `${item.quantity} tons`,
-            `${item.price.toFixed(2)}`,
-            `${(item.quantity * item.price).toFixed(2)}`,
-            `${(item.quantity * item.price * gstRate).toFixed(2)}`,
-            `${(item.quantity * item.price * (1 + gstRate)).toFixed(2)}`,
-        ]),
+        head: [['Order ID', 'Item Name', 'Qty (tons)', 'Price/Ton', 'Subtotal', taxHeading, 'Total']],
+        body: order.items.map((item) => {
+            const itemSubtotal = item.quantity * item.price;
+
+            let gstAmount = 0;
+            let totalWithTax = 0;
+
+            if (gstRate === 0.18) {
+                // For CGST + SGST (9% + 9% = 18%)
+                const cgst = itemSubtotal * 0.09;
+                const sgst = itemSubtotal * 0.09;
+                gstAmount = cgst + sgst;  // Total GST is 18% of the subtotal
+                totalWithTax = itemSubtotal + gstAmount;
+            } else {
+                // For IGST (18%)
+                gstAmount = itemSubtotal * 0.18;
+                totalWithTax = itemSubtotal + gstAmount;
+            }
+
+            return [
+                order._id,
+                item.name,
+                `${item.quantity} tons`,
+                `${item.price.toFixed(2)}`,
+                `${itemSubtotal.toFixed(2)}`,
+                gstRate === 0.18 ? `${gstAmount.toFixed(2)}` : `${gstAmount.toFixed(2)}`,
+                `${totalWithTax.toFixed(2)}`,
+            ];
+        }),
         theme: 'striped',
         styles: {
             fontSize: 7,
@@ -362,8 +412,8 @@ doc.text(companyAddress[5], 40, addressY + 24); // City, State, and Postal Code
         head: [['', 'Total']],
         body: [
             ['Taxable Value', subtotal.toFixed(2)],
-            ['Total GST', gst.toFixed(2)],
-            ['Total', total.toFixed(2)],
+            ['Total GST', accumulatedGST.toFixed(2)],  // Corrected to accumulate GST for all items
+            ['Total', (subtotal + accumulatedGST).toFixed(2)],
         ],
         theme: 'grid',
         styles: { fontSize: 10 },
@@ -381,7 +431,7 @@ doc.text(companyAddress[5], 40, addressY + 24); // City, State, and Postal Code
     doc.text(`Total Amount (In Words): ${totalAmountInWords}`, 14, totalsTableFinalY + 10);
     doc.text(`Total Balance: Rs ${total.toFixed(2)}`, 14, totalsTableFinalY + 18);
 
-    // Banking Details Section
+   // Banking Details Section
     const bankingY = totalsTableFinalY + 30;
 
     // Title
@@ -442,10 +492,15 @@ doc.text(companyAddress[5], 40, addressY + 24); // City, State, and Postal Code
     if (seal) {
         doc.addImage(seal, 'PNG', 120, sealY, 80, 80); // Seal position adjusted
     }
-
-    // Save the PDF
-    doc.save(`Invoice_${order._id}.pdf`);
+    // Generate the PDF
+    doc.save('order_invoice.pdf');
 };
+
+
+
+
+
+
 
 
   const handleFileChange = (orderId, e) => {
@@ -525,92 +580,100 @@ doc.text(companyAddress[5], 40, addressY + 24); // City, State, and Postal Code
                 <th>Price Per Ton (₹)</th>
                 <th>Loading Location</th>
                 <th>Subtotal (₹)</th>
-                <th>GST (₹)</th>
+                {/* Conditional GST heading based on GST number */}
+                <th>{profile?.gstNumber?.startsWith('27') ? 'CGST + SGST (₹)' : 'IGST (₹)'}</th>
                 <th>Total Price (₹)</th>
                 <th>Order Date</th>
                 <th>Invoice</th>
                 <th><b>Upload Payment Receipt</b></th>
                 <th>Shipping Info</th>
-
               </tr>
             </thead>
             <tbody>
-  {filteredOrders.map((order) => (
-    <>
-      {order.items.map((item, index) => {
-        const itemSubtotal = item.quantity * item.price;
-
-        // Fetch GST number from profile and check the first two characters
-        const gstNumber = profile?.gstNumber || ''; // Ensure you have the gstNumber in profile
-        const gstRate = gstNumber.startsWith('27') ? 0.09 : 0.18; // 9% if GST number starts with '36', otherwise 18%
-
-        const itemGST = itemSubtotal * gstRate;
-        const itemTotal = itemSubtotal + itemGST;
-
-        return (
-          <tr key={item._id}>
-            {index === 0 && (
-              <td rowSpan={order.items.length}>{order._id}</td>
-            )}
-            <td>{item.name}</td>
-            <td>{item.quantity} tons</td>
-            <td>₹{item.price.toFixed(2)}</td>
-            <td>{item.loading_location}</td>
-            <td>₹{itemSubtotal.toFixed(2)}</td>
-            <td>₹{itemGST.toFixed(2)}</td>
-            <td>₹{itemTotal.toFixed(2)}</td>
-            {index === 0 && (
-              <td rowSpan={order.items.length}>
-                {new Date(order.orderDate).toLocaleDateString()}
-              </td>
-            )}
-            {index === 0 && (
-              <td rowSpan={order.items.length}>
-                <button className="btn btn-primary" onClick={() => generatePDF(order)}>
-                  <FaFilePdf />
-                </button>
-              </td>
-            )}
-            {/* File Upload Section */}
-            {index === 0 && (
-              <td rowSpan={order.items.length}>
-                <input
-                  type="file"
-                  onChange={(e) => handleFileChange(order._id, e)}
-                  className="form-control"
-                  accept="image/jpeg, image/png, application/pdf"
-                />
-                {files[order._id] && files[order._id].fileName && (
-                  <div>{files[order._id].fileName}</div>
-                )}
-                <button
-                  className="btn btn-sm btn-success mt-2"
-                  onClick={() => handleFileUpload(order._id)}
-                >
-                  Upload File
-                </button>
-              </td>
-              
-            )}
-            <td>
-              <Link to="/ShippingDetails"  >
-                <button className="btn btn-primary">
-                  <FaArrowRight />
-                </button>
-              </Link>
-            </td>
-          </tr>
-        );
-      })}
-    </>
-  ))}
-</tbody>
-
+              {filteredOrders.map((order) => (
+                <>
+                  {order.items.map((item, index) => {
+                    const itemSubtotal = item.quantity * item.price;
+  
+                    // Fetch GST number from profile and check the first two characters
+                    const gstNumber = profile?.gstNumber || ''; // Ensure you have the gstNumber in profile
+  
+                    // Check if the GST number starts with '27' for CGST + SGST, else apply IGST
+                    const isCGSTSGST = gstNumber.startsWith('27');
+                    const gstRate = isCGSTSGST ? 0.09 : 0.18;
+  
+                    // Calculate GST
+                    const itemGST = isCGSTSGST
+                      ? (itemSubtotal * 0.09) + (itemSubtotal * 0.09) // 9% CGST + 9% SGST
+                      : itemSubtotal * 0.18; // 18% IGST
+  
+                    const itemTotal = itemSubtotal + itemGST;
+  
+                    return (
+                      <tr key={item._id}>
+                        {index === 0 && (
+                          <td rowSpan={order.items.length}>{order._id}</td>
+                        )}
+                        <td>{item.name}</td>
+                        <td>{item.quantity} tons</td>
+                        <td>₹{item.price.toFixed(2)}</td>
+                        <td>{item.loading_location}</td>
+                        <td>₹{itemSubtotal.toFixed(2)}</td>
+                        {/* Display the GST value */}
+                        <td>₹{itemGST.toFixed(2)}</td>
+                        <td>₹{itemTotal.toFixed(2)}</td>
+                        {index === 0 && (
+                          <td rowSpan={order.items.length}>
+                            {new Date(order.orderDate).toLocaleDateString()}
+                          </td>
+                        )}
+                        {index === 0 && (
+                          <td rowSpan={order.items.length}>
+                            <button className="btn btn-primary" onClick={() => generatePDF(order)}>
+                              <FaFilePdf />
+                            </button>
+                          </td>
+                        )}
+                        {/* File Upload Section */}
+                        {index === 0 && (
+                          <td rowSpan={order.items.length}>
+                            <input
+                              type="file"
+                              onChange={(e) => handleFileChange(order._id, e)}
+                              className="form-control"
+                              accept="image/jpeg, image/png, application/pdf"
+                            />
+                            {files[order._id] && files[order._id].fileName && (
+                              <div>{files[order._id].fileName}</div>
+                            )}
+                            <button
+                              className="btn btn-sm btn-success mt-2"
+                              onClick={() => handleFileUpload(order._id)}
+                            >
+                              Upload File
+                            </button>
+                          </td>
+                        )}
+                        <td>
+                          <Link to="/ShippingDetails" >
+                            <button className="btn btn-primary">
+                              <FaArrowRight />
+                            </button>
+                          </Link>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </>
+              ))}
+            </tbody>
           </table>
         </div>
       </div>
     </div>
   );
+  
+  
 }
 
 

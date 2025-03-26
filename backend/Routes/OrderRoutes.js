@@ -132,11 +132,10 @@ router.get('/adminorders', authenticate, async (req, res) => {
 });
 
 
-
 router.post('/Adminorder', authenticate, async (req, res) => {
   console.log('Received order request:', req.body);
   try {
-    const { items, billingAddress, shippingAddress, isSameAsBilling, id, gstNumber } = req.body;
+    const { items, billingAddress, shippingAddress, isSameAsBilling, id } = req.body;
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       console.log('Validation failed: Missing or invalid items array');
@@ -149,11 +148,8 @@ router.post('/Adminorder', authenticate, async (req, res) => {
 
     const processedItems = [];
 
-    // Determine the GST rate based on the GST number
-    let gstRate = 0.18;  // Default to 18%
-    if (gstNumber && gstNumber.slice(0, 2) === '27') {
-      gstRate = 0.09;  // Apply 9% GST if GST number starts with '36'
-    }
+    // GST rate is fixed at 18%
+    const gstRate = 0.18;
 
     // Iterate through all items in the order
     for (const item of items) {
@@ -193,7 +189,7 @@ router.post('/Adminorder', authenticate, async (req, res) => {
 
       // Calculate subtotal, GST, and total price for this item
       const subtotal = pricePerTon * requiredQuantity;
-      const gst = subtotal * gstRate;  // Apply the dynamic GST rate
+      const gst = subtotal * gstRate;  // Always apply 18% GST
       const itemTotalPrice = subtotal + gst;
 
       // Accumulate totals for the entire order
@@ -221,7 +217,7 @@ router.post('/Adminorder', authenticate, async (req, res) => {
       return res.status(400).json({ message: 'Shipping address is required' });
     }
 
-    // Create a new order in the Adminorder collection, including gstNumber
+    // Create a new order in the Adminorder collection
     const newOrder = new Adminorder({
       user: req.user.id, // User from the authenticated session
       items: processedItems,
@@ -231,7 +227,6 @@ router.post('/Adminorder', authenticate, async (req, res) => {
       billingAddress,
       shippingAddress: finalShippingAddress,
       isSameAsBilling,
-      gstNumber, // Add the gstNumber to the order
     });
 
     // Save the new order to the database
@@ -248,6 +243,7 @@ router.post('/Adminorder', authenticate, async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
 
 
 

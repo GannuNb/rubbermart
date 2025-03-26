@@ -17,6 +17,7 @@ const AdminPage = () => {
     const [loading, setLoading] = useState(false);  // Set initial loading to false
     const [error, setError] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
     const [newItemFormData, setNewItemFormData] = useState({
@@ -292,7 +293,7 @@ const AdminPage = () => {
                                 required
                             />
                         </div>
-                        <div>
+                        {/* <div>
                             <label>Password</label>
                             <input
                                 type="password"
@@ -300,6 +301,30 @@ const AdminPage = () => {
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
                             />
+                        </div> */}
+                        <div>
+                            <label>Password</label>
+                            <div style={{ position: 'relative' }}>
+                                <input
+                                    type={showPassword ? 'text' : 'password'}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                    style={{ paddingRight: '30px' }} // Make space for the eye icon
+                                />
+                                <span
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    style={{
+                                        position: 'absolute',
+                                        right: '10px',
+                                        top: '50%',
+                                        transform: 'translateY(-50%)',
+                                        cursor: 'pointer'
+                                    }}
+                                >
+                                    {showPassword ? '🙉' : '🙈'}
+                                </span>
+                            </div>
                         </div>
                         {loginError && <p className="text-danger">{loginError}</p>}
                         <button type="submit">Login</button>

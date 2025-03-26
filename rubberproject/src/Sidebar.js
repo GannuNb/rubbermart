@@ -144,9 +144,9 @@ function Sidebar() {
         id="sidebarMenu"
         className="collapse d-lg-block sidebar bg-white mt-4 bgce"
       >
-        <div className="position-sticky " >
+        <div className="position-sticky ">
           {loading ? (
-            <div className="p-3 mb-3 bg-light bgcompany" >
+            <div className="p-3 mb-3 bg-light bgcompany">
               <p className="text-muted">Loading company information...</p>
             </div>
           ) : !localStorage.getItem("token") ? (
@@ -170,39 +170,39 @@ function Sidebar() {
                 to="/BusinessProfile"
                 style={{ textDecoration: "none", color: "inherit" }}
               >
-                <p className="text-muted">Please create a business profile.</p>
+                <p className="text-white">Please create a business profile.</p>
               </Link>
             </div>
           )}
-          <div className="list-group list-group-flush mx-3 mt-4 " >
+          <div className="list-group list-group-flush mx-3 mt-4 ">
             {/* Home Link */}
             <Link
               to="/"
-              className="list-group-item list-group-item-action py-2 ripple bgce" 
+              className="list-group-item list-group-item-action py-2 ripple bgce"
               aria-current="true"
               onClick={closeSidebar}
             >
               <i className="fas fa-home fa-fw me-3"></i>
-              <span>Home</span>
+              <span className="boldfornavtext">Home</span>
             </Link>
 
             <Link
               to="/AboutUsPage"
-              className="list-group-item list-group-item-action py-2 ripple bgce" 
+              className="list-group-item list-group-item-action py-2 ripple bgce"
               onClick={closeSidebar}
             >
               <i className="fas fa-info-circle fa-fw me-3"></i>
-              <span>About Us</span>
+              <span className="boldfornavtext">About Us</span>
             </Link>
 
             {/* Business Profile Link */}
             <Link
               to="/BusinessProfile"
-              className="list-group-item list-group-item-action py-2 ripple bgce" 
+              className="list-group-item list-group-item-action py-2 ripple bgce"
               onClick={closeSidebar}
             >
               <i className="fas fa-briefcase fa-fw me-3"></i>
-              <span>Business Profile</span>
+              <span className="boldfornavtext">Business Profile</span>
             </Link>
 
             {/* Products Section */}
@@ -211,12 +211,12 @@ function Sidebar() {
                 isGettingStartedOpen ? "active" : ""
               }`}
               onClick={toggleGettingStarted}
-              style={{ cursor: "pointer"}} 
+              style={{ cursor: "pointer" }}
             >
               <div className="d-flex align-items-center">
                 <i className="fas fa-box-open fa-fw me-3"></i>{" "}
                 {/* Updated Product Icon */}
-                <span>Buy</span>
+                <span className="boldfornavtext">Buy</span>
                 <i
                   className={`fas fa-angle-down ms-auto rotate-icon ${
                     isGettingStartedOpen ? "rotate-180" : ""
@@ -253,7 +253,7 @@ function Sidebar() {
                       Mulch pcr
                     </Link>
                     <Link
-                      className="list-group-item list-group-item-action py-2 ripple bgce" 
+                      className="list-group-item list-group-item-action py-2 ripple bgce"
                       to="/BaledTyresPcr"
                       onClick={closeSidebar}
                     >
@@ -261,35 +261,35 @@ function Sidebar() {
                     </Link>
 
                     <Link
-                      className="list-group-item list-group-item-action py-2 ripple bgce" 
+                      className="list-group-item list-group-item-action py-2 ripple bgce"
                       to="/ThreePiecePcr"
                       onClick={closeSidebar}
                     >
                       Three Piece PCR
                     </Link>
                     <Link
-                      className="list-group-item list-group-item-action py-2 ripple bgce" 
+                      className="list-group-item list-group-item-action py-2 ripple bgce"
                       to="/BaledTyresTbr"
                       onClick={closeSidebar}
                     >
                       Baled Tyres TBR
                     </Link>
                     <Link
-                      className="list-group-item list-group-item-action py-2 ripple bgce" 
+                      className="list-group-item list-group-item-action py-2 ripple bgce"
                       to="/ThreePieceTbr"
                       onClick={closeSidebar}
                     >
                       Three Piece TBR
                     </Link>
                     <Link
-                      className="list-group-item list-group-item-action py-2 ripple bgce" 
+                      className="list-group-item list-group-item-action py-2 ripple bgce"
                       to="/RubberGranules/Crum"
                       onClick={closeSidebar}
                     >
                       Rubber Granules/Crum
                     </Link>
                     <Link
-                      className="list-group-item list-group-item-action py-2 ripple bgce" 
+                      className="list-group-item list-group-item-action py-2 ripple bgce"
                       to="/shreds"
                       onClick={closeSidebar}
                     >
@@ -368,21 +368,21 @@ function Sidebar() {
             {/* Sell Link */}
             <Link
               to="/Sell"
-              className="list-group-item list-group-item-action py-2 ripple bgce" 
+              className="list-group-item list-group-item-action py-2 ripple bgce"
               onClick={closeSidebar}
             >
               <i className="fas fa-dollar-sign fa-fw me-3"></i>
-              <span>Sell</span>
+              <span className="boldfornavtext">Sell</span>
             </Link>
 
             {/* Shipping Details */}
             <Link
               to="/ShippingDetails"
-              className="list-group-item list-group-item-action py-2 ripple bgce" 
+              className="list-group-item list-group-item-action py-2 ripple bgce"
               onClick={closeSidebar}
             >
               <i className="fas fa-shipping-fast fa-fw me-3"></i>
-              <span>Shipping Details</span>
+              <span className="boldfornavtext">Shipping Details</span>
             </Link>
 
             {/* Reports Section */}
@@ -391,11 +391,14 @@ function Sidebar() {
                 isReportsOpen ? "active" : ""
               }`}
               onClick={toggleReports}
-              style={{ cursor: "pointer" ,backgroundColor:"rgb(203, 234, 249) "}}
+              style={{
+                cursor: "pointer",
+                backgroundColor: "rgb(203, 234, 249) ",
+              }}
             >
               <div className="d-flex align-items-center">
                 <i className="fas fa-file-alt fa-fw me-3"></i>
-                <span>Reports</span>
+                <span className="boldfornavtext">Reports</span>
                 <i
                   className={`fas fa-angle-down ms-auto rotate-icon ${
                     isReportsOpen ? "rotate-180" : ""
@@ -406,14 +409,14 @@ function Sidebar() {
             {isReportsOpen && (
               <div className="list-group list-group-flush ">
                 <Link
-                  className="list-group-item list-group-item-action py-2 ripple bgce" 
+                  className="list-group-item list-group-item-action py-2 ripple bgce"
                   to="/Buyreport"
                   onClick={closeSidebar}
                 >
                   Buy Reports
                 </Link>
                 <Link
-                  className="list-group-item list-group-item-action py-2 ripple bgce" 
+                  className="list-group-item list-group-item-action py-2 ripple bgce"
                   to="/Sellerreport"
                   onClick={closeSidebar}
                 >
@@ -425,21 +428,21 @@ function Sidebar() {
             {/* Contact Us Link */}
             <Link
               to="/Contact"
-              className="list-group-item list-group-item-action py-2 ripple bgce" 
+              className="list-group-item list-group-item-action py-2 ripple bgce"
               onClick={closeSidebar}
             >
               <i className="fas fa-envelope fa-fw me-3"></i>
-              <span>Contact Us</span>
+              <span className="boldfornavtext">Contact Us</span>
             </Link>
 
             {/* Orders Link */}
             <Link
               to="/Getorders"
-              className="list-group-item list-group-item-action py-2 ripple bgce" 
+              className="list-group-item list-group-item-action py-2 ripple bgce"
               onClick={closeSidebar}
             >
               <i className="fas fa-shopping-cart fa-fw me-3"></i>
-              <span>Orders</span>
+              <span className="boldfornavtext">Orders</span>
             </Link>
 
             <Link
@@ -448,7 +451,7 @@ function Sidebar() {
               onClick={closeSidebar}
             >
               <i className="fas fa-wallet fa-fw me-3"></i>
-              <span>Payment History</span>
+              <span className="boldfornavtext">Payment History</span>
             </Link>
           </div>
         </div>
@@ -459,7 +462,7 @@ function Sidebar() {
         id="main-navbar"
         className="navbar navbar-expand-lg navbar-light bg-white fixed-top tpheight ftop bgce"
       >
-        <div className="container-fluid" >
+        <div className="container-fluid">
           {/* Sidebar Toggle Button */}
           <button
             className="navbar-toggler threetop"
@@ -481,13 +484,18 @@ function Sidebar() {
           <Link className="navbar-brand mx-1" to="/">
             <div className="logoset ">
               {/* Brand Text instead of Logo */}
-              <span style={{ fontSize: "0.8rem", fontWeight: "bold", color: "#000" }}>
+              <span
+                style={{
+                  fontSize: "0.8rem",
+                  fontWeight: "bold",
+                  color: "#000",
+                }}
+              >
                 Rubber <br />
                 scrapmart
               </span>
             </div>
           </Link>
-
 
           {/* Search Form */}
           <div
@@ -511,6 +519,9 @@ function Sidebar() {
                   width: "100%", // Makes the input 100% of the form width
                   maxWidth: "600px", // Prevents the search input from becoming too large
                   marginRight: "250px", // Creates a small gap between the search bar and the next element (Buy/Sell button)
+                  border: "1.2px solid rgb(33, 89, 172)", // Adds a solid blue border around the input
+                  borderRadius: "5px", // Optional: keeps the rounded corners for a cleaner look
+                  padding: "0.375rem 0.75rem", // Optional: for better padding inside the input
                 }}
               />
             </form>

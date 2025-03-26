@@ -29,5 +29,51 @@ router.get('/userdetails', async (req, res) => {
   }
 });
 
+router.get('/allusers', async (req, res) => {
+  try {
+    const users = await User.find();
+
+    // Convert files to base64 and return a response with the transformed data
+    const usersWithFiles = users.map(user => {
+      const userObj = user.toObject();
+
+      userObj.businessProfiles = userObj.businessProfiles.map(profile => {
+        // Handle gstCertificate
+        if (profile.gstCertificate && profile.gstCertificate.file) {
+          if (profile.gstCertificate.file.buffer) {
+            profile.gstCertificate.file = profile.gstCertificate.file.toString('base64');
+          }
+        }
+
+        // Handle panCertificate
+        if (profile.panCertificate && profile.panCertificate.file) {
+          if (profile.panCertificate.file.buffer) {
+            profile.panCertificate.file = profile.panCertificate.file.toString('base64');
+          }
+        }
+
+        // Handle image files (e.g., profile image)
+        if (profile.profileImage && profile.profileImage.file) {
+          if (profile.profileImage.file.buffer) {
+            profile.profileImage.file = profile.profileImage.file.toString('base64');
+          }
+        }
+
+        return profile;
+      });
+
+      return userObj;
+    });
+
+    return res.status(200).json({ users: usersWithFiles });
+  } catch (error) {
+    console.error('Error fetching users data:', error);
+    if (!res.headersSent) {
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+  }
+});
+
+
 module.exports = router;
 

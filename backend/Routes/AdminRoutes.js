@@ -3,6 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const ScrapItem = require('../models/ScrapItem'); // Import the model
 const jwt = require('jsonwebtoken');
+
 router.get('/admin/scrap', async (req, res) => {
     try {
         const scrapItems = await ScrapItem.find({});

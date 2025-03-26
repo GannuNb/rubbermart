@@ -129,17 +129,28 @@ router.post('/forgot-password', async (req, res) => {
 
         // Send reset email
         const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
-        const transporter = nodemailer.createTransport({
-            host: "smtp.gmail.com", // Replace with your email provider's SMTP host
-            port: 587, // or 465 if using SSL
-            secure: false, // true for SSL
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS,
-            },
-        });
+        // const transporter = nodemailer.createTransport({
+        //     host: "smtp.gmail.com",
+        //     port: 587, 
+        //     secure: false, 
+        //     auth: {
+        //         user: process.env.EMAIL_USER,
+        //         pass: process.env.EMAIL_PASS,
+        //     },
+        // });
         
-        
+         const transporter = nodemailer.createTransport({
+              host: 'smtp.hostinger.com',
+              port: 587, // Use port 465 if using SSL
+              secure: false, // Use true for SSL (465), false for TLS (587)
+              auth: {
+                user: process.env.EMAIL_USER, // Full email address
+                pass: process.env.EMAIL_PASS, // Email password
+              },
+              tls: {
+                rejectUnauthorized: false, // To handle self-signed certificates if needed
+              },
+            });
         
 
         const mailOptions = {

@@ -51,12 +51,13 @@ import Cate from './Cate.js';
 import Scrapstyles from './Scrapstyles.js';
 import ScrollToTopButton from './ScrollToTopButton';
 import WhyChooseUs from './WhyChooseUs.js'
+import Adminusers from './Adminusers.js';
 
 function App() {
 
   const location = useLocation();
   // Check if the current path is "/Admin" or "/Uploaded", case-insensitive
-  const isSidebarHidden = /^\/(admin|uploaded|Adminshipping|adminpayment)$/i.test(location.pathname);
+  const isSidebarHidden = /^\/(admin|uploaded|Adminshipping|adminpayment|Adminusers)$/i.test(location.pathname);
   return (
     <>
       {/* Conditionally render Sidebar based on the current route */}
@@ -72,6 +73,7 @@ function App() {
           <Route exact path="/Admin" element={<Admin />} />
           <Route exact path="/Uploaded" element={<Uploaded />} />
           <Route exact path="/Adminshipping" element={<Adminshipping />} />
+          <Route exact path="/Adminusers" element={<Adminusers />} />
           <Route exact path="/Shippingdetails" element={<ShippingDetails />} />
           <Route exact path="/Ship" element={<Ship />} />
           <Route exact path="/Login" element={<Login />} />

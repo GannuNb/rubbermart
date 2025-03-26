@@ -70,16 +70,28 @@ router.post('/upload-pdf', authenticate, upload.single('pdf'), async (req, res) 
   }
 
   try {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-      tls: {
-        rejectUnauthorized: false,
-      },
-    });
+    // const transporter = nodemailer.createTransport({
+    //   service: 'gmail',
+    //   auth: {
+    //     user: process.env.EMAIL_USER,
+    //     pass: process.env.EMAIL_PASS,
+    //   },
+    //   tls: {
+    //     rejectUnauthorized: false,
+    //   },
+    // });
+     const transporter = nodemailer.createTransport({
+          host: 'smtp.hostinger.com',
+          port: 587, // Use port 465 if using SSL
+          secure: false, // Use true for SSL (465), false for TLS (587)
+          auth: {
+            user: process.env.EMAIL_USER, // Full email address
+            pass: process.env.EMAIL_PASS, // Email password
+          },
+          tls: {
+            rejectUnauthorized: false, // To handle self-signed certificates if needed
+          },
+        });
 
     const mailOptions = {
       from: '"Rubberscrapmart" <' + process.env.EMAIL_USER + '>',  

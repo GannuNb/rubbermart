@@ -8,11 +8,12 @@ const placeOrderRoute = require('./Routes/PlaceOrder');
 const contactRoute = require('./Routes/Contactus');
 const app = express();
 const port = process.env.PORT || 4000;
-const BusinessProfile = require('./models/BusinessProfile');
 const User = require('./models/User');
 const shippingRoutes = require('./Routes/shippingRoutes');
 const allowedOrigins = process.env.CLIENT_URL?.split(',') || [];
 const bodyParser = require('body-parser');
+const fs = require('fs');
+const multer = require('multer');
 
 // Use bodyParser to parse JSON and URL-encoded data
 app.use(bodyParser.json());
@@ -79,10 +80,15 @@ app.get('/business-profile', async (req, res) => {
 });
 
 const BusinessProfileCounter = require('./models/BusinessProfileCounter');
+const storage = multer.memoryStorage(); // Store files in memory as buffer
+const upload = multer({ storage: storage });
 
-app.post('/business-profile', async (req, res) => {
+app.post('/business-profile', upload.fields([
+    { name: 'gstCertificate', maxCount: 1 },
+    { name: 'panCertificate', maxCount: 1 }
+]), async (req, res) => {
     try {
-        const { companyName, registeredgst, phoneNumber, email, gstNumber, pan, billAddress, shipAddress } = req.body;
+        const { companyName, registeredgst, phoneNumber, email, gstNumber, pan, billAddress, shipAddress, selectedProducts } = req.body;
 
         const token = req.headers.authorization.split(' ')[1];
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -116,6 +122,19 @@ app.post('/business-profile', async (req, res) => {
         counterDoc.counter += 1;
         await counterDoc.save();
 
+        // Check for uploaded files and store them as Buffer along with fileName and fileType
+        const gstCertificate = req.files['gstCertificate'] ? {
+            file: req.files['gstCertificate'][0].buffer,
+            fileName: req.files['gstCertificate'][0].originalname,
+            fileType: req.files['gstCertificate'][0].mimetype,
+        } : null;
+
+        const panCertificate = req.files['panCertificate'] ? {
+            file: req.files['panCertificate'][0].buffer,
+            fileName: req.files['panCertificate'][0].originalname,
+            fileType: req.files['panCertificate'][0].mimetype,
+        } : null;
+
         // Create the new business profile
         const newProfile = {
             profileId,
@@ -127,6 +146,9 @@ app.post('/business-profile', async (req, res) => {
             pan,
             billAddress,
             shipAddress,
+            gstCertificate,  // Store file as Buffer with fileName and fileType
+            panCertificate,  // Store file as Buffer with fileName and fileType
+            selectedProducts: selectedProducts ? selectedProducts.split(',') : [], // Convert to array of strings
         };
 
         // Add the new business profile to the user

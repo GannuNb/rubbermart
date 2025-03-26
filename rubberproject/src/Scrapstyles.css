@@ -102,6 +102,7 @@
         border: 2px solid #0a1f44 !important;
         height: auto !important; /* Ensure image height adjusts to maintain aspect ratio */
     }
+    
 }
 
 
@@ -115,7 +116,7 @@
   }
   
   .scrap-highlight {
-    color: #00d2ab;
+    color: #0a0eea;
     font-weight: bold;
   }
   
