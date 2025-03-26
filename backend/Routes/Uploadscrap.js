@@ -136,8 +136,6 @@ router.post(
 
 
 
-
-
 // Updated Route to Fetch Scrap Items (Including Images in Base64 Format)
 router.get("/getuploadedscrap", async (req, res) => {
   try {
