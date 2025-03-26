@@ -13,33 +13,24 @@ const User = require("../models/User");
 const ScrapItem = require("../models/ScrapItem"); // Adjust the path based on your project structure
 const Approval = require("../models/Approval");
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const randomDir = `uploads/images_${Date.now()}`;
-    fs.mkdirSync(randomDir, { recursive: true });
-    cb(null, randomDir);
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
-});
 
+// Configure multer to use memory storage instead of disk storage
+const storage = multer.memoryStorage(); // Use memory storage for uploaded files
 const upload = multer({
-  storage,
-  limits: { fileSize: 5 * 1024 * 1024 },
+  storage: storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB limit
   fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith("image/")) {
-      cb(null, true);
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true); // Accept image files
     } else {
-      cb(new Error("Not an image! Please upload an image file."), false);
+      cb(new Error('Not an image! Please upload an image file.'), false);
     }
-  },
+  }
 });
 
-// In your upload route:
 router.post(
   "/uploadscrap",
-  upload.array("images", 3),
+  upload.array("images", 3), // This middleware processes the file uploads with memory storage
   [
     authenticateToken,
     body("material")
@@ -61,7 +52,7 @@ router.post(
     body("price")
       .isFloat({ gt: 0 })
       .withMessage("Price must be a positive number"),
-    body("description").optional().isString().withMessage("Description must be a string"), // Validate description (optional)
+    body("description").optional().isString().withMessage("Description must be a string"),
   ],
   async (req, res) => {
     console.log("Received request body:", req.body);
@@ -86,6 +77,7 @@ router.post(
       description, // Add description field from body
     } = req.body;
 
+    // Ensure that files are stored as buffers in memory, not saved to disk
     if (!req.files || req.files.length === 0) {
       console.error("No images uploaded.");
       return res
@@ -96,12 +88,12 @@ router.post(
         });
     }
 
+    // Create an array of buffers for images to store directly in MongoDB
     const images = await Promise.all(
       req.files.map((file) => {
-        const fileBuffer = fs.readFileSync(file.path); // Read file content as buffer
         return {
-          data: fileBuffer,
-          contentType: file.mimetype, // Store the file's mimetype
+          data: file.buffer, // Store the file content as a buffer
+          contentType: file.mimetype, // Store the file's mimetype (e.g., 'image/jpeg')
         };
       })
     );
@@ -109,11 +101,9 @@ router.post(
     try {
       const user = await User.findById(req.user.id);
       if (!user)
-        return res
-          .status(404)
-          .json({ success: false, message: "User not found" });
+        return res.status(404).json({ success: false, message: "User not found" });
 
-      // Save the scrap details, including the description
+      // Save the scrap details, including the description and images as binary data
       const newScrap = new Uploadscrap({
         user: req.user.id,
         material,
@@ -126,27 +116,24 @@ router.post(
         countryOfOrigin,
         price,
         description, // Save description
-        images,
+        images, // Save images as binary buffers in MongoDB
       });
 
       await newScrap.save();
 
       console.log("Scrap saved successfully:", newScrap);
-      res
-        .status(201)
-        .json({
-          success: true,
-          message: "Scrap details uploaded successfully.",
-          scrap: newScrap,
-        });
+      res.status(201).json({
+        success: true,
+        message: "Scrap details uploaded successfully.",
+        scrap: newScrap,
+      });
     } catch (error) {
       console.error("Error uploading scrap details:", error);
-      res
-        .status(500)
-        .json({ success: false, message: "Internal Server Error" });
+      res.status(500).json({ success: false, message: "Internal Server Error" });
     }
   }
 );
+
 
 
 
