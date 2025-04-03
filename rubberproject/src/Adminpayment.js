@@ -16,12 +16,12 @@ function AdminPayment() {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    useEffect(() => {
-        // Directly set the scroll position to the top of the page
-        document.documentElement.scrollTop = 0; 
-        document.body.scrollTop = 0;  // For compatibility with older browsers
-      }, []); // Empty dependency array ensures it runs only once on page load
-  
+  useEffect(() => {
+    // Directly set the scroll position to the top of the page
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;  // For compatibility with older browsers
+  }, []); // Empty dependency array ensures it runs only once on page load
+
 
   useEffect(() => {
     const tokenKey = `admin_token`; // Check if any valid token exists
@@ -258,26 +258,25 @@ function AdminPayment() {
     <>
       <Adminnav />
       <div className="container mt-5 contmax">
-        <h2 className="text-center mb-4">All Uploaded Payment Proofs</h2>
 
-        {error && <div className="alert alert-info text-center my-5">{error}</div>}
-
-        {/* Search input */}
-        <div className="mb-4">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Search by Order ID, User Name, Company Name, or Product Name"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+        <div className="card shadow-lg border-0">
+          <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 className="m-0">All Uploaded Payment Proofs</h5>
+            <input
+              type="text"
+              placeholder="Search by Order ID, User Name, Company Name, or Product Name"
+              className="form-control w-50"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
         </div>
 
-        
+        {/* Table Section */}
         {filteredFiles.length > 0 ? (
-          <div className="table-responsive" style={{ maxHeight: '500px', overflowY: 'auto' }}>
-            <table className="table table-striped table-bordered">
-              <thead>
+          <div className="table-responsive" style={{ maxHeight: "500px", overflowY: "auto" }}>
+            <table className="table table-bordered">
+              <thead className="text-white" style={{ backgroundColor: "#6a11cb" }}>
                 <tr>
                   <th>User Name</th>
                   <th>Company Name</th>
@@ -287,7 +286,7 @@ function AdminPayment() {
                   <th>Quantity</th>
                   <th>Total Price</th>
                   <th>Paid Amount</th>
-                  <th>Add Received payment </th>
+                  <th>Add Received Payment</th>
                   <th>Remaining Amount</th>
                   <th>Approval Details</th>
                   <th>Action</th>
@@ -301,38 +300,30 @@ function AdminPayment() {
                   const remainingAmount = totalOrderPrice - (totalPaid + additionalPaid);
 
                   return (
-                    <tr key={file.order._id}>
-                      <td>{file.user?.name || 'N/A'}</td>
-                      <td>{file.user?.businessProfiles[0]?.companyName || 'N/A'}</td>
+                    <tr key={file.order._id} style={{ backgroundColor: remainingAmount === 0 ? "#e8f5e9" : "#fff" }}>
+                      <td className="fw-semibold">{file.user?.name || "N/A"}</td>
+                      <td className="fw-semibold">{file.user?.businessProfiles[0]?.companyName || "N/A"}</td>
                       <td>{file.order._id}</td>
                       <td>
                         {file.files.map((f) => (
                           <button
                             key={f._id}
-                            className="btn btn-link p-0"
+                            className="btn btn-link p-0 text-primary"
                             onClick={() => handleDownload(file._id, f._id, f.fileName)}
                           >
                             {f.fileName}
                           </button>
                         ))}
                       </td>
-                      <td>
-                        {file.order.items.map((item) => (
-                          <div key={item._id}>{item.name}</div>
-                        ))}
-                      </td>
-                      <td>
-                        {file.order.items.map((item) => (
-                          <div key={item._id}>{item.quantity}</div>
-                        ))}
-                      </td>
-                      <td>₹{totalOrderPrice.toFixed(2)}</td>
-                      <td>₹{totalPaid.toFixed(2)}</td>
+                      <td>{file.order.items.map((item) => <div key={item._id}>{item.name}</div>)}</td>
+                      <td>{file.order.items.map((item) => <div key={item._id}>{item.quantity}</div>)}</td>
+                      <td className="text-danger fw-bold">₹{totalOrderPrice.toFixed(2)}</td>
+                      <td className="text-success fw-bold">₹{totalPaid.toFixed(2)}</td>
                       <td>
                         <input
                           type="number"
-                          className="form-control"
-                          value={additionalPaid || ''}
+                          className="form-control border border-secondary"
+                          value={additionalPaid || ""}
                           onChange={(e) =>
                             setApprovalNotes((prev) => ({
                               ...prev,
@@ -342,26 +333,23 @@ function AdminPayment() {
                               },
                             }))
                           }
-                          placeholder="Enter Received amount"
+                          placeholder="Enter Amount"
                         />
                       </td>
-                      <td>₹{remainingAmount.toFixed(2)}</td>
+                      <td className={remainingAmount === 0 ? "text-success" : "text-danger"}>
+                        ₹{remainingAmount.toFixed(2)}
+                      </td>
                       <td>
-                        <button
-                          className="btn btn-info btn-sm"
-                          onClick={() => generatePDF(file)}
-                        >
+                        <button className="btn btn-outline-primary btn-sm" onClick={() => generatePDF(file)}>
                           Details
                         </button>
                       </td>
                       <td>
                         <button
-                          className={`btn btn-sm ${
-                            remainingAmount === 0 ? 'btn-success' : 'btn-primary'
-                          }`}
+                          className={`btn btn-sm ${remainingAmount === 0 ? "btn-success" : "btn-primary"}`}
                           onClick={() => handleApproval(file.order._id)}
                         >
-                          {remainingAmount === 0 ? 'Approve' : 'Approve Payment'}
+                          {remainingAmount === 0 ? "Approved" : "Approve Payment"}
                         </button>
                       </td>
                     </tr>
@@ -371,11 +359,14 @@ function AdminPayment() {
             </table>
           </div>
         ) : (
-          <div className="alert alert-info text-center my-5">No payment details are right now</div>
+          <div className="alert alert-warning text-center my-5">No payment details available right now</div>
         )}
       </div>
     </>
   );
+
+
+
 }
 
 export default AdminPayment;
