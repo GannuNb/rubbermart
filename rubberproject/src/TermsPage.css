@@ -1,0 +1,113 @@
+/* Global styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Unique wrapper for the Terms page */
+  .terms-wrapper {
+    padding: 20px; /* Prevents border from hitting screen edges */
+    background-color: #f8f9fa;
+  }
+  
+  /* Container for the Terms Page */
+  .terms-container {
+    border: 2px solid #007bff;
+    padding: 30px;
+    max-width: 1000px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+  }
+  
+  /* Header Section */
+  .terms-title {
+    font-size: 36px;
+    color: #007bff;
+    font-weight: 600;
+    margin-bottom: 15px;
+    padding: 0 5px;
+    text-align: center;
+  }
+  
+  .terms-intro {
+    font-size: 18px;
+    color: #6c757d;
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.5;
+    padding: 0 5px;
+    text-align: center;
+  }
+  
+  /* Section Styling */
+  .terms-content h2 {
+    font-size: 24px;
+    color: #007bff;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    padding: 0 5px;
+  }
+  
+  .terms-content p {
+    font-size: 16px;
+    color: #333;
+    line-height: 1.6;
+    padding: 0 5px;
+  }
+  
+  .terms-content ul {
+    list-style-type: disc;
+    padding-left: 25px;
+    padding-right: 5px;
+  }
+  
+  .terms-content li {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  
+  /* Checkbox Styling */
+  .terms-checkbox .form-check-input {
+    margin-right: 10px;
+  }
+  
+  .terms-checkbox .form-check-label {
+    font-size: 16px;
+    color: #333;
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 600px) {
+    .terms-container {
+      padding: 20px;
+      border-width: 1px;
+    }
+  
+    .terms-wrapper {
+      padding: 10px;
+    }
+  
+    .terms-title {
+      font-size: 28px;
+    }
+  
+    .terms-intro {
+      font-size: 16px;
+    }
+  
+    .terms-content h2 {
+      font-size: 20px;
+    }
+  
+    .terms-content p,
+    .terms-content li {
+      font-size: 14px;
+    }
+  }
+  

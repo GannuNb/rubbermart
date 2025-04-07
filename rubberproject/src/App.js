@@ -52,6 +52,7 @@ import Scrapstyles from './Scrapstyles.js';
 import ScrollToTopButton from './ScrollToTopButton';
 import WhyChooseUs from './WhyChooseUs.js'
 import Adminusers from './Adminusers.js';
+import TermsPage from './TermsPage.js';
 
 function App() {
 
@@ -94,6 +95,7 @@ function App() {
           <Route exact path="/BaledTyresTBR" element={<BaledTyresTBR />} /> 
           <Route exact path="/Shreds" element={<Shredds />} /> 
           <Route exact path="/PyroSteel" element={<PyroSteel />} /> 
+          <Route exact path="/TermsPage" element={<TermsPage />} /> 
           <Route exact path="/RubberCrumSteel" element={<RubberCrumSteel />} /> 
           <Route exact path="/Buyreport" element={<Buyreport />} />
           <Route exact path="/Sellerreport" element={<Sellreport />} />
