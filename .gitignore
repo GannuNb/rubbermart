@@ -1,0 +1,65 @@
+# Root-level ignores (vikarubber)
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Python (if any scripts are in backend)
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+.venv/
+venv/
+ENV/
+
+# macOS system files
+.DS_Store
+
+# Windows system files
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# Logs
+*.log
+
+# dotenv files
+.env*
+
+# Ignore IDE settings
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Optional: Ignore dist/build folders
+**/dist/
+**/build/
+
+# Optional: Ignore frontend coverage or temporary files
+**/coverage/
+**/.next/
+**/.turbo/
+**/.cache/
+
+# Optional: Ignore backend migrations or database files (adjust as needed)
+**/migrations/
+*.sqlite3
+
+# rubberproject specific (if it's a React/Vite/Next.js project)
+rubberproject/node_modules/
+rubberproject/.env
+rubberproject/dist/
+rubberproject/build/
+
+# backend specific (if it's a Django/Flask/FastAPI/Node backend)
+backend/node_modules/
+backend/.env
+backend/__pycache__/
+backend/*.sqlite3
