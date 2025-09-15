@@ -4,9 +4,6 @@
 
 
 
-
-
-
 .scrap-container {
     display: flex;
     align-items: center;
@@ -653,4 +650,39 @@
 .linkstyle:hover {
     text-decoration: none; /* Ensures no hover styles are applied */
     color: inherit; /* Ensures color stays the same on hover */
+}
+
+
+.setterhome {
+  margin-left: 10%;
+  margin-top: 6%;
+  width: 100%;
+}
+
+@media (max-width: 991px) {
+    .setterhome {
+        margin-left: 0%; 
+        margin-top: 12%;
+    }
+
+  
+}
+
+@media (max-width: 767px) {
+    .setterhome {
+        margin-left: 0%;
+        margin-top: 28%;
+    }
+
+}
+
+/* Medium Devices: Small Navbar for 990px to 1350px */
+@media (max-width: 1350px) and (min-width: 991px){
+    .setterhome {
+        margin-left: 12.2%;
+        margin-top: 6%;
+        width: 95%;
+    }
+
+  
 }

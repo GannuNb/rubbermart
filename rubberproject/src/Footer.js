@@ -1,64 +1,87 @@
-import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Row, Col } from 'react-bootstrap';
-import { FaFacebook, FaTwitter, FaYoutube, FaInstagram } from 'react-icons/fa';
-import './Footer.css';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Container, Row, Col } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import {
+  FaFacebookF,
+  FaTwitter,
+  FaYoutube,
+  FaInstagram,
+} from "react-icons/fa";
+import "./Footer.css";
 
 const Footer = () => {
   return (
-    <footer className="bg-dark text-light mt-5 pt-4">
+    <footer className="setter footer-section">
       <Container>
-        <Row className="justify-content-center justify-content-lg-end">
-          {/* Column 1: Trust & Opportunity Message */}
-          <Col xs={12} md={6} lg={4} className="mb-4 text-center text-md-left">
-            <h5 className="fw-bold">Where Trust Meets Opportunity—Shop and Sell with Hope!</h5>
-            <p>
-              We are a dedicated team of professionals committed to providing top-notch services. Our mission is to deliver quality and value to our clients.
+        <Row className="footer-top">
+          {/* About Us */}
+          <Col md={3} sm={6} className="footer-col">
+            <h5 className="footer-title">ABOUT US</h5>
+            <div className="footer-line"></div>
+            <p className="footer-text">
+              Rubberscrapmart is a trusted marketplace for buying and selling
+              rubber scrap. We ensure quality, sustainability, and trusted
+              service across all our products and business transactions.
             </p>
           </Col>
 
-          {/* Column 2: Quick Links */}
-          <Col xs={12} md={2} lg={2} className="mb-4 text-center text-md-left">
-            <div className="text-center text-lg-end">
-              <h5 className="fw-bold">Quick Links</h5>
-              <ul className="quick-links list-unstyled">
-                  <li><Link to ="/"><a>Home</a></Link></li>
-                  <li><Link to ="/AboutUsPage"><a>About Us</a></Link></li>
-                  <li><Link to ="/Productspage"><a>Buy</a></Link></li>
-                  <li><Link to ="/Sell"><a>Sell</a></Link></li>
-                  <li><Link to ="/Contact"><a>Contact</a></Link></li>
-              </ul>
-            </div>
+          {/* Quick Links */}
+          <Col md={3} sm={6} className="footer-col">
+            <h5 className="footer-title">QUICK LINKS</h5>
+            <div className="footer-line"></div>
+            <ul className="footer-links">
+              <li><Link to="/">› Home</Link></li>
+              <li><Link to="/AboutUsPage">› About Us</Link></li>
+              <li><Link to="/Productspage">› Our Products</Link></li>
+              <li><Link to="/Sell">› Sell With Us</Link></li>
+              <li><Link to="/Contact">› Contact Us</Link></li>
+            </ul>
           </Col>
 
-          {/* Column 3: Contact Info and Social Media */}
-          <Col xs={12} md={6} lg={4} className="mb-4 text-center text-lg-end">
-            <h5 className="fw-bold">Contact Information</h5>
-            <p>Email: info@rubberscrapmart.com</p>
-            <p>TEL: 022-46030343</p>
-            <h5 className="fw-bold">Follow Us</h5>
-            <div className="text-center text-lg-end">
-              <a href="https://www.facebook.com/profile.php?id=61574102936310" className="social-icon me-3" target="_blank" rel="noopener noreferrer" style={{ color: '#1877F2' }}>
-                <FaFacebook />
-              </a>
-              <a href="https://x.com/Rubberscrapmart" className="social-icon me-3" target="_blank" rel="noopener noreferrer" style={{ color: '#1DA1F2' }}>
-                <FaTwitter />
-              </a>
-              <a href="https://www.youtube.com/@Rubberscrapmart" className="social-icon me-3" target="_blank" rel="noopener noreferrer" style={{ color: '#FF0000' }}>
-                <FaYoutube />
-              </a>
-              <a href="https://www.instagram.com/rubberscrapmart/" className="social-icon" target="_blank" rel="noopener noreferrer" style={{ color: '#E4405F' }}>
-                <FaInstagram />
-              </a>
-            </div>
-          </Col>
+          {/* Our Products */}
+<Col md={3} sm={6} className="footer-col">
+  <h5 className="footer-title">OUR PRODUCTS</h5>
+  <div className="footer-line"></div>
+  <ul className="footer-links">
+    <li><Link to="/Tyrescrap">› Tyrescrap</Link></li>
+    <li><Link to="/Pyrooil">› Pyrooil</Link></li>
+    <li><Link to="/TyresteelScrap">› Tyresteel Scrap</Link></li>
+  </ul>
+</Col>
+
+
+{/* Address & Socials */}
+<Col md={3} sm={6} className="footer-col">
+  <h5 className="footer-title">ADDRESS</h5>
+  <div className="footer-line"></div>
+  <p className="footer-text">
+    <strong>Admin Office:</strong> #406, 4th Floor, Patel Towers, Above EasyBuy, Beside Nagole RTO Office, Nagole, Hyderabad, Telangana - 500068
+  </p>
+  <p><strong>Phone:</strong> 022-46030343</p>
+  <p>
+    <strong>Email:</strong>{" "}
+    <a href="mailto:info@rubberscrapmart.com">
+      info@rubberscrapmart.com
+    </a>
+  </p>
+  <div className="footer-social">
+    <a href="https://www.facebook.com/profile.php?id=61574102936310" target="_blank" rel="noreferrer"><FaFacebookF /></a>
+    <a href="https://x.com/Rubberscrapmart" target="_blank" rel="noreferrer"><FaTwitter /></a>
+    <a href="https://www.youtube.com/@Rubberscrapmart" target="_blank" rel="noreferrer"><FaYoutube /></a>
+    <a href="https://www.instagram.com/rubberscrapmart/" target="_blank" rel="noreferrer"><FaInstagram /></a>
+  </div>
+</Col>
+
         </Row>
 
-        {/* Copyright Row */}
-        <Row className="mt-4 justify-content-center">
-          <Col className="text-center" style={{ marginLeft: '20%' }}>
-            <p className="mb-0">Copyright &copy; {new Date().getFullYear()} Rubberscrapmart | All rights reserved</p>
+        <hr className="footer-divider" />
+
+        {/* Copyright */}
+        <Row>
+          <Col className="text-center">
+            <p className="footer-bottom">
+              © {new Date().getFullYear()} Rubberscrapmart | All Rights Reserved
+            </p>
           </Col>
         </Row>
       </Container>

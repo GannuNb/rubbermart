@@ -152,7 +152,7 @@ function Sidebar() {
           ) : !localStorage.getItem("token") ? (
             <div className="p-3 mb-3 bg-light bgcompany">
               <p className=" text-white">
-                Please login to view business profile.
+                Please login to view Your profile.
               </p>
             </div>
           ) : businessProfiles.length > 0 ? (

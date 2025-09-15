@@ -1,5 +1,6 @@
 import React from "react";
 import { useEffect } from "react";
+import { useRef } from "react";
 import myGif from "./images/videos/blueyellow.gif"; 
 import scrapImage from "./images/baledtrespcr2.jpg";
 import rightImage from "./images/baledtrespcr2.jpg";
@@ -20,6 +21,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+
+
+
 function Scrapstyles() {
 
     useEffect(() => {
@@ -27,34 +33,41 @@ function Scrapstyles() {
         document.documentElement.scrollTop = 0; 
         document.body.scrollTop = 0;  // For compatibility with older browsers
       }, []); // Empty dependency array ensures it runs only once on page load
-  
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+  AOS.init({
+    duration: 1000, // animation duration in ms
+    once: true,     // whether animation should happen only once
+  });
+}, []);
+  const handleGifClick = () => {
+    sectionRef.current.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
     <>
-      <div className="setter">
+      <div className="setterhome">
         {/* GIF Section */}
-        <div style={{ width: "100%", overflow: "hidden" }}>
-          <img src={myGif} alt="A cool GIF" style={{ width: "100%" }} />
-        </div>
+         <div style={{ width: "100%", overflow: "hidden", cursor: "pointer" }}>
+        <img
+          src={myGif}
+          alt="A cool GIF"
+          style={{ width: "100%" }}
+          onClick={handleGifClick}
+        />
+      </div>
 
         {/* First Section */}
         <div className="scrap-container">
           <div className="scrap-content">
             <p className="scrap-highlight mt-2">BUY AND SELL RUBBERSCRAP</p>
             <h1>
-              India’s premier digital Rubberscrap marketplace for sustainable
-              scrap management, offering an online platform to buy, sell, and
-              trade scrap materials through eco-friendly recycling processes
+              India’s Premier digital Rubberscrap Marketplace for Sustainable
+              Scrap Management, offering an online platform to Buy, Sell, and
+              Trade scrap materials through eco-friendly recycling processes
             </h1>
-            {/* <p className="scrap-description">
-              India’s premier digital scrap marketplace for sustainable scrap
-              management, offering an online platform to buy, sell, and trade
-              scrap materials through eco-friendly recycling processes.
-            </p> */}
-            {/* <div className="scrap-buttons">
-              <button className="request-demo">Request a demo</button>
-              <button className="request-demo">Learn More →</button>
-            </div> */}
+           
           </div>
           <div className="scrap-image">
             <img src={scrapImage} alt="Scrap Icon" />
@@ -120,7 +133,7 @@ function Scrapstyles() {
         </div>
 
         {/* New Section */}
-        <div className="new-section">
+        <div className="new-section" ref={sectionRef} >
           <div className="new-content">
             <h2>Your One-Stop Marketplace for Rubber Scrap Derived Products</h2>
             <p>

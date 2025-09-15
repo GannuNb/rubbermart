@@ -5,26 +5,13 @@ import pyroOil from './images/pyro_oil2.jpeg';
 import istock from './images/istockphoto.webp';
 import './Home.css';
 import axios from 'axios';
-import home from './images/home.jpeg';
-import logo from './images/logo.jpeg';
-import { Carousel } from "react-responsive-carousel";
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import car1 from "./images/Shredds.jpeg"
-import car2 from "./images/pyro_oil.jpeg"
-import car3 from "./images/PyroSteel.jpeg"
-import car4 from "./images/c4.jpg"
 import { useNavigate } from 'react-router-dom';
 import TechnologyCards from './TechnologyCards';
 import HeroSection from './HeroSection';
 import HappyClients from './Clients';
 import SrenComponent from './SrenComponent';
-import mulchImage from './images/mulch.jpeg';
-import MultipleBaledTyresPCRImage from './images/MultipleBaledTyresPCR.jpeg';
-import BaledTyresTBRImage from './images/BaledTyresTBR.jpeg';
-import pyrooilImage from './images/pyro_oil2.jpeg';
-import rubbercrumimg1 from "./images/rubbercrumbtw3.jpg";
-import RubberGranulesImage from './images/RubberGranules.jpeg';
-import ShreddsImage from './images/Shredds.jpeg';
+
 
 const Home = () => {
     const [scrapItems, setScrapItems] = useState([]);
@@ -68,56 +55,11 @@ const Home = () => {
 
     return (
         <>
-            <div className='abt'>
-                <div className='setter'>
-                    
-                    {/* <div className='head'
-                        style={{
-                            textAlign: 'center',
-                            margin: '20px',
-                            padding: '10px',
-                            fontSize: '24px',
-                            fontWeight: 'bold',
-                            color: 'black', // Set text color to black
-                            border: '2px solid #ccc',
-                            borderRadius: '5px',
-                            backgroundColor: '#e0f7e0',  // Light green background
-                            width: '90%'
-                        }}
-                    >
-                        India's Exclusive Marketplace for Rubber-Derived Products
-                    </div> */}
+            <div className='abt setterhome'>
+                <div className='setterhome'>
                     <HeroSection />
                 </div>
-                {/* <div className="bg-container-home">
 
-                    <div className="image-container">
-                        <div className="slider">
-                            <img src={car1} alt="Car 1" className="slider-image" />
-                            <img src={pyroOil} alt="Pyro Oil" className="slider-image" />
-                            <img src={car3} alt="Car 3" className="slider-image" />
-                            <img src={mulchImage} alt="Mulch Image" className="slider-image" />
-                            <img src={MultipleBaledTyresPCRImage} alt="Multiple Baled Tyres PCR" className="slider-image" />
-                            <img src={BaledTyresTBRImage} alt="Baled Tyres TBR" className="slider-image" />
-                            <img src={pyrooilImage} alt="Pyro Oil Image" className="slider-image" />
-                            <img src={rubbercrumimg1} alt="Rubber Crumb" className="slider-image" />
-                            <img src={RubberGranulesImage} alt="Rubber Granules" className="slider-image" />
-                            <img src={ShreddsImage} alt="Shredds" className="slider-image" />
-
-                            <img src={pyroOil} alt="Pyro Oil" className="slider-image" />
-                            <img src={car3} alt="Car 3" className="slider-image" />
-                            <img src={car1} alt="Car 1" className="slider-image" />
-                            <img src={mulchImage} alt="Mulch Image" className="slider-image" />
-                            <img src={MultipleBaledTyresPCRImage} alt="Multiple Baled Tyres PCR" className="slider-image" />
-                            <img src={BaledTyresTBRImage} alt="Baled Tyres TBR" className="slider-image" />
-                            <img src={pyrooilImage} alt="Pyro Oil Image" className="slider-image" />
-                            <img src={rubbercrumimg1} alt="Rubber Crumb" className="slider-image" />
-                            <img src={RubberGranulesImage} alt="Rubber Granules" className="slider-image" />
-                            <img src={ShreddsImage} alt="Shredds" className="slider-image" />
-                        </div>
-                        <div className="overlay-text">BUY & SELL YOUR PRODUCTS</div>
-                    </div>
-                </div> */}
                 <div>
                     <div className="row">
                         {/* Apply margin-left on larger screens and adjust on small screens */}

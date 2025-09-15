@@ -1,56 +1,97 @@
-/* Footer.css */
-.social-icon {
-    color: #fff; /* Default icon color (white) */
-    transition: transform 0.3s ease, color 0.3s ease; /* Smooth transition for hover effects */
-    font-size: 24px; /* Set a larger default size for icons */
-  }
-  
-  .social-icon:hover {
-    color: #007bff; /* Change color to blue on hover */
-    transform: scale(1.2); /* Increase size on hover (scale up to 1.2) */
-  }
-  
-  /* Styles for Quick Links */
-  .quick-links {
-    padding: 0; /* Remove default padding */
-    list-style: none; /* Remove bullet points */
-    text-align: center; /* Center-align list items */
-  margin: 0.5rem 0; /* Add some space between items */
-  margin-left: 32%;
-  }
-  
-  .quick-links li {
-    margin-bottom: 10px; /* Space between links */
-  }
-  
-  .quick-links a {
-    text-decoration: none; /* Remove underline */
-    color: #fff; /* Change link color to white */
-    transition: color 0.3s; /* Smooth transition for color change */
-  }
-  
-  .quick-links a:hover {
-    color: #007bff !important; /* Change link color to blue on hover with !important */
-  }
+.footer-section {
+  background: #2b2c2e;
+  color: #ddd;
+  padding: 50px 0 20px;
+  font-size: 14px;
+}
 
-  @media(min-width:300px) and (max-width:600px){
-    .quick-links{
-      margin-left: 0%;
-    }
-    .fw-bolds{
-      margin-left: 34%;
-    }
-  }
+.footer-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
 
+.footer-line {
+  width: 40px;
+  height: 2px;
+  background: #ffc107;
+  margin-bottom: 15px;
+}
 
-  .quick-links h5 {
-    white-space: nowrap; /* Prevent the heading from wrapping to the next line */
-    overflow: hidden; /* Hide overflow text */
-    text-overflow: ellipsis; /* Show ellipsis for overflow text */
+.footer-text {
+  color: #bbb;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links li {
+  margin-bottom: 8px;
+}
+
+.footer-links a {
+  color: #bbb;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer-links a:hover {
+  color: #ffc107;
+}
+
+.footer-social {
+  margin-top: 10px;
+}
+
+.footer-social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: #1e1f21;
+  color: #fff;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.footer-social a:hover {
+  background: #ffc107;
+  color: #000;
+}
+
+.footer-divider {
+  border-color: rgba(255, 255, 255, 0.1);
+  margin: 20px 0;
+}
+
+.footer-bottom {
+  font-size: 13px;
+  color: #aaa;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .footer-col {
+    margin-bottom: 25px;
+    text-align: center;
   }
-  
-  @media(min-width:600px) and (max-width:1100px){
-    .fw-bolds{
-      margin-left: 34%;
-    }
+  .footer-social {
+    justify-content: center;
   }
+}
+@media (min-width: 768px) {
+  .footer-section .col-md-3 {
+    flex: 0 0 auto;
+    width: 24% !important;
+  }
+}
