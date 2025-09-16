@@ -104,7 +104,7 @@ useEffect(() => {
       {/* About Us Section */}
       <div className="about-us-section fade-up">
         <div className="about-us-content">
-          <h2 className="about-us-title">About Us</h2>
+          <h2 className="mt-5 about-us-title">About Us</h2>
           <p className="about-us-description">
             Rubberscrapmart.com is an India's exclusive leading B2B
             marketplace dedicated to the buying, selling, and trading of

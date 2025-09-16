@@ -318,6 +318,9 @@
     .buying-btn, .selling-btn {
         padding: 10px 20px; /* Adjust buttons for mobile view */
     }
+    .scrap-content h1{
+        font-size: 1.1rem;
+    }
 }
 
 /* Cards Section - Improved Styling */
@@ -717,7 +720,7 @@
 /* Parent wrapper limits sticky */
 .sticky-section {
   position: relative;
-  height: 160vh;   /* GIF + scrap-container combined height */
+  height: 148vh;   /* GIF + scrap-container combined height */
 }
 
 
@@ -749,8 +752,22 @@
   z-index: 0;
   width: 100%;         /* take full width by default */
 }
+.sticky-section {
+  position: relative;
+  height:96vh;   /* GIF + scrap-container combined height */
+}
 }
 
+
+@media (min-width: 768px) and (max-width: 1024px) {
+
+    .sticky-section {
+  position: relative;
+  height: 108vh;   /* GIF + scrap-container combined height */
+}
+
+
+}
 
 
 
