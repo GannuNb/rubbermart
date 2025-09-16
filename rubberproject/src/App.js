@@ -50,19 +50,21 @@ import Homepage from './Homepage.js';
 import Cate from './Cate.js';
 import Scrapstyles from './Scrapstyles.js';
 import ScrollToTopButton from './ScrollToTopButton';
-import WhyChooseUs from './WhyChooseUs.js'
+import WhyChooseUs from './WhyChooseUs.js';
 import Adminusers from './Adminusers.js';
 import TermsPage from './TermsPage.js';
 
 function App() {
-
   const location = useLocation();
-  // Check if the current path is "/Admin" or "/Uploaded", case-insensitive
-  const isSidebarHidden = /^\/(admin|uploaded|Adminshipping|adminpayment|Adminusers)$/i.test(location.pathname);
+
+  // Pages where Sidebar and Footer should be hidden
+  const isAdminPage = /^\/(admin|uploaded|Adminshipping|adminpayment|Adminusers)$/i.test(location.pathname);
+
   return (
     <>
-      {/* Conditionally render Sidebar based on the current route */}
-      {!isSidebarHidden && <Sidebar />}
+      {/* Conditionally render Sidebar */}
+      {!isAdminPage && <Sidebar />}
+
       <div className="container">
         <Routes>
           <Route exact path="/" element={<Scrapstyles />} />
@@ -80,7 +82,7 @@ function App() {
           <Route exact path="/Login" element={<Login />} />
           <Route exact path="/Signup" element={<Signup />} />
           <Route exact path="/ForgetMailPass" element={<ForgetMailPass />} />
-          <Route exact path="/Productspage" element={<Productspage/>} />
+          <Route exact path="/Productspage" element={<Productspage />} />
           <Route exact path="/Contact" element={<ContactUs />} />
           <Route exact path="/Sell" element={<Sell />} />
           <Route exact path="/BusinessProfile" element={<BusinessProfile />} /> 
@@ -100,23 +102,25 @@ function App() {
           <Route exact path="/Buyreport" element={<Buyreport />} />
           <Route exact path="/Sellerreport" element={<Sellreport />} />
           <Route exact path="/userprofile" element={<Userprofile />} />
-          <Route exact path="/Tyrescrap" element={<TyreScrap/>} />
-          <Route exact path="/pyro_oil" element={<Pyro_oil/>} />
-          <Route exact path="/TyresteelScrap" element={<Tyresteelscrap/>} />
-          <Route exact path="/AboutUsPage" element={<AboutUsPage/>} />
-          <Route exact path='/Alert' element={<Alert/>}/>
-          <Route exact path='/forgot-password' element={<ForgotPassword/>}/>         
+          <Route exact path="/Tyrescrap" element={<TyreScrap />} />
+          <Route exact path="/pyro_oil" element={<Pyro_oil />} />
+          <Route exact path="/TyresteelScrap" element={<Tyresteelscrap />} />
+          <Route exact path="/AboutUsPage" element={<AboutUsPage />} />
+          <Route exact path="/Alert" element={<Alert />} />
+          <Route exact path="/forgot-password" element={<ForgotPassword />} />         
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route exact path="/moredetails" element={<Moredetails />} />
-          <Route exact path="/homepage" element={<Homepage/>}/>
-          <Route exact path="/cate" element={<Cate/>}/>
-          <Route exact path="/WhyChooseUs" element={<WhyChooseUs/>} />
+          <Route exact path="/homepage" element={<Homepage />} />
+          <Route exact path="/cate" element={<Cate />} />
+          <Route exact path="/WhyChooseUs" element={<WhyChooseUs />} />
         </Routes>
       </div>
-      <Footer />
+
+      {/* Conditionally render Footer */}
+      {!isAdminPage && <Footer />}
+
       <ScrollToTopButton />
       <ChatWidget />
-       
     </>
   );
 }
