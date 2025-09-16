@@ -29,7 +29,9 @@ const SrenComponent = () => {
   ];
   // #dbffd6
   return (
-    <div className="mt-5 hiwfs"  >
+    <>
+     
+    <div className="hiwfs fade-up"  >
       <h2 className="sren-heading mt-4 text-black">How It Works for Sellers</h2>
       <div className="sren-container">
         {cards.map((card, index) => (
@@ -52,6 +54,8 @@ const SrenComponent = () => {
         </button>
       </Link>
     </div>
+    
+    </>
   );
 };
 

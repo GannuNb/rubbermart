@@ -88,10 +88,14 @@
   .footer-social {
     justify-content: center;
   }
+  .footer-line{
+    margin-left: 44%;
+  }
 }
 @media (min-width: 768px) {
   .footer-section .col-md-3 {
     flex: 0 0 auto;
-    width: 24% !important;
+    width: 22% !important;
   }
+
 }

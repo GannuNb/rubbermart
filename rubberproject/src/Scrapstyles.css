@@ -5,6 +5,7 @@
 
 
 .scrap-container {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -327,6 +328,7 @@
     background-size: cover;
     color: white;
     height: 400px; /* Default height */
+    margin-top: -1%;
 }
 
 /* Title */
@@ -357,7 +359,7 @@
 }
 
 .cardbu:hover {
-    transform: translateY(-5px);
+    transform: translateY(-6px) !important;
 }
 
 /* Card Icon */
@@ -566,7 +568,7 @@
     padding: 20px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     text-align: center;
-    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out !important;
     width: 100%;
     max-width: 350px;
     position: relative;
@@ -574,7 +576,7 @@
 
 /* Hover Effect */
 .cardsel:hover {
-    transform: translateY(-5px);
+    transform: translateY(-5px) !important;
     background-color: #28c9fd; /* Background color change on hover */
     color: white; /* Text color change on hover */
 }
@@ -657,6 +659,7 @@
   margin-left: 10%;
   margin-top: 6%;
   width: 100%;
+  position: relative;
 }
 
 @media (max-width: 991px) {
@@ -680,9 +683,75 @@
 @media (max-width: 1350px) and (min-width: 991px){
     .setterhome {
         margin-left: 12.2%;
-        margin-top: 6%;
+        margin-top: 3%;
         width: 95%;
     }
 
   
 }
+
+/* --- Fade-up animation only (no other styling) --- */
+.fade-up {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.fade-up.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+
+/* Scrap container scrolls over the GIF */
+.scrap-container {
+  position: relative;
+  z-index: 1;
+  padding: 50px 8%;
+  min-height: 70vh;
+  background: white;
+}
+
+
+/* Parent wrapper limits sticky */
+.sticky-section {
+  position: relative;
+  height: 160vh;   /* GIF + scrap-container combined height */
+}
+
+
+/* Sticky GIF only inside sticky-section */
+.gif-wrapper {
+  position: sticky;
+  top: 1%;             /* respects top navbar */
+  height: 90vh;        /* almost full screen */
+  overflow: hidden;
+  z-index: 0;
+  width: 100%;         /* take full width by default */
+}
+
+.gif-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;      /* removes inline gaps */
+  
+  
+}
+
+@media (min-width: 300px) and (max-width: 768px) {
+
+    .gif-wrapper {
+  position: sticky;
+  top: 1%;             /* respects top navbar */
+  height: 27vh;        /* almost full screen */
+  overflow: hidden;
+  z-index: 0;
+  width: 100%;         /* take full width by default */
+}
+}
+
+
+
+

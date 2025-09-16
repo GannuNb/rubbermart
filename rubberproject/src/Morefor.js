@@ -6,9 +6,10 @@ import { Link } from 'react-router-dom';
 
 function Morefor() {
   return (
-    <Container className="my-5" >
-      <h2 className="mb-4 text-center">More for You</h2>
-      <div className="morefor-card p-4 shadow-sm rounded">
+    <Container className=" fade-up" >
+      
+      <div className=" mt-3 morefor-card p-4 shadow-sm rounded">
+        <h2 className="mb-4 text-center">More for You</h2>
         <Row className="text-center">
           <Col xs={12} sm={6} md={3} className="mb-4 mb-sm-0">
             <div className="morefor-item">
