@@ -724,21 +724,20 @@
 /* Sticky GIF only inside sticky-section */
 .gif-wrapper {
   position: sticky;
-  top: 1%;             /* respects top navbar */
-  height: 90vh;        /* almost full screen */
+  top: 1%;             
   overflow: hidden;
   z-index: 0;
-  width: 100%;         /* take full width by default */
+  width: 100%;        
+  cursor: pointer;
 }
 
 .gif-wrapper img {
   width: 100%;
-  height: 100%;
+  height: auto;      /* maintain aspect ratio */
   object-fit: contain;
-  display: block;      /* removes inline gaps */
-  
-  
+  display: block;    
 }
+
 
 @media (min-width: 300px) and (max-width: 768px) {
 
