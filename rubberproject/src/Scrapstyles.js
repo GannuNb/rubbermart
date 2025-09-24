@@ -168,7 +168,7 @@ useEffect(() => {
         <div className="new-content fade-up">
           <h2>Your One-Stop Marketplace for Rubber Scrap Derived Products</h2>
           <p>
-            Discover a seamless platform to buy and sell rubber scrap,
+            Discover a seamless platform to Buy and Sell rubber scrap,
             connecting buyers and sellers in the industry.
           </p>
           <ul>
