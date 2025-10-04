@@ -557,4 +557,33 @@ router.get("/users/:id", async (req, res) => {
   }
 });
 
+
+router.get('/getallapprovals', async (req, res) => {
+  try {
+    // Fetch all approval documents and populate scrapItem and postedBy
+    const approvals = await Approval.find()
+      .populate('scrapItem', 'name _id') // populate scrapItem name and id
+      .populate('postedBy', 'name email businessProfiles') // populate postedBy user data
+      .exec();
+
+    if (approvals.length === 0) {
+      return res.status(404).json({ message: 'No approvals found' });
+    }
+
+    // Convert image buffers to base64 strings
+    const approvalsWithImages = approvals.map((approval) => {
+      const imagesBase64 = approval.images.map(
+        (image) => `data:${image.contentType};base64,${image.data.toString('base64')}`
+      );
+
+      return { ...approval.toObject(), images: imagesBase64 };
+    });
+
+    res.json(approvalsWithImages);
+  } catch (error) {
+    console.error('Error fetching all approvals:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 module.exports = router;

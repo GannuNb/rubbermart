@@ -213,3 +213,70 @@
     background-color: #007bff;
     color: #fff;
 }
+
+
+.tyre-scrap-main-content {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    align-items: flex-start; /* 🔥 This is key: prevents items from stretching */
+    flex-wrap: wrap; /* Optional: wrap on smaller screens */
+}
+
+
+/* Grid takes most of the width */
+.tyre-scrap-grid {
+    flex: 3;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    justify-items: center;
+}
+
+/* Filter sidebar on the right */
+.filter-sidebar {
+    flex: 1;
+    background-color: #e7f0ff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    max-height: fit-content;
+    position: sticky;
+    top: 100px; /* so it stays visible on scroll */
+}
+
+.filter-container h4 {
+    margin-bottom: 15px;
+    color: #007bff;
+    font-weight: bold;
+}
+
+.filter-item {
+    margin-bottom: 10px;
+    font-size: 1rem;
+}
+
+.filter-item input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+/* Responsive: stack filter below grid on smaller screens */
+@media (max-width: 992px) {
+    .tyre-scrap-main-content {
+        flex-direction: column;
+    }
+    .tyre-scrap-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .filter-sidebar {
+        max-width: 100%;
+        position: static;
+        margin-top: 20px;
+    }
+}
+
+@media (max-width: 600px) {
+    .tyre-scrap-grid {
+        grid-template-columns: 1fr;
+    }
+}

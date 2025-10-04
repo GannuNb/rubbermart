@@ -1,0 +1,62 @@
+.filterContainer {
+  padding: 1rem;
+  background: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  width: 100%;
+  max-width: 20rem; /* ~320px, adjust as needed */
+  margin-left: auto;
+  font-size: 0.875rem; /* 14px */
+  color: #000;
+  box-sizing: border-box;
+}
+
+.filterSection {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.filterSectionHeading {
+  margin-bottom: 0.75rem;
+  font-size: 1.125rem; /* 18px */
+  font-weight: 600;
+  color: #007bff;
+  border-bottom: 0.125rem solid #007bff;
+  padding-bottom: 0.25rem;
+  user-select: none;
+}
+
+.filterLabel {
+  color: #000;
+  font-size: 0.875rem; /* 14px */
+  user-select: none;
+  flex: 1;
+}
+
+/* Checkbox styles */
+input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+  margin-left: 0.5rem;
+}
+
+.filterSubHeading {
+  font-size: 0.9375rem; /* 15px */
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.noLocations {
+  font-size: 0.875rem;
+  color: #999;
+}
+
+.priceRangeValues {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #333;
+}
