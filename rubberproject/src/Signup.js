@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import "./Signup.css";
+import styles from "./Signup.module.css";  // <-- Import CSS Module here
 
 export default function Signup() {
   const [credentials, setCredentials] = useState({
@@ -60,109 +60,109 @@ export default function Signup() {
   };
 
   return (
-    <div className="setter">
-    <div className="signup-page">
-      {/* Left Info Section */}
-      <div className="signup-left">
-        <h2>Looks like you're new here!</h2>
-        <p>
-          Sign up to get started — create your account, manage your business
-          profile, and explore exclusive benefits.
-        </p>
-        <img
-          src="https://cdn-icons-png.flaticon.com/512/5087/5087579.png"
-          alt="Signup illustration"
-          className="signup-illustration"
-        />
-      </div>
+    <div className={styles.setter}>
+      <div className={styles["signup-page"]}>
+        {/* Left Info Section */}
+        <div className={styles["signup-left"]}>
+          <h2>Looks like you're new here!</h2>
+          <p>
+            Sign up to get started — create your account, manage your business
+            profile, and explore exclusive benefits.
+          </p>
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/5087/5087579.png"
+            alt="Signup illustration"
+            className={styles["signup-illustration"]}
+          />
+        </div>
 
-      {/* Right Form Section */}
-      <div className="signup-right">
-        <form className="signup-form" onSubmit={handleSubmit}>
-          <h3 className="form-heading">Create Account</h3>
+        {/* Right Form Section */}
+        <div className={styles["signup-right"]}>
+          <form className={styles["signup-form"]} onSubmit={handleSubmit}>
+            <h3 className={styles["form-heading"]}>Create Account</h3>
 
-          <div className="form-group">
-            <label>Name</label>
-            <input
-              type="text"
-              name="name"
-              value={credentials.name}
-              onChange={onChange}
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Email Address</label>
-            <input
-              type="email"
-              name="email"
-              value={credentials.email}
-              onChange={onChange}
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Location (optional)</label>
-            <input
-              type="text"
-              name="geolocation"
-              value={credentials.geolocation}
-              onChange={onChange}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Password</label>
-            <div className="input-wrapper">
+            <div className={styles["form-group"]}>
+              <label>Name</label>
               <input
-                type={showPassword ? "text" : "password"}
-                name="password"
-                value={credentials.password}
+                type="text"
+                name="name"
+                value={credentials.name}
                 onChange={onChange}
                 required
               />
-              <button
-                type="button"
-                className="toggle-btn"
-                onClick={togglePasswordVisibility}
-              >
-                {showPassword ? "🙉" : "🙈"}
-              </button>
             </div>
-          </div>
 
-          <div className="form-group">
-            <label>Confirm Password</label>
-            <div className="input-wrapper">
+            <div className={styles["form-group"]}>
+              <label>Email Address</label>
               <input
-                type={showPassword ? "text" : "password"}
-                name="confirmPassword"
-                value={credentials.confirmPassword}
+                type="email"
+                name="email"
+                value={credentials.email}
                 onChange={onChange}
                 required
               />
-              <button
-                type="button"
-                className="toggle-btn"
-                onClick={togglePasswordVisibility}
-              >
-                {showPassword ? "🙉" : "🙈"}
-              </button>
             </div>
-          </div>
 
-          <button type="submit" className="btn-primary">
-            Sign Up
-          </button>
+            <div className={styles["form-group"]}>
+              <label>Location (optional)</label>
+              <input
+                type="text"
+                name="geolocation"
+                value={credentials.geolocation}
+                onChange={onChange}
+              />
+            </div>
 
-          <Link to="/login" className="btn-secondary">
-            Already a user? Log In
-          </Link>
-        </form>
+            <div className={styles["form-group"]}>
+              <label>Password</label>
+              <div className={styles["input-wrapper"]}>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={credentials.password}
+                  onChange={onChange}
+                  required
+                />
+                <button
+                  type="button"
+                  className={styles["toggle-btn"]}
+                  onClick={togglePasswordVisibility}
+                >
+                  {showPassword ? "🙉" : "🙈"}
+                </button>
+              </div>
+            </div>
+
+            <div className={styles["form-group"]}>
+              <label>Confirm Password</label>
+              <div className={styles["input-wrapper"]}>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="confirmPassword"
+                  value={credentials.confirmPassword}
+                  onChange={onChange}
+                  required
+                />
+                <button
+                  type="button"
+                  className={styles["toggle-btn"]}
+                  onClick={togglePasswordVisibility}
+                >
+                  {showPassword ? "🙉" : "🙈"}
+                </button>
+              </div>
+            </div>
+
+            <button type="submit" className={styles["btn-primary"]}>
+              Sign Up
+            </button>
+
+            <Link to="/login" className={styles["btn-secondary"]}>
+              Already a user? Log In
+            </Link>
+          </form>
+        </div>
       </div>
-    </div>
     </div>
   );
 }

@@ -6,6 +6,8 @@
   min-height: 100vh;
   font-family: "Poppins", sans-serif;
   background-color: #f1f3f6;
+  padding: 10%;
+  margin-left: 7%;
 }
 
 /* Left blue info panel */
@@ -16,7 +18,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 60px;
+  padding: 5%;
 }
 
 .signup-left h2 {
@@ -136,6 +138,9 @@ input:focus {
 @media (max-width: 900px) {
   .signup-page {
     flex-direction: column;
+    padding: 2%;
+  margin-left: 1%;
+  margin-top: 20%;
   }
 
   .signup-left {
