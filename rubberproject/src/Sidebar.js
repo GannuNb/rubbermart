@@ -557,7 +557,7 @@ function Sidebar() {
             <Link to="/Productspage">
               <button
                 className="bttop"
-                style={{ color: "black", fontWeight: 530 }}
+                style={{ color: "white", fontWeight: 530 }}
                 onMouseEnter={(e) => {
                   e.target.style.backgroundColor = "rgb(25, 187, 219)";
                   e.target.style.transform = " rgb(78, 195, 219)";
@@ -573,7 +573,7 @@ function Sidebar() {
             <Link to="/Sell">
               <button
                 className="bttop"
-                style={{ color: "black", fontWeight: 530 }}
+                style={{ color: "white", fontWeight: 530 }}
                 onMouseEnter={(e) => {
                   e.target.style.backgroundColor = "navyblue";
                   e.target.style.transform = "scale(1.05)";

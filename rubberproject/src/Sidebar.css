@@ -248,37 +248,46 @@ body {
   display: none !important;
 }
 } */
-
-
+/* ========== TOP BUTTON SECTION (Professional Look) ========== */
 
 .btstop {
   display: flex;
-  justify-content: center; /* Center-align buttons */
-  gap: 30px; /* Decreased gap */
+  justify-content: center;
+  gap: 25px;
   width: 100%;
   max-width: 1200px;
   flex-wrap: wrap;
   margin: 0 auto;
 }
 
-
+/* Corporate blue gradient button */
 .bttop {
-  padding: 10px 20px;
-  flex: 1;
+  padding: 10px 28px;
   font-size: 16px;
-  background-color: rgb(25, 187, 219);
-  color: white;
+  font-weight: 500;
+  background: linear-gradient(135deg, #004e92, #0077b6);
+  color: #fff;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
   min-width: 150px;
   max-width: 300px;
-  margin-left: 25%;
-  border-color: #d71414;
-  border: 1px solid rgb(105, 88, 216);
 }
 
+/* Hover effect — deeper gradient and smooth lift */
+.bttop:hover {
+  background: linear-gradient(135deg, #036fd4, #00629a);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Active press state */
+.bttop:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
 
 
 @media (min-width:300px) and (max-width:600px){
@@ -391,7 +400,7 @@ body {
 }
 
 .bgce{
-  background-color: rgb(203, 234, 249) !important;
+  background-color: #cbeaf9 !important
 }
 
 .bgcompany{
@@ -402,4 +411,44 @@ body {
 .boldfornavtext{
   color: #0e0146;
   font-weight: 300;
+}
+/* Social Media Icons in Navbar - Clean & Professional */
+.navbar-nav .nav-link i {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  font-size: 18px;
+  border-radius: 50%;
+  background-color: #192e4d; /* Dark professional background */
+  color: white !important;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12); /* Softer shadow */
+}
+
+/* Add spacing between icons */
+.navbar-nav .nav-link {
+  margin-right: 10px;
+}
+
+/* Hover effect with subtle brand colors */
+.navbar-nav .nav-link:hover i.fa-facebook { background-color: #1877F2; }
+.navbar-nav .nav-link:hover i.fa-twitter { background-color: #1DA1F2; }
+.navbar-nav .nav-link:hover i.fa-instagram { background: linear-gradient(45deg,#f58529,#dd2a7b,#8134af); }
+.navbar-nav .nav-link:hover i.fa-youtube { background-color: #FF0000; }
+
+/* Slight lift & scale on hover */
+.navbar-nav .nav-link i:hover {
+  transform: translateY(-2px) scale(1.1);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+}
+
+/* Mobile adjustment */
+@media (max-width: 600px) {
+  .navbar-nav .nav-link i {
+    width: 35px;
+    height: 35px;
+    font-size: 16px;
+  }
 }
