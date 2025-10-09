@@ -74,7 +74,7 @@ export default function Login() {
         <div className="login-left">
           <h2>Login</h2>
           <p>
-            Get access to your Orders, Wishlist and Recommendations.
+            Get access to your Orders, 
             Manage your business profile easily and stay connected!
           </p>
           <img
