@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
-import styles from "./Sidebar.module.css"; // CSS module import
+import styles from "./Sidebar.module.css";
 
 function Sidebar() {
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ function Sidebar() {
   const [businessProfiles, setBusinessProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showProfile, setShowProfile] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false); // mobile sidebar toggle
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const routes = {
     mulch: "/MulchPCR",
@@ -135,9 +135,7 @@ function Sidebar() {
     if (token) {
       const decoded = jwtDecode(token);
       const currentTime = Date.now() / 1000;
-      if (decoded.exp < currentTime) {
-        handleLogout();
-      }
+      if (decoded.exp < currentTime) handleLogout();
     }
   };
 
@@ -148,49 +146,58 @@ function Sidebar() {
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const closeSidebar = () => setSidebarOpen(false);
 
+  const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
+  const isDesktop = window.innerWidth >= 1024;
+
   return (
     <header>
       {/* Top Navbar */}
       <nav
-        className="navbar navbar-expand-lg navbar-light fixed-top shadow-sm py-4"
-        style={{
-          zIndex: 1030,
-          borderBottom: "1px solid #ddd",
-          backgroundColor: isMobile ? "#2196f3" : "#fff",
-          flexDirection: isMobile ? "column" : "row", // mobile 2-row
-          alignItems: isMobile ? "stretch" : "center",
-        }}
-      >
+  className="navbar navbar-expand-lg navbar-light fixed-top shadow-sm"
+  style={{
+    zIndex: 1030,
+    borderBottom: "1px solid #ddd",
+    backgroundColor: isMobile ? "#2196f3" : "#fff",
+    flexDirection: isMobile ? "column" : "row",
+    alignItems: isMobile ? "stretch" : "center",
+    paddingTop: isMobile ? "0.5rem" : "1.5rem",   // py-2 mobile, py-4 desktop
+    paddingBottom: isMobile ? "0.5rem" : "1.5rem", 
+  }}
+>
+
         <div
           style={{
             width: "100%",
-            textAlign: isMobile ? "center" : "center",
+            textAlign: "center",
             paddingBottom: isMobile ? "0.5rem" : "0",
             display: "flex",
             alignItems: "center",
-            justifyContent: isMobile ? "space-between" : "center", // Mobile: space between text & icons
+            justifyContent: isMobile ? "space-between" : "center",
           }}
         >
           <Link
             className="navbar-brand"
             to="/"
             style={{
-              paddingRight: !isMobile ? "30%" : "0", // Desktop unchanged
               color: isMobile ? "#fff" : "#000",
               fontWeight: "bold",
               fontSize: "1.2rem",
-              paddingLeft: "10%",
+              paddingLeft: isTablet ? "0" : "10%",  // remove left padding for tablets
+              paddingRight: !isMobile && !isTablet ? "30%" : "0", // desktop stays same
+              textAlign: isTablet ? "center" : "left", // center only for tablets
+              width: isTablet ? "100%" : "auto",      // full width for centering
             }}
           >
             Rubber scrapmart
           </Link>
 
-          {/* Mobile Icons */}
+
           {isMobile && (
             <div
               className="d-flex align-items-center gap-2"
-              style={{ paddingRight: "10%" }}
-            >              <Link to="/Productspage">
+              style={{ paddingRight: isTablet ? "16rem" : "10%" }}
+            >
+              <Link to="/Productspage">
                 <i className="fas fa-cart-plus text-white"></i>
               </Link>
               <Link to="/Sell">
@@ -222,14 +229,16 @@ function Sidebar() {
           )}
         </div>
 
-
-        {/* Row 2: Search + Icons */}
+        {/* Search + Icons */}
         <div
-          className="d-flex align-items-center w-100 px-3"
+          className="d-flex align-items-center w-100" // removed px-3
           ref={searchRef}
-          style={{ flexDirection: "row" }}
+          style={{
+            flexDirection: "row",
+            paddingLeft: isTablet ? "16rem" : "1rem", // fallback for non-tablet
+            paddingRight: "1rem",
+          }}
         >
-          {/* Category Select */}
           <select
             className="form-select me-2"
             style={{
@@ -237,7 +246,7 @@ function Sidebar() {
               border: "1.2px solid rgb(33, 89, 172)",
               borderRadius: "50px",
               padding: "0.4rem 0.8rem",
-              marginLeft: !isMobile ? "-42%" : "0", // Apply only on desktop
+              marginLeft: !isMobile ? "-42%" : "0",
             }}
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
@@ -248,8 +257,6 @@ function Sidebar() {
             <option value="pyrooil">Pyro Oil</option>
           </select>
 
-
-          {/* Input + Button */}
           <div style={{ position: "relative", width: "70%" }}>
             <input
               type="search"
@@ -266,13 +273,12 @@ function Sidebar() {
             />
             <button
               type="button"
-              className="btn text-white"
+              className="btn"
               style={{
                 position: "absolute",
                 top: "50%",
                 right: "5px",
                 transform: "translateY(-50%)",
-                backgroundColor: "#2159ac",
                 borderRadius: "50px",
                 width: "35px",
                 height: "35px",
@@ -287,8 +293,9 @@ function Sidebar() {
                   handleSuggestionClick(suggestions[0].route);
               }}
             >
-              <i className="fas fa-search"></i>
+              <i className="fas fa-search" style={{ color: "black" }}></i>
             </button>
+
 
             {suggestions.length > 0 && (
               <ul
@@ -318,7 +325,6 @@ function Sidebar() {
             )}
           </div>
 
-          {/* Icons */}
           <div className="d-flex align-items-center ms-2">
             {isMobile && (
               <button className="menu-toggle" onClick={toggleSidebar}>
@@ -379,95 +385,114 @@ function Sidebar() {
         </div>
       </nav>
 
-      {/* Horizontal Sidebar (Desktop) */}
-      {!isMobile && (
+      {/* Horizontal Sidebar */}
+      {isDesktop && (
         <div
-          id="sidebarMenu"
-          className="shadow-sm d-flex align-items-center justify-content-start px-4"
+          className="horizontal-bar"
           style={{
-            position: "absolute",
-            top: "14%",
-            left: 0,
-            right: 0,
+            marginTop: "90px",
+            backgroundColor: "rgb(33, 150, 243)",
+            padding: "0 20px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "25px",
             height: "60px",
-            overflowX: "auto",
-            whiteSpace: "nowrap",
-            zIndex: 1020,
             borderBottom: "1px solid #ddd",
-            backgroundColor: "rgb(33, 150, 243)", // blue color
           }}
         >
-
-          <Link
-            to="/"
-            className="mx-3 text-white fw-semi text-decoration-none"
-          >
-            <i className="fas fa-home me-2"></i>Home
+          {/* Desktop Links */}
+          <Link to="/" className="sidebar-link" style={{ color: "#fff" }}>
+            <i className="fas fa-home me-2"></i> Home
           </Link>
-          <Link
-            to="/AboutUsPage"
-            className="mx-3 text-white fw-semi text-decoration-none"
-          >
-            <i className="fas fa-info-circle me-2"></i>About Us
+          <Link to="/AboutUsPage" className="sidebar-link" style={{ color: "#fff" }}>
+            <i className="fas fa-info-circle me-2"></i> About Us
           </Link>
-          <Link
-            to="/BusinessProfile"
-            className="mx-3 text-white fw-semi text-decoration-none"
-          >
-            <i className="fas fa-briefcase me-2"></i>Business Profile
+          <Link to="/BusinessProfile" className="sidebar-link" style={{ color: "#fff" }}>
+            <i className="fas fa-briefcase me-2"></i> Business Profile
           </Link>
-          <Link
-            to="/Productspage"
-            className="mx-3 text-white fw-semi text-decoration-none"
-          >
-            <i className="fas fa-box-open me-2"></i>Buy
+          <Link to="/Productspage" className="sidebar-link" style={{ color: "#fff" }}>
+            <i className="fas fa-box-open me-2"></i> Buy
           </Link>
-          <Link
-            to="/Sell"
-            className="mx-3 text-white fw-semi text-decoration-none"
-          >
-            <i className="fas fa-dollar-sign me-2"></i>Sell
+          <Link to="/Sell" className="sidebar-link" style={{ color: "#fff" }}>
+            <i className="fas fa-dollar-sign me-2"></i> Sell
           </Link>
-          <Link
-            to="/ShippingDetails"
-            className="mx-3 text-white fw-semi text-decoration-none"
-          >
-            <i className="fas fa-shipping-fast me-2"></i>Shippings
+          <Link to="/ShippingDetails" className="sidebar-link" style={{ color: "#fff" }}>
+            <i className="fas fa-shipping-fast me-2"></i> Shippings
           </Link>
-          <Link
-            to="/Buyreport"
-            className="mx-3 text-white fw-semi text-decoration-none"
-          >
-            <i className="fas fa-file-alt me-2"></i>Buy Reports
+          <Link to="/Buyreport" className="sidebar-link" style={{ color: "#fff" }}>
+            <i className="fas fa-file-alt me-2"></i> Buy Reports
           </Link>
-          <Link
-            to="/Sellerreport"
-            className="mx-3 text-white fw-semi text-decoration-none"
-          >
-            <i className="fas fa-file-alt me-2"></i>Sell Reports
+          <Link to="/Sellerreport" className="sidebar-link" style={{ color: "#fff" }}>
+            <i className="fas fa-file-alt me-2"></i> Sell Reports
           </Link>
-          <Link
-            to="/Contact"
-            className="mx-3 text-white fw-semi text-decoration-none"
-          >
-            <i className="fas fa-envelope me-2"></i>Contact
+          <Link to="/Contact" className="sidebar-link" style={{ color: "#fff" }}>
+            <i className="fas fa-envelope me-2"></i> Contact
           </Link>
-          <Link
-            to="/Getorders"
-            className="mx-3 text-white fw-semi text-decoration-none"
-          >
-            <i className="fas fa-shopping-cart me-2"></i>Orders
+          <Link to="/Getorders" className="sidebar-link" style={{ color: "#fff" }}>
+            <i className="fas fa-shopping-cart me-2"></i> Orders
           </Link>
-          <Link
-            to="/getpay"
-            className="mx-3 text-white fw-semi text-decoration-none"
-          >
-            <i className="fas fa-wallet me-2"></i>Payments
+          <Link to="/getpay" className="sidebar-link" style={{ color: "#fff" }}>
+            <i className="fas fa-wallet me-2"></i> Payments
           </Link>
         </div>
       )}
 
-      {/* Mobile Sidebar Dropdown */}
+      {/* Tablet Horizontal Bar */}
+      {isTablet && (
+        <div
+          className="horizontal-bar"
+          style={{
+            marginTop: "120px",
+            backgroundColor: "rgb(33, 150, 243)",
+            padding: "10px 20px",
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "15px 25px",
+            borderBottom: "1px solid #ddd",
+            color: "#fff",
+          }}
+        >
+          {/* Tablet Links */}
+          <Link to="/" style={{ color: "#fff", display: "flex", alignItems: "center" }}>
+            <i className="fas fa-home me-2"></i> Home
+          </Link>
+          <Link to="/AboutUsPage" style={{ color: "#fff", display: "flex", alignItems: "center" }}>
+            <i className="fas fa-info-circle me-2"></i> About Us
+          </Link>
+          <Link to="/BusinessProfile" style={{ color: "#fff", display: "flex", alignItems: "center" }}>
+            <i className="fas fa-briefcase me-2"></i> Business Profile
+          </Link>
+          <Link to="/Productspage" style={{ color: "#fff", display: "flex", alignItems: "center" }}>
+            <i className="fas fa-box-open me-2"></i> Buy
+          </Link>
+          <Link to="/Sell" style={{ color: "#fff", display: "flex", alignItems: "center" }}>
+            <i className="fas fa-dollar-sign me-2"></i> Sell
+          </Link>
+          <Link to="/ShippingDetails" style={{ color: "#fff", display: "flex", alignItems: "center" }}>
+            <i className="fas fa-shipping-fast me-2"></i> Shippings
+          </Link>
+          <Link to="/Buyreport" style={{ color: "#fff", display: "flex", alignItems: "center" }}>
+            <i className="fas fa-file-alt me-2"></i> Buy Reports
+          </Link>
+          <Link to="/Sellerreport" style={{ color: "#fff", display: "flex", alignItems: "center" }}>
+            <i className="fas fa-file-alt me-2"></i> Sell Reports
+          </Link>
+          <Link to="/Contact" style={{ color: "#fff", display: "flex", alignItems: "center" }}>
+            <i className="fas fa-envelope me-2"></i> Contact
+          </Link>
+          <Link to="/Getorders" style={{ color: "#fff", display: "flex", alignItems: "center" }}>
+            <i className="fas fa-shopping-cart me-2"></i> Orders
+          </Link>
+          <Link to="/getpay" style={{ color: "#fff", display: "flex", alignItems: "center" }}>
+            <i className="fas fa-wallet me-2"></i> Payments
+          </Link>
+        </div>
+      )}
+
+      {/* Mobile Sidebar */}
       {isMobile && sidebarOpen && (
         <>
           <div
@@ -479,93 +504,63 @@ function Sidebar() {
               left: "0",
               width: "100%",
               height: "100%",
-              backgroundColor: "rgba(0,0,0,0.5)",
+              backgroundColor: "rgba(0,0,0,0.3)",
               zIndex: 1040,
             }}
-          />
+          ></div>
           <div
-            id="sidebarMenu"
-            className="d-flex flex-column shadow-sm"
+            className="mobile-sidebar"
             style={{
-              position: "absolute",
-              top: "56px",
-              left: 0,
-              right: 0,
+              position: "fixed",
+              top: "0",
+              left: "0",
+              width: "80%",
+              height: "100%",
               backgroundColor: "#fff",
               zIndex: 1050,
-              borderBottom: "1px solid #ddd",
-              transition: "max-height 0.4s ease",
+              padding: "1rem",
+              display: "flex",
+              flexDirection: "column",
+              gap: "15px",
             }}
           >
-            <Link
-              to="/"
+            <button
+              className="btn-close mb-3"
               onClick={closeSidebar}
-              className="p-3 border-bottom text-dark text-decoration-none"
-            >
-              <i className="fas fa-home me-2"></i> Home
+              style={{ alignSelf: "flex-end" }}
+            ></button>
+            <Link to="/" onClick={closeSidebar}>
+              Home
             </Link>
-            <Link
-              to="/AboutUsPage"
-              onClick={closeSidebar}
-              className="p-3 border-bottom text-dark text-decoration-none"
-            >
-              <i className="fas fa-info-circle me-2"></i> About Us
+            <Link to="/AboutUsPage" onClick={closeSidebar}>
+              About Us
             </Link>
-            <Link
-              to="/BusinessProfile"
-              onClick={closeSidebar}
-              className="p-3 border-bottom text-dark text-decoration-none"
-            >
-              <i className="fas fa-briefcase me-2"></i> Business Profile
+            <Link to="/BusinessProfile" onClick={closeSidebar}>
+              Business Profile
             </Link>
-            <Link
-              to="/Productspage"
-              onClick={closeSidebar}
-              className="p-3 border-bottom text-dark text-decoration-none"
-            >
-              <i className="fas fa-box-open me-2"></i> Buy
+            <Link to="/Productspage" onClick={closeSidebar}>
+              Buy
             </Link>
-            <Link
-              to="/Sell"
-              onClick={closeSidebar}
-              className="p-3 border-bottom text-dark text-decoration-none"
-            >
-              <i className="fas fa-dollar-sign me-2"></i> Sell
+            <Link to="/Sell" onClick={closeSidebar}>
+              Sell
             </Link>
-            <Link
-              to="/ShippingDetails"
-              onClick={closeSidebar}
-              className="p-3 border-bottom text-dark text-decoration-none"
-            >
-              <i className="fas fa-shipping-fast me-2"></i> Shipping
+            <Link to="/ShippingDetails" onClick={closeSidebar}>
+              Shippings
             </Link>
-            <Link
-              to="/Buyreport"
-              onClick={closeSidebar}
-              className="p-3 border-bottom text-dark text-decoration-none"
-            >
-              <i className="fas fa-file-alt me-2"></i> Reports
+            <Link to="/Buyreport" onClick={closeSidebar}>
+              Buy Reports
             </Link>
-            <Link
-              to="/Contact"
-              onClick={closeSidebar}
-              className="p-3 border-bottom text-dark text-decoration-none"
-            >
-              <i className="fas fa-envelope me-2"></i> Contact Us
+            <Link to="/Sellerreport" onClick={closeSidebar}>
+              Sell Reports
             </Link>
-            <Link
-              to="/Getorders"
-              onClick={closeSidebar}
-              className="p-3 border-bottom text-dark text-decoration-none"
-            >
-              <i className="fas fa-shopping-cart me-2"></i> Orders
+            <Link to="/Contact" onClick={closeSidebar}>
+              Contact
             </Link>
-            <Link
-              to="/getpay"
-              onClick={closeSidebar}
-              className="p-3 border-bottom text-dark text-decoration-none"
-            >
-              <i className="fas fa-wallet me-2"></i> Payment History
+            <Link to="/Getorders" onClick={closeSidebar}>
+              Orders
+            </Link>
+            <Link to="/getpay" onClick={closeSidebar}>
+              Payments
             </Link>
           </div>
         </>

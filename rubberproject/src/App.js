@@ -79,7 +79,7 @@ function App() {
       <div
         className="container-fluid"
         style={{
-          paddingTop: isMobile ? "35%" : isSidebarHidden ? "0px" : "11%",
+          paddingTop: isMobile ? "27%" : isSidebarHidden ? "0px" : "1%",
         }}
       >
         <Routes>

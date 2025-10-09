@@ -269,8 +269,7 @@ const BusinessProfile = () => {
 
   if (profileExists) {
     return (
-      <div className="setter">
-        <div className="container">
+        <div className="container-fluid">
           <div className="business-profile-container">
             <h2 className="text-center mb-4 tyre-scrap-heading mr-5">
               Your Business Profile
@@ -320,13 +319,12 @@ const BusinessProfile = () => {
             </div>
           </div>
         </div>
-      </div>
     );
   }
 
   return (
     <div className="setterbus">
-      <div className="container mt-5">
+      <div className="container-fluid">
         <form
           onSubmit={handleSubmit}
           className="border p-5 rounded bg-white shadow-lg"

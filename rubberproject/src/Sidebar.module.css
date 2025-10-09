@@ -258,3 +258,16 @@
     font-size: 0.9rem;
   }
 }
+.horizontal-bar {
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  white-space: nowrap;
+  height: 60px;
+  background-color: rgb(33, 150, 243);
+  padding: 0 20px;
+  border-bottom: 1px solid #ddd;
+  z-index: 1025;
+  position: relative; /* ensure it stays under top navbar */
+}
+
