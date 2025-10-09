@@ -186,6 +186,49 @@ router.post('/forgot-password', async (req, res) => {
 });
 
 
+// Route to handle password reset
+router.post('/reset-password/:token', async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { newPassword } = req.body;
+
+    // Validate input
+    if (!newPassword || newPassword.length < 5) {
+      return res
+        .status(400)
+        .json({ success: false, error: "Password must be at least 5 characters long" });
+    }
+
+    // Find user by token and check expiry
+    const user = await User.findOne({
+      resetToken: token,
+      tokenExpiry: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ success: false, error: "Invalid or expired reset token" });
+    }
+
+    // Hash new password securely
+    const salt = await bcrypt.genSalt(10);
+    const securePass = await bcrypt.hash(newPassword, salt);
+
+    // Update user details
+    user.password = securePass;
+    user.resetToken = null;
+    user.tokenExpiry = null;
+    await user.save();
+
+    res.json({ success: true, message: "Password has been updated successfully" });
+  } catch (error) {
+    console.error("Reset password error:", error);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
+  }
+});
+
+
 
 
 module.exports = router;
