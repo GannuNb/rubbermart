@@ -59,13 +59,12 @@ function Productspage() {
     window.scrollTo(0, 0);
   }, []);
   return (
-    <div className="abt mt-5 m-2">
+    <div className="abt m-2">
       <div>
         <div>
           <div className="row">
             {/* Apply margin-left on larger screens and adjust on small screens */}
-            <div className="col-lg-10 offset-lg-2 col-md-12">
-              <div className="container mt-5">
+              <div className="container-fluid">
                 <h2 className="display-4 fw-bold mb-3 text-black products-heading text-center d-flex  justify-content-center align-items-center">
                   Available To Buy
                 </h2>
@@ -171,7 +170,6 @@ function Productspage() {
           </div>
         </div>
       </div>
-    </div>
   );
 }
 

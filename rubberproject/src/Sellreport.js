@@ -17,12 +17,12 @@ const Sellreport = () => {
     const navigate = useNavigate();
     const [profile, setProfile] = useState(null);
     const location = useLocation(); // Get current route location
-    
-     useEffect(() => {
-            // Directly set the scroll position to the top of the page
-            document.documentElement.scrollTop = 0; 
-            document.body.scrollTop = 0;  // For compatibility with older browsers
-          }, []); // Empty dependency array ensures it runs only once on page load
+
+    useEffect(() => {
+        // Directly set the scroll position to the top of the page
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;  // For compatibility with older browsers
+    }, []); // Empty dependency array ensures it runs only once on page load
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -102,23 +102,23 @@ const Sellreport = () => {
 
     const generatePDF = (scrap) => {
         const doc = new jsPDF();
-    
+
         // if (logo) {
         //     doc.addImage(logo, 'JPEG', 11, 6, 40, 20);
         // }
 
         // Add text "Rubberscrapmart" with padding, positioning it at the top-left corner
-doc.setFontSize(14); // Set font size
-doc.setFont("helvetica", "bold"); // Set font style
-doc.text("Rubberscrapmart", 10, 12); // Add the text at position (10, 10)
-    
+        doc.setFontSize(14); // Set font size
+        doc.setFont("helvetica", "bold"); // Set font style
+        doc.text("Rubberscrapmart", 10, 12); // Add the text at position (10, 10)
+
         // Header Section
         doc.setFontSize(20);
         doc.text('MY PRODUCT DETAILS', 105, 20, { align: 'center' });
         doc.setFontSize(10);
         doc.setDrawColor(0, 0, 0);
         doc.line(10, 25, 200, 25);
-    
+
         // Billing Information Section
         let startY = 35;
         doc.setFontSize(12);
@@ -126,24 +126,24 @@ doc.text("Rubberscrapmart", 10, 12); // Add the text at position (10, 10)
         doc.text('Billing Information', 14, startY);
         doc.setDrawColor(0, 0, 0);
         doc.line(10, startY + 3, 200, startY + 3);
-    
+
         doc.setFontSize(10);
         doc.setFont('helvetica', 'normal');
         if (profile) {
             const leftX = 14;
             const labelX = 50; // Aligned position for colons
             const valueX = 60; // Value starts here
-    
+
             // Company Name
             doc.text('Company', leftX, startY + 8);
             doc.text(':', labelX, startY + 8);
             doc.text(validateText(profile.companyName), valueX, startY + 8);
-    
+
             // Email
             doc.text('Email', leftX, startY + 13);
             doc.text(':', labelX, startY + 13);
             doc.text(validateText(profile.email), valueX, startY + 13);
-    
+
             // Address with proper wrapping
             doc.text('Address', leftX, startY + 18);
             doc.text(':', labelX, startY + 18);
@@ -151,17 +151,17 @@ doc.text("Rubberscrapmart", 10, 12); // Add the text at position (10, 10)
             const wrappedAddress = doc.splitTextToSize(address, 120);
             doc.text(wrappedAddress, valueX, startY + 18);
         }
-    
+
         startY += 40;
-    
+
         // "DETAILS OF MY PRODUCT" Heading
         doc.setFontSize(14);
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(0);
         doc.text('DETAILS OF MY PRODUCT', 105, startY, { align: 'center' });
-    
+
         startY += 3;
-    
+
         // Table Data
         const tableColumn = ['Field', 'Value'];
         const tableRows = [
@@ -172,7 +172,7 @@ doc.text("Rubberscrapmart", 10, 12); // Add the text at position (10, 10)
             ['Email', validateText(scrap.email)],
             ['Approved At', new Date(scrap.approvedAt).toLocaleString()],
         ];
-    
+
         doc.autoTable({
             startY: startY + 10,
             head: [tableColumn],
@@ -195,9 +195,9 @@ doc.text("Rubberscrapmart", 10, 12); // Add the text at position (10, 10)
                 fillColor: [240, 240, 240],
             },
         });
-    
+
         startY = doc.previousAutoTable.finalY + 10;
-    
+
         // Terms and Conditions
         doc.setFont('helvetica', 'bold');
         doc.text('Terms and Conditions:', 14, startY);
@@ -206,25 +206,17 @@ doc.text("Rubberscrapmart", 10, 12); // Add the text at position (10, 10)
         doc.text('1. The Seller shall not be liable to the Buyer for any loss or damage.', 14, startY + 5);
         doc.text('2. The Seller warrants the product for one (1) year from the date of shipment.', 14, startY + 10);
         doc.text('3. The purchase order will be interpreted as acceptance of this offer.', 14, startY + 15);
-    
+
         // Save PDF
         doc.save(`scrap-report-${scrap._id}.pdf`);
     };
-    
-    
-
-
-
-
-
 
     if (loading) return <div className="text-center mt-5">Loading approved scrap reports...</div>;
     if (error) return <div className="text-center mt-5 text-danger">Error: {error}</div>;
 
     return (
         <>
-            <div className='setter'>
-                <div className="container my-5">
+                <div className="container-fluid">
                     <h2 className="text-center mb-4">Approved Scrap Reports</h2>
                     {approvedScrap.length === 0 ? (
                         <p className="text-center">No approved scrap items found.</p>
@@ -267,7 +259,7 @@ doc.text("Rubberscrapmart", 10, 12); // Add the text at position (10, 10)
                         </div>
                     )}
                 </div>
-            </div></>
+            </>
     );
 };
 

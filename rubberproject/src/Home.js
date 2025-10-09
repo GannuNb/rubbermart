@@ -55,8 +55,8 @@ const Home = () => {
 
     return (
         <>
-            <div className='abt setterhome'>
-                <div className='setterhome'>
+            <div className='abt'>
+                <div className=''>
                     <HeroSection />
                 </div>
 
@@ -64,7 +64,7 @@ const Home = () => {
                     <div className="row">
                         {/* Apply margin-left on larger screens and adjust on small screens */}
                         <div className="col-lg-10 offset-lg-2 col-md-12">
-                            <div className="container mt-5">
+                            <div className="container">
                                 <h2 className="display-4 fw-bold mb-3 text-black products-heading text-center d-flex  justify-content-center align-items-center">Available To Buy</h2>
                                 <div className="row justify-content-center align-items-center">
                                     {/* Tyre Scrap Card */}

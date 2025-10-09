@@ -187,7 +187,7 @@ const TyreScrap = () => {
   };
 
   return (
-    <div className="tyre-scrap-layout mt-5">
+    <div className="tyre-scrap-layout">
       <h2 className="tyre-scrap-heading animated-heading">Tyre Scrap Products</h2>
       <p className="tyre-scrap-description animated-description">
         We offer a wide variety of tyre scrap products tailored to meet your industrial needs. 

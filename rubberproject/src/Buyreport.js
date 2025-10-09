@@ -7,9 +7,6 @@ import logo from './images/logo.png';
 import { jsPDF } from "jspdf";
 import { FaFilePdf } from 'react-icons/fa';
 
-
-
-
 function Buyreport() {
   const [mergedData, setMergedData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -57,10 +54,6 @@ function Buyreport() {
     }
     return acc;
   }, {});
-
-
-
-  
 
     useEffect(() => {
        const token = localStorage.getItem('token');
@@ -207,8 +200,7 @@ function Buyreport() {
   }
 
   return (
-    <div className="setter">
-      <div className="container mt-5">
+      <div className="container-fluid">
         <h2 className="text-center mb-4">Buy Reports</h2>
         {mergedData.length === 0 ? (
           <p className="text-center">No data available.</p>
@@ -278,7 +270,6 @@ function Buyreport() {
           </div>
         )}
       </div>
-    </div>
   );
 }
 

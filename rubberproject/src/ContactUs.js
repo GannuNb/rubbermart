@@ -58,8 +58,7 @@ function ContactUs() {
   }, []);
 
   return (
-    <div className="setter">
-      <div className="container contact-us-page my-5">
+      <div className="container-fluid contact-us-page ">
         <div className="row">
           <div className="col-lg-6 mb-4">
             <h2 className="mb-4">Get in Touch</h2>
@@ -265,7 +264,6 @@ function ContactUs() {
           </div>
         </div>
       </div>
-    </div>
   );
 }
 

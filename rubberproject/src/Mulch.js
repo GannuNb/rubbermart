@@ -3,22 +3,57 @@ import axios from 'axios';
 import mulchImage from './images/mulch.jpeg';
 import mulchImage1 from './images/mulch1.jpg';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useNavigate } from 'react-router-dom';
-import Slider from 'react-slick'; // Carousel import
-import { FaMapMarkerAlt } from 'react-icons/fa'; // Location Icon
-import { FaBars } from 'react-icons/fa';
-import ts from './images/ts.svg'; // Trusted Seller Image
+import { useNavigate, Link } from 'react-router-dom';
+import Slider from 'react-slick';
+import { FaMapMarkerAlt } from 'react-icons/fa';
+import ts from './images/ts.svg';
 import './Mulch.css';
-import { Link } from 'react-router-dom';
 
+import ThreePiecePCRImage from './images/ThreePiecePCR.jpeg';
+import ShreddsImage from './images/Shredds.jpeg';
+import baledtrespcrimg1 from "./images/baledtrespcr2.jpg";
+import ThreePieceTBRImage from './images/ThreePieceTBR.jpeg';
+import BaledTyresTBRImage1 from "./images/BaledTyresTBR.jpg";
+import RubberGranulesImage from './images/RubberGranules2.jpeg';
+
+// Custom Carousel Arrows
+function NextArrow(props) {
+  const { onClick } = props;
+  return (
+    <div className="custom-arrow next-arrow" onClick={onClick}>
+      &#10095;
+    </div>
+  );
+}
+
+function PrevArrow(props) {
+  const { onClick } = props;
+  return (
+    <div className="custom-arrow prev-arrow" onClick={onClick}>
+      &#10094;
+    </div>
+  );
+}
+
+// Carousel settings
+const carouselSettings = {
+  dots: true,
+  infinite: true,
+  speed: 500,
+  slidesToShow: 1,
+  slidesToScroll: 1,
+  arrows: true,
+  autoplay: true,
+  autoplaySpeed: 4000,
+  nextArrow: <NextArrow />,
+  prevArrow: <PrevArrow />,
+};
 
 function Mulch() {
   const [approvals, setApprovals] = useState([]);
   const [userDetails, setUserDetails] = useState(null);
-  const [isOpen, setIsOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true); // New state to track loading status
 
   const categories = [
     { name: 'Three Piece PCR', path: '/threepiecepcr' },
@@ -29,268 +64,146 @@ function Mulch() {
     { name: 'Rubber Granules/Crumb', path: '/RubberGranules/Crum' },
   ];
 
-    useEffect(() => {
-        // Directly set the scroll position to the top of the page
-        document.documentElement.scrollTop = 0; 
-        document.body.scrollTop = 0;  // For compatibility with older browsers
-      }, []); // Empty dependency array ensures it runs only once on page load
-  
-      
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {
-    async function fetchApprovalDetails() {
+    const fetchApprovalDetails = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/approvals`, {
-          params: { application: 'Mulch PCR' },
-        });
-  
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/approvals`,
+          { params: { application: 'Mulch PCR' } }
+        );
+
         const approvalsData = response.data.approvals;
         setApprovals(approvalsData);
-  
+
         if (approvalsData.length > 0 && approvalsData[0].postedBy) {
           const userResponse = await axios.get(
             `${process.env.REACT_APP_API_URL}/api/users/${approvalsData[0].postedBy._id}`
           );
           setUserDetails(userResponse.data);
         }
-        
-        setLoading(false); // Set loading to false after data is fetched
       } catch (error) {
-        console.error('Error fetching approval details:', error);
-        setLoading(false); // Set loading to false in case of an error
+        console.error(error);
+      } finally {
+        setLoading(false);
       }
-    }
-  
+    };
+
     fetchApprovalDetails();
   }, []);
-  
 
-  
-  // Custom Arrow Components for Carousel
-  const NextArrow = ({ onClick }) => (
-    <div className='custom-arrow custom-arrow-next' onClick={onClick}>
-      ❯
-    </div>
-  );
+  const handleMoreDetailsClick = (approval) => navigate('/moredetails', { state: { approval } });
 
-  const PrevArrow = ({ onClick }) => (
-    <div className='custom-arrow custom-arrow-prev' onClick={onClick}>
-      ❮
-    </div>
-  );
-
-  const carouselSettings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    nextArrow: <NextArrow />,
-    prevArrow: <PrevArrow />,
-  };
-  
-  if (loading) {
-    return (
-      <div className='productleftside'>
-        <div className='setter'>
-          <div className='container'>
-            <h2 className='text-primary fw-bold text-left mt-5 btphead'>Mulch PCR</h2>
-            <div className='row align-items-center mt-3'>
-              <div className='col-md-7'>
-                <p className='text-justify'>
-                  <strong>Mulc PCR</strong> is a popular landscaping material used to retain soil moisture, suppress weeds, and improve the overall health of your garden. Made from natural materials such as wood chips, bark, or grass clippings, it is an environmentally friendly choice that also adds an aesthetic appeal to outdoor spaces.
-                </p>
-              </div>
-              <div className='col-md-5'>
-                <Slider {...carouselSettings} className='custom-carousel'>
-                  <div>
-                    <img src={mulchImage} alt='Mulch Image 1' className='img-fluid carousel-image' />
-                  </div>
-                  <div>
-                    <img src={mulchImage1} alt='Mulch Image 2' className='img-fluid carousel-image' />
-                  </div>
-                </Slider>
-              </div>
-            </div>
-            <div className='no-stock-wrapper'>
-              <h1>Loading...</h1> {/* Show this message while loading */}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-  
-  if (approvals.length === 0) {
-    return (
-      <div className='productleftside'>
-        <div className='setter'>
-          <div className='container'>
-            <h2 className='text-primary fw-bold text-left mt-5 btphead'>Mulch PCR</h2>
-            <div className='row align-items-center mt-3'>
-              <div className='col-md-7'>
-                <p className='text-justify'>
-                  <strong>Mulch PCR</strong> is a popular landscaping material used to retain soil moisture, suppress weeds, and improve the overall health of your garden. Made from natural materials such as wood chips, bark, or grass clippings, it is an environmentally friendly choice that also adds an aesthetic appeal to outdoor spaces.
-                </p>
-              </div>
-              <div className='col-md-5'>
-                <Slider {...carouselSettings} className='custom-carousel'>
-                  <div>
-                    <img src={mulchImage} alt='Mulch Image 1' className='img-fluid carousel-image' />
-                  </div>
-                  <div>
-                    <img src={mulchImage1} alt='Mulch Image 2' className='img-fluid carousel-image' />
-                  </div>
-                </Slider>
-              </div>
-            </div>
-            <div className='no-stock-wrapper'>
-              <h1>No Stock Available</h1> {/* Show this message when there are no approvals */}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-  
-
-  const handleMoreDetailsClick = (approval) => {
-    navigate('/moredetails', { state: { approval } });
-  };
-
+  if (loading) return <div className="loader-wrapper">Loading...</div>;
 
   return (
-    <>
-
-    <div className='productleftside'>
-      <div className='setter'>
-        <div className='container'>
-          <div className='container'>
-            {/* Centered Heading at the Top */}
-            <h2 className='text-primary fw-bold text-left mt-5 btphead'>Mulch PCR</h2>
-            <div className='row align-items-center mt-3'>
-              {/* Content Section */}
-              <div className='col-md-7'>
-                <p className='text-justify'>
-                  <strong>Mulch PCR</strong> is a popular landscaping material used to retain soil moisture, suppress weeds, and improve the overall health of your garden. Made from natural materials such as wood chips, bark, or grass clippings, it is an environmentally friendly choice that also adds an aesthetic appeal to outdoor spaces.
-                </p>
-              </div>
-
-              {/* Carousel Section */}
-              <div className='col-md-5'>
-                <Slider {...carouselSettings} className='custom-carousel'>
-                  <div>
-                    <img src={mulchImage} alt='Mulch Image 1' className='img-fluid carousel-image' />
-                  </div>
-                  <div>
-                    <img src={mulchImage1} alt='Mulch Image 2' className='img-fluid carousel-image' />
-                  </div>
-                </Slider>
-              </div>
+    <div className="mulch-page">
+      {/* Hero Carousel */}
+      <div className="hero-carousel">
+        <Slider {...carouselSettings}>
+          <div className="hero-slide">
+            <img src={mulchImage} alt="Mulch 1" className="hero-image" />
+            <div className="hero-text">
+              <h1>Mulch PCR</h1>
+              <p>
+                Mulch PCR is a popular landscaping material used to retain soil moisture, suppress weeds,
+                and improve the overall health of your garden.
+              </p>
             </div>
           </div>
+          <div className="hero-slide">
+            <img src={mulchImage1} alt="Mulch 2" className="hero-image" />
+            <div className="hero-text">
+              <h1>Eco-Friendly Landscaping</h1>
+              <p>
+                Made from natural materials such as wood chips, bark, or grass clippings, it is an environmentally
+                friendly choice that also adds an aesthetic appeal to outdoor spaces.
+              </p>
+            </div>
+          </div>
+        </Slider>
+      </div>
 
-          <h2 className='fw-bold text-dark mt-5'>Seller's Products</h2>
-          <div className='categoriess-container'>
-            <div className={`categories-box shadow-sm ${isMobile ? 'w-auto' : 'w-25'}`}>
-              <h6 className='text-dark fw-bold border-bottom pb-2 d-flex align-items-center'>
-                {isMobile && (
-                  <button className='btn btn-sm btn-dark me-2' onClick={() => setIsOpen(!isOpen)}>
-                    <FaBars />
-                  </button>
-                )}
-                Related Categories
-              </h6>
-
-              {/* Show categories only if it's desktop or dropdown is open */}
-              {(!isMobile || isOpen) && (
-                <div className={`category-list ${isOpen ? 'show' : 'hide'}`}>
-                  <div className='scroll-container'>
-                    {categories.map((category, index) => (
-                      <Link to={category.path} className='category-item' key={index}>
-                        {category.name}
-                      </Link>
-                    ))}
-                  </div>
+      {/* Approvals Section */}
+      <div className="approvals-grid mt-4 container">
+        {approvals.length > 0 ? (
+          approvals.map((approval) => (
+            <div key={approval._id} className="approval-card-horizontal">
+              <div className="card-content">
+                <div className="card-left">
+                  <img src={approval.images?.[0]} alt="Approval" />
                 </div>
-              )}
-            </div>
-          </div>
-
-          {/* Card Section */}
-          {approvals.length > 0 && userDetails && (
-            <div className='approval-cards-container'>
-              {approvals.map((approval) => (
-                <div key={approval._id} className='approval-card'>
-                  {/* IMAGE SECTION */}
-                  {approval.images?.[0] && (
-                    <div className='approval-image-container'>
-                      <img
-                        src={approval.images[0]}
-                        alt='Approval Image'
-                        className='approval-card-image'
-                      />
-                    </div>
+                <div className="card-right">
+                  <h5 className="approval-title">{approval.application}</h5>
+                  <p className="approval-material">{approval.material}</p>
+                  <p className="approval-price">
+                    <strong>Price:</strong> {approval.price} INR/MT
+                  </p>
+                  {userDetails?.businessProfiles?.[0] && (
+                    <p className="approval-seller">
+                      <strong>By:</strong> {approval.postedBy?.businessProfiles[0]?.profileId}
+                    </p>
                   )}
-
-                  {/* Divider Line (Only Visible in Desktop) */}
-                  <div className='approval-divider'></div>
-
-                  {/* CONTENT SECTION */}
-                  <div className='approval-card-body'>
-                    <h5 className='approval-title'>{approval.application}</h5>
-                    <h6 className='approval-material'>{approval.material}</h6>
-
-                    {/* Price */}
-                    <p className='approval-price'>
-                      <strong>Price:</strong> {approval.price} INR/MT
-                    </p>
-
-                    {/* Seller Info */}
-                    {userDetails?.businessProfiles?.[0] && (
-                      <p className='approval-seller'>
-                        <strong>By:</strong> {approval.postedBy?.businessProfiles[0]?.profileId}
-                      </p>
-                    )}
-
-                    {/* Location */}
-                    <p className='approval-location'>
-                      <FaMapMarkerAlt className='approval-location-icon' />{' '}
-                      <strong>Loading Location:</strong> {approval.loadingLocation}
-                    </p>
-
-                    {/* Trusted Seller Badge */}
-                    <img
-                      src={ts}
-                      alt='Trusted Seller'
-                      className='approval-trusted-seller-icon'
-                    />
-
-                    {/* Buttons */}
-                    <div className='approval-button-container'>
-                      <button
-                        className='btn btn-primary shadow-sm mt-2'
-                        onClick={() => handleMoreDetailsClick(approval)}
-                      >
-                        More Details
-                      </button>
-                    </div>
-                  </div>
+                  <p className="approval-location">
+                    <FaMapMarkerAlt /> {approval.loadingLocation}
+                  </p>
+                  <img src={ts} alt="Trusted Seller" className="trusted-seller" />
                 </div>
-              ))}
+              </div>
+              <button
+                className="btn btn-primary more-details-btn"
+                onClick={() => handleMoreDetailsClick(approval)}
+              >
+                More Details
+              </button>
             </div>
-          )}
+          ))
+        ) : (
+          <div className="no-stock-wrapper text-center mt-4">
+            <h3>No Stock Available</h3>
+          </div>
+        )}
+      </div>
+
+      {/* Related Categories */}
+      <div className="related-categories container mt-5">
+        <h3>Related Categories</h3>
+        <div className="related-grid">
+          <Link to="/threepiecepcr" className="related-card">
+            <img src={ThreePiecePCRImage} alt="Three Piece PCR" />
+            <p>Three Piece PCR</p>
+          </Link>
+
+          <Link to="/shreds" className="related-card">
+            <img src={ShreddsImage} alt="Shreds" />
+            <p>Shreds</p>
+          </Link>
+
+          <Link to="/baledtyrespcr" className="related-card">
+            <img src={baledtrespcrimg1} alt="Baled Tyres PCR" />
+            <p>Baled Tyres PCR</p>
+          </Link>
+
+          <Link to="/threepiecetbr" className="related-card">
+            <img src={ThreePieceTBRImage} alt="Three Piece TBR" />
+            <p>Three Piece TBR</p>
+          </Link>
+
+          <Link to="/rubbergranules/crum" className="related-card">
+            <img src={RubberGranulesImage} alt="Mulch" />
+            <p>Rubber Granules</p>
+          </Link>
+
+          <Link to="/baledtyrestbr" className="related-card">
+            <img src={BaledTyresTBRImage1} alt="Baled Tyres TBR" />
+            <p>Baled Tyres TBR</p>
+          </Link>
         </div>
       </div>
-      </div>
-    </>
+    </div>
   );
 }
 

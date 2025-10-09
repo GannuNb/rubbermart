@@ -567,10 +567,9 @@ const Getorders = () => {
   };
   
   return (
-    <div className="setter">
-      <div className="container">
-        <h2>ALL ORDERS</h2>
-        <div className="table-responsive">
+      <div className="container-fluid">
+<h2 style={{ textAlign: "center", }}>ALL ORDERS</h2>
+        <div className="table-responsive mt-3">
           <table className="table table-striped table-bordered table-hover">
             <thead className="thead-dark">
               <tr>
@@ -670,7 +669,6 @@ const Getorders = () => {
           </table>
         </div>
       </div>
-    </div>
   );
   
   

@@ -334,10 +334,8 @@ const BusinessProfile = () => {
           <h2 className="text-center mb-4 text-primary">
             Create Business Profile
           </h2>
-
           {/* Error Message */}
           {error && <div className="alert alert-danger">{error}</div>}
-
           {/* Form Fields */}
           <div className="row mb-4">
             <div className="col-md-6">
@@ -551,10 +549,7 @@ const BusinessProfile = () => {
                 View More
               </a>
             </div>
-
-
           </div>
-
           <div className="text-center">
             <button
               type="submit"

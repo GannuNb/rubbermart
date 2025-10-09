@@ -1,132 +1,132 @@
-
 .setterbus {
-    margin-left: 16%;
-    margin-top: 10%;
+  margin-left: 16%;
+  margin-top: 10%;
 }
-.form-gradient {
-   
-        background: linear-gradient(to right, #e0f7fa, #80deea, #26c6da);
-  
-      
-  }
-  
 
+.form-gradient {
+
+  background: linear-gradient(to right, #e0f7fa, #80deea, #26c6da);
+
+
+}
 
 h2.text-center {
-    font-size: 2rem;
-    margin-bottom: 20px;
-    
+  font-size: 2rem;
+  margin-bottom: 20px;
+
 }
 
-
 @media (max-width: 991px) {
-    .setterus {
-        margin-left: 5%;
-        margin-top: 12%;
-    }
+  .setterus {
+    margin-left: 5%;
+    margin-top: 12%;
+  }
 
-    h2.text-center {
-        font-size: 1.8rem; 
-        margin-bottom: 15px;
-    }
+  h2.text-center {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+  }
 }
 
 
 @media (max-width: 600px) {
-    .setterbus {
-        margin-left: 2%;
-        margin-top: 35%;
-    }
+  .setterbus {
+    margin-left: 2%;
+    margin-top: 35%;
+  }
 
-    h2.text-center {
-        font-size: 1.5rem; 
-        margin-bottom: 10px;
-        text-align: center;
-    }
+  h2.text-center {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    text-align: center;
+  }
 
-   
-    form {
-        padding: 0 10px; 
-    }
-    
-   
-    .card {
-        margin-bottom: 30px;
-    }
 
-    
-    .card-img-top {
-        max-height: 60px;
-        width: 30%;
-    }
+  form {
+    padding: 0 10px;
+  }
+
+
+  .card {
+    margin-bottom: 30px;
+  }
+
+
+  .card-img-top {
+    max-height: 60px;
+    width: 30%;
+  }
 }
 
 @media (min-width:600px) and (max-width: 1100px) {
-    .setterbus {
-        margin-left: 0%;
-        margin-top: 12%;
-    }
+  .setterbus {
+    margin-left: 0%;
+    margin-top: 12%;
+  }
 }
 
 /* For the background color */
 .business-profile-container {
-    
-    padding: 20px;
-    border-radius: 8px;
-    color: white;
-    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
-    margin-right: 2%;
-  }
-  
-  .business-profile-container:hover {
-   
-    background-color:   #4596ec; /* Blue background */
-  }
-  
-  /* Optional: Adjust the hover effect for the text */
-  .business-profile-container:hover h2,
-  .business-profile-container:hover p{
-    color: #fff;
-  }
-  
-  /* Bussinessprofile.css */
+
+  padding: 20px;
+  border-radius: 8px;
+  color: white;
+  transition: background-color 0.3s ease;
+  /* Smooth transition for hover effect */
+  margin-right: 2%;
+}
+
+.business-profile-container:hover {
+
+  background-color: #4596ec;
+  /* Blue background */
+}
+
+/* Optional: Adjust the hover effect for the text */
+.business-profile-container:hover h2,
+.business-profile-container:hover p {
+  color: #fff;
+}
+
+/* Bussinessprofile.css */
 
 .business-profile-container p {
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    white-space: pre-wrap;
-    max-width: 100%;
-    line-height: 1.5;
-  }
-  
-  /* Ensure proper padding and spacing */
-  .business-profile-container .col-12 {
-    padding: 10px 0;
-  }
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  max-width: 100%;
+  line-height: 1.5;
+}
+
+/* Ensure proper padding and spacing */
+.business-profile-container .col-12 {
+  padding: 10px 0;
+}
 
 
-  /* Styling the container that holds both checkbox and label */
+/* Styling the container that holds both checkbox and label */
 .ship-address-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 8px; /* Space between checkbox and label */
-  }
-  
-  /* Style the checkbox itself */
-  .ship-checkbox {
-    accent-color: rgba(0, 0, 0, 0.911); /* Change checkbox color to black when checked */
-    width: 20px;
-    height: 20px;
-    margin-left: 2%;
-    margin-top: 0%;
-    border-color: black;
-    
-  }
-  
-  /* Optional: You can add more custom styling to the label here */
-  .ship-address-wrapper label {
-    font-weight: 700;
-    margin-left: 10%;
-    margin-top: 1%;
-  }
-  
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  /* Space between checkbox and label */
+}
+
+/* Style the checkbox itself */
+.ship-checkbox {
+  accent-color: rgba(0, 0, 0, 0.911);
+  /* Change checkbox color to black when checked */
+  width: 20px;
+  height: 20px;
+  margin-left: 2%;
+  margin-top: 0%;
+  border-color: black;
+
+}
+
+/* Optional: You can add more custom styling to the label here */
+.ship-address-wrapper label {
+  font-weight: 700;
+  margin-left: 10%;
+  margin-top: 1%;
+}

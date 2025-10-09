@@ -285,13 +285,6 @@
 .linkstyle { text-decoration: none; color: inherit; }
 .linkstyle:hover { color: inherit; text-decoration: none; }
 
-.setterhome { margin: 6% 0 0 10%; width: 100%; position: relative; }
-@media (max-width: 991px) { .setterhome { margin: 12% 0 0 0; } }
-@media (max-width: 767px) { .setterhome { margin: 28% 0 0 0; } }
-@media (min-width: 991px) and (max-width: 1350px) { 
-  .setterhome { margin: 3% 0 0 12.2%; width: 95%; }
-}
-
 /* Fade-up animation */
 .fade-up { opacity: 0; transform: translateY(40px); transition: .8s; }
 .fade-up.in-view { opacity: 1; transform: translateY(0); }

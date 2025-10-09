@@ -419,8 +419,7 @@ function ShippingDetails() {
   
   
   return (
-    <div className="setter">
-      <div className="container mt-5">
+      <div className="container-fluid">
         <h2 className="text-center mb-4">Shipping Details</h2>
         {Object.keys(groupedByOrder).length === 0 ? (
           <p style={{ marginTop: '12%' }} className="text-center mt-5">No shipping details available.</p>
@@ -534,16 +533,9 @@ function ShippingDetails() {
           </div>
         )}
       </div>
-    </div>
   );
   
-  
-  
-  
-  
-  
-  
-  
+ 
 }
 
 export default ShippingDetails;

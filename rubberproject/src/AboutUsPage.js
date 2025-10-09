@@ -15,7 +15,6 @@ const AboutUsPage = () => {
   }, []); 
 
   return (
-    <div className="setter">
       <div className="about-us-page">
         
         <div className="about-header">
@@ -123,9 +122,7 @@ const AboutUsPage = () => {
           </div>
         </div>
       </div>
-     
-    </div>
-  );
+       );
 };
 
 export default AboutUsPage;

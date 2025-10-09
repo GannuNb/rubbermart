@@ -2,9 +2,7 @@
 .tyre-scrap-layout {
     background-color: #f8f9fa; /* Light gray background */
     min-height: 100vh;
-    padding: 40px 20px; /* Add padding around the content */
-    margin-left: 15%; /* Move the page slightly to the right */
-    margin-top: 8% !important;
+
 }
 
 /* Heading styling */
@@ -15,7 +13,6 @@
     margin-bottom: 40px; /* Increased spacing below the heading */
     color: #0072ff;
     font-family: Algerian, sans-serif;
-    margin-top: 5%;
 
 }
 
@@ -119,8 +116,7 @@
     margin-bottom: 25px; /* Add spacing below the description */
     color: #555; /* Neutral text color */
     line-height: 1.6; /* Improve readability */
-    max-width: 850px; /* Limit width for better alignment */
-    margin-left: auto;
+        margin-left: auto;
     margin-right: auto;
 }
 

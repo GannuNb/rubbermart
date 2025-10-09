@@ -1,23 +1,9 @@
-.setter {
-    /* margin-left: 11%;
-  margin-top: 10%;
-  width: 100%; */
-  margin-left: 11%;
-  margin-top: 8%;
-  width: 100%;
-}
-
 h2.text-center {
     font-size: 2rem; 
     margin-bottom: 20px;
 }
 
 @media (max-width: 991px) {
-    .setter {
-        margin-left: 0%; 
-        margin-top: 12%;
-    }
-
     h2.text-center {
         font-size: 1.8rem;
         margin-bottom: 15px;
@@ -25,10 +11,7 @@ h2.text-center {
 }
 
 @media (max-width: 767px) {
-    .setter {
-        margin-left: 0%;
-        margin-top: 28%;
-    }
+
 
     h2.text-center {
         font-size: 1.5rem;
@@ -52,11 +35,6 @@ h2.text-center {
 
 /* Medium Devices: Small Navbar for 990px to 1350px */
 @media (max-width: 1350px) and (min-width: 991px){
-    .setter {
-        margin-left: 14%;
-        margin-top: 9%;
-        width: 100%;
-    }
 
     h2.text-center {
         font-size: 1.5rem;

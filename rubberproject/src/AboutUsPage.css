@@ -1,20 +1,8 @@
 /* Custom CSS for AboutUsPage */
 .about-us-page {
   font-family: 'Arial', sans-serif;
-  margin-left: 1%;
 }
 
-@media (min-width:300px) and (max-width:700px){
-  .about-us-page {
-    margin-left: 1%;
-  }
-}
-@media (min-width:700px) and (max-width:1400px){
-  .about-us-page {
-    margin-left: 4%;
-    margin-right: 3%;
-  }
-}
 
 /* About Section with Background Gradient */
 .about-header {

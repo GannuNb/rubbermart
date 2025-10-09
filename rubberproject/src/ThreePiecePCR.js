@@ -1,54 +1,79 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { useNavigate } from "react-router-dom";
-import "./Mulch.css";
-import ts from "./images/ts.svg"; // Trusted Seller Image
-import { FaMapMarkerAlt } from "react-icons/fa"; // Location Icon
-import { FaBars } from "react-icons/fa";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import ThreePiecePCRImage from './images/ThreePiecePCR.jpeg';
-import Slider from "react-slick"; // Carousel import
-import { Link } from "react-router-dom"; // Use Link for React Router
 import pcr2 from './images/3piecepcr2.jpg';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { useNavigate, Link } from 'react-router-dom';
+import Slider from 'react-slick';
+import { FaMapMarkerAlt } from 'react-icons/fa';
+import ts from './images/ts.svg';
+import './Mulch.css';
+
+import ShreddsImage from './images/Shredds.jpeg';
+import baledtrespcrimg1 from "./images/baledtrespcr2.jpg";
+import ThreePieceTBRImage from './images/ThreePieceTBR.jpeg';
+import mulchImage from './images/mulch.jpeg';
+import BaledTyresTBRImage1 from "./images/BaledTyresTBR.jpg";
+import RubberGranulesImage from './images/RubberGranules2.jpeg';
+
+// Custom Carousel Arrows
+function NextArrow(props) {
+  const { onClick } = props;
+  return (
+    <div className="custom-arrow next-arrow" onClick={onClick}>
+      &#10095;
+    </div>
+  );
+}
+
+function PrevArrow(props) {
+  const { onClick } = props;
+  return (
+    <div className="custom-arrow prev-arrow" onClick={onClick}>
+      &#10094;
+    </div>
+  );
+}
+
+// Carousel settings
+const carouselSettings = {
+  dots: true,
+  infinite: true,
+  speed: 500,
+  slidesToShow: 1,
+  slidesToScroll: 1,
+  arrows: true,
+  autoplay: true,
+  autoplaySpeed: 4000,
+  nextArrow: <NextArrow />,
+  prevArrow: <PrevArrow />,
+};
 
 function ThreePiecePCR() {
   const [approvals, setApprovals] = useState([]);
   const [userDetails, setUserDetails] = useState(null);
-  const [isOpen, setIsOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-    const [loading, setLoading] = useState(true); // New state to track loading status
 
   const categories = [
-    { name: "Baled Tyres PCR", path: "/BaledTyresPcr" },
-    { name: "Shreds", path: "/shreds" },
-    { name: "Baled Tyres TBR", path: "/baledtyrestbr" },
-    { name: "Three Piece TBR", path: "/threepiecetbr" },
-    { name: "Mulch PCR", path: "/mulchpcr" },
-    { name: "Rubber Granules/Crumb", path: "/RubberGranules/Crum" },
+    { name: 'Baled Tyres PCR', path: '/BaledTyresPcr' },
+    { name: 'Shreds', path: '/shreds' },
+    { name: 'Baled Tyres TBR', path: '/baledtyrestbr' },
+    { name: 'Three Piece TBR', path: '/threepiecetbr' },
+    { name: 'Mulch PCR', path: '/mulchpcr' },
+    { name: 'Rubber Granules/Crumb', path: '/RubberGranules/Crum' },
   ];
-  
-  useEffect(() => {
-      // Directly set the scroll position to the top of the page
-      document.documentElement.scrollTop = 0; 
-      document.body.scrollTop = 0;  // For compatibility with older browsers
-    }, []); // Empty dependency array ensures it runs only once on page load
-
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {
-    async function fetchApprovalDetails() {
+    const fetchApprovalDetails = async () => {
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/api/approvals`,
-          { params: { application: "Three Piece PCR" } }
+          { params: { application: 'Three Piece PCR' } }
         );
 
         const approvalsData = response.data.approvals;
@@ -61,270 +86,125 @@ function ThreePiecePCR() {
           setUserDetails(userResponse.data);
         }
       } catch (error) {
-        console.error("Error fetching approval details:", error);
-      }finally {
-        setLoading(false); // Set loading to false once the request completes
+        console.error('Error fetching Three Piece PCR data:', error);
+      } finally {
+        setLoading(false);
       }
-    }
+    };
 
     fetchApprovalDetails();
   }, []);
-// Custom Arrow Components for Carousel
-const NextArrow = ({ onClick }) => (
-  <div className="custom-arrow custom-arrow-next" onClick={onClick}>
-    ❯
-  </div>
-);
 
-const PrevArrow = ({ onClick }) => (
-  <div className="custom-arrow custom-arrow-prev" onClick={onClick}>
-    ❮
-  </div>
-);
+  const handleMoreDetailsClick = (approval) => navigate('/moredetails', { state: { approval } });
 
-const carouselSettings = {
-  dots: true,
-  infinite: true,
-  speed: 500,
-  slidesToShow: 1,
-  slidesToScroll: 1,
-  nextArrow: <NextArrow />,
-  prevArrow: <PrevArrow />,
-};
+  if (loading) return <div className="loader-wrapper">Loading...</div>;
 
-if (loading) {
   return (
-    <div className='productleftside'>
-    <div className="setter">
-      {/* Centered Heading at the Top */}
-      <h2 className="text-primary fw-bold text-left mt-5 btphead">Three Piece PCR</h2>
-        <div className="row align-items-center mt-3">
-          {/* Content Section */}
-          <div className="col-md-7">
-            <p className="text-justify">
-              <strong>Three Piece PCR (Passenger Car Radian)</strong> is a highly
-              durable and eco-friendly material created using recycled materials. It
-              ensures both cost-effectiveness and environmental responsibility, widely
-              used in various industries.
-            </p>
-          </div>
-
-            {/* Carousel Section */}
-            <div className="col-md-5">
-              <Slider {...carouselSettings} className="custom-carousel">
-                <div>
-                  <img
-                    src={ThreePiecePCRImage}
-                    alt="Baled Tyres PCR Image 1"
-                    className="img-fluid carousel-image"
-                  />
-                </div>
-                <div>
-                  <img
-                    src={pcr2}
-                    alt="Baled Tyres PCR Image 2"
-                    className="img-fluid carousel-image"
-                  />
-                </div>
-              </Slider>
-            </div>
-        </div>
-      <div className="no-stock-wrapper">
-        <h1>Loading...</h1>
-      </div>
-    </div>
-    </div>
-  );
-}
-
-  if (approvals.length === 0 || !userDetails) {
-    return (
-      <div className='productleftside'>
-      <div className="setter">
-        {/* Centered Heading at the Top */}
-        <h2 className="text-primary fw-bold text-left mt-5 btphead">Three Piece PCR</h2>
-          <div className="row align-items-center mt-3">
-            {/* Content Section */}
-            <div className="col-md-7">
-              <p className="text-justify">
-                <strong>Three Piece PCR (Passenger Car Radian)</strong> is a highly
-                durable and eco-friendly material created using recycled materials. It
-                ensures both cost-effectiveness and environmental responsibility, widely
-                used in various industries.
+    <div className="mulch-page">
+      {/* Hero Carousel */}
+      <div className="hero-carousel">
+        <Slider {...carouselSettings}>
+          <div className="hero-slide">
+            <img src={ThreePiecePCRImage} alt="Three Piece PCR 1" className="hero-image" />
+            <div className="hero-text">
+              <h1>Three Piece PCR</h1>
+              <p>
+                <strong>Three Piece PCR (Passenger Car Radial)</strong> is a durable and eco-friendly
+                material made from recycled rubber. It’s known for its strength, performance, and cost-effectiveness,
+                making it a preferred choice in the recycling and manufacturing industries.
               </p>
             </div>
-
-              {/* Carousel Section */}
-              <div className="col-md-5">
-                <Slider {...carouselSettings} className="custom-carousel">
-                  <div>
-                    <img
-                      src={ThreePiecePCRImage}
-                      alt="Baled Tyres PCR Image 1"
-                      className="img-fluid carousel-image"
-                    />
-                  </div>
-                  <div>
-                    <img
-                      src={pcr2}
-                      alt="Baled Tyres PCR Image 2"
-                      className="img-fluid carousel-image"
-                    />
-                  </div>
-                </Slider>
-              </div>
           </div>
-        <div className="no-stock-wrapper">
-          <h1>No Stock Available</h1>
-        </div>
-      </div>
-      </div>
-    );
-  }
-
-  const handleMoreDetailsClick = (approval) => {
-    navigate("/moredetails", { state: { approval } });
-  };
-
-  
-  return (
-    <>
-        <div className='productleftside'>
-      <div className="setter">
-        <div className="container">
-          {/* Centered Heading at the Top */}
-          <h2 className="text-primary fw-bold text-left mt-5 btphead">Three Piece PCR</h2>
-          <div className="row align-items-center mt-3">
-            {/* Content Section */}
-            <div className="col-md-6">
-              <p className="text-justify">
-                <strong>Three Piece PCR (Passenger Car Radian)</strong> is a highly
-                durable and eco-friendly material created using recycled materials. It
-                ensures both cost-effectiveness and environmental responsibility, widely
-                used in various industries.
+          <div className="hero-slide">
+            <img src={pcr2} alt="Three Piece PCR 2" className="hero-image" />
+            <div className="hero-text">
+              <h1>Reliable & Sustainable Material</h1>
+              <p>
+                Three Piece PCR supports sustainable practices by reusing rubber materials efficiently,
+                reducing environmental impact while maintaining high product quality.
               </p>
             </div>
-
-              {/* Carousel Section */}
-              <div className="col-md-5">
-                <Slider {...carouselSettings} className="custom-carousel">
-                  <div>
-                    <img
-                      src={ThreePiecePCRImage}
-                      alt="Baled Tyres PCR Image 1"
-                      className="img-fluid carousel-image"
-                    />
-                  </div>
-                  <div>
-                    <img
-                      src={pcr2}
-                      alt="Baled Tyres PCR Image 2"
-                      className="img-fluid carousel-image"
-                    />
-                  </div>
-                </Slider>
-              </div>
           </div>
+        </Slider>
+      </div>
 
-          {/* Related Categories */}
-          <h2 className="fw-bold text-dark mt-5">Related Categories</h2>
-          <div className="categoriess-container">
-            <div className={`categories-box shadow-sm ${isMobile ? "w-auto" : "w-25"}`}>
-              <h6 className="text-dark fw-bold border-bottom pb-2 d-flex align-items-center">
-                {isMobile && (
-                  <button
-                    className="btn btn-sm btn-dark me-2"
-                    onClick={() => setIsOpen(!isOpen)} // Toggle dropdown on click
-                  >
-                    <FaBars />
-                  </button>
-                )}
-                Related Categories
-              </h6>
-
-              {/* Show categories only if it's desktop or dropdown is open */}
-              {(!isMobile || isOpen) && (
-                <div className={`category-list ${isOpen ? "show" : "hide"}`}>
-                  <div className="scroll-container">
-                    {categories.map((category, index) => (
-                      <Link to={category.path} className="category-item" key={index}>
-                        {category.name}
-                      </Link>
-                    ))}
-                  </div>
+      {/* Approvals Section */}
+      <div className="approvals-grid mt-4 container">
+        {approvals.length > 0 ? (
+          approvals.map((approval) => (
+            <div key={approval._id} className="approval-card-horizontal">
+              <div className="card-content">
+                <div className="card-left">
+                  <img src={approval.images?.[0]} alt="Approval" />
                 </div>
-              )}
-            </div>
-          </div>
-
-          {/* Approval Cards */}
-          {approvals.length > 0 && userDetails && (
-            <div className="approval-cards-container">
-              {approvals.map((approval) => (
-                <div key={approval._id} className="approval-card">
-                  {/* IMAGE SECTION */}
-                  {approval.images?.[0] && (
-                    <div className="approval-image-container">
-                      <img
-                        src={approval.images[0]}
-                        alt="Approval Image"
-                        className="approval-card-image"
-                      />
-                    </div>
+                <div className="card-right">
+                  <h5 className="approval-title">{approval.application}</h5>
+                  <p className="approval-material">{approval.material}</p>
+                  <p className="approval-price">
+                    <strong>Price:</strong> {approval.price} INR/MT
+                  </p>
+                  {userDetails?.businessProfiles?.[0] && (
+                    <p className="approval-seller">
+                      <strong>By:</strong> {approval.postedBy?.businessProfiles[0]?.profileId}
+                    </p>
                   )}
-
-                  {/* Divider Line (Only Visible in Desktop) */}
-                  <div className="approval-divider"></div>
-
-                  {/* CONTENT SECTION */}
-                  <div className="approval-card-body">
-                    <h5 className="approval-title">{approval.application}</h5>
-                    <h6 className="approval-material">{approval.material}</h6>
-
-                    {/* Price */}
-                    <p className="approval-price">
-                      <strong>Price:</strong> {approval.price} INR/MT
-                    </p>
-
-                    {/* Seller Info */}
-                    {userDetails?.businessProfiles?.[0] && (
-                      <p className="approval-seller">
-                        <strong>By:</strong>{" "}
-                        {approval.postedBy?.businessProfiles[0]?.profileId}
-                      </p>
-                    )}
-
-                    {/* Location */}
-                    <p className="approval-location">
-                      <FaMapMarkerAlt className="approval-location-icon" />{" "}
-                      <strong>Loading Location:</strong> {approval.loadingLocation}
-                    </p>
-
-                    {/* Trusted Seller Badge */}
-                    <img
-                      src={ts}
-                      alt="Trusted Seller"
-                      className="approval-trusted-seller-icon"
-                    />
-
-                    {/* Buttons */}
-                    <div className="approval-button-container">
-                      <button
-                        className="btn btn-primary shadow-sm mt-2"
-                        onClick={() => handleMoreDetailsClick(approval)}
-                      >
-                        More Details
-                      </button>
-                    </div>
-                  </div>
+                  <p className="approval-location">
+                    <FaMapMarkerAlt /> {approval.loadingLocation}
+                  </p>
+                  <img src={ts} alt="Trusted Seller" className="trusted-seller" />
                 </div>
-              ))}
+              </div>
+              <button
+                className="btn btn-primary more-details-btn"
+                onClick={() => handleMoreDetailsClick(approval)}
+              >
+                More Details
+              </button>
             </div>
-          )}
-        </div>
+          ))
+        ) : (
+          <div className="no-stock-wrapper text-center mt-4">
+            <h3>No Stock Available</h3>
+          </div>
+        )}
       </div>
-      </div>
-    </>
+
+{/* Related Categories */}
+<div className="related-categories container mt-5">
+  <h3>Related Categories</h3>
+  <div className="related-grid">
+    <Link to="/threepiecepcr" className="related-card">
+      <img src={ThreePieceTBRImage} alt="Three Piece PCR" />
+      <p>Three Piece TBR</p>
+    </Link>
+
+    <Link to="/shreds" className="related-card">
+      <img src={ShreddsImage} alt="Shreds" />
+      <p>Shreds</p>
+    </Link>
+
+    <Link to="/baledtyrespcr" className="related-card">
+      <img src={baledtrespcrimg1} alt="Baled Tyres PCR" />
+      <p>Baled Tyres PCR</p>
+    </Link>
+
+    <Link to="/rubbergranules/crum" className="related-card">
+      <img src={RubberGranulesImage} alt="Rubber Granules/Crumb" />
+      <p>Rubber Granules/Crumb</p>
+    </Link>
+
+    <Link to="/mulch" className="related-card">
+      <img src={mulchImage} alt="Mulch" />
+      <p>Mulch</p>
+    </Link>
+
+    <Link to="/baledtyrestbr" className="related-card">
+      <img src={BaledTyresTBRImage1} alt="Baled Tyres TBR" />
+      <p>Baled Tyres TBR</p>
+    </Link>
+  </div>
+</div>
+    </div>
   );
 }
 

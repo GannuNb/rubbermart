@@ -293,8 +293,7 @@ doc.text("Rubberscrapmart", 10, 12); // Add the text at position (10, 10)
   }
   
   return (
-    <div className="setter">
-      <div className="container mt-5">
+      <div className="container-fluid">
         <h2 className="text-center mb-4">Uploaded Payment Proof</h2>
         <div className="table-responsive">
           <table className="table table-striped table-bordered">
@@ -362,7 +361,6 @@ doc.text("Rubberscrapmart", 10, 12); // Add the text at position (10, 10)
           </table>
         </div>
       </div>
-    </div>
   );
 }
 
