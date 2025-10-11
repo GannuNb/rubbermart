@@ -184,7 +184,7 @@ function Moredetails() {
 
             <button
               onClick={handleOrderClick}
-              className="btn btn-primary w-100 mt-3"
+              className="btn btn-primary w-100 mt-3 mb-3"
               disabled={isOrderButtonDisabled}
             >
               Place Order
