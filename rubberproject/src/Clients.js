@@ -2,7 +2,7 @@ import React from "react";
 import { useInView } from "react-intersection-observer";
 import { FaThumbsUp, FaRecycle, FaIndustry } from "react-icons/fa"; // Updated React Icons
 import CountUp from "react-countup";
-import "./NumberWidget.scss"; // Custom styles if needed
+
 
 const HappyClients = () => {
   const [ref, inView] = useInView({

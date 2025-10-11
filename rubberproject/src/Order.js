@@ -3,6 +3,7 @@ import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+
 import "./Sell.css";
 import logo from "./images/logo3.png";
 import "./Order.css";
@@ -40,6 +41,7 @@ const Order = () => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [orderAdded, setOrderAdded] = useState(false); // Tracks if the order has been added
 
+  
     useEffect(() => {
         // Directly set the scroll position to the top of the page
         document.documentElement.scrollTop = 0; 
@@ -107,6 +109,12 @@ const Order = () => {
       setSelectedApplication(""); // Reset application dropdown
     }
   };
+
+  useEffect(() => {
+  const doc = new jsPDF();
+  console.log(typeof doc.autoTable); // should log: "function"
+}, []);
+
 
   const addToOrder = () => {
     if (selectedApplication && quantity) {
