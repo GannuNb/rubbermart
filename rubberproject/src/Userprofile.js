@@ -8,14 +8,16 @@ import {
   FaBuilding,
   FaPhoneAlt,
   FaMailBulk,
+  FaRegIdBadge,
   FaAddressCard,
   FaTruck,
-  FaRegIdBadge,
   FaShoppingCart,
   FaFileInvoiceDollar,
   FaShippingFast,
   FaWallet,
-  FaArrowDown, // arrow pointing down
+  FaArrowDown,
+  FaEdit,
+  FaSave,
 } from "react-icons/fa";
 import "./UserProfile.css";
 
@@ -23,45 +25,85 @@ const UserProfile = () => {
   const [user, setUser] = useState(null);
   const [businessProfiles, setBusinessProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState(false);
+  const [updatedUser, setUpdatedUser] = useState({});
+  const [updatedBusinessProfiles, setUpdatedBusinessProfiles] = useState([]);
+
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
   }, []);
 
+  const fetchUserData = async () => {
+    if (!token) return;
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/userdetails`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const userData = response.data.user;
+      const businessData = response.data.businessProfiles || [];
+
+      setUser(userData);
+      setBusinessProfiles(businessData);
+      setUpdatedUser({
+        name: userData.name,
+        email: userData.email,
+        location: userData.location || "",
+      });
+      setUpdatedBusinessProfiles(businessData.map((p) => ({ ...p })));
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchUserData = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        console.error("No token found");
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/userdetails`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        setUser(response.data.user);
-        setBusinessProfiles(response.data.businessProfiles);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchUserData();
   }, []);
 
+  // Handle personal detail input
+  const handleInputChange = (e) => {
+    setUpdatedUser({ ...updatedUser, [e.target.name]: e.target.value });
+  };
+
+  // Handle business detail input
+  const handleBusinessChange = (index, e) => {
+    const { name, value } = e.target;
+    const profiles = [...updatedBusinessProfiles];
+    profiles[index][name] = value;
+    setUpdatedBusinessProfiles(profiles);
+  };
+
+  // Save both personal + business updates
+  const handleSaveChanges = async () => {
+    try {
+      const response = await axios.put(
+        `${process.env.REACT_APP_API_URL}/api/userdetails/update`,
+        {
+          userData: updatedUser,
+          businessProfiles: updatedBusinessProfiles,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setUser(response.data.updatedUser);
+      setBusinessProfiles(response.data.updatedUser.businessProfiles);
+      setEditing(false);
+      alert("Profile updated successfully!");
+    } catch (error) {
+      console.error("Error updating user:", error);
+      alert("Failed to update profile.");
+    }
+  };
+
   const scrollToDashboard = () => {
     const section = document.getElementById("dashboard-section");
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+    if (section) section.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   if (loading) return <div className="loader">Loading...</div>;
@@ -71,7 +113,7 @@ const UserProfile = () => {
     <div className="profile-wrapper">
       <div className="profile-container">
         <div className="profile-card">
-          {/* --- Header --- */}
+          {/* Header */}
           <div className="profile-header">
             <div className="profile-avatar">
               <FaUserAlt size={60} color="#fff" />
@@ -80,7 +122,7 @@ const UserProfile = () => {
           </div>
 
           <div className="profile-body">
-            {/* --- Personal Details --- */}
+            {/* Personal Details */}
             <div className="personal-section">
               <div className="section-header">
                 <h4 className="section-title">Personal Details</h4>
@@ -88,15 +130,64 @@ const UserProfile = () => {
                   Go to Dashboard <FaArrowDown />
                 </button>
               </div>
+
+              <div className="edit-actions">
+                {!editing ? (
+                  <button
+                    className="edit-btn"
+                    onClick={() => setEditing(true)}
+                  >
+                    <FaEdit /> Edit
+                  </button>
+                ) : (
+                  <button className="save-btn" onClick={handleSaveChanges}>
+                    <FaSave /> Save Changes
+                  </button>
+                )}
+              </div>
+
               <div className="info-item">
-                <FaEnvelope /> Email: <span>{user.email}</span>
+                <FaUserAlt /> Name:
+                {editing ? (
+                  <input
+                    type="text"
+                    name="name"
+                    value={updatedUser.name}
+                    onChange={handleInputChange}
+                  />
+                ) : (
+                  <span>{user.name}</span>
+                )}
               </div>
               <div className="info-item">
-                <FaMapMarkerAlt /> Location: <span>{user.location || "N/A"}</span>
+                <FaEnvelope /> Email:
+                {editing ? (
+                  <input
+                    type="email"
+                    name="email"
+                    value={updatedUser.email}
+                    onChange={handleInputChange}
+                  />
+                ) : (
+                  <span>{user.email}</span>
+                )}
+              </div>
+              <div className="info-item">
+                <FaMapMarkerAlt /> Location:
+                {editing ? (
+                  <input
+                    type="text"
+                    name="location"
+                    value={updatedUser.location}
+                    onChange={handleInputChange}
+                  />
+                ) : (
+                  <span>{user.location || "N/A"}</span>
+                )}
               </div>
             </div>
 
-            {/* --- Business Details --- */}
+            {/* Business Details */}
             <div className="business-section">
               <h4 className="section-title">Business Profiles</h4>
               {businessProfiles.length > 0 ? (
@@ -107,11 +198,84 @@ const UserProfile = () => {
                       <h5>{profile.companyName}</h5>
                     </div>
                     <div className="business-details">
-                      <p><FaPhoneAlt /> {profile.phoneNumber}</p>
-                      <p><FaMailBulk /> {profile.email}</p>
-                      <p><FaRegIdBadge /> GST: {profile.gstNumber}</p>
-                      <p><FaAddressCard /> Billing: {profile.billAddress}</p>
-                      <p><FaTruck /> Shipping: {profile.shipAddress}</p>
+                      <p>
+                        <FaBuilding /> Company Name:{" "}
+                        {editing ? (
+                          <input
+                            type="text"
+                            name="companyName"
+                            value={updatedBusinessProfiles[index].companyName}
+                            onChange={(e) => handleBusinessChange(index, e)}
+                          />
+                        ) : (
+                          <span>{profile.companyName}</span>
+                        )}
+                      </p>
+                      <p>
+                        <FaPhoneAlt /> Phone:{" "}
+                        {editing ? (
+                          <input
+                            type="text"
+                            name="phoneNumber"
+                            value={updatedBusinessProfiles[index].phoneNumber}
+                            onChange={(e) => handleBusinessChange(index, e)}
+                          />
+                        ) : (
+                          <span>{profile.phoneNumber}</span>
+                        )}
+                      </p>
+                      <p>
+                        <FaMailBulk /> Email:{" "}
+                        {editing ? (
+                          <input
+                            type="email"
+                            name="email"
+                            value={updatedBusinessProfiles[index].email}
+                            onChange={(e) => handleBusinessChange(index, e)}
+                          />
+                        ) : (
+                          <span>{profile.email}</span>
+                        )}
+                      </p>
+                      <p>
+                        <FaRegIdBadge /> GST:{" "}
+                        {editing ? (
+                          <input
+                            type="text"
+                            name="gstNumber"
+                            value={updatedBusinessProfiles[index].gstNumber}
+                            onChange={(e) => handleBusinessChange(index, e)}
+                          />
+                        ) : (
+                          <span>{profile.gstNumber}</span>
+                        )}
+                      </p>
+                      <p>
+                        <FaAddressCard /> Billing Address:{" "}
+                        {editing ? (
+                          <input
+                            type="text"
+                            name="billAddress"
+                            value={updatedBusinessProfiles[index].billAddress}
+                            onChange={(e) => handleBusinessChange(index, e)}
+                          />
+                        ) : (
+                          <span>{profile.billAddress}</span>
+                        )}
+                      </p>
+                      <p>
+                        <FaTruck /> Shipping Address:{" "}
+                        {editing ? (
+                          <input
+                            type="text"
+                            name="shipAddress"
+                            value={updatedBusinessProfiles[index].shipAddress}
+                            onChange={(e) => handleBusinessChange(index, e)}
+                          />
+                        ) : (
+                          <span>{profile.shipAddress}</span>
+                        )}
+                      </p>
                     </div>
                   </div>
                 ))
@@ -120,28 +284,27 @@ const UserProfile = () => {
               )}
             </div>
 
-{/* --- Dashboard Section --- */}
-<div id="dashboard-section" className="navigation-section">
-  <h4 className="section-title">My Dashboard</h4>
-  <div className="nav-links">
-    <Link to="/Getorders" className="nav-item">
-      <FaShoppingCart /> My Orders
-    </Link>
-    <Link to="/Buyreport" className="nav-item">
-      <FaFileInvoiceDollar /> My Buy Reports
-    </Link>
-    <Link to="/Sellerreport" className="nav-item">
-      <FaFileInvoiceDollar /> My Sell Reports
-    </Link>
-    <Link to="/ShippingDetails" className="nav-item">
-      <FaShippingFast /> My Shipments
-    </Link>
-    <Link to="/getpay" className="nav-item">
-      <FaWallet /> My Payments
-    </Link>
-  </div>
-</div>
-
+            {/* Dashboard Section */}
+            <div id="dashboard-section" className="navigation-section">
+              <h4 className="section-title">My Dashboard</h4>
+              <div className="nav-links">
+                <Link to="/Getorders" className="nav-item">
+                  <FaShoppingCart /> My Orders
+                </Link>
+                <Link to="/Buyreport" className="nav-item">
+                  <FaFileInvoiceDollar /> My Buy Reports
+                </Link>
+                <Link to="/Sellerreport" className="nav-item">
+                  <FaFileInvoiceDollar /> My Sell Reports
+                </Link>
+                <Link to="/ShippingDetails" className="nav-item">
+                  <FaShippingFast /> My Shipments
+                </Link>
+                <Link to="/getpay" className="nav-item">
+                  <FaWallet /> My Payments
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </div>

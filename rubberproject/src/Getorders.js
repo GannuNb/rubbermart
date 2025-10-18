@@ -569,109 +569,108 @@ const Getorders = () => {
   return (
       <div className="container-fluid">
 <h2 style={{ textAlign: "center", }}>ALL ORDERS</h2>
-        <div className="table-responsive mt-3">
-          <table className="table table-striped table-bordered table-hover">
-            <thead className="thead-dark">
-              <tr>
-                <th>Order ID</th>
-                <th>Item Name</th>
-                <th>Total Ordered Quantity (tons)</th>
-                <th>Price Per Ton (₹)</th>
-                <th>Loading Location</th>
-                <th>Subtotal (₹)</th>
-                {/* Conditional GST heading based on GST number */}
-                <th>{profile?.gstNumber?.startsWith('27') ? 'CGST + SGST (₹)' : 'IGST (₹)'}</th>
-                <th>Total Price (₹)</th>
-                <th>Order Date</th>
-                <th>Invoice</th>
-                <th><b>Upload Payment Receipt</b></th>
-                <th>Shipping Info</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredOrders.map((order) => (
-                <>
-                  {order.items.map((item, index) => {
-                    const itemSubtotal = item.quantity * item.price;
-  
-                    // Fetch GST number from profile and check the first two characters
-                    const gstNumber = profile?.gstNumber || ''; // Ensure you have the gstNumber in profile
-  
-                    // Check if the GST number starts with '27' for CGST + SGST, else apply IGST
-                    const isCGSTSGST = gstNumber.startsWith('27');
-                    const gstRate = isCGSTSGST ? 0.09 : 0.18;
-  
-                    // Calculate GST
-                    const itemGST = isCGSTSGST
-                      ? (itemSubtotal * 0.09) + (itemSubtotal * 0.09) // 9% CGST + 9% SGST
-                      : itemSubtotal * 0.18; // 18% IGST
-  
-                    const itemTotal = itemSubtotal + itemGST;
-  
-                    return (
-                      <tr key={item._id}>
-                        {index === 0 && (
-                          <td rowSpan={order.items.length}>{order._id}</td>
-                        )}
-                        <td>{item.name}</td>
-                        <td>{item.quantity} tons</td>
-                        <td>₹{item.price.toFixed(2)}</td>
-                        <td>{item.loading_location}</td>
-                        <td>₹{itemSubtotal.toFixed(2)}</td>
-                        {/* Display the GST value */}
-                        <td>₹{itemGST.toFixed(2)}</td>
-                        <td>₹{itemTotal.toFixed(2)}</td>
-                        {index === 0 && (
-                          <td rowSpan={order.items.length}>
-                            {new Date(order.orderDate).toLocaleDateString()}
-                          </td>
-                        )}
-                        {index === 0 && (
-                          <td rowSpan={order.items.length}>
-                            <button className="btn btn-primary" onClick={() => generatePDF(order)}>
-                              <FaFilePdf />
-                            </button>
-                          </td>
-                        )}
-                        {/* File Upload Section */}
-                        {index === 0 && (
-                          <td rowSpan={order.items.length}>
-                            <input
-                              type="file"
-                              onChange={(e) => handleFileChange(order._id, e)}
-                              className="form-control"
-                              accept="image/jpeg, image/png, application/pdf"
-                            />
-                            {files[order._id] && files[order._id].fileName && (
-                              <div>{files[order._id].fileName}</div>
-                            )}
-                            <button
-                              className="btn btn-sm btn-success mt-2"
-                              onClick={() => handleFileUpload(order._id)}
-                            >
-                              Upload File
-                            </button>
-                          </td>
-                        )}
-                        <td>
-                          <Link to="/ShippingDetails" >
-                            <button className="btn btn-primary">
-                              <FaArrowRight />
-                            </button>
-                          </Link>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </>
-              ))}
-            </tbody>
-          </table>
-        </div>
+ <div className="table-responsive mt-3">
+  {filteredOrders.length === 0 ? (
+    <p style={{ 
+      textAlign: "center", 
+      color: "black", 
+      fontSize: "18px", 
+      fontWeight: "500", 
+      marginTop: "30px" 
+    }}>
+      No Orders Yet!!
+    </p>
+  ) : (
+    <table className="table table-striped table-bordered table-hover">
+      <thead className="thead-dark">
+        <tr>
+          <th>Order ID</th>
+          <th>Item Name</th>
+          <th>Total Ordered Quantity (tons)</th>
+          <th>Price Per Ton (₹)</th>
+          <th>Loading Location</th>
+          <th>Subtotal (₹)</th>
+          <th>{profile?.gstNumber?.startsWith('27') ? 'CGST + SGST (₹)' : 'IGST (₹)'}</th>
+          <th>Total Price (₹)</th>
+          <th>Order Date</th>
+          <th>Invoice</th>
+          <th><b>Upload Payment Receipt</b></th>
+          <th>Shipping Info</th>
+        </tr>
+      </thead>
+      <tbody>
+        {filteredOrders.map((order) => (
+          <>
+            {order.items.map((item, index) => {
+              const itemSubtotal = item.quantity * item.price;
+              const gstNumber = profile?.gstNumber || '';
+              const isCGSTSGST = gstNumber.startsWith('27');
+              const gstRate = isCGSTSGST ? 0.09 : 0.18;
+              const itemGST = isCGSTSGST
+                ? (itemSubtotal * 0.09) + (itemSubtotal * 0.09)
+                : itemSubtotal * 0.18;
+              const itemTotal = itemSubtotal + itemGST;
+
+              return (
+                <tr key={item._id}>
+                  {index === 0 && <td rowSpan={order.items.length}>{order._id}</td>}
+                  <td>{item.name}</td>
+                  <td>{item.quantity} tons</td>
+                  <td>₹{item.price.toFixed(2)}</td>
+                  <td>{item.loading_location}</td>
+                  <td>₹{itemSubtotal.toFixed(2)}</td>
+                  <td>₹{itemGST.toFixed(2)}</td>
+                  <td>₹{itemTotal.toFixed(2)}</td>
+                  {index === 0 && (
+                    <td rowSpan={order.items.length}>
+                      {new Date(order.orderDate).toLocaleDateString()}
+                    </td>
+                  )}
+                  {index === 0 && (
+                    <td rowSpan={order.items.length}>
+                      <button className="btn btn-primary" onClick={() => generatePDF(order)}>
+                        <FaFilePdf />
+                      </button>
+                    </td>
+                  )}
+                  {index === 0 && (
+                    <td rowSpan={order.items.length}>
+                      <input
+                        type="file"
+                        onChange={(e) => handleFileChange(order._id, e)}
+                        className="form-control"
+                        accept="image/jpeg, image/png, application/pdf"
+                      />
+                      {files[order._id] && files[order._id].fileName && (
+                        <div>{files[order._id].fileName}</div>
+                      )}
+                      <button
+                        className="btn btn-sm btn-success mt-2"
+                        onClick={() => handleFileUpload(order._id)}
+                      >
+                        Upload File
+                      </button>
+                    </td>
+                  )}
+                  <td>
+                    <Link to="/ShippingDetails">
+                      <button className="btn btn-primary">
+                        <FaArrowRight />
+                      </button>
+                    </Link>
+                  </td>
+                </tr>
+              );
+            })}
+          </>
+        ))}
+      </tbody>
+    </table>
+  )}
+</div>
+
       </div>
   );
-  
-  
 }
 
 

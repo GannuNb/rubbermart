@@ -194,3 +194,17 @@
     bottom: 14%;
   }
 }
+/* ✅ Reduce image size for desktops */
+.imgmore {
+  max-width: 70%;   /* Reduce size to 80% of its container */
+  height: auto;     /* Maintain aspect ratio */
+  display: block;
+  margin: 0 auto;   /* Center the image */
+}
+
+/* ✅ For smaller screens, keep it full width */
+@media (max-width: 992px) {
+  .imgmore {
+    max-width: 100%;
+  }
+}

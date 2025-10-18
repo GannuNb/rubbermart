@@ -2,11 +2,9 @@ import React, { useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
 import Slider from "react-slick";
 import { useNavigate } from 'react-router-dom';
-
 import Filter from './Filter';
 import './TyreScrap.css';
 
-// Image imports
 import RubberGranulesImage from './images/RubberGranules.jpeg';
 import ShreddsImage from './images/Shredds.jpeg';
 import BaledTyresTBRImage from './images/BaledTyresTBR.jpg';
@@ -32,6 +30,7 @@ const TyreScrap = () => {
   const [priceRange, setPriceRange] = useState({ min: 0, max: 0 });
   const [priceLimits, setPriceLimits] = useState({ min: 0, max: 0 });
   const [priceFilterActive, setPriceFilterActive] = useState(false);
+  const [showFilter, setShowFilter] = useState(false);
 
   const navigate = useNavigate();
 
@@ -51,6 +50,7 @@ const TyreScrap = () => {
   const PrevArrow = ({ onClick }) => (
     <div className="custom-arrow custom-arrow-prev" onClick={onClick}>❮</div>
   );
+
   const settings = {
     dots: true,
     infinite: true,
@@ -103,20 +103,29 @@ const TyreScrap = () => {
     fetchData();
   }, []);
 
+  // ✅ Handlers
   const handleProductFilterChange = (productName) => {
-    setSelectedProducts(prev =>
-      prev.includes(productName)
-        ? prev.filter(n => n !== productName)
-        : [...prev, productName]
-    );
+    if (productName === "CLEAR_ALL") {
+      setSelectedProducts([]);
+    } else {
+      setSelectedProducts(prev =>
+        prev.includes(productName)
+          ? prev.filter(n => n !== productName)
+          : [...prev, productName]
+      );
+    }
   };
 
   const handleLocationFilterChange = (location) => {
-    setSelectedLocations(prev =>
-      prev.includes(location)
-        ? prev.filter(l => l !== location)
-        : [...prev, location]
-    );
+    if (location === "CLEAR_ALL") {
+      setSelectedLocations([]);
+    } else {
+      setSelectedLocations(prev =>
+        prev.includes(location)
+          ? prev.filter(l => l !== location)
+          : [...prev, location]
+      );
+    }
   };
 
   const handlePriceRangeChange = (range) => {
@@ -196,22 +205,21 @@ const TyreScrap = () => {
         Browse through the options below and place your order hassle-free.
       </p>
 
+      {/* Filter Button for mobile */}
+      <div className="filter-btn-container">
+        <button className="btn btn-outline-primary filter-toggle-btn" onClick={() => setShowFilter(true)}>
+          <i className="fas fa-filter"></i> Filters
+        </button>
+      </div>
+
       <div className="tyre-scrap-main-content">
         <div className="tyre-scrap-grid">
           {displayedItems.map((item, index) => (
-            <div
-              key={item._id}
-              className="tyre-card animated-card"
-              style={{ '--card-index': index }}
-            >
+            <div key={item._id} className="tyre-card animated-card" style={{ '--card-index': index }}>
               <Slider {...settings}>
                 {imagesMap[item.name]?.map((imgSrc, idx) => (
                   <div key={idx}>
-                    <img
-                      src={imgSrc}
-                      className="tyre-image"
-                      alt={`${item.name}-${idx}`}
-                    />
+                    <img src={imgSrc} className="tyre-image" alt={`${item.name}-${idx}`} />
                   </div>
                 ))}
               </Slider>
@@ -229,6 +237,7 @@ const TyreScrap = () => {
           ))}
         </div>
 
+        {/* Sidebar for desktop */}
         <div className="filter-sidebar">
           <Filter
             tyreScrapItems={tyreScrapItems}
@@ -246,6 +255,29 @@ const TyreScrap = () => {
           />
         </div>
       </div>
+
+      {/* Popup modal for mobile filters */}
+      {showFilter && (
+        <div className="filter-modal">
+          <div className="filter-modal-content">
+            <button className="close-btn" onClick={() => setShowFilter(false)}>×</button>
+            <Filter
+              tyreScrapItems={tyreScrapItems}
+              selectedProducts={selectedProducts}
+              onProductFilterChange={handleProductFilterChange}
+              locations={availableLocations}
+              selectedLocations={selectedLocations}
+              onLocationFilterChange={handleLocationFilterChange}
+              categoryName="Tyre Scrap"
+              priceRange={priceRange}
+              onPriceRangeChange={handlePriceRangeChange}
+              priceLimits={priceLimits}
+              priceFilterActive={priceFilterActive}
+              onPriceFilterToggle={togglePriceFilterActive}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

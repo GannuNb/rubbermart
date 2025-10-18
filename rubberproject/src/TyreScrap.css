@@ -232,10 +232,7 @@
 /* Filter sidebar on the right */
 .filter-sidebar {
     flex: 1;
-    background-color: #e7f0ff;
-    padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     max-height: fit-content;
     position: sticky;
     top: 100px; /* so it stays visible on scroll */
@@ -275,4 +272,62 @@
     .tyre-scrap-grid {
         grid-template-columns: 1fr;
     }
+}
+/* Filter Button (for mobile) */
+.filter-btn-container {
+  display: none;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.filter-toggle-btn {
+  border-radius: 50px;
+  font-weight: 500;
+  padding: 8px 18px;
+}
+
+/* Show button only on small screens */
+@media (max-width: 992px) {
+  .filter-btn-container {
+    display: block;
+  }
+
+  .filter-sidebar {
+    display: none;
+  }
+}
+
+/* Filter Modal */
+.filter-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.filter-modal-content {
+  background: white;
+  border-radius: 10px;
+  width: 90%;
+  max-height: 80%;
+  overflow-y: auto;
+  padding: 20px;
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: #000;
+  cursor: pointer;
 }

@@ -86,22 +86,22 @@ function Sidebar() {
     let filteredRoutes = { ...routes };
     if (selectedCategory === "tyrescrap") {
       filteredRoutes = {
-        mulch: "/MulchPCR",
-        shreds: "/shreds",
-        "baled tyres pcr": "/BaledTyresPcr",
-        "three piece pcr": "/ThreePiecePcr",
-        "baled tyres tbr": "/BaledTyresTbr",
-        "three piece tbr": "/ThreePieceTbr",
-        rubbergranules: "/RubberGranules/Crum",
+        Mulch: "/MulchPCR",
+        Shreds: "/shreds",
+        "Baled tyres pcr": "/BaledTyresPcr",
+        "Three piece pcr": "/ThreePiecePcr",
+        "Baled tyres tbr": "/BaledTyresTbr",
+        "Three piece tbr": "/ThreePieceTbr",
+        "Rubbergranules": "/RubberGranules/Crum",
       };
     } else if (selectedCategory === "tyresteelscrap") {
       filteredRoutes = {
-        "rubber crum steel": "/RubberCrumsteel",
-        "pyro steel": "/PyroSteel",
+        "Rubber crum steel": "/RubberCrumsteel",
+        "Pyro steel": "/PyroSteel",
       };
     } else if (selectedCategory === "pyrooil") {
       filteredRoutes = {
-        "pyro oil": "/PyroOil",
+        "Pyro oil": "/PyroOil",
       };
     }
 
@@ -153,17 +153,17 @@ function Sidebar() {
     <header>
       {/* Top Navbar */}
       <nav
-  className="navbar navbar-expand-lg navbar-light fixed-top shadow-sm"
-  style={{
-    zIndex: 1030,
-    borderBottom: "1px solid #ddd",
-    backgroundColor: isMobile ? "#2196f3" : "#fff",
-    flexDirection: isMobile ? "column" : "row",
-    alignItems: isMobile ? "stretch" : "center",
-    paddingTop: isMobile ? "0.5rem" : "1.5rem",   // py-2 mobile, py-4 desktop
-    paddingBottom: isMobile ? "0.5rem" : "1.5rem", 
-  }}
->
+        className="navbar navbar-expand-lg navbar-light fixed-top shadow-sm"
+        style={{
+          zIndex: 1030,
+          borderBottom: "1px solid #ddd",
+          backgroundColor: isMobile ? "#2196f3" : "#fff",
+          flexDirection: isMobile ? "column" : "row",
+          alignItems: isMobile ? "stretch" : "center",
+          paddingTop: isMobile ? "0.5rem" : "1.5rem",   // py-2 mobile, py-4 desktop
+          paddingBottom: isMobile ? "0.5rem" : "1.5rem",
+        }}
+      >
 
         <div
           style={{
@@ -411,11 +411,11 @@ function Sidebar() {
           <Link to="/BusinessProfile" className="sidebar-link" style={{ color: "#fff" }}>
             <i className="fas fa-briefcase me-2"></i> Business Profile
           </Link>
-          <Link to="/Productspage" className="sidebar-link" style={{ color: "#fff" }}>
+          <Link to="/Productspage" className="sidebar-link fw-bold" style={{ color: "rgb(26, 232, 73)" }}>
             <i className="fas fa-box-open me-2"></i> Buy
           </Link>
-          <Link to="/Sell" className="sidebar-link" style={{ color: "#fff" }}>
-            <i className="fas fa-dollar-sign me-2"></i> Sell
+          <Link to="/Sell" className="sidebar-link fw-bold" style={{ color: "rgb(254, 192, 102)" }}>
+            <i className="fas fa-dollar-sign me-2"></i> SELL
           </Link>
           <Link to="/ShippingDetails" className="sidebar-link" style={{ color: "#fff" }}>
             <i className="fas fa-shipping-fast me-2"></i> Shippings
@@ -465,11 +465,11 @@ function Sidebar() {
           <Link to="/BusinessProfile" style={{ color: "#fff", display: "flex", alignItems: "center" }}>
             <i className="fas fa-briefcase me-2"></i> Business Profile
           </Link>
-          <Link to="/Productspage" style={{ color: "#fff", display: "flex", alignItems: "center" }}>
-            <i className="fas fa-box-open me-2"></i> Buy
+          <Link to="/Productspage" style={{ color: "rgb(26, 232, 73)", display: "flex", alignItems: "center" }}>
+            <i className="fas fa-box-open me-2 fw-bold"></i> BUY
           </Link>
-          <Link to="/Sell" style={{ color: "#fff", display: "flex", alignItems: "center" }}>
-            <i className="fas fa-dollar-sign me-2"></i> Sell
+          <Link to="/Sell" style={{ color: "rgb(254, 192, 102)", display: "flex", alignItems: "center" }}>
+            <i className="fas fa-dollar-sign me-2 fw-bold"></i> SELL
           </Link>
           <Link to="/ShippingDetails" style={{ color: "#fff", display: "flex", alignItems: "center" }}>
             <i className="fas fa-shipping-fast me-2"></i> Shippings
@@ -516,7 +516,7 @@ function Sidebar() {
               left: "0",
               width: "80%",
               height: "100%",
-              backgroundColor: "#fff",
+              backgroundColor: "rgb(33, 150, 243)",
               zIndex: 1050,
               padding: "1rem",
               display: "flex",
@@ -529,39 +529,49 @@ function Sidebar() {
               onClick={closeSidebar}
               style={{ alignSelf: "flex-end" }}
             ></button>
-            <Link to="/" onClick={closeSidebar}>
-              Home
-            </Link>
-            <Link to="/AboutUsPage" onClick={closeSidebar}>
-              About Us
-            </Link>
-            <Link to="/BusinessProfile" onClick={closeSidebar}>
-              Business Profile
-            </Link>
-            <Link to="/Productspage" onClick={closeSidebar}>
-              Buy
-            </Link>
-            <Link to="/Sell" onClick={closeSidebar}>
-              Sell
-            </Link>
-            <Link to="/ShippingDetails" onClick={closeSidebar}>
-              Shippings
-            </Link>
-            <Link to="/Buyreport" onClick={closeSidebar}>
-              Buy Reports
-            </Link>
-            <Link to="/Sellerreport" onClick={closeSidebar}>
-              Sell Reports
-            </Link>
-            <Link to="/Contact" onClick={closeSidebar}>
-              Contact
-            </Link>
-            <Link to="/Getorders" onClick={closeSidebar}>
-              Orders
-            </Link>
-            <Link to="/getpay" onClick={closeSidebar}>
-              Payments
-            </Link>
+           <Link to="/" style={{ color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
+      <i className="fas fa-home"></i> Home
+    </Link>
+
+    <Link to="/AboutUsPage" style={{ color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
+      <i className="fas fa-info-circle"></i> About Us
+    </Link>
+
+    <Link to="/BusinessProfile" style={{ color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
+      <i className="fas fa-briefcase"></i> Business Profile
+    </Link>
+
+    <Link to="/Productspage" style={{ color: "rgb(26, 232, 73)", display: "flex", alignItems: "center", gap: "6px" }}>
+      <i className="fas fa-box-open fw-bold"></i> BUY
+    </Link>
+
+    <Link to="/Sell" style={{ color: "rgb(254, 192, 102)", display: "flex", alignItems: "center", gap: "6px" }}>
+      <i className="fas fa-dollar-sign fw-bold"></i> SELL
+    </Link>
+
+    <Link to="/ShippingDetails" style={{ color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
+      <i className="fas fa-shipping-fast"></i> Shippings
+    </Link>
+
+    <Link to="/Buyreport" style={{ color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
+      <i className="fas fa-file-alt"></i> Buy Reports
+    </Link>
+
+    <Link to="/Sellerreport" style={{ color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
+      <i className="fas fa-file-alt"></i> Sell Reports
+    </Link>
+
+    <Link to="/Contact" style={{ color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
+      <i className="fas fa-envelope"></i> Contact
+    </Link>
+
+    <Link to="/Getorders" style={{ color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
+      <i className="fas fa-shopping-cart"></i> Orders
+    </Link>
+
+    <Link to="/getpay" style={{ color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
+      <i className="fas fa-wallet"></i> Payments
+    </Link>
           </div>
         </>
       )}

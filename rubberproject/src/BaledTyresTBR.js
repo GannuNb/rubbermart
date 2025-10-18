@@ -119,46 +119,44 @@ function BaledTyresTBR() {
         </Slider>
       </div>
 
-      {/* Approvals Horizontal Cards or No Stock */}
-      <div className="approvals-grid mt-4 container">
-        {approvals.length > 0 ? (
-          approvals.map((approval) => (
-            <div key={approval._id} className="approval-card-horizontal">
-              <div className="card-content">
-                <div className="card-left">
-                  <img src={approval.images?.[0]} alt="Approval" />
-                </div>
-                <div className="card-right">
-                  <h5 className="approval-title">{approval.application}</h5>
-                  <p className="approval-material">{approval.material}</p>
-                  <p className="approval-price">
-                    <strong>Price:</strong> {approval.price} INR/MT
-                  </p>
-                  {userDetails?.businessProfiles?.[0] && (
-                    <p className="approval-seller">
-                      <strong>By:</strong> {approval.postedBy?.businessProfiles[0]?.profileId}
-                    </p>
-                  )}
-                  <p className="approval-location">
-                    <FaMapMarkerAlt /> {approval.loadingLocation}
-                  </p>
-                  <img src={ts} alt="Trusted Seller" className="trusted-seller" />
-                </div>
-              </div>
-              <button
-                className="btn btn-primary more-details-btn"
+{/* Approvals Horizontal Cards */}
+<div className="approvals-grid mt-4 container">
+  {approvals.map((approval) => (
+    <div key={approval._id} className="approval-card-horizontal">
+      <div className="card-content">
+        <div className="card-left">
+          <img src={approval.images?.[0]} alt="Approval" />
+        </div>
+        <div className="card-right">
+          <h5 className="approval-title">{approval.application}</h5>
+          <p className="approval-material">{approval.material}</p>
+          <p className="approval-price">
+            <strong>Price:</strong> {approval.price} INR/MT
+          </p>
+          {userDetails?.businessProfiles?.[0] && (
+            <p className="approval-seller">
+              <strong>By:</strong> {approval.postedBy?.businessProfiles[0]?.profileId}
+            </p>
+          )}
+          <p className="approval-location">
+            <FaMapMarkerAlt /> {approval.loadingLocation}
+          </p>
+          <img src={ts} alt="Trusted Seller" className="trusted-seller" />
+
+          {/* ✅ Button under the card */}
+          <div className="mt-3">
+            <button
+                className="btn btn-primary w-100 more-details-btn"
                 onClick={() => handleMoreDetailsClick(approval)}
               >
                 More Details
               </button>
-            </div>
-          ))
-        ) : (
-          <div className="no-stock-wrapper text-center mt-4">
-            <h3>No Stock Available</h3>
           </div>
-        )}
+        </div>
       </div>
+    </div>
+  ))}
+</div>
 
       {/* Related Categories */}
       <div className="related-categories container mt-5">

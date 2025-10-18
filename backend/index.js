@@ -16,8 +16,9 @@ const fs = require('fs');
 const multer = require('multer');
 
 // Use bodyParser to parse JSON and URL-encoded data
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
+
 
 app.use(cors({
     origin: (origin, callback) => {
@@ -195,3 +196,4 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
     console.log(`Server listening at http://localhost:${port}`);
 });
+
