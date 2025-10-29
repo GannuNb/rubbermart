@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import styles from "./Signup.module.css";  // <-- Import CSS Module here
+import styles from "./Signup.module.css";
 
 export default function Signup() {
   const [credentials, setCredentials] = useState({
@@ -10,14 +10,33 @@ export default function Signup() {
     confirmPassword: "",
     geolocation: "",
   });
-
   const [showPassword, setShowPassword] = useState(false);
+  const wrapperRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
   }, []);
+
+  // ✅ Ripple effect logic
+  const handleRipple = (e) => {
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
+
+    const ripple = document.createElement("span");
+    ripple.className = styles["click-ripple"];
+
+    const rect = wrapper.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    ripple.style.left = `${x}px`;
+    ripple.style.top = `${y}px`;
+
+    wrapper.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 600);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -44,23 +63,21 @@ export default function Signup() {
     const json = await response.json();
     console.log(json);
 
-    if (json.success) {
-      navigate("/login");
-    } else {
-      alert("Please use correct credentials to signup");
-    }
+    if (json.success) navigate("/login");
+    else alert("Please use correct credentials to signup");
   };
 
-  const onChange = (e) => {
+  const onChange = (e) =>
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
-  };
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   return (
-    <div className={styles.setter}>
+    <div
+      ref={wrapperRef}
+      className={styles["signup-page-wrapper"]}
+      onClick={handleRipple} // ✅ Click trigger
+    >
       <div className={styles["signup-page"]}>
         {/* Left Info Section */}
         <div className={styles["signup-left"]}>

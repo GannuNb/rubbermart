@@ -1,93 +1,159 @@
-/* Layout similar to Flipkart login */
+/* === SIGNUP PAGE STYLING (Dual Aura Glow + Static Gradient Background) === */
+
+.signup-page-wrapper {
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #2874f0 0%, #0040ff 70%);
+  font-family: "Poppins", sans-serif;
+}
+
+/* === AURA EFFECTS (top-left & bottom-right glow) === */
+.signup-page-wrapper::before,
+.signup-page-wrapper::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(140px);
+  opacity: 0.6;
+  z-index: 1;
+  animation: pulse 5s ease-in-out infinite;
+}
+
+/* Blue aura — top-left */
+.signup-page-wrapper::before {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(0, 198, 255, 0.8), transparent 70%);
+  top: -100px;
+  left: -120px;
+}
+
+/* Blue aura — bottom-right */
+.signup-page-wrapper::after {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(0, 198, 255, 0.8), transparent 70%);
+  bottom: -100px;
+  right: -120px;
+}
+
+/* Smooth pulsing animation */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+}
+
+/* === Glass container === */
 .signup-page {
   display: flex;
   justify-content: center;
   align-items: stretch;
-  min-height: 100vh;
-  font-family: "Poppins", sans-serif;
-  background-color: #f1f3f6;
-  padding: 10%;
-  margin-left: 7%;
+  width: 90%;
+  max-width: 850px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 10px 45px rgba(0, 0, 0, 0.35);
+  z-index: 2;
 }
 
-/* Left blue info panel */
+/* Left info section */
 .signup-left {
   flex: 1;
-  background-color: #2874f0;
+  background: rgba(40, 116, 240, 0.92);
   color: #fff;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 5%;
+  padding: 40px;
+  text-align: left;
 }
 
 .signup-left h2 {
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: 600;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 .signup-left p {
-  font-size: 1rem;
-  line-height: 1.5;
-  max-width: 320px;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  max-width: 280px;
 }
 
 .signup-illustration {
-  width: 180px;
-  margin-top: 50px;
+  width: 140px;
+  margin-top: 40px;
   align-self: center;
+  filter: drop-shadow(0 2px 5px rgba(255, 255, 255, 0.8));
 }
 
-/* Right white form panel */
+/* Right form section */
 .signup-right {
   flex: 1;
-  background-color: #fff;
+  background: rgba(255, 255, 255, 0.88);
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 60px 40px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+  padding: 40px 30px;
 }
 
 .signup-form {
   width: 100%;
-  max-width: 360px;
+  max-width: 320px;
 }
 
 .form-heading {
   text-align: center;
-  margin-bottom: 25px;
-  color: #333;
+  margin-bottom: 20px;
+  color: #222;
   font-weight: 600;
+  font-size: 1.4rem;
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 label {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   color: #333;
   font-size: 0.9rem;
 }
 
 input {
   width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  padding: 9px 11px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
   outline: none;
-  transition: 0.2s;
+  background: rgba(255, 255, 255, 0.9);
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
 }
 
 input:focus {
   border-color: #2874f0;
-  box-shadow: 0 0 5px rgba(40, 116, 240, 0.3);
+  box-shadow: 0 0 6px rgba(40, 116, 240, 0.3);
 }
 
-/* Password field wrapper */
+/* Password toggle */
 .input-wrapper {
   display: flex;
   align-items: center;
@@ -108,52 +174,70 @@ input:focus {
   width: 100%;
   border: none;
   padding: 10px;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 1rem;
-  margin-top: 10px;
+  font-size: 0.95rem;
+  margin-top: 8px;
+  transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
   background-color: #e06010;
+  transform: translateY(-1px);
 }
 
-/* Secondary link */
 .btn-secondary {
   display: block;
   text-align: center;
-  margin-top: 15px;
-  color: #444;
+  margin-top: 12px;
+  color: #111111;
   text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s ease;
+  font-size: 0.9rem;
+  transition: color 0.3s;
 }
 
 .btn-secondary:hover {
-  color: #ffffff;
-  text-decoration: none;
+  color: #2874f0;
 }
 
 /* Responsive design */
 @media (max-width: 900px) {
   .signup-page {
     flex-direction: column;
-    padding: 2%;
-  margin-left: 1%;
-  margin-top: 20%;
+    width: 95%;
   }
 
   .signup-left {
-    padding: 40px;
-    align-items: center;
+    padding: 30px;
     text-align: center;
   }
 
   .signup-illustration {
-    margin-top: 30px;
+    margin-top: 20px;
   }
 
   .signup-right {
     padding: 30px 20px;
+  }
+}
+
+/* === Ripple Click Effect === */
+.click-ripple {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  transform: scale(0);
+  background: rgba(0, 198, 255, 0.4);
+  box-shadow: 0 0 20px rgba(0, 198, 255, 0.8);
+  animation: ripple-effect 0.8s ease-out;
+  pointer-events: none;
+  z-index: 10;
+}
+
+@keyframes ripple-effect {
+  to {
+    transform: scale(8);
+    opacity: 0;
   }
 }

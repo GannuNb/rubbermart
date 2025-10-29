@@ -107,10 +107,10 @@ const Uploaded = () => {
   return (
     <>
       <Adminnav />
-      <div className="container my-5">
+      <div className="container-fluid my-5">
         <h2 className="text-center mb-4">Uploaded Scrap Items</h2>
         {scrapItems.length === 0 ? (
-          <p className="text-center">No scrap items uploaded yet.</p>
+          <p className="text-center"></p>
         ) : (
           <div style={{ maxHeight: "400px", overflowY: "auto" }}>
             <table className="table table-striped table-bordered table-hover">

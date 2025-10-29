@@ -10,7 +10,6 @@
 
 .profile-container {
   width: 100%;
-  max-width: 950px;
 }
 
 .profile-card {
@@ -65,7 +64,6 @@
 .section-title {
   font-weight: 600;
   color: #333;
-  border-left: 4px solid #007bff;
   padding-left: 10px;
   margin-bottom: 15px;
 }

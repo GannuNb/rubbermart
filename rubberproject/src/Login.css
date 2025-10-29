@@ -1,37 +1,109 @@
-/* Center the login box */
+/* === LOGIN PAGE STYLING (Dual Aura Glow + Smooth Floating Background + Click Ripple Effect) === */
+
 .login-page-wrapper {
-.setter {
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 90vh;
-  background-color: #f1f3f6;
+  background: linear-gradient(135deg, #2874f0, #0040ff 70%);
+  font-family: "Poppins", sans-serif;
 }
 
-/* Overall layout */
+/* === Glowing Auras (Top-Left & Bottom-Right) === */
+.login-page-wrapper::before,
+.login-page-wrapper::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(140px);
+  opacity: 0.7;
+  mix-blend-mode: screen;
+  animation: float 8s ease-in-out infinite alternate;
+  z-index: 1;
+}
+
+/* Blue aura (top-left corner) */
+.login-page-wrapper::before {
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle at center, rgba(0, 198, 255, 0.9), transparent 70%);
+  top: -120px;
+  left: -120px;
+}
+
+/* Orange aura (bottom-right corner) */
+.login-page-wrapper::after {
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle at center, rgba(255, 140, 0, 0.8), transparent 70%);
+  bottom: -120px;
+  right: -120px;
+}
+
+/* 🌊 Smooth floating animation */
+@keyframes float {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.75;
+  }
+  50% {
+    transform: translate(40px, -40px) scale(1.05);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.75;
+  }
+}
+
+/* 💫 Click Ripple Effect */
+.click-ripple {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: scale(0);
+  animation: ripple-expand 0.8s ease-out;
+  z-index: 3;
+}
+
+@keyframes ripple-expand {
+  to {
+    transform: scale(8);
+    opacity: 0;
+  }
+}
+
+/* === Glass Card Container === */
 .login-page {
   display: flex;
   justify-content: center;
   align-items: stretch;
-  width: 80%;
-  max-width: 850px; /* reduced width */
-  min-height: 480px; /* smaller height */
-  border-radius: 8px;
+  width: 90%;
+  max-width: 850px;
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
-  font-family: "Poppins", sans-serif;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 10px 45px rgba(0, 0, 0, 0.35);
+  z-index: 2;
+  transition: all 0.4s ease;
 }
 
-/* Left blue panel */
+/* === Left Section === */
 .login-left {
   flex: 1;
-  background-color: #2874f0;
+  background: rgba(40, 116, 240, 0.95);
   color: #fff;
   display: flex;
   flex-direction: column;
   justify-content: center;
   padding: 40px;
+  text-align: left;
 }
 
 .login-left h2 {
@@ -43,19 +115,20 @@
 .login-left p {
   font-size: 0.95rem;
   line-height: 1.4;
-  max-width: 260px;
+  max-width: 280px;
 }
 
 .login-illustration {
   width: 140px;
   margin-top: 40px;
   align-self: center;
+  filter: drop-shadow(0 2px 5px rgba(255, 255, 255, 0.8));
 }
 
-/* Right white panel */
+/* === Right Section === */
 .login-right {
   flex: 1;
-  background-color: #fff;
+  background: rgba(255, 255, 255, 0.9);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -67,15 +140,16 @@
   max-width: 320px;
 }
 
-/* Form heading */
+/* === Form Heading === */
 .form-heading {
   text-align: center;
   margin-bottom: 20px;
-  color: #333;
+  color: #222;
   font-weight: 600;
-  font-size: 1.3rem;
+  font-size: 1.4rem;
 }
 
+/* === Input Fields === */
 .form-group {
   margin-bottom: 18px;
 }
@@ -89,20 +163,21 @@ label {
 
 input {
   width: 100%;
-  padding: 8px 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  padding: 9px 11px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
   outline: none;
-  transition: 0.2s;
+  background: rgba(255, 255, 255, 0.9);
+  transition: all 0.3s ease;
   font-size: 0.9rem;
 }
 
 input:focus {
   border-color: #2874f0;
-  box-shadow: 0 0 5px rgba(40, 116, 240, 0.3);
+  box-shadow: 0 0 6px rgba(40, 116, 240, 0.3);
 }
 
-/* Password field */
+/* Password Visibility */
 .input-wrapper {
   display: flex;
   align-items: center;
@@ -113,24 +188,26 @@ input:focus {
   border: none;
   margin-left: 5px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 18px;
 }
 
-/* Buttons */
+/* === Buttons === */
 .btn-primary {
   background-color: #fb641b;
   color: #fff;
   width: 100%;
   border: none;
-  padding: 9px;
-  border-radius: 4px;
+  padding: 10px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 0.95rem;
   margin-top: 8px;
+  transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
   background-color: #e06010;
+  transform: translateY(-2px);
 }
 
 .btn-secondary {
@@ -140,10 +217,11 @@ input:focus {
   color: #111111;
   text-decoration: none;
   font-size: 0.9rem;
+  transition: color 0.3s;
 }
 
 .btn-secondary:hover {
-  text-decoration: none;
+  color: #2874f0;
 }
 
 /* Forgot password */
@@ -158,7 +236,7 @@ input:focus {
 }
 
 .forgot-link a:hover {
-  text-decoration: none;
+  text-decoration: underline;
 }
 
 /* Error message */
@@ -169,12 +247,11 @@ input:focus {
   text-align: center;
 }
 
-/* Responsive */
+/* === Responsive Design === */
 @media (max-width: 900px) {
   .login-page {
     flex-direction: column;
-    width: 90%;
-    min-height: auto;
+    width: 95%;
   }
 
   .login-left {
@@ -189,5 +266,4 @@ input:focus {
   .login-right {
     padding: 30px 20px;
   }
-}
 }

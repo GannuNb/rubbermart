@@ -58,7 +58,7 @@ function ContactUs() {
   }, []);
 
   return (
-      <div className="container-fluid contact-us-page ">
+      <div className="container-fluid mt-5 contact-us-page ">
         <div className="row">
           <div className="col-lg-6 mb-4">
             <h2 className="mb-4">Get in Touch</h2>
@@ -203,7 +203,7 @@ function ContactUs() {
         </div>
 
         {/* FAQ Section */}
-        <div className="row mt-5">
+        <div className="row mt-5 mb-5">
           <div className="col-lg-12">
             <h2 className="mb-4">Frequently Asked Questions</h2>
             <div className="accordion" id="faqAccordion">

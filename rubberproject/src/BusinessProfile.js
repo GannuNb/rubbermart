@@ -270,7 +270,7 @@ const BusinessProfile = () => {
   if (profileExists) {
     return (
         <div className="container-fluid">
-          <div className="business-profile-container">
+          <div className="business-profile-container mb-5">
             <h2 className="text-center mb-4 tyre-scrap-heading mr-5">
               Your Business Profile
             </h2>

@@ -10,6 +10,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  // 🔵 handle login
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -55,27 +56,46 @@ export default function Login() {
     }
   };
 
+  // 🔹 Update inputs
   const onChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
 
+  // 🔹 Toggle password visibility
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
+  // 🔹 Scroll top & click aura effect
   useEffect(() => {
     window.scrollTo(0, 0);
+
+    const wrapper = document.querySelector(".login-page-wrapper");
+
+    const createRipple = (e) => {
+      const ripple = document.createElement("span");
+      ripple.classList.add("click-ripple");
+      ripple.style.left = `${e.clientX - wrapper.getBoundingClientRect().left}px`;
+      ripple.style.top = `${e.clientY - wrapper.getBoundingClientRect().top}px`;
+      wrapper.appendChild(ripple);
+
+      setTimeout(() => {
+        ripple.remove();
+      }, 800);
+    };
+
+    wrapper.addEventListener("click", createRipple);
+
+    return () => wrapper.removeEventListener("click", createRipple);
   }, []);
 
   return (
     <div className="login-page-wrapper">
-    <div className="setter">
       <div className="login-page">
         <div className="login-left">
           <h2>Login</h2>
           <p>
-            Get access to your Orders, 
-            Manage your business profile easily and stay connected!
+            Get access to your Orders, Manage your business profile easily and stay connected!
           </p>
           <img
             src="https://cdn-icons-png.flaticon.com/512/906/906343.png"
@@ -135,7 +155,6 @@ export default function Login() {
           </form>
         </div>
       </div>
-    </div>
     </div>
   );
 }

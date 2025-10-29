@@ -257,7 +257,7 @@ function AdminPayment() {
   return (
     <>
       <Adminnav />
-      <div className="container mt-5 contmax">
+      <div className="container-fluid mt-5 mb-5 contmax">
 
         <div className="card shadow-lg border-0">
           <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center">
@@ -359,7 +359,7 @@ function AdminPayment() {
             </table>
           </div>
         ) : (
-          <div className="alert alert-warning text-center my-5">No payment details available right now</div>
+          <div className="alert alert-warning text-center">No payment details available right now</div>
         )}
       </div>
     </>

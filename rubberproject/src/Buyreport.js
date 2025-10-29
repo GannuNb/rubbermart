@@ -200,7 +200,7 @@ function Buyreport() {
   }
 
   return (
-      <div className="container-fluid">
+      <div className="container-fluid mt-3">
         <h2 className="text-center mb-4">Buy Reports</h2>
         {mergedData.length === 0 ? (
           <p className="text-center">No data available.</p>

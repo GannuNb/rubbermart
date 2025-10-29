@@ -53,7 +53,7 @@ const Adminusers = () => {
   return (
     <>
       <Adminnav />
-      <div className="container mt-4">
+      <div className="container-fluid mt-4">
         <div className="card shadow-lg border-0">
           <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <h5 className="m-0">All Users</h5>

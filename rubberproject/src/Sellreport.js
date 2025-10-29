@@ -216,8 +216,8 @@ const Sellreport = () => {
 
     return (
         <>
-                <div className="container-fluid">
-                    <h2 className="text-center mb-4">Approved Scrap Reports</h2>
+                <div className="container-fluid mt-3">
+                    <h2 className="text-center mb-5">Approved Scrap Reports</h2>
                     {approvedScrap.length === 0 ? (
                         <p className="text-center">No approved scrap items found.</p>
                     ) : (
