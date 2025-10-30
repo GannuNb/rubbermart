@@ -33,8 +33,8 @@ const TechnologyCards = () => {
   ];
 
   return (
-    <div className="trb-technology-container">
-      <h3 className="trb-section-title">
+    <div className="trb-technology-container mb-3">
+      <h3 className="trb-section-title mt-5 mb-5">
         Transform Your Business With <span>Rubberscrapmart.com</span>
       </h3>
       <div className="trb-technology-grid">
