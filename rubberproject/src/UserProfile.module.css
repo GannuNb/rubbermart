@@ -1,0 +1,235 @@
+:root{
+  --max-width:1200px;
+  --accent1:#06b6d4;
+  --accent2:#3b82f6;
+  --blue:#0b74ff;
+  --muted:#6b7280;
+  --card-bg:#fff;
+  --panel-bg:#0b1220;
+  --surface:#f8fafc;
+}
+
+/* Prevent screen from moving right */
+html, body {
+  overflow-x: hidden;
+}
+
+*{box-sizing:border-box}
+
+/* ------------------------ MAIN WRAPPER ------------------------ */
+.profileWrapper{
+  padding:10px;
+  max-width:var(--max-width);
+  width: calc(100% - 40px); /* Prevents pushing to right */
+  margin:0 auto;
+  font-family:Inter, Roboto, Arial, sans-serif;
+  color:#1f2937;
+  -webkit-font-smoothing:antialiased;
+  margin-bottom: 5%;
+  margin-top: 2%;
+}
+
+/* GRID FIX - Prevent overflow */
+.profileGrid{
+  display:grid;
+  grid-template-columns:320px 1fr;
+  gap:20px;
+  align-items:stretch;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* ------------------------ SIDEBAR ------------------------ */
+.sidePanel{
+  background:linear-gradient(180deg,#0f172a 0%,var(--panel-bg) 100%);
+  color:#fff;
+  border-radius:12px;
+  padding:18px;
+  box-shadow:0 8px 20px rgba(2,6,23,0.5);
+  height:100%;
+  display:flex;
+  flex-direction:column;
+}
+
+.avatarBox{ text-align:center }
+
+.profileAvatar{
+  width:96px;height:96px;border-radius:50%;
+  background:linear-gradient(135deg,#4f46e5,var(--accent1));
+  display:flex;align-items:center;justify-content:center;margin:0 auto 12px;
+  box-shadow:0 6px 18px rgba(6,8,27,0.45);
+}
+
+.sideName{margin:6px 0 0;font-size:18px;font-weight:700;text-align:center}
+.sideEmail{font-size:13px;opacity:.9;margin-bottom:12px;text-align:center;word-break:break-word}
+
+.tabs{display:flex;flex-direction:column;gap:16px;margin-top:16px}
+
+.tabBtn{
+  background:transparent;
+  border:1px solid rgba(255,255,255,0.08);
+  color:rgba(255,255,255,0.95);
+  padding:10px 12px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:600;
+  text-align:left;
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+
+.active{background:rgba(255,255,255,0.06)}
+
+.sideActions{margin-top:12px}
+
+.dashboardBtn{
+  margin-top:auto;
+  width:100%;
+  background:linear-gradient(90deg,var(--accent1),var(--accent2));
+  color:#fff;border:none;padding:10px 12px;border-radius:8px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;font-weight:700;
+  box-shadow:0 8px 18px rgba(11,40,94,0.18);
+}
+
+/* ------------------------ RIGHT CONTENT ------------------------ */
+.contentPanel{
+  background:var(--card-bg);
+  border-radius:12px;
+  padding:18px;
+  box-shadow:0 6px 18px rgba(15,23,42,0.06);
+  display:flex;
+  flex-direction:column;
+
+  /* FIX: prevents wide children from pushing layout */
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+.contentHeader{
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+  border-bottom:1px solid #eef2f7;padding-bottom:12px;margin-bottom:12px;
+}
+
+.headerLeft h2{margin:0;font-size:18px}
+.muted{color:var(--muted);font-size:13px;margin-top:4px}
+
+.headerActions{display:flex;gap:10px}
+
+.primary{
+  background:var(--blue);color:#fff;border:none;padding:8px 12px;border-radius:8px;
+  cursor:pointer;display:flex;gap:8px;align-items:center;font-weight:600;
+}
+
+/* ------------------------ CONTENT PANELS ------------------------ */
+.panel{transition:all 160ms ease; max-width: 100%; }
+.hidden{display:none;opacity:0;transform:translateY(6px)}
+.visible{display:block;opacity:1;transform:none}
+
+/* ------------------------ INPUT ROWS ------------------------ */
+.infoRow{
+  display:flex;align-items:center;gap:12px;margin-bottom:12px;
+  flex-wrap:wrap;width:100%;
+}
+
+.infoRow label{
+  min-width:140px;font-weight:600;
+  display:flex;gap:8px;align-items:center;color:#374151;
+}
+
+.infoValue{
+  padding:8px 10px;background:var(--surface);
+  border-radius:8px;flex:1;min-width:160px;word-break:break-word;
+}
+
+input[type="text"],input[type="email"],textarea{
+  flex:1;padding:10px 12px;border-radius:8px;border:1px solid #e6eef7;
+  background:#fff;min-width:140px;
+}
+
+input:focus,textarea:focus{
+  outline:none;box-shadow:0 6px 20px rgba(11,116,255,0.06);
+  border-color:rgba(11,116,255,0.45);
+}
+
+/* ------------------------ BUSINESS ------------------------ */
+.businessCard{
+  border:1px solid #eef2f7;border-radius:10px;padding:12px;margin-bottom:12px;
+  background:linear-gradient(180deg,#fff,#fbfdff);
+}
+
+.businessHeader{
+  display:flex;gap:10px;align-items:center;margin-bottom:10px;
+}
+
+.businessGrid{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;
+}
+
+/* ------------------------ DASHBOARD ------------------------ */
+.navigationSection{margin-top:4px}
+.sectionTitle{margin:0 0 8px 0}
+.navLinks{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+
+.navItem{
+  display:inline-flex;gap:8px;align-items:center;
+  padding:8px 12px;border-radius:8px;background:#f1f5f9;
+  color:#0b1220;text-decoration:none;font-weight:600;border:none;
+  cursor:pointer;
+}
+
+/* ------------------------ LARGE TABLE FIX ------------------------ */
+.inlineContent,
+.contentBody,
+.contentPanel {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.inlineContent table,
+.contentBody table,
+.contentPanel table {
+  width: 100%;
+  max-width: 100%;
+  table-layout: auto;
+  border-collapse: collapse;
+}
+
+/* Prevent table from breaking layout */
+.tableWrapper {
+  overflow-x: auto;
+  width: 100%;
+}
+
+/* ------------------------ RESPONSIVE ------------------------ */
+@media (max-width:1100px){
+  .profileGrid{grid-template-columns:300px 1fr}
+  .profileAvatar{width:88px;height:88px}
+}
+
+@media (max-width:880px){
+  .profileGrid{grid-template-columns:1fr;gap:12px}
+  .sidePanel{order:-1;border-radius:10px;padding:14px;position:static;height:auto}
+  .contentPanel{order:1;padding:14px}
+  .profileAvatar{width:72px;height:72px}
+  .tabs{flex-direction:row;flex-wrap:wrap;justify-content:center}
+  .tabBtn{flex:1 1 auto;padding:8px 10px;font-size:13px;text-align:center}
+  .infoRow label{min-width:110px;font-size:14px;align-items:flex-start}
+  .businessGrid{grid-template-columns:1fr}
+  input[type=\"text\"],input[type=\"email\"],textarea{width:100%;min-width:0}
+  .profileWrapper{padding:14px;width: calc(100% - 24px);}
+}
+
+@media (max-width:420px){
+  .profileAvatar{width:80px;height:80px}
+  .sideName{font-size:16px}
+  .sideEmail{font-size:12px}
+  .tabBtn{font-size:13px;padding:8px}
+  .primary{padding:7px 10px;font-size:13px}
+  .infoRow label{min-width:90px;font-size:13px}
+}
+
+/* reduced motion */
+@media (prefers-reduced-motion:reduce){
+  .panel,.tabBtn,.dashboardBtn,.primary{transition:none!important}
+}

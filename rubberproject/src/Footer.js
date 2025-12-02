@@ -49,10 +49,10 @@ const Footer = () => {
             <div className="footer-line"></div>
             <ul className="footer-links">
               <li>
-                <Link to="/Tyrescrap">› Tyrescrap</Link>
+                <Link to="/Tyrescrap">› Tyre Scrap</Link>
               </li>
               <li>
-                <Link to="/Pyrooil">› Pyrooil</Link>
+                <Link to="/Pyrooil">› Pyro Oil</Link>
               </li>
               <li>
                 <Link to="/TyresteelScrap">› Tyresteel Scrap</Link>
@@ -65,9 +65,8 @@ const Footer = () => {
             <h5 className="footer-title">ADDRESS</h5>
             <div className="footer-line"></div>
             <p className="footer-text">
-              <strong>Admin Office:</strong> #406, 4th Floor, Patel Towers,
-              Above EasyBuy, Beside Nagole RTO Office, Nagole, Hyderabad,
-              Telangana - 500068
+              <strong>Address:</strong> Ground Floor, Office No-52/ Plot No-44, Sai Chamber CHS, Wing A, Sector 11, Sai Chambers,
+               CBD Belapur, Navi Mumbai, Thane, Maharashtra - 400614, GSTN:27AAVFV4635R1ZY
             </p>
             <p>
               <strong>Phone:</strong> 022-46030343

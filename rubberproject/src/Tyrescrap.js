@@ -1,26 +1,26 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState, useMemo } from "react";
+import axios from "axios";
 import Slider from "react-slick";
-import { useNavigate } from 'react-router-dom';
-import Filter from './Filter';
-import './TyreScrap.css';
+import { useNavigate } from "react-router-dom";
+import Filter from "./Filter";
+import "./TyreScrap.css";
 
-import RubberGranulesImage from './images/RubberGranules.jpeg';
-import ShreddsImage from './images/Shredds.jpeg';
-import BaledTyresTBRImage from './images/BaledTyresTBR.jpg';
-import BaledTyresTBRImage2 from './images/BaledTyresTBR_2.jpg';
-import ThreePiecePCRImage from './images/ThreePiecePCR.jpeg';
-import ThreePieceTBRImage from './images/ThreePieceTBR.jpeg';
-import ThreePieceTBRImage2 from './images/ThreePieceTBR2.webp';
-import mulchImage from './images/mulch.jpeg';
-import mulchImage2 from './images/mulch1.jpg';
+import RubberGranulesImage from "./images/RubberGranules.jpeg";
+import ShreddsImage from "./images/Shredds.jpeg";
+import BaledTyresTBRImage from "./images/BaledTyresTBR.jpg";
+import BaledTyresTBRImage2 from "./images/BaledTyresTBR_2.jpg";
+import ThreePiecePCRImage from "./images/ThreePiecePCR.jpeg";
+import ThreePieceTBRImage from "./images/ThreePieceTBR.jpeg";
+import ThreePieceTBRImage2 from "./images/ThreePieceTBR2.webp";
+import mulchImage from "./images/mulch.jpeg";
+import mulchImage2 from "./images/mulch1.jpg";
 import rubbercrumimg2 from "./images/rubbercrumbtw4.jpg";
 import baledtrespcrimg1 from "./images/baledtrespcr2.jpg";
 import baledtrespcrimg2 from "./images/baledtrespcr3.jpg";
-import RubberCrumSteelImage1 from './images/RubberCrumSteel1.jpg';
-import RubberGranuelsimg2 from './images/RubberGranules2.jpeg';
-import pcr2 from './images/3piecepcr2.jpg';
-import tbr2 from './images/3piecetbr2.jpg';
+import RubberCrumSteelImage1 from "./images/RubberCrumSteel1.jpg";
+import RubberGranuelsimg2 from "./images/RubberGranules2.jpeg";
+import pcr2 from "./images/3piecepcr2.jpg";
+import tbr2 from "./images/3piecetbr2.jpg";
 
 const TyreScrap = () => {
   const [tyreScrapItems, setTyreScrapItems] = useState([]);
@@ -36,7 +36,7 @@ const TyreScrap = () => {
 
   const imagesMap = {
     "Rubber Granules/Crum": [RubberCrumSteelImage1, RubberGranuelsimg2],
-    "Shreds": [ShreddsImage, ShreddsImage],
+    Shreds: [ShreddsImage, ShreddsImage],
     "Baled Tyres PCR": [baledtrespcrimg1, baledtrespcrimg2],
     "Baled Tyres TBR": [BaledTyresTBRImage, BaledTyresTBRImage2],
     "Three Piece PCR": [ThreePiecePCRImage, pcr2],
@@ -45,10 +45,14 @@ const TyreScrap = () => {
   };
 
   const NextArrow = ({ onClick }) => (
-    <div className="custom-arrow custom-arrow-next" onClick={onClick}>❯</div>
+    <div className="custom-arrow custom-arrow-next" onClick={onClick}>
+      ❯
+    </div>
   );
   const PrevArrow = ({ onClick }) => (
-    <div className="custom-arrow custom-arrow-prev" onClick={onClick}>❮</div>
+    <div className="custom-arrow custom-arrow-prev" onClick={onClick}>
+      ❮
+    </div>
   );
 
   const settings = {
@@ -64,8 +68,12 @@ const TyreScrap = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const scrapRes = await axios.get(`${process.env.REACT_APP_API_URL}/scrap`);
-        const tyreScrap = scrapRes.data.scrap_items.filter(item => item.type === 'Tyre scrap');
+        const scrapRes = await axios.get(
+          `${process.env.REACT_APP_API_URL}/scrap`
+        );
+        const tyreScrap = scrapRes.data.scrap_items.filter(
+          (item) => item.type === "Tyre scrap"
+        );
 
         const desiredOrder = [
           "Baled Tyres PCR",
@@ -74,7 +82,7 @@ const TyreScrap = () => {
           "Baled Tyres TBR",
           "Three Piece TBR",
           "Mulch PCR",
-          "Rubber Granules/Crum"
+          "Rubber Granules/Crum",
         ];
 
         const sorted = tyreScrap.sort(
@@ -82,13 +90,15 @@ const TyreScrap = () => {
         );
         setTyreScrapItems(sorted);
 
-        const approvalRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/getallapprovals`);
+        const approvalRes = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/getallapprovals`
+        );
         const approvals = approvalRes.data;
         setApprovalData(approvals);
 
         const prices = approvals
-          .filter(ap => typeof ap.price === 'number')
-          .map(ap => ap.price);
+          .filter((ap) => typeof ap.price === "number")
+          .map((ap) => ap.price);
         if (prices.length > 0) {
           const min = Math.min(...prices);
           const max = Math.max(...prices);
@@ -108,9 +118,9 @@ const TyreScrap = () => {
     if (productName === "CLEAR_ALL") {
       setSelectedProducts([]);
     } else {
-      setSelectedProducts(prev =>
+      setSelectedProducts((prev) =>
         prev.includes(productName)
-          ? prev.filter(n => n !== productName)
+          ? prev.filter((n) => n !== productName)
           : [...prev, productName]
       );
     }
@@ -120,9 +130,9 @@ const TyreScrap = () => {
     if (location === "CLEAR_ALL") {
       setSelectedLocations([]);
     } else {
-      setSelectedLocations(prev =>
+      setSelectedLocations((prev) =>
         prev.includes(location)
-          ? prev.filter(l => l !== location)
+          ? prev.filter((l) => l !== location)
           : [...prev, location]
       );
     }
@@ -138,11 +148,12 @@ const TyreScrap = () => {
 
   const availableLocations = useMemo(() => {
     const locSet = new Set();
-    approvalData.forEach(approval => {
+    approvalData.forEach((approval) => {
       if (
         approval.application &&
         approval.loadingLocation != null &&
-        (selectedProducts.length === 0 || selectedProducts.includes(approval.application))
+        (selectedProducts.length === 0 ||
+          selectedProducts.includes(approval.application))
       ) {
         locSet.add(approval.loadingLocation);
       }
@@ -154,12 +165,12 @@ const TyreScrap = () => {
     let items = tyreScrapItems;
 
     if (selectedProducts.length > 0) {
-      items = items.filter(item => selectedProducts.includes(item.name));
+      items = items.filter((item) => selectedProducts.includes(item.name));
     }
 
     if (selectedLocations.length > 0) {
       const validApps = new Set();
-      approvalData.forEach(approval => {
+      approvalData.forEach((approval) => {
         if (
           approval.application &&
           approval.loadingLocation != null &&
@@ -168,28 +179,35 @@ const TyreScrap = () => {
           validApps.add(approval.application);
         }
       });
-      items = items.filter(item => validApps.has(item.name));
+      items = items.filter((item) => validApps.has(item.name));
     }
 
     if (priceFilterActive) {
       const min = priceRange.min;
       const max = priceRange.max;
       const validAppsByPrice = new Set();
-      approvalData.forEach(approval => {
+      approvalData.forEach((approval) => {
         if (
           approval.application &&
-          typeof approval.price === 'number' &&
+          typeof approval.price === "number" &&
           approval.price >= min &&
           approval.price <= max
         ) {
           validAppsByPrice.add(approval.application);
         }
       });
-      items = items.filter(item => validAppsByPrice.has(item.name));
+      items = items.filter((item) => validAppsByPrice.has(item.name));
     }
 
     return items;
-  }, [tyreScrapItems, selectedProducts, selectedLocations, priceFilterActive, priceRange, approvalData]);
+  }, [
+    tyreScrapItems,
+    selectedProducts,
+    selectedLocations,
+    priceFilterActive,
+    priceRange,
+    approvalData,
+  ]);
 
   const handleOrderClick = (itemName) => {
     navigate(`/${itemName.replaceAll(" ", "")}`);
@@ -197,17 +215,24 @@ const TyreScrap = () => {
 
   return (
     <div className="tyre-scrap-layout">
-      <h2 className="tyre-scrap-heading animated-heading">Tyre Scrap Products</h2>
+      <h2 className="tyre-scrap-heading animated-heading">
+        Tyre Scrap Products
+      </h2>
       <p className="tyre-scrap-description animated-description">
-        We offer a wide variety of tyre scrap products tailored to meet your industrial needs. 
-        From durable rubber granules to baled tyres, our collection ensures quality and reliability. 
-        Perfect for recycling and manufacturing, these products are an ideal choice for sustainable solutions. 
-        Browse through the options below and place your order hassle-free.
+        We offer a wide variety of tyre scrap products tailored to meet your
+        industrial needs. From durable rubber granules to baled tyres, our
+        collection ensures quality and reliability. Perfect for recycling and
+        manufacturing, these products are an ideal choice for sustainable
+        solutions. Browse through the options below and place your order
+        hassle-free.
       </p>
 
       {/* Filter Button for mobile */}
       <div className="filter-btn-container">
-        <button className="btn btn-outline-primary filter-toggle-btn" onClick={() => setShowFilter(true)}>
+        <button
+          className="btn btn-outline-primary filter-toggle-btn"
+          onClick={() => setShowFilter(true)}
+        >
           <i className="fas fa-filter"></i> Filters
         </button>
       </div>
@@ -215,14 +240,27 @@ const TyreScrap = () => {
       <div className="tyre-scrap-main-content">
         <div className="tyre-scrap-grid">
           {displayedItems.map((item, index) => (
-            <div key={item._id} className="tyre-card animated-card" style={{ '--card-index': index }}>
+            <div
+              key={item._id}
+              className="tyre-card animated-card"
+              style={{ "--card-index": index }}
+            >
               <Slider {...settings}>
                 {imagesMap[item.name]?.map((imgSrc, idx) => (
                   <div key={idx}>
-                    <img src={imgSrc} className="tyre-image" alt={`${item.name}-${idx}`} />
+                    <img
+                      src={imgSrc}
+                      className="tyre-image"
+                      alt={`${item.name}-${idx}`}
+                      onClick={() =>
+                        navigate(`/${item.name.replaceAll(" ", "")}`)
+                      }
+                      style={{ cursor: "pointer" }}
+                    />
                   </div>
                 ))}
               </Slider>
+
               <div className="tyre-card-body">
                 <h5 className="tyre-card-title">{item.name}</h5>
                 <button
@@ -260,7 +298,9 @@ const TyreScrap = () => {
       {showFilter && (
         <div className="filter-modal">
           <div className="filter-modal-content">
-            <button className="close-btn" onClick={() => setShowFilter(false)}>×</button>
+            <button className="close-btn" onClick={() => setShowFilter(false)}>
+              ×
+            </button>
             <Filter
               tyreScrapItems={tyreScrapItems}
               selectedProducts={selectedProducts}
