@@ -157,7 +157,7 @@ function Sidebar() {
         style={{
           zIndex: 1030,
           borderBottom: "1px solid #ddd",
-          backgroundColor: isMobile ? "#2196f3" : "#fff",
+          backgroundColor: isMobile ? "#ffffffff" : "#fff",
           flexDirection: isMobile ? "column" : "row",
           alignItems: isMobile ? "stretch" : "center",
           gap:"1%"
@@ -180,39 +180,43 @@ function Sidebar() {
 
 
           {isMobile && (
-            <div
-              className="d-flex align-items-center gap-2"
-              style={{ paddingRight: isTablet ? "16rem" : "10%" }}
-            >
-              <Link to="/Productspage">
-                <i className="fas fa-cart-plus text-white"></i>
-              </Link>
-              <Link to="/Sell">
-                <i className="fas fa-dollar-sign text-white"></i>
-              </Link>
-              {user ? (
-                <Link to="/userprofile">
-                  <i className="fas fa-user-circle text-white"></i>
-                </Link>
-              ) : (
-                <Link to="/login">
-                  <i className="fas fa-user text-white"></i>
-                </Link>
-              )}
-              {user && (
-                <button
-                  onClick={handleLogout}
-                  style={{
-                    background: "transparent",
-                    border: "none",
-                    color: "#fff",
-                    cursor: "pointer",
-                  }}
-                >
-                  <i className="fas fa-sign-out-alt"></i>
-                </button>
-              )}
-            </div>
+<div
+  className="d-flex align-items-center gap-2 text-primary"
+  style={{ paddingRight: isTablet ? "16rem" : "10%" }}
+>
+  <Link to="/Productspage">
+    <i className="fas fa-cart-plus"></i>
+  </Link>
+
+  <Link to="/Sell">
+    <i className="fas fa-dollar-sign"></i>
+  </Link>
+
+  {user ? (
+    <Link to="/userprofile">
+      <i className="fas fa-user-circle"></i>
+    </Link>
+  ) : (
+    <Link to="/login">
+      <i className="fas fa-user"></i>
+    </Link>
+  )}
+
+  {user && (
+    <button
+      onClick={handleLogout}
+      style={{
+        background: "transparent",
+        border: "none",
+        color: "#0d6efd", // bootstrap blue
+        cursor: "pointer",
+      }}
+    >
+      <i className="fas fa-sign-out-alt"></i>
+    </button>
+  )}
+</div>
+
           )}
         </div>
 
@@ -430,7 +434,7 @@ function Sidebar() {
         <div
           className="horizontal-bar"
           style={{
-            marginTop: "120px",
+            marginTop: "17%",
             backgroundColor: "rgb(33, 150, 243)",
             padding: "10px 20px",
             display: "flex",

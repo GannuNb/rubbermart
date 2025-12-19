@@ -72,7 +72,7 @@
   height: 84px;         
   width: auto;           
   object-fit: contain;
-  margin-left: 180%;
+  margin-left: 150%;
 }
 @media (max-width: 768px) {
   .rsmlogo {
@@ -257,6 +257,12 @@
 }
 /* Mobile 300-600px specific */
 @media (max-width: 600px) {
+  .rsmlogo {
+  height: 30px;         
+  width: auto;           
+  object-fit: contain;
+  margin-left: 40%;
+}
   .navbar {
     flex-direction: column;
     padding: 5px 10px;
