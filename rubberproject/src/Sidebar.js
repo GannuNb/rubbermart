@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import styles from "./Sidebar.module.css";
-
+import logorsm from "./images/rsm_logo.png"
 function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -160,8 +160,7 @@ function Sidebar() {
           backgroundColor: isMobile ? "#2196f3" : "#fff",
           flexDirection: isMobile ? "column" : "row",
           alignItems: isMobile ? "stretch" : "center",
-          paddingTop: isMobile ? "0.5rem" : "1.5rem",   // py-2 mobile, py-4 desktop
-          paddingBottom: isMobile ? "0.5rem" : "1.5rem",
+          gap:"1%"
         }}
       >
 
@@ -172,23 +171,11 @@ function Sidebar() {
             paddingBottom: isMobile ? "0.5rem" : "0",
             display: "flex",
             alignItems: "center",
-            justifyContent: isMobile ? "space-between" : "center",
+            justifyContent: isMobile ? "space-between" : "left",
           }}
         >
-          <Link
-            className="navbar-brand"
-            to="/"
-            style={{
-              color: isMobile ? "#fff" : "#000",
-              fontWeight: "bold",
-              fontSize: "1.2rem",
-              paddingLeft: isTablet ? "0" : "10%",  // remove left padding for tablets
-              paddingRight: !isMobile && !isTablet ? "30%" : "0", // desktop stays same
-              textAlign: isTablet ? "center" : "left", // center only for tablets
-              width: isTablet ? "100%" : "auto",      // full width for centering
-            }}
-          >
-            Rubber scrapmart
+          <Link to="/">
+            <img className={styles.rsmlogo} src={logorsm} alt="Rubber Scrap Mart"/>
           </Link>
 
 
@@ -390,7 +377,7 @@ function Sidebar() {
         <div
           className="horizontal-bar"
           style={{
-            marginTop: "90px",
+            marginTop: "100px",
             backgroundColor: "rgb(33, 150, 243)",
             padding: "0 20px",
             display: "flex",

@@ -68,6 +68,18 @@
   background-color: #f3f3f3;
 }
 
+.rsmlogo {
+  height: 84px;         
+  width: auto;           
+  object-fit: contain;
+  margin-left: 180%;
+}
+@media (max-width: 768px) {
+  .rsmlogo {
+    height: 38px;
+  }
+}
+
 /* ========================================================= */
 /* ✅ HORIZONTAL SIDEBAR (Desktop) */
 /* ========================================================= */
