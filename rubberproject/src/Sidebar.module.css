@@ -69,10 +69,10 @@
 }
 
 .rsmlogo {
-  height: 84px;         
+  height: 80px;         
   width: auto;           
   object-fit: contain;
-  margin-left: 150%;
+  margin-left: 50%;
 }
 @media (max-width: 768px) {
   .rsmlogo {
@@ -258,10 +258,10 @@
 /* Mobile 300-600px specific */
 @media (max-width: 600px) {
   .rsmlogo {
-  height: 30px;         
+  height: 50px;         
   width: auto;           
   object-fit: contain;
-  margin-left: 40%;
+  margin-left: 10%;
 }
   .navbar {
     flex-direction: column;

@@ -160,7 +160,7 @@ function Sidebar() {
           backgroundColor: isMobile ? "#ffffffff" : "#fff",
           flexDirection: isMobile ? "column" : "row",
           alignItems: isMobile ? "stretch" : "center",
-          gap:"1%"
+          gap: "1%"
         }}
       >
 
@@ -175,47 +175,47 @@ function Sidebar() {
           }}
         >
           <Link to="/">
-            <img className={styles.rsmlogo} src={logorsm} alt="Rubber Scrap Mart"/>
+            <img className={styles.rsmlogo} src={logorsm} alt="Rubber Scrap Mart" />
           </Link>
 
 
           {isMobile && (
-<div
-  className="d-flex align-items-center gap-2 text-primary"
-  style={{ paddingRight: isTablet ? "16rem" : "10%" }}
->
-  <Link to="/Productspage">
-    <i className="fas fa-cart-plus"></i>
-  </Link>
+            <div
+              className="d-flex align-items-center gap-2 text-primary"
+              style={{ paddingRight: isTablet ? "24rem" : "12%" }}
+            >
+              <Link to="/Productspage">
+                <i className="fas fa-cart-plus"></i>
+              </Link>
 
-  <Link to="/Sell">
-    <i className="fas fa-dollar-sign"></i>
-  </Link>
+              <Link to="/Sell">
+                <i className="fas fa-dollar-sign"></i>
+              </Link>
 
-  {user ? (
-    <Link to="/userprofile">
-      <i className="fas fa-user-circle"></i>
-    </Link>
-  ) : (
-    <Link to="/login">
-      <i className="fas fa-user"></i>
-    </Link>
-  )}
+              {user ? (
+                <Link to="/userprofile">
+                  <i className="fas fa-user-circle"></i>
+                </Link>
+              ) : (
+                <Link to="/login">
+                  <i className="fas fa-user"></i>
+                </Link>
+              )}
 
-  {user && (
-    <button
-      onClick={handleLogout}
-      style={{
-        background: "transparent",
-        border: "none",
-        color: "#0d6efd", // bootstrap blue
-        cursor: "pointer",
-      }}
-    >
-      <i className="fas fa-sign-out-alt"></i>
-    </button>
-  )}
-</div>
+              {user && (
+                <button
+                  onClick={handleLogout}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    color: "#0d6efd", // bootstrap blue
+                    cursor: "pointer",
+                  }}
+                >
+                  <i className="fas fa-sign-out-alt"></i>
+                </button>
+              )}
+            </div>
 
           )}
         </div>
@@ -520,49 +520,49 @@ function Sidebar() {
               onClick={closeSidebar}
               style={{ alignSelf: "flex-end" }}
             ></button>
-           <Link to="/" style={{ color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
-      <i className="fas fa-home"></i> Home
-    </Link>
+            <Link to="/" style={{ color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
+              <i className="fas fa-home"></i> Home
+            </Link>
 
-    <Link to="/AboutUsPage" style={{ color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
-      <i className="fas fa-info-circle"></i> About Us
-    </Link>
+            <Link to="/AboutUsPage" style={{ color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
+              <i className="fas fa-info-circle"></i> About Us
+            </Link>
 
-    <Link to="/BusinessProfile" style={{ color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
-      <i className="fas fa-briefcase"></i> Business Profile
-    </Link>
+            <Link to="/BusinessProfile" style={{ color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
+              <i className="fas fa-briefcase"></i> Business Profile
+            </Link>
 
-    <Link to="/Productspage" style={{ color: "rgb(26, 232, 73)", display: "flex", alignItems: "center", gap: "6px" }}>
-      <i className="fas fa-box-open fw-bold"></i> BUY
-    </Link>
+            <Link to="/Productspage" style={{ color: "rgb(26, 232, 73)", display: "flex", alignItems: "center", gap: "6px" }}>
+              <i className="fas fa-box-open fw-bold"></i> BUY
+            </Link>
 
-    <Link to="/Sell" style={{ color: "rgb(254, 192, 102)", display: "flex", alignItems: "center", gap: "6px" }}>
-      <i className="fas fa-dollar-sign fw-bold"></i> SELL
-    </Link>
+            <Link to="/Sell" style={{ color: "rgb(254, 192, 102)", display: "flex", alignItems: "center", gap: "6px" }}>
+              <i className="fas fa-dollar-sign fw-bold"></i> SELL
+            </Link>
 
-    <Link to="/ShippingDetails" style={{ color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
-      <i className="fas fa-shipping-fast"></i> Shippings
-    </Link>
+            <Link to="/ShippingDetails" style={{ color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
+              <i className="fas fa-shipping-fast"></i> Shippings
+            </Link>
 
-    <Link to="/Buyreport" style={{ color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
-      <i className="fas fa-file-alt"></i> Buy Reports
-    </Link>
+            <Link to="/Buyreport" style={{ color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
+              <i className="fas fa-file-alt"></i> Buy Reports
+            </Link>
 
-    <Link to="/Sellerreport" style={{ color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
-      <i className="fas fa-file-alt"></i> Sell Reports
-    </Link>
+            <Link to="/Sellerreport" style={{ color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
+              <i className="fas fa-file-alt"></i> Sell Reports
+            </Link>
 
-    <Link to="/Contact" style={{ color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
-      <i className="fas fa-envelope"></i> Contact
-    </Link>
+            <Link to="/Contact" style={{ color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
+              <i className="fas fa-envelope"></i> Contact
+            </Link>
 
-    <Link to="/Getorders" style={{ color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
-      <i className="fas fa-shopping-cart"></i> Orders
-    </Link>
+            <Link to="/Getorders" style={{ color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
+              <i className="fas fa-shopping-cart"></i> Orders
+            </Link>
 
-    <Link to="/getpay" style={{ color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
-      <i className="fas fa-wallet"></i> Payments
-    </Link>
+            <Link to="/getpay" style={{ color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
+              <i className="fas fa-wallet"></i> Payments
+            </Link>
           </div>
         </>
       )}
