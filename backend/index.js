@@ -4,6 +4,9 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
+import buyerBusinessProfileRoutes from "./routes/buyerBusinessProfileRoutes.js";
+import { uploadBuyerDocumentsErrorHandler } from "./middlewares/uploadBuyerDocumentsErrorHandler.js";
+
 
 dotenv.config();
 
@@ -31,9 +34,13 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/buyer-business-profile", buyerBusinessProfileRoutes);
+
+app.use(uploadBuyerDocumentsErrorHandler);
+
+
 
 const PORT = process.env.PORT || 4000;
-
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

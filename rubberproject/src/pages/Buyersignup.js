@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "../styles/Buyersignup.module.css";
 import { FcGoogle } from "react-icons/fc";
 import { HiOutlineBuildingStorefront } from "react-icons/hi2";
@@ -21,6 +22,14 @@ function Buyersignup() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+  if (buyerSignupSuccessMessage) {
+    navigate("/buyer-business-profile");
+  }
+}, [buyerSignupSuccessMessage, navigate]);
+
 
   const [formData, setFormData] = useState({
     fullName: "",

@@ -1,3 +1,5 @@
+// backend/models/Buyer.js
+
 import mongoose from "mongoose";
 
 const buyerSchema = new mongoose.Schema(
@@ -37,10 +39,11 @@ const buyerSchema = new mongoose.Schema(
       enum: ["manual", "google"],
       default: "manual",
     },
+
     role: {
-    type: String,
-    enum: ["buyer", "seller"],
-    default: "buyer",
+      type: String,
+      enum: ["buyer", "seller"],
+      default: "buyer",
     },
 
     isVerified: {
@@ -48,20 +51,72 @@ const buyerSchema = new mongoose.Schema(
       default: false,
     },
 
+    businessProfileCompleted: {
+      type: Boolean,
+      default: false,
+    },
+
     businessProfile: {
-      businessName: {
+      companyId: {
         type: String,
         default: "",
       },
 
-      businessType: {
+      companyName: {
         type: String,
         default: "",
       },
 
-      businessLocation: {
+      phoneNumber: {
         type: String,
         default: "",
+      },
+
+      email: {
+        type: String,
+        default: "",
+      },
+
+      gstNumber: {
+        type: String,
+        default: "",
+      },
+
+      panNumber: {
+        type: String,
+        default: "",
+      },
+
+      billingAddress: {
+        type: String,
+        default: "",
+      },
+
+      shippingAddress: {
+        type: String,
+        default: "",
+      },
+
+      sameAsBillingAddress: {
+        type: Boolean,
+        default: false,
+      },
+
+      interestedProducts: {
+        type: [String],
+        default: [],
+      },
+
+      gstCertificate: {
+        data: Buffer,
+        contentType: String,
+        originalName: String,
+      },
+
+      panCertificate: {
+        data: Buffer,
+        contentType: String,
+        originalName: String,
       },
     },
   },
@@ -73,3 +128,6 @@ const buyerSchema = new mongoose.Schema(
 const Buyer = mongoose.model("Buyer", buyerSchema);
 
 export default Buyer;
+
+
+
