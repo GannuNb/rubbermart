@@ -10,6 +10,7 @@ import {
   signupBuyerThunk,
   googleSignupBuyerThunk,
 } from "../redux/slices/authThunk";
+import { useNavigate } from "react-router-dom";
 
 function Buyersignup() {
   const dispatch = useDispatch();
@@ -96,6 +97,8 @@ function Buyersignup() {
     });
   };
 
+  const navigate = useNavigate();
+  
   return (
     <div className={styles.buyerSignupPage}>
       <div className={styles.buyerSignupContent}>
@@ -213,7 +216,11 @@ function Buyersignup() {
             Already have an account? <span>Login here</span>
           </p>
 
-          <button type="button" className={styles.sellerBtn}>
+          <button
+            type="button"
+            className={styles.sellerBtn}
+            onClick={() => navigate("/seller-signup")}
+          >
             <HiOutlineBuildingStorefront className={styles.sellerIcon} />
             Sign Up as a Seller
           </button>

@@ -1,0 +1,230 @@
+.sellerSignupPage {
+    min-height: 100vh;
+    background: rgb(253, 246, 236);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+}
+
+.sellerSignupContent {
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+}
+
+.sellerSignupContent h1 {
+    font-size: 42px;
+    font-weight: 700;
+    color: #1e1e1e;
+    margin-bottom: 10px;
+}
+
+.sellerSignupContent p {
+    font-size: 16px;
+    color: #666666;
+    margin-bottom: 30px;
+}
+
+.sellerSignupForm {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.inputGroup {
+    position: relative;
+    text-align: left;
+}
+
+.inputGroup label {
+    position: absolute;
+    top: -9px;
+    left: 18px;
+    background: rgb(253, 246, 236);
+    display: inline-block;
+    padding: 0 6px;
+    font-size: 14px;
+    color: #444444;
+    z-index: 2;
+    font-weight: 500;
+    line-height: 1;
+}
+
+.inputGroup input {
+    width: 100%;
+    height: 58px;
+    border: 1.5px solid #d7cfc2;
+    border-radius: 40px;
+    padding: 0 22px;
+    font-size: 15px;
+    outline: none;
+    background: rgba(255, 255, 255, 0.7);
+    transition: all 0.3s ease;
+}
+
+.inputGroup input:focus {
+    border-color: #7d3cb5;
+    box-shadow: 0 0 0 3px rgba(125, 60, 181, 0.08);
+}
+
+.passwordWrapper {
+    position: relative;
+}
+
+.passwordWrapper input {
+    padding-right: 55px;
+}
+
+.eyeIcon {
+    position: absolute;
+    top: 50%;
+    right: 22px;
+    transform: translateY(-50%);
+    font-size: 20px;
+    color: #777777;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.signupBtn {
+    width: 100%;
+    height: 56px;
+    border: none;
+    border-radius: 40px;
+    background: linear-gradient(90deg, #7d1fd0, #8f2ce2);
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: all 0.3s ease;
+}
+
+.signupBtn:hover {
+    transform: translateY(-2px);
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #d7cfc2;
+}
+
+.divider span {
+    font-size: 14px;
+    color: #888888;
+    font-weight: 500;
+}
+
+.googleBtn,
+.buyerBtn {
+    width: 100%;
+    height: 56px;
+    border-radius: 40px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+.googleBtn {
+    border: 1.5px solid #d7cfc2;
+    background: rgba(255, 255, 255, 0.8);
+    color: #222222;
+}
+
+.googleBtn:hover {
+    background: #ffffff;
+}
+
+.buyerBtn {
+    border: 1.5px solid #7d3cb5;
+    background: transparent;
+    color: #7d3cb5;
+}
+
+.buyerBtn:hover {
+    background: rgba(125, 60, 181, 0.08);
+}
+
+.googleIcon {
+    font-size: 22px;
+}
+
+.buyerIcon {
+    font-size: 20px;
+}
+
+.loginText {
+    font-size: 15px;
+    color: #555555;
+    margin: 2px 0;
+}
+
+.loginText span {
+    color: #7d3cb5;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.successText {
+    color: #188038;
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: -8px;
+}
+
+.errorText {
+    color: #d93025;
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: -8px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sellerSignupPage {
+        padding: 30px 16px;
+    }
+
+    .sellerSignupContent h1 {
+        font-size: 34px;
+    }
+
+    .sellerSignupContent p {
+        font-size: 14px;
+        margin-bottom: 24px;
+    }
+
+    .inputGroup input,
+    .signupBtn,
+    .googleBtn,
+    .buyerBtn {
+        height: 52px;
+        font-size: 14px;
+    }
+
+    .inputGroup label {
+        font-size: 13px;
+    }
+
+    .googleIcon,
+    .buyerIcon,
+    .eyeIcon {
+        font-size: 18px;
+    }
+}
