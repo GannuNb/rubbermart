@@ -1,0 +1,554 @@
+:root {
+  --black: #121212;
+  --white: #ffffff;
+  --accent: #007bff;
+  --gray-medium: #888;
+  --border-color: #e5e5e5;
+}
+
+.mainWrapper {
+  background-color: var(--white);
+  color: var(--black);
+  overflow-x: hidden;
+  background-image: radial-gradient(#eee 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.container {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 40px;
+  position: relative;
+}
+
+/* --- HERO SIGNATURE STYLES --- */
+.heroSection {
+    min-height: 100vh;
+    background: #000;
+}
+
+.heroImageWrapper {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+.heroImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.overlayUI {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, transparent 50%, rgba(0,0,0,0.8) 100%);
+    display: flex;
+    align-items: center;
+    color: var(--white);
+    z-index: 5;
+}
+
+.brandSig {
+    display: flex;
+    flex-direction: row; /* Aligns line and text wrapper horizontally */
+    align-items: center; /* Centers the line vertically relative to the text */
+    gap: 15px;           /* Space between the line and the text */
+    top: 10%;            /* Adjusted for better visibility on mobile/desktop */
+    left: 40px;
+    z-index: 10;
+}
+
+.verticalLine {
+    width: 2px;
+    height: 45px;        /* Matches the approximate height of the text block */
+    background: var(--accent);
+    flex-shrink: 0;      /* Prevents line from squishing */
+}
+
+.sigTextWrapper {
+    display: flex;
+    flex-direction: column; /* Keeps RSM and Hub text stacked */
+    gap: 2px;
+}
+
+.brandSig h4 { 
+    font-size: 1.5rem; 
+    font-weight: 900; 
+    line-height: 1; 
+    margin: 0; 
+}
+
+.tagVersion { 
+    color: var(--accent); 
+    font-family: monospace; 
+    font-size: 0.8rem; 
+    margin-left: 4px;
+}
+
+.brandSig span { 
+    font-family: monospace; 
+    font-size: 0.7rem; 
+    opacity: 0.6; 
+    letter-spacing: 2px; 
+    line-height: 1;
+}
+
+.signatureTitles h1 { line-height: 1; text-transform: uppercase; margin: 0; }
+.passionH1 {
+    font-size: clamp(3.5rem, 9vw, 8rem);
+    font-weight: 900;
+    -webkit-text-stroke: 1.5px var(--white);
+    color: transparent;
+}
+
+.sustainableH1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 900;
+    margin-top: -10px;
+}
+
+.statusTicker {
+    position: absolute;
+    bottom: -35vh;
+    left: 40px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: monospace;
+    font-size: 0.75rem;
+    opacity: 0.5;
+}
+
+.statusDot {
+    width: 8px; height: 8px; background: #22c55e; border-radius: 50%;
+    box-shadow: 0 0 10px #22c55e;
+}
+
+.heroBadge {
+    position: absolute;
+    bottom: -35vh;
+    right: 40px;
+    background: var(--white);
+    padding: 15px 30px;
+    color: var(--black);
+    border-left: 4px solid var(--accent);
+    box-shadow: 10px 10px 0px rgba(0,0,0,0.1);
+}
+
+/* --- STORY & SECTIONS --- */
+.storySection {
+    padding: 100px 0; /* Reduced from 150px for mobile comfort */
+    position: relative;
+    overflow: hidden;
+}
+.sideText {
+    position: absolute; left: 40px; top: 50%;
+    transform: translateY(-50%) rotate(180deg);
+    writing-mode: vertical-rl; font-weight: 800; color: #ccc;
+}
+
+.storyGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two columns for desktop */
+    gap: 60px;
+    align-items: center;
+}
+.storySubtitle {
+    color: var(--accent);
+    font-family: monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.storyContent {
+    display: flex;
+    flex-direction: column;
+    z-index: 2;
+}
+
+.storyContent p {
+    font-size: 1.05rem;
+    color: #555;
+    line-height: 1.7;
+    max-width: 550px;
+    margin-bottom: 20px;
+}
+.storyContent h3 {
+    font-size: clamp(2rem, 5vw, 3.5rem); /* Scales smoothly */
+    font-weight: 900;
+    margin-bottom: 20px;
+    line-height: 1.1;
+}
+
+.statsMini {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    margin-top: 30px;
+    width: 100%;
+    padding-top: 30px;
+    border-top: 1px solid #eee;
+}
+
+.statItem strong {
+    font-size: 2rem;
+    color: var(--black);
+    display: block;
+}
+
+.statItem span {
+    font-size: 0.75rem;
+    color: var(--gray-medium);
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.storyDecoration {
+    position: relative;
+}
+
+.storyDecoration img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.imageOverlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(45deg, rgba(0,123,255,0.1), transparent);
+    z-index: 1;
+}
+
+.floatingTag {
+    position: absolute;
+    bottom: -20px;
+    left: -20px;
+    background: var(--black);
+    color: white;
+    padding: 20px 30px;
+    font-family: monospace;
+    font-weight: 800;
+    z-index: 2;
+    box-shadow: 10px 10px 0px var(--accent);
+}
+
+/* --- SERVICES --- */
+.servicesSection { background: var(--black); color: var(--white); padding: 120px 0; }
+.sectionTitle { font-size: 3.5rem; margin-bottom: 80px; }
+
+.serviceRow {
+    display: grid;
+    grid-template-columns: auto auto 1fr; 
+    column-gap: 30px; 
+
+    padding: 60px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    align-items: flex-start;
+}
+.serviceRow:hover {
+    background: rgba(255, 255, 255, 0.02);
+    padding-left: 20px; /* Subtle "slide" effect on hover */
+}
+/* Ensure the description doesn't get too wide on giant screens */
+.serviceRow p {
+    max-width: 1000px;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--gray-medium);
+    margin: 0;
+    padding-left: 10px;
+}
+.rowIcon { color: var(--accent); transition: 0.3s; }
+.serviceRow:hover .rowIcon { transform: scale(1.2); }
+
+/* --- CYCLE --- */
+.cycleSection { background: #fff; border-y: 1px solid #000; }
+.cycleContainer { display: flex; min-height: 600px; }
+.sideHeadingWrapper { width: 150px; background: #000; color: #fff; display: flex; justify-content: center; padding: 40px 0; }
+.verticalTitle { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 2.5rem; font-weight: 900; }
+.stepsWrapper { flex: 1; padding: 100px 60px; position: relative; display: flex; align-items: center; }
+.pipelineBody { position: absolute; top: 50%; left: 60px; right: 60px; height: 2px; background: #eee; }
+.cycleGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; z-index: 1; }
+.cycleStep { background: #fff; padding: 40px; border: 1px solid #eee; }
+.cycleStep:hover { border-color: #000; box-shadow: 15px 15px 0px rgba(0,0,0,0.05); }
+.accentBar { height: 4px; background: var(--accent); margin-bottom: 20px; width: 40px; }
+
+/* --- VALUES --- */
+.valuesSection { padding: 150px 0; background: #fcfcfc; }
+.valuesGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+.valueCard { padding: 50px; background: #fff; border: 1px solid #eee; transition: 0.3s; }
+.valueCard:hover { border-color: #000; transform: translateY(-5px); }
+.valueIcon { color: var(--accent); margin-bottom: 30px; }
+
+/* --- CTA SECTION (EXPANDED & BRIGHTENED) --- */
+.ctaSection {
+    padding: 80px 0; /* Balanced breathing room */
+    position: relative;
+}
+
+.ctaCard {
+    /* Deep Charcoal Gradient instead of flat Black */
+    background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+    color: var(--white);
+    padding: 100px 80px; /* Much larger internal padding */
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.2);
+}
+
+.ctaContent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 60px;
+    position: relative;
+    z-index: 5;
+}
+
+.ctaStatus {
+    display: block;
+    font-family: monospace;
+    color: var(--accent);
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+}
+
+.ctaText {
+    flex: 1;
+    max-width: 700px;
+}
+
+.ctaText h2 {
+    font-size: clamp(2.5rem, 5vw, 4.5rem); /* Massive Heading */
+    font-weight: 900;
+    text-transform: uppercase;
+    margin-bottom: 25px;
+    line-height: 0.9;
+}
+
+.ctaText p {
+    color: #bbb;
+    font-size: 1.25rem;
+    line-height: 1.6;
+    margin-bottom: 40px;
+}
+
+/* New Stats Row inside CTA */
+.ctaStats {
+    display: flex;
+    gap: 40px;
+}
+
+.ctaStatItem strong {
+    display: block;
+    font-size: 1.8rem;
+    color: var(--white);
+}
+
+.ctaStatItem span {
+    font-size: 0.8rem;
+    color: var(--gray-medium);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.ctaAction {
+    flex-shrink: 0;
+}
+
+.ctaButton {
+    padding: 30px 60px; /* Large, clickable button */
+    background: var(--white);
+    color: var(--black);
+    border: none;
+    font-weight: 900;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Background "Atmosphere" */
+.ctaGradientOverlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 60%;
+    height: 100%;
+    background: radial-gradient(
+        circle at 70% 50%, 
+        rgba(0, 123, 255, 0.2) 0%, 
+        transparent 70%
+    );
+    z-index: 1;
+    pointer-events: none;
+}
+/* --- UNIVERSAL RESPONSIVE OVERRIDE --- */
+
+@media (max-width: 1100px) {
+    .container {
+        padding: 0 25px;
+    }
+
+    /* Fix Hero Overlaps */
+    .brandSig {
+        top: 10%; /* Move from -30vh to a visible relative position */
+        left: 25px;
+    }
+
+    .statusTicker, .heroBadge {
+        bottom: 5%; /* Bring up from -35vh */
+        left: 25px;
+    }
+
+    .heroBadge {
+        right: 25px;
+        left: auto;
+        padding: 10px 20px;
+    }
+
+
+}
+
+@media (max-width: 768px) {
+    /* Hero Typography */
+    .passionH1 {
+        font-size: 4rem;
+        -webkit-text-stroke: 1px var(--white);
+    }
+    .sustainableH1 {
+        font-size: 2.5rem;
+    }
+
+    /* Section Spacing */
+    .servicesSection, .valuesSection {
+        padding: 80px 0;
+    }
+
+    /* Cycle Section (The hardest to make responsive) */
+    .cycleContainer {
+        flex-direction: column;
+    }
+
+    .sideHeadingWrapper {
+        width: 100%;
+        padding: 20px;
+    }
+
+    .verticalTitle {
+        writing-mode: horizontal-tb;
+        transform: none;
+        font-size: 1.8rem;
+    }
+
+    .stepsWrapper {
+        padding: 40px 20px;
+    }
+
+    .cycleGrid {
+        grid-template-columns: 1fr; /* Stack steps */
+        width: 100%;
+    }
+
+    .pipelineBody {
+        display: none; /* Remove the horizontal line on mobile */
+    }
+
+    /* Values & Services */
+    .valuesGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .serviceRow {
+        grid-template-columns: 1fr; /* Stack everything vertically */
+        gap: 20px;
+        padding: 40px 0;
+    }
+
+    /* CTA Section */
+    .ctaCard {
+        padding: 50px 25px;
+        text-align: center;
+    }
+
+    .ctaContent {
+        flex-direction: column;
+    }
+
+    .ctaStats {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .ctaButton {
+        width: 100%;
+        justify-content: center;
+        padding: 20px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .passionH1 {
+        font-size: 3rem;
+    }
+    
+    .brandSig h4 {
+        font-size: 1.1rem;
+    }
+
+    .heroBadge {
+        display: none; /* Hide non-essential UI on very small screens */
+    }
+
+    .statusTicker {
+        font-size: 0.6rem;
+    }
+}
+
+/* --- MOBILE & TABLET FIX --- */
+@media (max-width: 1024px) {
+    .storySection {
+        padding: 60px 0;
+    }
+
+    .storyGrid {
+        grid-template-columns: 1fr; /* Stacks image and text */
+        gap: 40px;
+    }
+
+    .sideText {
+        display: none; /* Hide the vertical side text on mobile */
+    }
+
+    .storyContent {
+        text-align: left; /* Keep left alignment for readability */
+        padding: 0 10px;
+    }
+
+    .storyDecoration {
+        order: -1; /* Puts the factory image ABOVE the text on mobile */
+    }
+
+    .floatingTag {
+        left: 20px; /* Reset from negative values */
+        bottom: 20px;
+        padding: 15px 20px;
+    }
+}

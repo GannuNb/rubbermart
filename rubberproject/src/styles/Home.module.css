@@ -1,0 +1,279 @@
+.wrapper {
+  background: #ffffff;
+  overflow-x: hidden;
+  font-family: 'Inter', sans-serif;
+  color: #0f172a;
+}
+
+.container { 
+  width: 100%; 
+  max-width: 1280px; 
+  margin: 0 auto; 
+  padding: 0 20px; 
+}
+
+/* --- HERO SECTION --- */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 0 10%;
+  position: relative;
+  overflow: hidden;
+  z-index: 10;
+  background: #ffffff;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 20; 
+  pointer-events: none;
+}
+
+.heroContent .pill,
+.heroContent h1,
+.heroContent p,
+.heroContent .btnGroup {
+  pointer-events: auto;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  padding: 8px 16px;
+  border-radius: 100px;
+  border: 1px solid rgba(0,0,0,0.05);
+  margin-bottom: 24px;
+}
+
+.pillBadge { 
+  background: #10b981; 
+  color: white; 
+  padding: 2px 8px; 
+  border-radius: 20px; 
+  font-size: 0.7rem; 
+  font-weight: 800; 
+}
+
+.heroTitle {
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.gradientText {
+  background: linear-gradient(135deg, #059669, #10b981);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.heroSub { 
+  font-size: 1.25rem; 
+  color: #475569; 
+  max-width: 650px; 
+  margin: 32px 0; 
+  line-height: 1.6; 
+}
+
+/* --- BUTTONS --- */
+.btnGroup { display: flex; gap: 16px; }
+
+.primaryBtn { 
+  background: #0f172a; 
+  color: white; 
+  padding: 18px 36px; 
+  border-radius: 14px; 
+  border: none; 
+  font-weight: 700; 
+  cursor: pointer; 
+  display: flex; 
+  align-items: center; 
+  gap: 10px; 
+  transition: transform 0.2s ease;
+}
+
+.primaryBtn:hover { transform: translateY(-2px); }
+
+.secondaryBtn { 
+  background: white; 
+  border: 1px solid #e2e8f0; 
+  padding: 18px 36px; 
+  border-radius: 14px; 
+  font-weight: 700; 
+  cursor: pointer; 
+}
+
+/* --- STATS SECTION (CURVED) --- */
+.statsSection {
+  position: relative;
+  z-index: 30; 
+  background: #020617; 
+  border-top-left-radius: 100px;
+  border-top-right-radius: 100px;
+  margin-top: -40px; 
+  padding: 120px 10% 100px;
+  color: white;
+  box-shadow: 0 -20px 50px rgba(0,0,0,0.15);
+}
+
+.statsGrid { 
+  display: grid; 
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 30px; 
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.statCard {
+  text-align: center;
+  padding: 40px 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 40px; 
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.statIcon { color: #10b981; margin-bottom: 15px; display: flex; justify-content: center; }
+
+.statCard h3 { 
+  font-size: 3.5rem; 
+  font-weight: 850; 
+  margin: 10px 0; 
+  letter-spacing: -0.05em; 
+  background: linear-gradient(to bottom, #ffffff, #94a3b8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.statCard p { color: #94a3b8; font-size: 1rem; font-weight: 500; text-transform: uppercase; }
+
+/* --- VERTICALS (FIXED OVERLAP) --- */
+.verticalsSection { 
+  position: relative;
+  z-index: 30;
+  padding: 120px 0; 
+  background: #f8fafc; 
+}
+
+.verticalsGrid { 
+  display: grid; 
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 24px; 
+  margin-top: 50px; 
+}
+
+.verticalCard { 
+  background: white; 
+  border-radius: 24px; 
+  overflow: hidden; 
+  border: 1px solid #e2e8f0; 
+  display: flex;
+  flex-direction: column;
+}
+
+.imageWrapper {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.imageWrapper img { 
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover; 
+}
+
+.verticalContent { padding: 24px; }
+.verticalContent h4 { font-weight: 800; font-size: 1.2rem; margin-bottom: 8px; color: #0f172a; }
+.verticalContent p { color: #64748b; font-size: 0.9rem; font-weight: 500; }
+
+/* --- BENTO --- */
+.bentoSection { 
+  position: relative;
+  z-index: 30;
+  padding: 120px 0; 
+  background: white;
+}
+
+.bentoGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 50px; }
+.bentoItem { background: #f8fafc; padding: 40px; border-radius: 40px; border: 1px solid #f1f5f9; }
+.bentoItem.large { grid-column: span 2; background: #ffffff; border-color: #e2e8f0; }
+.bentoItem h3 { font-size: 1.6rem; font-weight: 800; margin: 20px 0 10px; }
+
+/* --- ROADMAP --- */
+.roadmapSection { 
+  position: relative;
+  z-index: 30;
+  padding: 100px 0; 
+  background: #020617; 
+  color: white; 
+}
+
+.roadmapWrapper { display: flex; justify-content: space-between; margin-top: 60px; }
+.roadmapStep { flex: 1; text-align: center; position: relative; padding: 0 15px; }
+.roadmapIcon { width: 60px; height: 60px; background: #10b981; border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; }
+.roadmapArrow { position: absolute; top: 20px; right: -10px; opacity: 0.2; }
+
+/* --- FAQ & TICKER --- */
+.faqSection { position: relative; z-index: 30; padding: 120px 0; background: white; }
+.faqGrid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 60px; }
+.faqItem { border-bottom: 1px solid #f1f5f9; padding: 25px 0; }
+.faqItem h6 { font-weight: 800; font-size: 1.15rem; margin-bottom: 8px; }
+
+.marketTicker { background: #f8fafc; padding: 18px 0; overflow: hidden; border-top: 1px solid #e2e8f0; }
+.tickerContent { display: flex; animation: scroll 40s linear infinite; }
+.tickerItem { margin-right: 50px; font-weight: 800; font-size: 0.8rem; color: #475569; white-space: nowrap; }
+
+@keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+.centeredHeader { text-align: center; max-width: 700px; margin: 0 auto; }
+.sectionTitle { font-size: 2.8rem; font-weight: 900; letter-spacing: -0.03em; margin-bottom: 12px; }
+
+/* --- RESPONSIVE --- */
+@media (max-width: 1024px) {
+  .verticalsGrid, .roadmapWrapper, .statsGrid, .bentoGrid { grid-template-columns: 1fr; }
+  .bentoItem.large { grid-column: span 1; }
+  .roadmapArrow { display: none; }
+  .statsSection { border-top-left-radius: 60px; border-top-right-radius: 60px; }
+  .faqGrid { grid-template-columns: 1fr; }
+}
+
+/* Update the ticker animation for a smoother loop */
+.tickerContent { 
+  display: flex; 
+  animation: scroll 30s linear infinite; 
+  width: max-content;
+}
+
+@keyframes scroll { 
+  0% { transform: translateX(0); } 
+  100% { transform: translateX(-50%); } 
+}
+
+/* Ensure roadmap arrows don't animate weirdly */
+.roadmapArrow { 
+  position: absolute; 
+  top: 20px; 
+  right: -10px; 
+  opacity: 0.2; 
+  transition: opacity 0.3s ease;
+}
+
+.roadmapStep:hover .roadmapArrow {
+  opacity: 0.6;
+  right: -15px;
+}
+
+/* Smooth transition for bento items */
+.bentoItem {
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.bentoItem:hover {
+  border-color: #10b981;
+  background: #ffffff;
+}
+
