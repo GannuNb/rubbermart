@@ -10,7 +10,6 @@ import {
   signupBuyerThunk,
   googleSignupBuyerThunk,
 } from "../redux/slices/authThunk";
-import { useNavigate } from "react-router-dom";
 
 function Buyersignup() {
   const dispatch = useDispatch();
@@ -96,8 +95,6 @@ function Buyersignup() {
       confirmPassword: "",
     });
   };
-
-  const navigate = useNavigate();
   
   return (
     <div className={styles.buyerSignupPage}>
