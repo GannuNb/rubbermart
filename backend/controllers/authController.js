@@ -1,3 +1,5 @@
+// backend/controllers/authController.js
+
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
@@ -13,7 +15,11 @@ export const signup = async (req, res) => {
       });
     }
 
-    const existingUser = await User.findOne({ email });
+    const normalizedEmail = email.toLowerCase().trim();
+
+    const existingUser = await User.findOne({
+      email: normalizedEmail,
+    });
 
     if (existingUser) {
       return res.status(400).json({
@@ -26,7 +32,7 @@ export const signup = async (req, res) => {
 
     const user = await User.create({
       fullName,
-      email,
+      email: normalizedEmail,
       password: hashedPassword,
       location,
       authProvider: "manual",
@@ -64,6 +70,13 @@ export const signup = async (req, res) => {
   } catch (error) {
     console.log("Signup Error:", error);
 
+    if (error.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        message: "User already exists with this email",
+      });
+    }
+
     return res.status(500).json({
       success: false,
       message: "Server error during signup",
@@ -82,18 +95,27 @@ export const googleSignup = async (req, res) => {
       });
     }
 
-    let user = await User.findOne({ email });
+    const normalizedEmail = email.toLowerCase().trim();
 
-    if (!user) {
-      user = await User.create({
-        fullName,
-        email,
-        profileImage,
-        authProvider: "google",
-        isVerified: true,
-        role: role || "buyer",
+    let user = await User.findOne({
+      email: normalizedEmail,
+    });
+
+    if (user) {
+      return res.status(400).json({
+        success: false,
+        message: "User already exists with this email",
       });
     }
+
+    user = await User.create({
+      fullName,
+      email: normalizedEmail,
+      profileImage,
+      authProvider: "google",
+      isVerified: true,
+      role: role || "buyer",
+    });
 
     const token = jwt.sign(
       {
@@ -125,6 +147,13 @@ export const googleSignup = async (req, res) => {
     });
   } catch (error) {
     console.log("Google Signup Error:", error);
+
+    if (error.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        message: "User already exists with this email",
+      });
+    }
 
     return res.status(500).json({
       success: false,
