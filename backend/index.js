@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import buyerBusinessProfileRoutes from "./routes/buyerBusinessProfileRoutes.js";
+import sellerBusinessProfileRoutes from "./routes/sellerBusinessProfileRoutes.js";
 import { uploadBuyerDocumentsErrorHandler } from "./middlewares/uploadBuyerDocumentsErrorHandler.js";
 
 
@@ -35,6 +36,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/buyer-business-profile", buyerBusinessProfileRoutes);
+app.use("/api/seller-business-profile", sellerBusinessProfileRoutes);
 
 app.use(uploadBuyerDocumentsErrorHandler);
 

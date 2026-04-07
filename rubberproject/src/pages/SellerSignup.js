@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../styles/Sellersignup.module.css";
 import { FcGoogle } from "react-icons/fc";
 import { HiOutlineUser } from "react-icons/hi2";
@@ -20,6 +20,12 @@ function SellerSignup() {
         sellerSignupError,
         sellerSignupSuccessMessage,
     } = useSelector((state) => state.auth);
+
+    useEffect(() => {
+        if (sellerSignupSuccessMessage) {
+            navigate("/seller-business-profile");
+        }
+    }, [sellerSignupSuccessMessage, navigate]);
 
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);

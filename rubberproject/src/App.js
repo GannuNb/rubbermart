@@ -6,6 +6,7 @@ import Buyersignup from './pages/Buyersignup';
 import About from './pages/About';
 import Buyerbusinessprofile from "./pages/Buyerbusinessprofile";
 import SellerSignup from './pages/SellerSignup';
+import SellerBusinessProfile from './pages/SellerBusinessProfile';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/buyer-signup" element={<Buyersignup />} />
           <Route path="/buyer-business-profile" element={<Buyerbusinessprofile />} />
           <Route path="/seller-signup" element={<SellerSignup />} />
+          <Route path="/seller-business-profile" element={<SellerBusinessProfile />} />
           <Route path="/about" element={<About />} />
         </Routes>
       </div>

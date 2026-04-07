@@ -49,18 +49,67 @@ const sellerSchema = new mongoose.Schema(
             default: false,
         },
 
+        businessProfileCompleted: {
+            type: Boolean,
+            default: false,
+        },
+
         businessProfile: {
-            businessName: {
+            companyId: {
                 type: String,
                 default: "",
             },
-            businessType: {
+
+            companyName: {
                 type: String,
                 default: "",
             },
-            businessLocation: {
+
+            phoneNumber: {
                 type: String,
                 default: "",
+            },
+
+            email: {
+                type: String,
+                default: "",
+            },
+
+            gstNumber: {
+                type: String,
+                default: "",
+            },
+
+            panNumber: {
+                type: String,
+                default: "",
+            },
+
+            billingAddress: {
+                type: String,
+                default: "",
+            },
+
+            shippingAddress: {
+                type: String,
+                default: "",
+            },
+
+            sameAsBillingAddress: {
+                type: Boolean,
+                default: false,
+            },
+
+            gstCertificate: {
+                data: Buffer,
+                contentType: String,
+                originalName: String,
+            },
+
+            panCertificate: {
+                data: Buffer,
+                contentType: String,
+                originalName: String,
             },
         },
     },
