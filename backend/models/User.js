@@ -1,8 +1,6 @@
-// backend/models/Buyer.js
-
 import mongoose from "mongoose";
 
-const buyerSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     fullName: {
       type: String,
@@ -125,9 +123,6 @@ const buyerSchema = new mongoose.Schema(
   }
 );
 
-const Buyer = mongoose.model("Buyer", buyerSchema);
+const User = mongoose.model("User", userSchema);
 
-export default Buyer;
-
-
-
+export default User;

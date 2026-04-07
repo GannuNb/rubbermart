@@ -1,29 +1,28 @@
-
 import React, { useEffect, useState } from "react";
 import styles from "../styles/Buyerbusinessprofile.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { createBuyerBusinessProfileThunk } from "../redux/slices/buyerBusinessProfileThunk";
+import { createBusinessProfileThunk } from "../redux/slices/businessProfileThunk";
 
-function Buyerbusinessprofile() {
+function BusinessProfile() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { buyer } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
 
   const {
     createBusinessProfileLoading,
     createBusinessProfileError,
     createBusinessProfileSuccessMessage,
-  } = useSelector((state) => state.buyerBusinessProfile);
+  } = useSelector((state) => state.businessProfile);
 
   useEffect(() => {
-  const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
-  if (!token) {
-    navigate("/buyersignup");
-  }
-}, [navigate]);
+    if (!token) {
+      navigate("/signup");
+    }
+  }, [navigate]);
 
   useEffect(() => {
     if (createBusinessProfileSuccessMessage) {
@@ -34,7 +33,7 @@ function Buyerbusinessprofile() {
   const [formData, setFormData] = useState({
     companyName: "",
     phoneNumber: "",
-    email: buyer?.email || "",
+    email: user?.email || "",
     gstNumber: "",
     panNumber: "",
     billingAddress: "",
@@ -134,10 +133,13 @@ function Buyerbusinessprofile() {
       "sameAsBillingAddress",
       formData.sameAsBillingAddress
     );
-    submitData.append(
-      "interestedProducts",
-      JSON.stringify(formData.interestedProducts)
-    );
+
+    if (user?.role === "buyer") {
+      submitData.append(
+        "interestedProducts",
+        JSON.stringify(formData.interestedProducts)
+      );
+    }
 
     if (formData.gstCertificate) {
       submitData.append("gstCertificate", formData.gstCertificate);
@@ -147,13 +149,18 @@ function Buyerbusinessprofile() {
       submitData.append("panCertificate", formData.panCertificate);
     }
 
-    dispatch(createBuyerBusinessProfileThunk(submitData));
+    dispatch(createBusinessProfileThunk(submitData));
   };
 
   return (
     <div className={styles.businessProfilePage}>
       <div className={styles.businessProfileContainer}>
-        <h1>Create Business Profile</h1>
+        <h1>
+          {user?.role === "seller"
+            ? "Create Seller Business Profile"
+            : "Create Buyer Business Profile"}
+        </h1>
+
         <p>
           Complete your business details to continue using Rubber Scrap Mart.
         </p>
@@ -271,22 +278,24 @@ function Buyerbusinessprofile() {
             </div>
           </div>
 
-          <div className={styles.formGroup}>
-            <label>Interested Products</label>
+          {user?.role === "buyer" && (
+            <div className={styles.formGroup}>
+              <label>Interested Products</label>
 
-            <div className={styles.productsGrid}>
-              {interestedProductsList.map((product) => (
-                <div key={product} className={styles.productCheckbox}>
-                  <input
-                    type="checkbox"
-                    checked={formData.interestedProducts.includes(product)}
-                    onChange={() => handleInterestedProductChange(product)}
-                  />
-                  <span>{product}</span>
-                </div>
-              ))}
+              <div className={styles.productsGrid}>
+                {interestedProductsList.map((product) => (
+                  <div key={product} className={styles.productCheckbox}>
+                    <input
+                      type="checkbox"
+                      checked={formData.interestedProducts.includes(product)}
+                      onChange={() => handleInterestedProductChange(product)}
+                    />
+                    <span>{product}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           <div className={styles.termsBox}>
             <div className={styles.checkboxRow}>
@@ -324,7 +333,9 @@ function Buyerbusinessprofile() {
           <button type="submit" className={styles.submitBtn}>
             {createBusinessProfileLoading
               ? "Creating Profile..."
-              : "Create Business Profile"}
+              : user?.role === "seller"
+              ? "Create Seller Profile"
+              : "Create Buyer Profile"}
           </button>
         </form>
       </div>
@@ -332,8 +343,4 @@ function Buyerbusinessprofile() {
   );
 }
 
-export default Buyerbusinessprofile;
-
-
-
-
+export default BusinessProfile;

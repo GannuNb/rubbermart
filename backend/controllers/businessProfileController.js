@@ -1,7 +1,9 @@
-import Seller from "../models/seller.js";
-import SellerCompanyIdCounter from "../models/SellerCompanyIdCounter.js";
+// backend/controllers/businessProfileController.js
 
-export const createSellerBusinessProfile = async (req, res) => {
+import User from "../models/User.js";
+import CompanyIdCounter from "../models/CompanyIdCounter.js";
+
+export const createBusinessProfile = async (req, res) => {
   try {
     const {
       companyName,
@@ -12,6 +14,7 @@ export const createSellerBusinessProfile = async (req, res) => {
       billingAddress,
       shippingAddress,
       sameAsBillingAddress,
+      interestedProducts,
     } = req.body;
 
     if (
@@ -28,20 +31,33 @@ export const createSellerBusinessProfile = async (req, res) => {
       });
     }
 
-    const seller = await Seller.findById(req.seller._id);
+    const user = await User.findById(req.user._id);
 
-    if (!seller) {
+    if (!user) {
       return res.status(404).json({
         success: false,
-        message: "Seller not found",
+        message: "User not found",
       });
     }
 
-    // ✅ Generate Company ID
-    const counter = await SellerCompanyIdCounter.findOneAndUpdate(
-      { name: "sellerCompanyCounter" },
-      { $inc: { sequenceValue: 1 } },
-      { new: true, upsert: true }
+    const counterName =
+      user.role === "seller"
+        ? "sellerCompanyCounter"
+        : "buyerCompanyCounter";
+
+    const counter = await CompanyIdCounter.findOneAndUpdate(
+      {
+        name: counterName,
+      },
+      {
+        $inc: {
+          sequenceValue: 1,
+        },
+      },
+      {
+        new: true,
+        upsert: true,
+      }
     );
 
     const companyPrefix = companyName
@@ -49,13 +65,21 @@ export const createSellerBusinessProfile = async (req, res) => {
       .toUpperCase()
       .slice(0, 3);
 
-    const companyId = `RSM${companyPrefix}_S${String(
+    const rolePrefix = user.role === "seller" ? "S" : "B";
+
+    const companyId = `RSM${companyPrefix}_${rolePrefix}${String(
       counter.sequenceValue
     ).padStart(2, "0")}`;
 
-    seller.businessProfileCompleted = true;
+    let parsedInterestedProducts = [];
 
-    seller.businessProfile = {
+    if (user.role === "buyer" && interestedProducts) {
+      parsedInterestedProducts = JSON.parse(interestedProducts);
+    }
+
+    user.businessProfileCompleted = true;
+
+    user.businessProfile = {
       companyId,
       companyName,
       phoneNumber,
@@ -66,6 +90,9 @@ export const createSellerBusinessProfile = async (req, res) => {
       shippingAddress,
       sameAsBillingAddress:
         sameAsBillingAddress === "true" || sameAsBillingAddress === true,
+
+      interestedProducts:
+        user.role === "buyer" ? parsedInterestedProducts : [],
 
       gstCertificate: req.files?.gstCertificate?.[0]
         ? {
@@ -84,19 +111,20 @@ export const createSellerBusinessProfile = async (req, res) => {
         : undefined,
     };
 
-    await seller.save();
+    await user.save();
 
     return res.status(200).json({
       success: true,
-      message: "Seller business profile created successfully",
-      businessProfile: seller.businessProfile,
+      message: "Business profile created successfully",
+      businessProfile: user.businessProfile,
+      role: user.role,
     });
   } catch (error) {
-    console.log("Seller Business Profile Error:", error);
+    console.log("Create Business Profile Error:", error);
 
     return res.status(500).json({
       success: false,
-      message: "Server error while creating seller business profile",
+      message: "Server error while creating business profile",
     });
   }
 };

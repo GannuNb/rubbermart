@@ -1,12 +1,14 @@
+// backend/middlewares/uploadDocuments.js
+
 import multer from "multer";
 
 const storage = multer.memoryStorage();
 
-const uploadBuyerDocuments = multer({
+const uploadDocuments = multer({
   storage,
 
   limits: {
-    fileSize: 1024 * 1024, // 1 MB
+    fileSize: 1024 * 1024,
   },
 
   fileFilter: (req, file, cb) => {
@@ -25,4 +27,4 @@ const uploadBuyerDocuments = multer({
   },
 });
 
-export default uploadBuyerDocuments;
+export default uploadDocuments;

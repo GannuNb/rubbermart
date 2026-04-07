@@ -1,14 +1,10 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import Buyer from "../models/Buyer.js";
-import Seller from "../models/seller.js";
-import { OAuth2Client } from "google-auth-library";
+import User from "../models/User.js";
 
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-
-export const signupBuyer = async (req, res) => {
+export const signup = async (req, res) => {
   try {
-    const { fullName, email, password, location } = req.body;
+    const { fullName, email, password, location, role } = req.body;
 
     if (!fullName || !email || !password) {
       return res.status(400).json({
@@ -17,30 +13,31 @@ export const signupBuyer = async (req, res) => {
       });
     }
 
-    const existingBuyer = await Buyer.findOne({ email });
+    const existingUser = await User.findOne({ email });
 
-    if (existingBuyer) {
+    if (existingUser) {
       return res.status(400).json({
         success: false,
-        message: "Buyer already exists with this email",
+        message: "User already exists with this email",
       });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const buyer = await Buyer.create({
+    const user = await User.create({
       fullName,
       email,
       password: hashedPassword,
       location,
       authProvider: "manual",
-      role: "buyer",
+      role: role || "buyer",
     });
 
     const token = jwt.sign(
       {
-        id: buyer._id,
-        email: buyer.email,
+        id: user._id,
+        email: user.email,
+        role: user.role,
       },
       process.env.JWT_SECRET,
       {
@@ -50,15 +47,18 @@ export const signupBuyer = async (req, res) => {
 
     return res.status(201).json({
       success: true,
-      message: "Buyer signup successful",
+      message: "Signup successful",
       token,
-      buyer: {
-        id: buyer._id,
-        fullName: buyer.fullName,
-        email: buyer.email,
-        location: buyer.location,
-        authProvider: buyer.authProvider,
-        role: buyer.role,
+      user: {
+        id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        location: user.location,
+        profileImage: user.profileImage,
+        authProvider: user.authProvider,
+        role: user.role,
+        isVerified: user.isVerified,
+        businessProfileCompleted: user.businessProfileCompleted,
       },
     });
   } catch (error) {
@@ -71,9 +71,9 @@ export const signupBuyer = async (req, res) => {
   }
 };
 
-export const googleSignupBuyer = async (req, res) => {
+export const googleSignup = async (req, res) => {
   try {
-    const { fullName, email, profileImage } = req.body;
+    const { fullName, email, profileImage, role } = req.body;
 
     if (!email) {
       return res.status(400).json({
@@ -82,23 +82,24 @@ export const googleSignupBuyer = async (req, res) => {
       });
     }
 
-    let buyer = await Buyer.findOne({ email });
+    let user = await User.findOne({ email });
 
-    if (!buyer) {
-      buyer = await Buyer.create({
+    if (!user) {
+      user = await User.create({
         fullName,
         email,
         profileImage,
         authProvider: "google",
         isVerified: true,
-        role: "buyer",
+        role: role || "buyer",
       });
     }
 
     const token = jwt.sign(
       {
-        id: buyer._id,
-        email: buyer.email,
+        id: user._id,
+        email: user.email,
+        role: user.role,
       },
       process.env.JWT_SECRET,
       {
@@ -110,13 +111,16 @@ export const googleSignupBuyer = async (req, res) => {
       success: true,
       message: "Google signup successful",
       token,
-      buyer: {
-        id: buyer._id,
-        fullName: buyer.fullName,
-        email: buyer.email,
-        profileImage: buyer.profileImage,
-        authProvider: buyer.authProvider,
-        role: buyer.role,
+      user: {
+        id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        location: user.location,
+        profileImage: user.profileImage,
+        authProvider: user.authProvider,
+        role: user.role,
+        isVerified: user.isVerified,
+        businessProfileCompleted: user.businessProfileCompleted,
       },
     });
   } catch (error) {
@@ -125,95 +129,6 @@ export const googleSignupBuyer = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Google signup failed",
-    });
-  }
-};
-
-// ✅ Seller Signup
-export const signupSeller = async (req, res) => {
-  try {
-    const { fullName, email, password, location } = req.body;
-
-    if (!fullName || !email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "Full name, email and password are required",
-      });
-    }
-
-    const existingSeller = await Seller.findOne({ email });
-
-    if (existingSeller) {
-      return res.status(400).json({
-        success: false,
-        message: "Seller already exists with this email",
-      });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const seller = await Seller.create({
-      fullName,
-      email,
-      password: hashedPassword,
-      location,
-      authProvider: "manual",
-      role: "seller",
-    });
-
-    const token = jwt.sign(
-      { id: seller._id, email: seller.email },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
-
-    return res.status(201).json({
-      success: true,
-      message: "Seller signup successful",
-      token,
-      seller,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: "Server error during seller signup",
-    });
-  }
-};
-
-export const googleSignupSeller = async (req, res) => {
-  try {
-    const { fullName, email, profileImage } = req.body;
-
-    let seller = await Seller.findOne({ email });
-
-    if (!seller) {
-      seller = await Seller.create({
-        fullName,
-        email,
-        profileImage,
-        authProvider: "google",
-        role: "seller",
-        isVerified: true,
-      });
-    }
-
-    const token = jwt.sign(
-      { id: seller._id, email: seller.email },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
-
-    return res.status(200).json({
-      success: true,
-      message: "Google seller signup successful",
-      token,
-      seller,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: "Google seller signup failed",
     });
   }
 };

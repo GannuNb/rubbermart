@@ -1,28 +1,19 @@
 import {
-  setBuyerSignupLoading,
-  setBuyer,
+  setSignupLoading,
+  setSignupError,
+  setSignupSuccessMessage,
+  setUser,
   setToken,
-  setBuyerSignupError,
-  setBuyerSignupSuccessMessage,
-
-  setSellerSignupLoading,
-  setSellerSignupError,
-  setSellerSignupSuccessMessage,
-  setSeller, // ✅ ADD THIS LINE
 } from "./authSlice";
 
-
-// ================= BUYER =================
-
-// ✅ Buyer Signup
-export const signupBuyerThunk = (formData) => async (dispatch) => {
+export const signupThunk = (formData) => async (dispatch) => {
   try {
-    dispatch(setBuyerSignupLoading(true));
-    dispatch(setBuyerSignupError(null));
-    dispatch(setBuyerSignupSuccessMessage(null));
+    dispatch(setSignupLoading(true));
+    dispatch(setSignupError(null));
+    dispatch(setSignupSuccessMessage(null));
 
     const response = await fetch(
-      `${process.env.REACT_APP_API_URL}/api/auth/signupbuyer`,
+      `${process.env.REACT_APP_API_URL}/api/auth/signup`,
       {
         method: "POST",
         headers: {
@@ -33,6 +24,7 @@ export const signupBuyerThunk = (formData) => async (dispatch) => {
           email: formData.email,
           location: formData.location,
           password: formData.password,
+          role: formData.role,
         }),
       }
     );
@@ -41,31 +33,29 @@ export const signupBuyerThunk = (formData) => async (dispatch) => {
 
     if (data.success) {
       localStorage.setItem("token", data.token);
-      localStorage.setItem("buyer", JSON.stringify(data.buyer));
+      localStorage.setItem("user", JSON.stringify(data.user));
 
-      dispatch(setBuyer(data.buyer));
+      dispatch(setUser(data.user));
       dispatch(setToken(data.token));
-      dispatch(setBuyerSignupSuccessMessage("Signup successful"));
+      dispatch(setSignupSuccessMessage("Signup successful"));
     } else {
-      dispatch(setBuyerSignupError(data.message));
+      dispatch(setSignupError(data.message));
     }
   } catch (error) {
-    dispatch(setBuyerSignupError("Something went wrong"));
+    dispatch(setSignupError("Something went wrong"));
   } finally {
-    dispatch(setBuyerSignupLoading(false));
+    dispatch(setSignupLoading(false));
   }
 };
 
-
-// ✅ Google Buyer Signup
-export const googleSignupBuyerThunk = (googleUserData) => async (dispatch) => {
+export const googleSignupThunk = (googleUserData) => async (dispatch) => {
   try {
-    dispatch(setBuyerSignupLoading(true));
-    dispatch(setBuyerSignupError(null));
-    dispatch(setBuyerSignupSuccessMessage(null));
+    dispatch(setSignupLoading(true));
+    dispatch(setSignupError(null));
+    dispatch(setSignupSuccessMessage(null));
 
     const response = await fetch(
-      `${process.env.REACT_APP_API_URL}/api/auth/google-signupbuyer`,
+      `${process.env.REACT_APP_API_URL}/api/auth/google-signup`,
       {
         method: "POST",
         headers: {
@@ -75,6 +65,7 @@ export const googleSignupBuyerThunk = (googleUserData) => async (dispatch) => {
           fullName: googleUserData.fullName,
           email: googleUserData.email,
           profileImage: googleUserData.profileImage,
+          role: googleUserData.role,
         }),
       }
     );
@@ -83,91 +74,17 @@ export const googleSignupBuyerThunk = (googleUserData) => async (dispatch) => {
 
     if (data.success) {
       localStorage.setItem("token", data.token);
-      localStorage.setItem("buyer", JSON.stringify(data.buyer));
+      localStorage.setItem("user", JSON.stringify(data.user));
 
-      dispatch(setBuyer(data.buyer));
+      dispatch(setUser(data.user));
       dispatch(setToken(data.token));
-      dispatch(setBuyerSignupSuccessMessage("Google signup successful"));
+      dispatch(setSignupSuccessMessage("Google signup successful"));
     } else {
-      dispatch(setBuyerSignupError(data.message));
+      dispatch(setSignupError(data.message));
     }
   } catch (error) {
-    dispatch(setBuyerSignupError("Google signup failed"));
+    dispatch(setSignupError("Google signup failed"));
   } finally {
-    dispatch(setBuyerSignupLoading(false));
-  }
-};
-
-
-// ================= SELLER =================
-
-// ✅ Seller Signup
-export const signupSellerThunk = (formData) => async (dispatch) => {
-  try {
-    dispatch(setSellerSignupLoading(true));
-
-    const response = await fetch(
-      `${process.env.REACT_APP_API_URL}/api/auth/signupseller`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      }
-    );
-
-    const data = await response.json();
-
-    if (data.success) {
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("seller", JSON.stringify(data.seller));
-
-      dispatch(setSeller(data.seller));
-      dispatch(setToken(data.token));
-      dispatch(setSellerSignupSuccessMessage("Signup successful"));
-    } else {
-      dispatch(setSellerSignupError(data.message));
-    }
-  } catch (error) {
-    dispatch(setSellerSignupError("Something went wrong"));
-  } finally {
-    dispatch(setSellerSignupLoading(false));
-  }
-};
-
-
-// ✅ Google Seller Signup
-export const googleSignupSellerThunk = (googleUserData) => async (dispatch) => {
-  try {
-    dispatch(setSellerSignupLoading(true));
-
-    const response = await fetch(
-      `${process.env.REACT_APP_API_URL}/api/auth/google-signupseller`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(googleUserData),
-      }
-    );
-
-    const data = await response.json();
-
-    if (data.success) {
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("seller", JSON.stringify(data.seller));
-
-      dispatch(setSeller(data.seller));
-      dispatch(setToken(data.token));
-      dispatch(setSellerSignupSuccessMessage("Google signup successful"));
-    } else {
-      dispatch(setSellerSignupError(data.message));
-    }
-  } catch (error) {
-    dispatch(setSellerSignupError("Google signup failed"));
-  } finally {
-    dispatch(setSellerSignupLoading(false));
+    dispatch(setSignupLoading(false));
   }
 };

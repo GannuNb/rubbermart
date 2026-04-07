@@ -1,20 +1,12 @@
 import express from "express";
 import {
-  signupBuyer,
-  googleSignupBuyer,
+  signup,
+  googleSignup,
 } from "../controllers/authController.js";
 
 const router = express.Router();
 
-router.post("/signupbuyer", signupBuyer);
-router.post("/google-signupbuyer", googleSignupBuyer);
-
-import {
-  signupSeller,
-  googleSignupSeller,
-} from "../controllers/authController.js";
-
-router.post("/signupseller", signupSeller);
-router.post("/google-signupseller", googleSignupSeller);
+router.post("/signup", signup);
+router.post("/google-signup", googleSignup);
 
 export default router;

@@ -1,91 +1,57 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  buyer: JSON.parse(localStorage.getItem("buyer")) || null,
-  seller: JSON.parse(localStorage.getItem("seller")) || null,
+  user: JSON.parse(localStorage.getItem("user")) || null,
   token: localStorage.getItem("token") || null,
 
-  // ✅ Buyer states
-  buyerSignupLoading: false,
-  buyerSignupError: null,
-  buyerSignupSuccessMessage: null,
-
-  // ✅ Seller states
-  sellerSignupLoading: false,
-  sellerSignupError: null,
-  sellerSignupSuccessMessage: null,
+  signupLoading: false,
+  signupError: null,
+  signupSuccessMessage: null,
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    // 🔹 Buyer reducers
-    setBuyerSignupLoading: (state, action) => {
-      state.buyerSignupLoading = action.payload;
+    setSignupLoading: (state, action) => {
+      state.signupLoading = action.payload;
     },
 
-    setBuyerSignupError: (state, action) => {
-      state.buyerSignupError = action.payload;
+    setSignupError: (state, action) => {
+      state.signupError = action.payload;
     },
 
-    setBuyerSignupSuccessMessage: (state, action) => {
-      state.buyerSignupSuccessMessage = action.payload;
+    setSignupSuccessMessage: (state, action) => {
+      state.signupSuccessMessage = action.payload;
     },
 
-    // 🔹 Seller reducers
-    setSellerSignupLoading: (state, action) => {
-      state.sellerSignupLoading = action.payload;
-    },
-
-    setSellerSignupError: (state, action) => {
-      state.sellerSignupError = action.payload;
-    },
-
-    setSellerSignupSuccessMessage: (state, action) => {
-      state.sellerSignupSuccessMessage = action.payload;
-    },
-
-    setBuyer: (state, action) => {
-      state.buyer = action.payload;
-    },
-
-    setSeller: (state, action) => {
-      state.seller = action.payload;
+    setUser: (state, action) => {
+      state.user = action.payload;
     },
 
     setToken: (state, action) => {
       state.token = action.payload;
     },
 
-    logoutBuyer: (state) => {
-      state.buyer = null;
+    logoutUser: (state) => {
+      state.user = null;
       state.token = null;
-
-      state.buyerSignupError = null;
-      state.buyerSignupSuccessMessage = null;
-      state.sellerSignupError = null;
-      state.sellerSignupSuccessMessage = null;
+      state.signupError = null;
+      state.signupSuccessMessage = null;
 
       localStorage.removeItem("token");
-      localStorage.removeItem("buyer");
+      localStorage.removeItem("user");
     },
   },
 });
 
 export const {
-  setBuyerSignupLoading,
-  setBuyerSignupError,
-  setBuyerSignupSuccessMessage,
-
-  setSellerSignupLoading,
-  setSellerSignupError,
-  setSellerSignupSuccessMessage,
-
-  setBuyer,
-  setSeller, // ✅ ADD THIS LINE
+  setSignupLoading,
+  setSignupError,
+  setSignupSuccessMessage,
+  setUser,
   setToken,
-  logoutBuyer,
+  logoutUser,
 } = authSlice.actions;
 
 export default authSlice.reducer;

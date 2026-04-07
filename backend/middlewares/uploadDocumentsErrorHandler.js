@@ -1,4 +1,6 @@
-export const uploadSellerDocumentsErrorHandler = (
+// backend/middlewares/uploadDocumentsErrorHandler.js
+
+export const uploadDocumentsErrorHandler = (
   err,
   req,
   res,

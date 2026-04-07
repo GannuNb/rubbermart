@@ -1,12 +1,13 @@
+// src/redux/slices/businessProfileThunk.js
 
 import {
   setCreateBusinessProfileLoading,
   setCreateBusinessProfileError,
   setCreateBusinessProfileSuccessMessage,
   setBusinessProfileData,
-} from "./buyerBusinessProfileSlice";
+} from "./businessProfileSlice";
 
-export const createBuyerBusinessProfileThunk =
+export const createBusinessProfileThunk =
   (formData) => async (dispatch) => {
     try {
       dispatch(setCreateBusinessProfileLoading(true));
@@ -16,7 +17,7 @@ export const createBuyerBusinessProfileThunk =
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/buyer-business-profile/create-buyer-business-profile`,
+        `${process.env.REACT_APP_API_URL}/api/business-profile/create-business-profile`,
         {
           method: "POST",
           headers: {
@@ -30,6 +31,7 @@ export const createBuyerBusinessProfileThunk =
 
       if (data.success) {
         dispatch(setBusinessProfileData(data.businessProfile));
+
         dispatch(
           setCreateBusinessProfileSuccessMessage(
             "Business profile created successfully"
@@ -44,4 +46,3 @@ export const createBuyerBusinessProfileThunk =
       dispatch(setCreateBusinessProfileLoading(false));
     }
   };
-

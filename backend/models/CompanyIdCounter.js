@@ -1,6 +1,8 @@
+// backend/models/CompanyIdCounter.js
+
 import mongoose from "mongoose";
 
-const buyerCompanyIdCounterSchema = new mongoose.Schema(
+const companyIdCounterSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -18,9 +20,9 @@ const buyerCompanyIdCounterSchema = new mongoose.Schema(
   }
 );
 
-const BuyerCompanyIdCounter = mongoose.model(
-  "BuyerCompanyIdCounter",
-  buyerCompanyIdCounterSchema
+const CompanyIdCounter = mongoose.model(
+  "CompanyIdCounter",
+  companyIdCounterSchema
 );
 
-export default BuyerCompanyIdCounter;
+export default CompanyIdCounter;

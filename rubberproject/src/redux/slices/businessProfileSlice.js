@@ -1,11 +1,4 @@
-// Good practice:
-// Keep buyer business profile in separate redux files.
-
-
-// ============================================
-// src/redux/slices/buyerBusinessProfileSlice.js
-// Create this new file
-// ============================================
+// src/redux/slices/businessProfileSlice.js
 
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -16,8 +9,8 @@ const initialState = {
   businessProfileData: null,
 };
 
-const buyerBusinessProfileSlice = createSlice({
-  name: "buyerBusinessProfile",
+const businessProfileSlice = createSlice({
+  name: "businessProfile",
   initialState,
   reducers: {
     setCreateBusinessProfileLoading: (state, action) => {
@@ -49,6 +42,6 @@ export const {
   setCreateBusinessProfileSuccessMessage,
   setBusinessProfileData,
   clearBusinessProfileMessages,
-} = buyerBusinessProfileSlice.actions;
+} = businessProfileSlice.actions;
 
-export default buyerBusinessProfileSlice.reducer;
+export default businessProfileSlice.reducer;

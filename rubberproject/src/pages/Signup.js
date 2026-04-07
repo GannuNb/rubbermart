@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "../styles/Buyersignup.module.css";
 import { FcGoogle } from "react-icons/fc";
@@ -7,29 +7,30 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  signupBuyerThunk,
-  googleSignupBuyerThunk,
+  signupThunk,
+  googleSignupThunk,
 } from "../redux/slices/authThunk";
 
-function Buyersignup() {
+function Signup() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const {
-    buyerSignupLoading,
-    buyerSignupError,
-    buyerSignupSuccessMessage,
+    signupLoading,
+    signupError,
+    signupSuccessMessage,
   } = useSelector((state) => state.auth);
+
+  const [role, setRole] = useState("buyer");
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
-  if (buyerSignupSuccessMessage) {
-    navigate("/buyer-business-profile");
-  }
-}, [buyerSignupSuccessMessage, navigate]);
-
+    if (signupSuccessMessage) {
+      navigate("/business-profile");
+    }
+  }, [signupSuccessMessage, navigate]);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -56,10 +57,11 @@ function Buyersignup() {
         const userData = await response.json();
 
         dispatch(
-          googleSignupBuyerThunk({
+          googleSignupThunk({
             fullName: userData.name,
             email: userData.email,
             profileImage: userData.picture,
+            role,
           })
         );
       } catch (error) {
@@ -85,7 +87,12 @@ function Buyersignup() {
       return;
     }
 
-    dispatch(signupBuyerThunk(formData));
+    dispatch(
+      signupThunk({
+        ...formData,
+        role,
+      })
+    );
 
     setFormData({
       fullName: "",
@@ -95,7 +102,7 @@ function Buyersignup() {
       confirmPassword: "",
     });
   };
-  
+
   return (
     <div className={styles.buyerSignupPage}>
       <div className={styles.buyerSignupContent}>
@@ -130,7 +137,7 @@ function Buyersignup() {
             <input
               type="text"
               name="location"
-              placeholder="e.g., Hyderabad, Telanagana"
+              placeholder="e.g., Hyderabad, Telangana"
               value={formData.location}
               onChange={handleChange}
             />
@@ -180,20 +187,26 @@ function Buyersignup() {
             </div>
           </div>
 
-          {buyerSignupSuccessMessage && (
+          {signupSuccessMessage && (
             <p className={styles.successText}>
-              {buyerSignupSuccessMessage}
+              {signupSuccessMessage}
             </p>
           )}
 
-          {buyerSignupError && (
+          {signupError && (
             <p className={styles.errorText}>
-              {buyerSignupError}
+              {signupError}
             </p>
           )}
 
           <button type="submit" className={styles.signupBtn}>
-            {buyerSignupLoading ? "Signing Up..." : "Sign Up"}
+            {signupLoading
+              ? role === "seller"
+                ? "Signing Up as Seller..."
+                : "Signing Up..."
+              : role === "seller"
+              ? "Sign Up as Seller"
+              : "Sign Up"}
           </button>
 
           <div className={styles.divider}>
@@ -216,14 +229,19 @@ function Buyersignup() {
           <button
             type="button"
             className={styles.sellerBtn}
-            onClick={() => navigate("/seller-signup")}
+            onClick={() =>
+              setRole(role === "buyer" ? "seller" : "buyer")
+            }
           >
             <HiOutlineBuildingStorefront className={styles.sellerIcon} />
-            Sign Up as a Seller
+            {role === "buyer"
+              ? "Sign Up as a Seller"
+              : "Continue as Buyer"}
           </button>
         </form>
       </div>
     </div>
   );
 }
-export default Buyersignup;
+
+export default Signup;
