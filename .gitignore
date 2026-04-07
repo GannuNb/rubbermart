@@ -57,6 +57,7 @@ rubberproject/node_modules/
 rubberproject/.env
 rubberproject/dist/
 rubberproject/build/
+rubberproject/src/information/*.json
 
 # backend specific (if it's a Django/Flask/FastAPI/Node backend)
 backend/node_modules/
