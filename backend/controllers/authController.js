@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Buyer from "../models/Buyer.js";
+import Seller from "../models/seller.js";
 import { OAuth2Client } from "google-auth-library";
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -124,6 +125,95 @@ export const googleSignupBuyer = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Google signup failed",
+    });
+  }
+};
+
+// ✅ Seller Signup
+export const signupSeller = async (req, res) => {
+  try {
+    const { fullName, email, password, location } = req.body;
+
+    if (!fullName || !email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Full name, email and password are required",
+      });
+    }
+
+    const existingSeller = await Seller.findOne({ email });
+
+    if (existingSeller) {
+      return res.status(400).json({
+        success: false,
+        message: "Seller already exists with this email",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const seller = await Seller.create({
+      fullName,
+      email,
+      password: hashedPassword,
+      location,
+      authProvider: "manual",
+      role: "seller",
+    });
+
+    const token = jwt.sign(
+      { id: seller._id, email: seller.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    return res.status(201).json({
+      success: true,
+      message: "Seller signup successful",
+      token,
+      seller,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Server error during seller signup",
+    });
+  }
+};
+
+export const googleSignupSeller = async (req, res) => {
+  try {
+    const { fullName, email, profileImage } = req.body;
+
+    let seller = await Seller.findOne({ email });
+
+    if (!seller) {
+      seller = await Seller.create({
+        fullName,
+        email,
+        profileImage,
+        authProvider: "google",
+        role: "seller",
+        isVerified: true,
+      });
+    }
+
+    const token = jwt.sign(
+      { id: seller._id, email: seller.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Google seller signup successful",
+      token,
+      seller,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Google seller signup failed",
     });
   }
 };

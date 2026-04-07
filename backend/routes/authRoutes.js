@@ -9,4 +9,12 @@ const router = express.Router();
 router.post("/signupbuyer", signupBuyer);
 router.post("/google-signupbuyer", googleSignupBuyer);
 
+import {
+  signupSeller,
+  googleSignupSeller,
+} from "../controllers/authController.js";
+
+router.post("/signupseller", signupSeller);
+router.post("/google-signupseller", googleSignupSeller);
+
 export default router;

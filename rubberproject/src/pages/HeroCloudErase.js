@@ -43,7 +43,7 @@ export default function HeroCloudErase() {
       const y = e.clientY - rect.top;
 
       // --- BRUSH SIZE ADJUSTMENT ---
-      const brushSize = 120; // Decreased from 160 to 60 for more precision
+      const brushSize = 140; // Decreased from 160 to 60 for more precision
 
       fogCtx.globalCompositeOperation = "destination-out";
       
