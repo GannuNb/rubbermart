@@ -161,3 +161,157 @@ export const googleSignup = async (req, res) => {
     });
   }
 };
+
+
+// backend/controllers/authController.js
+// Replace only login and googleLogin with this
+
+export const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Email and password are required",
+      });
+    }
+
+    const normalizedEmail = email.toLowerCase().trim();
+
+    const user = await User.findOne({
+      email: normalizedEmail,
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    if (user.authProvider !== "manual") {
+      return res.status(400).json({
+        success: false,
+        message: "Please login with Google",
+      });
+    }
+
+    const isPasswordMatched = await bcrypt.compare(
+      password,
+      user.password
+    );
+
+    if (!isPasswordMatched) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid password",
+      });
+    }
+
+    const token = jwt.sign(
+      {
+        id: user._id,
+        email: user.email,
+        role: user.role,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Login successful",
+      token,
+      user: {
+        id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        location: user.location,
+        profileImage: user.profileImage,
+        authProvider: user.authProvider,
+        role: user.role,
+        isVerified: user.isVerified,
+        businessProfileCompleted: user.businessProfileCompleted,
+      },
+    });
+  } catch (error) {
+    console.log("Login Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Server error during login",
+    });
+  }
+};
+
+export const googleLogin = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Google email is required",
+      });
+    }
+
+    const normalizedEmail = email.toLowerCase().trim();
+
+    const user = await User.findOne({
+      email: normalizedEmail,
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "No account found with this Google email",
+      });
+    }
+
+    if (user.authProvider !== "google") {
+      return res.status(400).json({
+        success: false,
+        message: "Please login using password",
+      });
+    }
+
+    const token = jwt.sign(
+      {
+        id: user._id,
+        email: user.email,
+        role: user.role,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Google login successful",
+      token,
+      user: {
+        id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        location: user.location,
+        profileImage: user.profileImage,
+        authProvider: user.authProvider,
+        role: user.role,
+        isVerified: user.isVerified,
+        businessProfileCompleted: user.businessProfileCompleted,
+      },
+    });
+  } catch (error) {
+    console.log("Google Login Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Google login failed",
+    });
+  }
+};

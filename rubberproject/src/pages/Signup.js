@@ -223,7 +223,10 @@ function Signup() {
           </button>
 
           <p className={styles.loginText}>
-            Already have an account? <span>Login here</span>
+            Already have an account?{" "}
+            <span onClick={() => navigate("/login")}>
+              Login here
+            </span>
           </p>
 
           <button

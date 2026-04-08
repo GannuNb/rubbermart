@@ -26,7 +26,7 @@ function BusinessProfile() {
 
   useEffect(() => {
     if (createBusinessProfileSuccessMessage) {
-      navigate("/");
+      navigate("/login");
     }
   }, [createBusinessProfileSuccessMessage, navigate]);
 

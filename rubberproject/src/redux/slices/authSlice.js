@@ -1,3 +1,5 @@
+// src/redux/slices/authSlice.js
+
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -7,6 +9,10 @@ const initialState = {
   signupLoading: false,
   signupError: null,
   signupSuccessMessage: null,
+
+  loginLoading: false,
+  loginError: null,
+  loginSuccessMessage: null,
 };
 
 const authSlice = createSlice({
@@ -25,6 +31,18 @@ const authSlice = createSlice({
       state.signupSuccessMessage = action.payload;
     },
 
+    setLoginLoading: (state, action) => {
+      state.loginLoading = action.payload;
+    },
+
+    setLoginError: (state, action) => {
+      state.loginError = action.payload;
+    },
+
+    setLoginSuccessMessage: (state, action) => {
+      state.loginSuccessMessage = action.payload;
+    },
+
     setUser: (state, action) => {
       state.user = action.payload;
     },
@@ -36,8 +54,11 @@ const authSlice = createSlice({
     logoutUser: (state) => {
       state.user = null;
       state.token = null;
+
       state.signupError = null;
       state.signupSuccessMessage = null;
+      state.loginError = null;
+      state.loginSuccessMessage = null;
 
       localStorage.removeItem("token");
       localStorage.removeItem("user");
@@ -49,6 +70,11 @@ export const {
   setSignupLoading,
   setSignupError,
   setSignupSuccessMessage,
+
+  setLoginLoading,
+  setLoginError,
+  setLoginSuccessMessage,
+
   setUser,
   setToken,
   logoutUser,
