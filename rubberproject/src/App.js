@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+import CommonHome from "./pages/CommonHome";
 import Home from "./pages/Home";
 import Signup from "./pages/Signup";
 import BusinessProfile from "./pages/BusinessProfile";
@@ -29,23 +30,17 @@ function AppContent() {
       {!shouldHideNavbar && <RoleNavbar />}
 
       <Routes>
+        <Route path="/common-home" element={<CommonHome />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/business-profile" element={<BusinessProfile />} />
+        <Route path="/about" element={<About />} />
 
-        <Route path="/"
+        <Route
+          path="/"
           element={
             <ProtectedRoute allowedRole="buyer">
               <Home />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/about"
-          element={
-            <ProtectedRoute allowedRole="buyer">
-              <About />
             </ProtectedRoute>
           }
         />
