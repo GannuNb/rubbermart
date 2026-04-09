@@ -1,0 +1,87 @@
+.alert {
+.error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+.error .iconWrapper,
+.error .content h4,
+.error .closeBtn {
+  color: #dc2626;
+}
+
+.error .content p {
+  color: #991b1b;
+}
+
+.error .progress {
+  background: linear-gradient(90deg, #ef4444, #dc2626);
+}
+
+.warning {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+}
+
+.warning .iconWrapper,
+.warning .content h4,
+.warning .closeBtn {
+  color: #d97706;
+}
+
+.warning .content p {
+  color: #92400e;
+}
+
+.warning .progress {
+  background: linear-gradient(90deg, #f59e0b, #d97706);
+}
+
+.info {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+}
+
+.info .iconWrapper,
+.info .content h4,
+.info .closeBtn {
+  color: #2563eb;
+}
+
+.info .content p {
+  color: #1d4ed8;
+}
+
+.info .progress {
+  background: linear-gradient(90deg, #3b82f6, #2563eb);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes progressBar {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
+
+@media (max-width: 768px) {
+  .alert {
+    top: 20px;
+    right: 16px;
+    left: 16px;
+    width: auto;
+  }
+}
+}

@@ -1,0 +1,162 @@
+/* ===== BASE ===== */
+.container {
+  min-height: 100vh;
+  background: #eef2f7;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* ===== TOP SECTION ===== */
+.topSection {
+  background: linear-gradient(135deg, #112340, #1316a8, #167037);
+  padding: 60px 20px 100px;
+  text-align: center;
+  color: #ffffff;
+}
+
+.topContent h1 {
+  font-size: 34px;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.topContent p {
+  font-size: 15px;
+  opacity: 0.9;
+}
+
+/* ===== CARDS ===== */
+.cards {
+  margin-top: -60px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 320px));
+  justify-content: center;
+  gap: 25px;
+  padding: 20px;
+}
+
+/* Glass Card Style */
+.card {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  padding: 28px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.12);
+}
+
+/* Icon */
+.icon {
+  font-size: 36px;
+  color: #4f46e5;
+  margin-bottom: 12px;
+}
+
+/* Text */
+.card h2 {
+  font-size: 20px;
+  margin-bottom: 8px;
+  color: #1e293b;
+}
+
+.card p {
+  font-size: 14px;
+  color: #64748b;
+  margin-bottom: 20px;
+}
+
+/* ===== BUTTON ===== */
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #3b82f6, #22c55e);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+
+  text-decoration: none !important;
+  border: none;
+
+  transition: all 0.25s ease;
+}
+
+/* Smooth Hover */
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3);
+  opacity: 0.95;
+}
+
+/* Click */
+.btn:active {
+  transform: scale(0.96);
+}
+
+/* ===== INFO SECTION ===== */
+.infoSection {
+  margin-top: 40px;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.infoSection h2 {
+  font-size: 26px;
+  color: #1e293b;
+  margin-bottom: 30px;
+}
+
+/* Grid */
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 280px));
+  gap: 20px;
+  justify-content: center;
+}
+
+/* Info Cards */
+.infoCard {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  border-radius: 14px;
+  text-align: left;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+  transition: 0.25s ease;
+}
+
+.infoCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.1);
+}
+
+.infoCard h3 {
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: #4f46e5;
+}
+
+.infoCard p {
+  font-size: 13px;
+  color: #64748b;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .topContent h1 {
+    font-size: 26px;
+  }
+
+  .cards {
+    margin-top: -40px;
+  }
+
+  .infoSection {
+    padding: 30px 15px;
+  }
+}

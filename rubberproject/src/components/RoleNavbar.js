@@ -125,11 +125,19 @@ function RoleNavbar() {
             </Link>
 
             <Link
+              to="/seller-add-products"
+              className={styles.normalLink}
+            >
+              <FaBoxOpen />
+              <span> Add Products</span>
+            </Link>
+
+            <Link
               to="/seller-products"
               className={styles.normalLink}
             >
               <FaBoxOpen />
-              <span>Products</span>
+              <span> Manage Products</span>
             </Link>
 
             <Link
