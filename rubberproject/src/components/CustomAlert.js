@@ -9,7 +9,7 @@ function CustomAlert({
   title,
   message,
   onClose,
-  duration = 4000,
+  duration = 3000,
 }) {
   useEffect(() => {
     const timer = setTimeout(() => {

@@ -3,6 +3,7 @@ import styles from "../styles/Buyerbusinessprofile.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { createBusinessProfileThunk } from "../redux/slices/businessProfileThunk";
+import CustomAlert from "../components/CustomAlert";
 
 function BusinessProfile() {
   const dispatch = useDispatch();
@@ -16,6 +17,13 @@ function BusinessProfile() {
     createBusinessProfileSuccessMessage,
   } = useSelector((state) => state.businessProfile);
 
+  const [alertData, setAlertData] = useState({
+    show: false,
+    type: "info",
+    title: "",
+    message: "",
+  });
+
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -24,11 +32,27 @@ function BusinessProfile() {
     }
   }, [navigate]);
 
-  useEffect(() => {
-    if (createBusinessProfileSuccessMessage) {
-      navigate("/login");
-    }
-  }, [createBusinessProfileSuccessMessage, navigate]);
+      useEffect(() => {
+        if (createBusinessProfileSuccessMessage) {
+          setAlertData({
+            show: true,
+            type: "success",
+            title: "Profile Created",
+            message: createBusinessProfileSuccessMessage,
+          });
+        }
+      }, [createBusinessProfileSuccessMessage]);
+
+      useEffect(() => {
+        if (createBusinessProfileError) {
+          setAlertData({
+            show: true,
+            type: "error",
+            title: "Profile Creation Failed",
+            message: createBusinessProfileError,
+          });
+        }
+      }, [createBusinessProfileError]);
 
   const [formData, setFormData] = useState({
     companyName: "",
@@ -102,7 +126,12 @@ function BusinessProfile() {
     if (!file) return;
 
     if (file.size > 1024 * 1024) {
-      alert("Please select files less than 1 MB");
+      setAlertData({
+        show: true,
+        type: "warning",
+        title: "File Too Large",
+        message: "Please select files less than 1 MB.",
+      });
       return;
     }
 
@@ -116,9 +145,14 @@ function BusinessProfile() {
     e.preventDefault();
 
     if (!formData.agreeTerms) {
-      alert("Please agree to the Terms and Conditions");
-      return;
-    }
+        setAlertData({
+          show: true,
+          type: "warning",
+          title: "Terms Required",
+          message: "Please agree to the Terms and Conditions.",
+        });
+        return;
+      }
 
     const submitData = new FormData();
 
@@ -153,7 +187,25 @@ function BusinessProfile() {
   };
 
   return (
+    
     <div className={styles.businessProfilePage}>
+      {alertData.show && (
+        <CustomAlert
+          type={alertData.type}
+          title={alertData.title}
+          message={alertData.message}
+          onClose={() => {
+            setAlertData((prev) => ({
+              ...prev,
+              show: false,
+            }));
+
+            if (alertData.type === "success") {
+              navigate("/login");
+            }
+          }}
+        />
+      )}
       <div className={styles.businessProfileContainer}>
         <h1>
           {user?.role === "seller"
@@ -318,17 +370,6 @@ function BusinessProfile() {
             </button>
           </div>
 
-          {createBusinessProfileSuccessMessage && (
-            <p className={styles.successText}>
-              {createBusinessProfileSuccessMessage}
-            </p>
-          )}
-
-          {createBusinessProfileError && (
-            <p className={styles.errorText}>
-              {createBusinessProfileError}
-            </p>
-          )}
 
           <button type="submit" className={styles.submitBtn}>
             {createBusinessProfileLoading

@@ -12,7 +12,7 @@
   color: #333;
 }
 
-h2 {
+.heading {
   font-weight: 700;
   font-size: 1.9rem;
   color: #1c3aa9;
@@ -22,23 +22,20 @@ h2 {
 .formGroup {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px 16px; /* vertical and horizontal gap */
+  gap: 20px 16px;
   margin-bottom: 24px;
   align-items: center;
 }
 
-/* Full width form group for textarea */
 .fullWidth {
   flex-direction: column;
   flex-wrap: nowrap;
   align-items: stretch;
 }
 
-input[type="text"],
-input[type="number"],
-input[type="email"],
-textarea,
-select {
+.input,
+.select,
+.textarea {
   flex: 1 1 280px;
   min-width: 280px;
   max-width: 100%;
@@ -50,10 +47,25 @@ select {
   color: #33415c;
   box-shadow: inset 0 1px 4px rgb(0 0 0 / 0.05);
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  outline-offset: 2px;
+  outline: none;
 }
 
-input[type="file"] {
+.input:focus,
+.select:focus,
+.textarea:focus,
+.fileInput:focus {
+  border-color: #448aff;
+  box-shadow: 0 0 6px #448aff88;
+  background-color: #fff;
+}
+
+.textarea {
+  min-height: 100px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.fileInput {
   flex: 1 1 280px;
   min-width: 280px;
   max-width: 100%;
@@ -65,24 +77,6 @@ input[type="file"] {
   box-shadow: inset 0 1px 4px rgb(0 0 0 / 0.05);
   cursor: pointer;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-input[type="text"]:focus,
-input[type="number"]:focus,
-input[type="email"]:focus,
-textarea:focus,
-select:focus,
-input[type="file"]:focus {
-  border-color: #448aff;
-  box-shadow: 0 0 6px #448aff88;
-  background-color: #fff;
-  outline: none;
-}
-
-textarea {
-  min-height: 100px;
-  resize: vertical;
-  font-family: inherit;
 }
 
 .button {
@@ -130,31 +124,27 @@ textarea {
   margin-bottom: 6px;
 }
 
-/* Responsive: stack inputs vertically under 600px */
 @media (max-width: 600px) {
   .formGroup {
     flex-direction: column;
     align-items: stretch;
   }
 
-  input[type="text"],
-  input[type="number"],
-  input[type="email"],
-  textarea,
-  select,
-  input[type="file"] {
-    flex-basis: 100% !important;
-    min-width: 100% !important;
+  .input,
+  .select,
+  .textarea,
+  .fileInput {
+    min-width: 100%;
+    width: 100%;
   }
 }
 
-/* Smaller phones padding and font scaling */
 @media (max-width: 350px) {
   .container {
     padding: 30px 20px 40px;
   }
 
-  h2 {
+  .heading {
     font-size: 1.6rem;
   }
 }

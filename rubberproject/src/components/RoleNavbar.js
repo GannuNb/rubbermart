@@ -12,6 +12,7 @@ import {
   FaBoxOpen,
   FaShoppingBag,
   FaUser,
+  FaUsers,
 } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { jwtDecode } from "jwt-decode";
@@ -67,9 +68,11 @@ function RoleNavbar() {
         <Link
           to={
             user
-              ? user.role === "seller"
-                ? "/seller-dashboard"
-                : "/"
+              ? user.role === "admin"
+                ? "/admin-dashboard"
+                : user.role === "seller"
+                  ? "/seller-dashboard"
+                  : "/"
               : "/common-home"
           }
         >
@@ -83,9 +86,7 @@ function RoleNavbar() {
             <Link
               to="/common-home"
               className={`${styles.normalLink} ${
-                location.pathname === "/common-home"
-                  ? styles.active
-                  : ""
+                location.pathname === "/common-home" ? styles.active : ""
               }`}
             >
               <FaHome />
@@ -95,9 +96,7 @@ function RoleNavbar() {
             <Link
               to="/about"
               className={`${styles.normalLink} ${
-                location.pathname === "/about"
-                  ? styles.active
-                  : ""
+                location.pathname === "/about" ? styles.active : ""
               }`}
             >
               <FaInfoCircle />
@@ -114,11 +113,60 @@ function RoleNavbar() {
               <span>Login</span>
             </Link>
           </>
+        ) : user.role === "admin" ? (
+          <>
+            <Link
+              to="/admin-dashboard"
+              className={`${styles.normalLink} ${
+                location.pathname === "/admin-dashboard" ? styles.active : ""
+              }`}
+            >
+              <FaTachometerAlt />
+              <span>Dashboard</span>
+            </Link>
+
+            <Link
+              to="/admin-products"
+              className={`${styles.normalLink} ${
+                location.pathname === "/admin-products" ? styles.active : ""
+              }`}
+            >
+              <FaBoxOpen />
+              <span>Products</span>
+            </Link>
+
+            <Link
+              to="/admin-orders"
+              className={`${styles.normalLink} ${
+                location.pathname === "/admin-orders" ? styles.active : ""
+              }`}
+            >
+              <FaShoppingBag />
+              <span>Orders</span>
+            </Link>
+
+            <Link
+              to="/admin-users"
+              className={`${styles.normalLink} ${
+                location.pathname === "/admin-users" ? styles.active : ""
+              }`}
+            >
+              <FaUsers />
+              <span>Users</span>
+            </Link>
+
+            <button className={styles.logoutBtn} onClick={handleLogout}>
+              <FaSignOutAlt />
+              <span>Logout</span>
+            </button>
+          </>
         ) : user.role === "seller" ? (
           <>
             <Link
               to="/seller-dashboard"
-              className={styles.normalLink}
+              className={`${styles.normalLink} ${
+                location.pathname === "/seller-dashboard" ? styles.active : ""
+              }`}
             >
               <FaTachometerAlt />
               <span>Dashboard</span>
@@ -126,23 +174,31 @@ function RoleNavbar() {
 
             <Link
               to="/seller-add-products"
-              className={styles.normalLink}
+              className={`${styles.normalLink} ${
+                location.pathname === "/seller-add-products"
+                  ? styles.active
+                  : ""
+              }`}
             >
               <FaBoxOpen />
-              <span> Add Products</span>
+              <span>Add Products</span>
             </Link>
 
             <Link
               to="/seller-products"
-              className={styles.normalLink}
+              className={`${styles.normalLink} ${
+                location.pathname === "/seller-products" ? styles.active : ""
+              }`}
             >
               <FaBoxOpen />
-              <span> Manage Products</span>
+              <span>Manage Products</span>
             </Link>
 
             <Link
               to="/seller-orders"
-              className={styles.normalLink}
+              className={`${styles.normalLink} ${
+                location.pathname === "/seller-orders" ? styles.active : ""
+              }`}
             >
               <FaShoppingBag />
               <span>Orders</span>
@@ -150,36 +206,42 @@ function RoleNavbar() {
 
             <Link
               to="/seller-profile"
-              className={styles.normalLink}
+              className={`${styles.normalLink} ${
+                location.pathname === "/seller-profile" ? styles.active : ""
+              }`}
             >
               <FaUser />
               <span>Profile</span>
             </Link>
 
-            <button
-              className={styles.logoutBtn}
-              onClick={handleLogout}
-            >
+            <button className={styles.logoutBtn} onClick={handleLogout}>
               <FaSignOutAlt />
               <span>Logout</span>
             </button>
           </>
         ) : (
           <>
-            <Link to="/" className={styles.normalLink}>
+            <Link
+              to="/"
+              className={`${styles.normalLink} ${
+                location.pathname === "/" ? styles.active : ""
+              }`}
+            >
               <FaHome />
               <span>Home</span>
             </Link>
 
-            <Link to="/about" className={styles.normalLink}>
+            <Link
+              to="/about"
+              className={`${styles.normalLink} ${
+                location.pathname === "/about" ? styles.active : ""
+              }`}
+            >
               <FaInfoCircle />
               <span>About</span>
             </Link>
 
-            <button
-              className={styles.logoutBtn}
-              onClick={handleLogout}
-            >
+            <button className={styles.logoutBtn} onClick={handleLogout}>
               <FaSignOutAlt />
               <span>Logout</span>
             </button>

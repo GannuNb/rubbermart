@@ -24,7 +24,7 @@ import Home from "./pages/Home";
 
 
 //Admin
-
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 function AppContent() {
   const location = useLocation();
@@ -52,6 +52,7 @@ function AppContent() {
         <Route path="/seller-pending-products" element={<ProtectedRoute allowedRoles={["seller"]}><SellerPendingProducts /></ProtectedRoute>}/>
 
         {/* admin */}
+        <Route path="/admin-dashboard" element={ <ProtectedRoute allowedRoles={["admin"]}><AdminDashboard /></ProtectedRoute>}/>
         
 
       </Routes>

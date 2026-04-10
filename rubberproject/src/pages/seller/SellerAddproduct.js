@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addProductThunk } from "../../redux/slices/sellerProductThunk";
-import styles from "../../styles/SellerAddProduct.module.css";
+import addstyles from "../../styles/SellerAddProduct.module.css";
 
 function SellerAddproduct() {
   const dispatch = useDispatch();
@@ -131,15 +131,15 @@ function SellerAddproduct() {
   }, [addProductSuccess]);
 
   return (
-    <div className={styles.container}>
-      <h2>Add Product</h2>
+    <div className={addstyles.container}>
+      <h2 className={addstyles.heading}>Add Product</h2>
       <form onSubmit={handleSubmit}>
         {/* Category */}
-        <div className={styles.formGroup}>
+        <div className={addstyles.formGroup}>
           <select
             name="category"
             onChange={handleChange}
-            className={styles.select}
+            className={addstyles.select}
             required
             value={formData.category}
           >
@@ -153,11 +153,11 @@ function SellerAddproduct() {
         </div>
 
         {/* Application */}
-        <div className={styles.formGroup}>
+        <div className={addstyles.formGroup}>
           <select
             name="application"
             onChange={handleChange}
-            className={styles.select}
+            className={addstyles.select}
             required
             value={formData.application}
             disabled={!formData.category}
@@ -172,20 +172,20 @@ function SellerAddproduct() {
         </div>
 
         {/* Quantity & Loading Location */}
-        <div className={styles.formGroup}>
+        <div className={addstyles.formGroup}>
           <input
             type="number"
             name="quantity"
             placeholder="Quantity In MT"
             onChange={handleChange}
-            className={styles.input}
+            className={addstyles.input}
             required
             value={formData.quantity}
           />
           <select
             name="loadingLocation"
             onChange={handleChange}
-            className={styles.select}
+            className={addstyles.select}
             required
             value={formData.loadingLocation}
           >
@@ -199,13 +199,13 @@ function SellerAddproduct() {
         </div>
 
         {/* Country & Price */}
-        <div className={styles.formGroup}>
+        <div className={addstyles.formGroup}>
           <input
             type="text"
             name="countryOfOrigin"
             placeholder="Country of Origin"
             onChange={handleChange}
-            className={styles.input}
+            className={addstyles.input}
             required
             value={formData.countryOfOrigin}
           />
@@ -214,27 +214,27 @@ function SellerAddproduct() {
             name="pricePerMT"
             placeholder="Price per MT"
             onChange={handleChange}
-            className={styles.input}
+            className={addstyles.input}
             required
             value={formData.pricePerMT}
           />
         </div>
 
         {/* HSN */}
-        <div className={styles.formGroup}>
+        <div className={addstyles.formGroup}>
           <input
             type="text"
             name="hsnCode"
             placeholder="HSN Code"
             onChange={handleChange}
-            className={styles.input}
+            className={addstyles.input}
             value={formData.hsnCode}
           />
         </div>
 
         {/* Images */}
-        <div className={styles.formGroup}>
-          <label htmlFor="images" className={styles.fileLabel}>
+        <div className={addstyles.formGroup}>
+          <label htmlFor="images" className={addstyles.fileLabel}>
             Select up to 3 images
           </label>
           <input
@@ -243,36 +243,36 @@ function SellerAddproduct() {
             multiple
             accept="image/*"
             onChange={handleImageChange}
-            className={styles.fileInput}
+            className={addstyles.fileInput}
           />
         </div>
 
         {/* Description */}
-        <div className={`${styles.formGroup} ${styles.fullWidth}`}>
+        <div className={`${addstyles.formGroup} ${addstyles.fullWidth}`}>
           <textarea
             name="description"
             placeholder="Description"
             onChange={handleChange}
-            className={styles.textarea}
+            className={addstyles.textarea}
             value={formData.description}
           />
         </div>
 
         <button
           type="submit"
-          className={styles.button}
+          className={addstyles.button}
           disabled={addProductLoading}
         >
           {addProductLoading ? "Uploading..." : "Add Product"}
         </button>
 
         {addProductError && (
-          <p className={styles.message} style={{ color: "red" }}>
+          <p className={addstyles.message} style={{ color: "red" }}>
             {addProductError}
           </p>
         )}
         {addProductSuccess && (
-          <p className={styles.message} style={{ color: "green" }}>
+          <p className={addstyles.message} style={{ color: "green" }}>
             {addProductSuccess}
           </p>
         )}
