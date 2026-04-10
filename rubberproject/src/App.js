@@ -17,7 +17,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import SellerDashboard from "./pages/seller/SellerDashboard";
 import SellerAddproduct from "./pages/seller/SellerAddproduct";
 import SellerPendingProducts from "./pages/seller/SellerPendingProducts";
-
+import SellerProducts from "./pages/seller/SellerProducts";
+import SellerProfile from "./pages/seller/SellerProfile";
 
 //buyer
 import Home from "./pages/Home";
@@ -25,6 +26,7 @@ import Home from "./pages/Home";
 
 //Admin
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminApproveProducts from "./pages/admin/AdminApproveProducts";
 
 function AppContent() {
   const location = useLocation();
@@ -50,11 +52,27 @@ function AppContent() {
         <Route path="/seller-dashboard" element={<ProtectedRoute allowedRole="seller"><SellerDashboard /></ProtectedRoute>}/>
         <Route path="/seller-add-products" element={<ProtectedRoute allowedRole="seller"><SellerAddproduct /></ProtectedRoute>}/>
         <Route path="/seller-pending-products" element={<ProtectedRoute allowedRoles={["seller"]}><SellerPendingProducts /></ProtectedRoute>}/>
+        <Route
+          path="/seller-products"
+          element={
+            <ProtectedRoute allowedRoles={["seller"]}>
+              <SellerProducts />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+  path="/seller-profile"
+  element={
+    <ProtectedRoute allowedRole="seller">
+      <SellerProfile />
+    </ProtectedRoute>
+  }
+/>
 
         {/* admin */}
         <Route path="/admin-dashboard" element={ <ProtectedRoute allowedRoles={["admin"]}><AdminDashboard /></ProtectedRoute>}/>
+        <Route path="/admin-approve-products" element={<ProtectedRoute allowedRole="admin"><AdminApproveProducts /></ProtectedRoute>}/>
         
-
       </Routes>
     </>
   );

@@ -1,3 +1,5 @@
+// src/pages/seller/SellerPendingProducts.js
+
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPendingProductsThunk } from "../../redux/slices/pendingProductsThunk";
@@ -18,17 +20,31 @@ function SellerPendingProducts() {
   }, [dispatch]);
 
   const handleToggle = (id) => {
-    if (expandedCard === id) {
-      setExpandedCard(null);
-    } else {
-      setExpandedCard(id);
-    }
+    setExpandedCard(expandedCard === id ? null : id);
+  };
+
+  const getStatusClass = (status) => {
+    if (status === "approved") return styles.approved;
+    if (status === "rejected") return styles.rejected;
+    return styles.pending;
+  };
+
+  const getBadgeClass = (status) => {
+    if (status === "approved") return styles.statusApproved;
+    if (status === "rejected") return styles.statusRejected;
+    return styles.statusPending;
+  };
+
+  const getStatusText = (status) => {
+    if (status === "approved") return "Approved";
+    if (status === "rejected") return "Rejected";
+    return "Pending";
   };
 
   if (pendingProductsLoading) {
     return (
       <div className={styles.loadingContainer}>
-        <p>Loading pending products...</p>
+        <p>Loading products...</p>
       </div>
     );
   }
@@ -43,17 +59,25 @@ function SellerPendingProducts() {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.heading}>Pending Products</h1>
+      <h1 className={styles.heading}>Your Products</h1>
 
       {pendingProducts.length === 0 ? (
         <div className={styles.emptyState}>
-          <p>No pending products found</p>
+          <p>No products found</p>
         </div>
       ) : (
         <div className={styles.grid}>
           {pendingProducts.map((product) => (
             <div className={styles.card} key={product._id}>
               <div className={styles.imageWrapper}>
+                <div
+                  className={`${styles.statusBadge} ${getBadgeClass(
+                    product.status
+                  )}`}
+                >
+                  {getStatusText(product.status)}
+                </div>
+
                 {product.images && product.images.length > 0 ? (
                   <img
                     src={product.images[0].image}
@@ -78,7 +102,14 @@ function SellerPendingProducts() {
                 </p>
 
                 <p>
-                  <strong>Status:</strong> Pending Approval
+                  <strong>Status:</strong>{" "}
+                  <span className={getStatusClass(product.status)}>
+                    {product.status === "approved"
+                      ? "Approved"
+                      : product.status === "rejected"
+                      ? "Rejected"
+                      : "Pending Approval"}
+                  </span>
                 </p>
 
                 {expandedCard === product._id && (
@@ -121,4 +152,5 @@ function SellerPendingProducts() {
     </div>
   );
 }
+
 export default SellerPendingProducts;

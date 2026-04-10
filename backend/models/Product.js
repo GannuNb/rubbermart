@@ -1,3 +1,5 @@
+// backend/models/Product.js
+
 import mongoose from "mongoose";
 
 const imageSchema = new mongoose.Schema({
@@ -5,7 +7,7 @@ const imageSchema = new mongoose.Schema({
   contentType: String,
 });
 
-const sellerAddedProductSchema = new mongoose.Schema(
+const productSchema = new mongoose.Schema(
   {
     seller: {
       type: mongoose.Schema.Types.ObjectId,
@@ -61,11 +63,13 @@ const sellerAddedProductSchema = new mongoose.Schema(
       enum: ["pending", "approved", "rejected"],
       default: "pending",
     },
+    stockStatus: {
+    type: String,
+    enum: ["available", "soldout"],
+    default: "available",
+  },
   },
   { timestamps: true }
 );
 
-export default mongoose.model(
-  "SellerAddedProduct",
-  sellerAddedProductSchema
-);
+export default mongoose.model("Product", productSchema);

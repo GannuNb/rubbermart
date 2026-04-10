@@ -126,6 +126,18 @@ function RoleNavbar() {
             </Link>
 
             <Link
+              to="/admin-approve-products"
+              className={`${styles.normalLink} ${
+                location.pathname === "/admin-approve-products"
+                  ? styles.active
+                  : ""
+              }`}
+            >
+              <FaBoxOpen />
+              <span>Approve Products</span>
+            </Link>
+
+            <Link
               to="/admin-products"
               className={`${styles.normalLink} ${
                 location.pathname === "/admin-products" ? styles.active : ""
@@ -143,6 +155,16 @@ function RoleNavbar() {
             >
               <FaShoppingBag />
               <span>Orders</span>
+            </Link>
+
+            <Link
+              to="/admin-payments"
+              className={`${styles.normalLink} ${
+                location.pathname === "/admin-payments" ? styles.active : ""
+              }`}
+            >
+              <FaShoppingBag />
+              <span>Payments</span>
             </Link>
 
             <Link

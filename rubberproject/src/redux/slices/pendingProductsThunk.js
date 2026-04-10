@@ -1,6 +1,8 @@
+// src/redux/slices/pendingProductsThunk.js
+
 import {
-  setPendingProducts,
   setPendingProductsLoading,
+  setPendingProductsSuccess,
   setPendingProductsError,
 } from "./sellerProductSlice";
 
@@ -12,7 +14,7 @@ export const fetchPendingProductsThunk = () => async (dispatch) => {
     const token = localStorage.getItem("token");
 
     const response = await fetch(
-      `${process.env.REACT_APP_API_URL}/api/seller/pending-products`,
+      `${process.env.REACT_APP_API_URL}/api/seller/products`,
       {
         method: "GET",
         headers: {
@@ -24,16 +26,16 @@ export const fetchPendingProductsThunk = () => async (dispatch) => {
     const data = await response.json();
 
     if (response.ok && data.success) {
-      dispatch(setPendingProducts(data.products));
+      dispatch(setPendingProductsSuccess(data.products));
     } else {
       dispatch(
         setPendingProductsError(
-          data.message || "Failed to fetch pending products"
+          data.message || "Failed to fetch products"
         )
       );
     }
   } catch (error) {
-    dispatch(setPendingProductsError("Failed to fetch pending products"));
+    dispatch(setPendingProductsError("Failed to fetch products"));
   } finally {
     dispatch(setPendingProductsLoading(false));
   }

@@ -8,7 +8,7 @@ import authRoutes from "./routes/authRoutes.js";
 import businessProfileRoutes from "./routes/businessProfileRoutes.js";
 import { uploadDocumentsErrorHandler } from "./middlewares/uploadDocumentsErrorHandler.js";
 import sellerProductRoutes from "./routes/sellerProductRoutes.js";
-
+import userRoutes from "./routes/userRoutes.js";
 
 dotenv.config();
 
@@ -37,6 +37,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/business-profile", businessProfileRoutes);
 app.use("/api/seller", sellerProductRoutes);
+app.use("/api/user", userRoutes);
 
 app.use(uploadDocumentsErrorHandler);
 
