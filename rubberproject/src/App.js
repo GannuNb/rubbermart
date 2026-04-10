@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 
 //components
 import RoleNavbar from "./components/RoleNavbar";
+import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 //seller
@@ -35,7 +36,7 @@ function AppContent() {
 
   return (
     <>
-      {!shouldHideNavbar && <RoleNavbar />}
+      {!shouldHideNavbar && <Navbar />}
 
       <Routes>
         {/* pages */}
