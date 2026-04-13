@@ -1,5 +1,3 @@
-// src/components/RoleNavbar.js
-
 import React, { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
@@ -27,9 +25,9 @@ function RoleNavbar() {
 
   const { user } = useSelector((state) => state.auth);
 
+  // 🔐 Auto logout on token expiry
   useEffect(() => {
     const token = localStorage.getItem("token");
-
     if (!token) return;
 
     try {
@@ -45,13 +43,13 @@ function RoleNavbar() {
         return;
       }
 
-      const logoutTimer = setTimeout(() => {
+      const timer = setTimeout(() => {
         dispatch(logoutUser());
         navigate("/login");
       }, timeLeft);
 
-      return () => clearTimeout(logoutTimer);
-    } catch (error) {
+      return () => clearTimeout(timer);
+    } catch (err) {
       dispatch(logoutUser());
       navigate("/login");
     }
@@ -59,11 +57,12 @@ function RoleNavbar() {
 
   const handleLogout = () => {
     dispatch(logoutUser());
-    navigate("/common-home");
+    navigate("/");
   };
 
   return (
     <nav className={styles.navbar}>
+      {/* LOGO */}
       <div className={styles.logo}>
         <Link
           to={
@@ -71,9 +70,9 @@ function RoleNavbar() {
               ? user.role === "admin"
                 ? "/admin-dashboard"
                 : user.role === "seller"
-                  ? "/seller-dashboard"
-                  : "/"
-              : "/common-home"
+                ? "/seller-dashboard"
+                : "/home"
+              : "/"
           }
         >
           Rubber Scrap Mart
@@ -81,12 +80,13 @@ function RoleNavbar() {
       </div>
 
       <div className={styles.navLinks}>
+        {/* NOT LOGGED IN */}
         {!user ? (
           <>
             <Link
-              to="/common-home"
+              to="/"
               className={`${styles.normalLink} ${
-                location.pathname === "/common-home" ? styles.active : ""
+                location.pathname === "/" ? styles.active : ""
               }`}
             >
               <FaHome />
@@ -118,7 +118,9 @@ function RoleNavbar() {
             <Link
               to="/admin-dashboard"
               className={`${styles.normalLink} ${
-                location.pathname === "/admin-dashboard" ? styles.active : ""
+                location.pathname === "/admin-dashboard"
+                  ? styles.active
+                  : ""
               }`}
             >
               <FaTachometerAlt />
@@ -140,31 +142,13 @@ function RoleNavbar() {
             <Link
               to="/admin-products"
               className={`${styles.normalLink} ${
-                location.pathname === "/admin-products" ? styles.active : ""
+                location.pathname === "/admin-products"
+                  ? styles.active
+                  : ""
               }`}
             >
               <FaBoxOpen />
               <span>Products</span>
-            </Link>
-
-            <Link
-              to="/admin-orders"
-              className={`${styles.normalLink} ${
-                location.pathname === "/admin-orders" ? styles.active : ""
-              }`}
-            >
-              <FaShoppingBag />
-              <span>Orders</span>
-            </Link>
-
-            <Link
-              to="/admin-payments"
-              className={`${styles.normalLink} ${
-                location.pathname === "/admin-payments" ? styles.active : ""
-              }`}
-            >
-              <FaShoppingBag />
-              <span>Payments</span>
             </Link>
 
             <Link
@@ -187,7 +171,9 @@ function RoleNavbar() {
             <Link
               to="/seller-dashboard"
               className={`${styles.normalLink} ${
-                location.pathname === "/seller-dashboard" ? styles.active : ""
+                location.pathname === "/seller-dashboard"
+                  ? styles.active
+                  : ""
               }`}
             >
               <FaTachometerAlt />
@@ -209,7 +195,9 @@ function RoleNavbar() {
             <Link
               to="/seller-products"
               className={`${styles.normalLink} ${
-                location.pathname === "/seller-products" ? styles.active : ""
+                location.pathname === "/seller-products"
+                  ? styles.active
+                  : ""
               }`}
             >
               <FaBoxOpen />
@@ -217,19 +205,11 @@ function RoleNavbar() {
             </Link>
 
             <Link
-              to="/seller-orders"
-              className={`${styles.normalLink} ${
-                location.pathname === "/seller-orders" ? styles.active : ""
-              }`}
-            >
-              <FaShoppingBag />
-              <span>Orders</span>
-            </Link>
-
-            <Link
               to="/seller-profile"
               className={`${styles.normalLink} ${
-                location.pathname === "/seller-profile" ? styles.active : ""
+                location.pathname === "/seller-profile"
+                  ? styles.active
+                  : ""
               }`}
             >
               <FaUser />
@@ -244,9 +224,9 @@ function RoleNavbar() {
         ) : (
           <>
             <Link
-              to="/"
+              to="/home"
               className={`${styles.normalLink} ${
-                location.pathname === "/" ? styles.active : ""
+                location.pathname === "/home" ? styles.active : ""
               }`}
             >
               <FaHome />

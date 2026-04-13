@@ -257,3 +257,35 @@ export const updateSellerProduct = async (req, res) => {
     });
   }
 };
+
+// backend/controllers/sellerProductController.js
+
+export const getAllApprovedProductsForAdmin = async (req, res) => {
+  try {
+    const products = await Product.find({
+      status: "approved",
+    })
+      .populate("seller", "fullName email")
+      .sort({ createdAt: -1 });
+
+    const formattedProducts = products.map((product) => ({
+      ...product._doc,
+      images: product.images.map((img) => ({
+        contentType: img.contentType,
+        image: `data:${img.contentType};base64,${img.data.toString("base64")}`,
+      })),
+    }));
+
+    return res.status(200).json({
+      success: true,
+      products: formattedProducts,
+    });
+  } catch (error) {
+    console.log("Get Approved Products Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch approved products",
+    });
+  }
+};

@@ -1,0 +1,329 @@
+/* src/styles/AdminUsers.module.css */
+
+.adminUsersWrapper {
+  min-height: 100vh;
+  padding: 40px;
+  background: linear-gradient(to bottom right, #f8fafc, #eef2ff);
+}
+
+.adminUsersHeader {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.adminUsersTitle {
+  font-size: 36px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 10px;
+}
+
+.adminUsersSubtitle {
+  color: #6b7280;
+  font-size: 15px;
+}
+
+.adminUsersTabsContainer {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 35px;
+}
+
+.adminUsersTabButton {
+  border: none;
+  padding: 12px 28px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
+.adminUsersTabButton:hover {
+  transform: translateY(-2px);
+}
+
+.adminUsersActiveTab {
+  background: linear-gradient(to right, #2563eb, #4f46e5);
+  color: #ffffff;
+}
+
+.adminUsersEmptyState {
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 24px;
+  text-align: center;
+  color: #667085;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+.adminUsersGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+}
+
+.adminUserCard {
+  background: #ffffff;
+  border-radius: 28px;
+  padding: 24px;
+  box-shadow: 0 12px 35px rgba(15, 23, 42, 0.08);
+  border: 1px solid #eaecf0;
+  transition: all 0.3s ease;
+}
+
+.adminUserCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+}
+
+.adminUserTopSection {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.adminUserImageWrapper {
+  width: 80px;
+  height: 80px;
+  min-width: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #eef2ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.adminUserImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+.adminUserImagePlaceholder {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(to right, #2563eb, #4f46e5);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.adminUserBasicInfo {
+  flex: 1;
+}
+
+.adminUserName {
+  font-size: 22px;
+  color: #111827;
+  margin: 0 0 10px;
+}
+
+.adminUserBadgeWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.adminUserRole {
+  background: #eef2ff;
+  color: #4338ca;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.adminUserVerified {
+  background: #ecfdf3;
+  color: #12b76a;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.adminUserInfoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.adminUserInfoCard {
+  background: #f8fafc;
+  padding: 14px;
+  border-radius: 14px;
+}
+
+.adminUserInfoCard span {
+  display: block;
+  font-size: 12px;
+  color: #667085;
+  margin-bottom: 6px;
+}
+
+.adminUserInfoCard p {
+  margin: 0;
+  color: #111827;
+  font-size: 14px;
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.adminSectionDivider {
+  height: 1px;
+  background: #eaecf0;
+  margin: 24px 0;
+}
+
+.adminSellerSection {
+  margin-top: 5px;
+}
+
+.adminSellerHeading {
+  font-size: 18px;
+  color: #1d4ed8;
+  margin-bottom: 18px;
+}
+
+.adminInterestedProductsWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.adminInterestedProductTag {
+  background: linear-gradient(to right, #2563eb, #4f46e5);
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.adminNoDataText {
+  color: #667085;
+  margin: 0;
+}
+
+.adminUserDocumentsSection {
+  margin-top: 24px;
+  border-top: 1px solid #eaecf0;
+  padding-top: 20px;
+}
+
+.adminUserDocumentsHeading {
+  font-size: 18px;
+  color: #111827;
+  margin-bottom: 16px;
+}
+
+.adminUserDocumentsGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.adminUserDocumentCard {
+  background: linear-gradient(to right, #2563eb, #4f46e5);
+  color: #ffffff;
+  text-decoration: none;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.adminUserDocumentCard:hover {
+  transform: translateY(-2px);
+  opacity: 0.92;
+}
+
+@media (max-width: 992px) {
+  .adminUsersGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .adminUsersWrapper {
+    padding: 20px;
+  }
+
+  .adminUsersTitle {
+    font-size: 28px;
+  }
+
+  .adminUsersTabsContainer {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .adminUsersTabButton {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .adminUserTopSection {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .adminUserBadgeWrapper {
+    justify-content: center;
+  }
+
+  .adminUserInfoGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .adminUserDocumentsGrid {
+    flex-direction: column;
+  }
+
+  .adminUserDocumentCard {
+    text-align: center;
+  }
+}
+
+
+
+
+/* Add in AdminUsers.module.css */
+
+.adminViewMoreButton {
+  width: 100%;
+  margin-top: 20px;
+  border: none;
+  background: linear-gradient(to right, #2563eb, #4f46e5);
+  color: #ffffff;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.adminViewMoreButton:hover {
+  transform: translateY(-2px);
+  opacity: 0.95;
+}
+
+.adminExpandedSection {
+  margin-top: 20px;
+}

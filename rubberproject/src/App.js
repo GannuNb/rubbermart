@@ -28,6 +28,8 @@ import Home from "./pages/Home";
 //Admin
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminApproveProducts from "./pages/admin/AdminApproveProducts";
+import AdminProducts from "./pages/admin/AdminProducts";
+import AdminUsers from "./pages/admin/AdminUsers";
 
 function AppContent() {
   const location = useLocation();
@@ -36,43 +38,31 @@ function AppContent() {
 
   return (
     <>
-      {!shouldHideNavbar && <Navbar />}
+      {!shouldHideNavbar && <RoleNavbar />}
 
       <Routes>
         {/* pages */}
-        <Route path="/common-home" element={<CommonHome />} />
+        <Route path="/" element={<CommonHome />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/business-profile" element={<BusinessProfile />} />
         <Route path="/about" element={<About />} />
 
         {/* buyer */}
-        <Route path="/"  element={<ProtectedRoute allowedRole="buyer"><Home /></ProtectedRoute>} />
+        <Route path="/home"  element={<ProtectedRoute allowedRole="buyer"><Home /></ProtectedRoute>} />
 
         {/* seller */}
         <Route path="/seller-dashboard" element={<ProtectedRoute allowedRole="seller"><SellerDashboard /></ProtectedRoute>}/>
         <Route path="/seller-add-products" element={<ProtectedRoute allowedRole="seller"><SellerAddproduct /></ProtectedRoute>}/>
         <Route path="/seller-pending-products" element={<ProtectedRoute allowedRoles={["seller"]}><SellerPendingProducts /></ProtectedRoute>}/>
-        <Route
-          path="/seller-products"
-          element={
-            <ProtectedRoute allowedRoles={["seller"]}>
-              <SellerProducts />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-  path="/seller-profile"
-  element={
-    <ProtectedRoute allowedRole="seller">
-      <SellerProfile />
-    </ProtectedRoute>
-  }
-/>
+        <Route path="/seller-products" element={ <ProtectedRoute allowedRoles={["seller"]}><SellerProducts /></ProtectedRoute>}/>
+        <Route  path="/seller-profile"  element={<ProtectedRoute allowedRole="seller"><SellerProfile /></ProtectedRoute>  }/>
 
         {/* admin */}
         <Route path="/admin-dashboard" element={ <ProtectedRoute allowedRoles={["admin"]}><AdminDashboard /></ProtectedRoute>}/>
         <Route path="/admin-approve-products" element={<ProtectedRoute allowedRole="admin"><AdminApproveProducts /></ProtectedRoute>}/>
+        <Route  path="/admin-products" element={<ProtectedRoute allowedRole="admin"><AdminProducts /></ProtectedRoute>}/>
+        <Route  path="/admin-users"  element={<ProtectedRoute allowedRole="admin"><AdminUsers /></ProtectedRoute>}/>
         
       </Routes>
     </>

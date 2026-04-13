@@ -38,6 +38,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/business-profile", businessProfileRoutes);
 app.use("/api/seller", sellerProductRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/products", sellerProductRoutes);
 
 app.use(uploadDocumentsErrorHandler);
 

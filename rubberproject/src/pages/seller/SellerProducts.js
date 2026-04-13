@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPendingProductsThunk } from "../../redux/slices/pendingProductsThunk";
 import { updateSellerProductThunk } from "../../redux/slices/sellerProductThunk";
+import CustomAlert from "../../components/CustomAlert";
 import styles from "../../styles/SellerPendingProducts.module.css";
 
 function SellerProducts() {
@@ -11,6 +12,13 @@ function SellerProducts() {
 
   const [expandedCard, setExpandedCard] = useState(null);
   const [editingProductId, setEditingProductId] = useState(null);
+
+  const [alert, setAlert] = useState({
+    show: false,
+    type: "",
+    title: "",
+    message: "",
+  });
 
   const [editForm, setEditForm] = useState({
     quantity: "",
@@ -62,11 +70,30 @@ function SellerProducts() {
     }));
   };
 
-  const handleUpdateProduct = async (productId) => {
+// Replace only handleUpdateProduct function with this
+
+const handleUpdateProduct = async (productId) => {
+  try {
     await dispatch(updateSellerProductThunk(productId, editForm));
+
+    setAlert({
+      show: true,
+      type: "success",
+      title: "Product Updated",
+      message: "Your product has been updated successfully.",
+    });
+
     dispatch(fetchPendingProductsThunk());
     setEditingProductId(null);
-  };
+  } catch (error) {
+    setAlert({
+      show: true,
+      type: "error",
+      title: "Update Failed",
+      message: "Failed to update product.",
+    });
+  }
+};
 
   if (pendingProductsLoading) {
     return (
@@ -86,6 +113,22 @@ function SellerProducts() {
 
   return (
     <div className={styles.container}>
+      {alert.show && (
+        <CustomAlert
+          type={alert.type}
+          title={alert.title}
+          message={alert.message}
+          onClose={() =>
+            setAlert({
+              show: false,
+              type: "",
+              title: "",
+              message: "",
+            })
+          }
+        />
+      )}
+
       <h1 className={styles.heading}>Approved Products</h1>
 
       {approvedProducts.length === 0 ? (
