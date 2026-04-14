@@ -1,0 +1,301 @@
+/* src/styles/ProductOrderPanel.module.css */
+
+.sidePanelWrapper {
+  background: #ffffff;
+  border-radius: 28px;
+  padding: 24px;
+  border: 1px solid #edf0f5;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  height: fit-content;
+}
+
+.businessCard {
+  padding-bottom: 24px;
+  border-bottom: 1px solid #edf0f5;
+}
+
+.businessCard h3,
+.orderCard h3 {
+  color: #182848;
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.businessBox {
+  display: flex;
+  gap: 14px;
+  padding: 16px 0;
+  border-bottom: 1px solid #edf0f5;
+  align-items: flex-start;
+}
+
+.businessBox:last-of-type {
+  border-bottom: none;
+}
+
+.businessBox span {
+  display: block;
+  font-size: 12px;
+  color: #6f7d8d;
+  margin-bottom: 4px;
+}
+
+.businessBox h4 {
+  margin: 0;
+  color: #182848;
+  font-size: 15px;
+  line-height: 1.5;
+  font-weight: 600;
+}
+
+.cardIcon {
+  color: #4b6cb7;
+  font-size: 18px;
+  margin-top: 4px;
+  min-width: 18px;
+}
+
+.stockInfo {
+  background: #edf8f1;
+  color: #118a45;
+  border-radius: 14px;
+  padding: 14px;
+  text-align: center;
+  font-weight: 600;
+  margin-top: 18px;
+  font-size: 15px;
+}
+
+.orderCard {
+  display: flex;
+  flex-direction: column;
+}
+
+.addressSection,
+.quantitySection {
+  margin-bottom: 18px;
+}
+
+.addressSection label,
+.quantitySection label {
+  display: block;
+  margin-bottom: 10px;
+  color: #182848;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.selectInput,
+.addressInput,
+.quantityInput {
+  width: 100%;
+  border: 1px solid #d8e0ea;
+  border-radius: 14px;
+  padding: 14px;
+  outline: none;
+  font-size: 14px;
+  margin-bottom: 14px;
+  background: #ffffff;
+  transition: 0.3s ease;
+  color: #182848;
+}
+
+.selectInput:focus,
+.addressInput:focus,
+.quantityInput:focus {
+  border-color: #4b6cb7;
+  box-shadow: 0 0 0 4px rgba(75, 108, 183, 0.12);
+}
+
+.dropdownWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.addressDropdown {
+  width: 100%;
+  padding: 16px 18px;
+  border-radius: 16px;
+  border: 1px solid #dbe3ef;
+  background: #ffffff;
+  color: #182848;
+  font-size: 14px;
+  font-weight: 500;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 50px;
+  min-height: 56px;
+}
+
+.addressDropdown:hover {
+  border-color: #4b6cb7;
+}
+
+.addressDropdown:focus {
+  border-color: #4b6cb7;
+  box-shadow: 0 0 0 4px rgba(75, 108, 183, 0.12);
+}
+
+.dropdownWrapper::after {
+  content: "⌄";
+  position: absolute;
+  top: 50%;
+  right: 18px;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #4b6cb7;
+  pointer-events: none;
+}
+
+.addressDropdown option {
+  color: #182848;
+  background: #ffffff;
+  padding: 12px;
+}
+
+.addAddressBtn {
+  margin-top: 14px;
+  border: none;
+  background: #edf3ff;
+  color: #2f5fd0;
+  padding: 13px 18px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
+  width: 100%;
+  font-size: 14px;
+}
+
+.addAddressBtn:hover {
+  background: #dfe9ff;
+}
+
+.buyButton {
+  width: 100%;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #182848, #4b6cb7);
+  color: white;
+  padding: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.3s ease;
+  font-size: 15px;
+  margin-top: 10px;
+}
+
+.buyButton:hover {
+  transform: translateY(-2px);
+}
+
+.buyButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.quantityError {
+  color: #d93025;
+  font-size: 13px;
+  margin-top: 8px;
+  font-weight: 500;
+}
+
+.popupOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  padding: 20px;
+}
+
+.popupCard {
+  width: 100%;
+  max-width: 850px;
+  background: #ffffff;
+  border-radius: 28px;
+  padding: 28px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.popupHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.popupHeader h3 {
+  margin: 0;
+  color: #182848;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.closePopupBtn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  background: #f1f5fb;
+  color: #182848;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.closePopupBtn:hover {
+  background: #e3ebf7;
+}
+
+.popupGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 768px) {
+  .sidePanelWrapper {
+    padding: 18px;
+    border-radius: 22px;
+    gap: 22px;
+  }
+
+  .businessCard {
+    padding-bottom: 20px;
+  }
+
+  .businessCard h3,
+  .orderCard h3 {
+    font-size: 18px;
+  }
+
+  .popupGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .popupCard {
+    padding: 20px;
+    border-radius: 22px;
+  }
+}

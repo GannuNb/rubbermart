@@ -25,6 +25,49 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
 
+addresses: [
+      {
+        fullName: {
+          type: String,
+          default: "",
+        },
+
+        mobileNumber: {
+          type: String,
+          default: "",
+        },
+
+        flatHouse: {
+          type: String,
+          default: "",
+        },
+
+        areaStreet: {
+          type: String,
+          default: "",
+        },
+
+        landmark: {
+          type: String,
+          default: "",
+        },
+
+        city: {
+          type: String,
+          default: "",
+        },
+
+        state: {
+          type: String,
+          default: "",
+        },
+
+        pincode: {
+          type: String
+        },
+        }
+    ],
+
     password: {
       type: String,
       default: "",

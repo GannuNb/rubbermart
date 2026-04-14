@@ -1,0 +1,501 @@
+/* src/styles/ProductDetails.module.css */
+
+.pageWrapper {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f5f7fb 0%, #eef2f7 100%);
+  padding: 40px;
+}
+
+.mainContainer {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 360px;
+  gap: 24px;
+  align-items: start;
+}
+
+.leftSection,
+.middleSection,
+.businessCard,
+.orderCard {
+  background: #ffffff;
+  border-radius: 28px;
+  padding: 24px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+  border: 1px solid #edf0f5;
+}
+
+.imageGallery {
+  display: flex;
+  gap: 18px;
+}
+
+.thumbnailColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.thumbnail {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 16px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: 0.3s ease;
+  background: #f5f7fb;
+}
+
+.thumbnail:hover {
+  transform: translateY(-3px);
+  border-color: #d7def0;
+}
+
+.activeThumbnail {
+  border: 2px solid #4b6cb7;
+  box-shadow: 0 10px 20px rgba(75, 108, 183, 0.18);
+}
+
+.mainImageContainer {
+  flex: 1;
+}
+
+.mainImage {
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+  border-radius: 22px;
+  background: #f5f7fb;
+}
+
+.headingSection {
+  margin-bottom: 22px;
+}
+
+.categoryBadge {
+  display: inline-block;
+  background: #edf3ff;
+  color: #2f5fd0;
+  padding: 8px 14px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+.headingSection h1 {
+  font-size: 34px;
+  color: #182848;
+  margin-bottom: 14px;
+  line-height: 1.3;
+}
+
+.stockBadge {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.available {
+  background: #dff7e8;
+  color: #118a45;
+}
+
+.soldout {
+  background: #ffe0e0;
+  color: #d22c2c;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.infoCard {
+  background: #f7f9fc;
+  border-radius: 18px;
+  padding: 18px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  transition: 0.3s ease;
+}
+
+.infoCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+}
+
+.infoCard svg {
+  font-size: 20px;
+  color: #4b6cb7;
+  margin-top: 4px;
+}
+
+.infoCard span,
+.orderInfoBox span,
+.businessBox span {
+  display: block;
+  font-size: 12px;
+  color: #6f7d8d;
+  margin-bottom: 4px;
+}
+
+.infoCard h4,
+.orderInfoBox h4,
+.businessBox h4 {
+  margin: 0;
+  color: #182848;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.descriptionBox {
+  margin-top: 24px;
+  background: #f7f9fc;
+  border-radius: 20px;
+  padding: 20px;
+}
+
+.descriptionBox h3 {
+  margin-bottom: 12px;
+  color: #182848;
+  font-size: 18px;
+}
+
+.descriptionBox p {
+  color: #5f6b7a;
+  line-height: 1.8;
+  font-size: 14px;
+}
+
+.rightSection {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.businessCard h3,
+.orderCard h3 {
+  color: #182848;
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 20px;
+}
+
+.businessBox,
+.orderInfoBox {
+  display: flex;
+  gap: 14px;
+  background: #f7f9fc;
+  border-radius: 18px;
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+.cardIcon {
+  color: #4b6cb7;
+  font-size: 18px;
+  margin-top: 4px;
+}
+
+.stockInfo {
+  background: #edf8f1;
+  color: #118a45;
+  border-radius: 14px;
+  padding: 14px;
+  text-align: center;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+.addressSection,
+.quantitySection {
+  margin-bottom: 18px;
+}
+
+.addressSection label,
+.quantitySection label {
+  display: block;
+  margin-bottom: 10px;
+  color: #182848;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.selectInput,
+.addressInput,
+.quantityInput {
+  width: 100%;
+  border: 1px solid #d8e0ea;
+  border-radius: 14px;
+  padding: 14px;
+  outline: none;
+  font-size: 14px;
+  margin-bottom: 14px;
+  background: #ffffff;
+  transition: 0.3s ease;
+}
+
+.selectInput:focus,
+.addressInput:focus,
+.quantityInput:focus {
+  border-color: #4b6cb7;
+  box-shadow: 0 0 0 4px rgba(75, 108, 183, 0.12);
+}
+
+.addressInput {
+  min-height: 100px;
+  resize: none;
+}
+
+.buyButton {
+  width: 100%;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #182848, #4b6cb7);
+  color: white;
+  padding: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.3s ease;
+  font-size: 15px;
+}
+
+.buyButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(24, 40, 72, 0.18);
+}
+
+.buyButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.quantityError {
+  color: #d93025;
+  font-size: 13px;
+  margin-top: 8px;
+  font-weight: 500;
+}
+
+.loaderWrapper,
+.errorWrapper {
+  min-height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.loaderIcon {
+  font-size: 42px;
+  color: #4b6cb7;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.dropdownWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.addressDropdown {
+  width: 100%;
+  padding: 16px 18px;
+  border-radius: 16px;
+  border: 1px solid #dbe3ef;
+  background: linear-gradient(180deg, #ffffff, #f8fbff);
+  color: #182848;
+  font-size: 14px;
+  font-weight: 500;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 50px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+}
+
+.addressDropdown:hover {
+  border-color: #4b6cb7;
+  box-shadow: 0 10px 24px rgba(75, 108, 183, 0.12);
+}
+
+.addressDropdown:focus {
+  border-color: #4b6cb7;
+  box-shadow: 0 0 0 4px rgba(75, 108, 183, 0.12);
+}
+
+.dropdownWrapper::after {
+  content: "⌄";
+  position: absolute;
+  top: 50%;
+  right: 18px;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #4b6cb7;
+  pointer-events: none;
+}
+
+.addressDropdown option {
+  color: #182848;
+  background: #ffffff;
+  padding: 12px;
+}
+
+.addAddressBtn {
+  margin-top: 14px;
+  border: none;
+  background: #edf3ff;
+  color: #2f5fd0;
+  padding: 13px 18px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
+  width: 100%;
+}
+
+.addAddressBtn:hover {
+  background: #dfe9ff;
+  transform: translateY(-2px);
+}
+
+.popupOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  padding: 20px;
+}
+
+.popupCard {
+  width: 100%;
+  max-width: 850px;
+  background: #ffffff;
+  border-radius: 28px;
+  padding: 28px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.18);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.popupHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.popupHeader h3 {
+  margin: 0;
+  color: #182848;
+  font-size: 24px;
+}
+
+.closePopupBtn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  background: #f1f5fb;
+  color: #182848;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.closePopupBtn:hover {
+  background: #e3ebf7;
+}
+
+.popupGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 1200px) {
+  .mainContainer {
+    grid-template-columns: 1fr;
+  }
+
+  .imageGallery {
+    flex-direction: column-reverse;
+  }
+
+  .thumbnailColumn {
+    flex-direction: row;
+  }
+
+  .mainImage {
+    height: 380px;
+  }
+
+  .infoGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .pageWrapper {
+    padding: 20px;
+  }
+
+  .leftSection,
+  .middleSection,
+  .businessCard,
+  .orderCard {
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .popupGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .popupCard {
+    padding: 20px;
+  }
+
+  .headingSection h1 {
+    font-size: 26px;
+  }
+
+  .mainImage {
+    height: 280px;
+  }
+
+  .thumbnail {
+    width: 70px;
+    height: 70px;
+  }
+}

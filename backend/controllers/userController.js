@@ -133,3 +133,117 @@ export const getAllUsersForAdmin = async (req, res) => {
     });
   }
 };
+
+
+// backend/controllers/userController.js
+
+
+export const getUserProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select("-password");
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    console.log("Get User Profile Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch profile",
+    });
+  }
+};
+
+export const addUserAddress = async (req, res) => {
+  try {
+    const {
+      fullName,
+      mobileNumber,
+      flatHouse,
+      areaStreet,
+      landmark,
+      city,
+      state,
+      pincode,
+    } = req.body;
+
+    if (
+      !fullName ||
+      !mobileNumber ||
+      !flatHouse ||
+      !areaStreet ||
+      !city ||
+      !state ||
+      !pincode
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Please fill all required address fields",
+      });
+    }
+
+    const fullAddress = `${flatHouse}, ${areaStreet}${
+      landmark ? `, ${landmark}` : ""
+    }, ${city}, ${state} - ${pincode}`;
+
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const alreadyExists = user.addresses.some(
+      (address) =>
+        address.fullAddress?.trim().toLowerCase() ===
+        fullAddress.trim().toLowerCase()
+    );
+
+    if (alreadyExists) {
+      return res.status(400).json({
+        success: false,
+        message: "Address already exists",
+      });
+    }
+
+    const newAddress = {
+      fullName,
+      mobileNumber,
+      flatHouse,
+      areaStreet,
+      landmark,
+      city,
+      state,
+      pincode,
+      fullAddress,
+    };
+
+    user.addresses.push(newAddress);
+
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Address added successfully",
+      addresses: user.addresses,
+    });
+  } catch (error) {
+    console.log("Add Address Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to add address",
+    });
+  }
+};

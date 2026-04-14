@@ -1,0 +1,91 @@
+
+.filterCard {
+  background: #fff;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+  border: 1px solid #edf0f5;
+}
+
+.filterHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 25px;
+  color: #182848;
+}
+
+.searchBox {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.searchBox input,
+.filterGroup select {
+  width: 100%;
+  padding: 14px 14px 14px 42px;
+  border: 1px solid #d8e0ea;
+  border-radius: 14px;
+  outline: none;
+  font-size: 14px;
+}
+
+.filterGroup select {
+  padding-left: 14px;
+}
+
+.searchIcon {
+  position: absolute;
+  top: 15px;
+  left: 14px;
+  color: #7d8ca0;
+}
+
+.filterGroup {
+  margin-bottom: 20px;
+}
+
+.filterGroup label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #39485a;
+}
+
+.clearBtn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #182848, #4b6cb7);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Add in src/styles/ProductFilters.module.css */
+
+.priceSection {
+  margin-bottom: 20px;
+}
+
+.priceSection label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #39485a;
+}
+
+.priceInputs {
+  display: flex;
+  gap: 10px;
+}
+
+.priceInputs input {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #d8e0ea;
+  border-radius: 14px;
+  outline: none;
+  font-size: 14px;
+}

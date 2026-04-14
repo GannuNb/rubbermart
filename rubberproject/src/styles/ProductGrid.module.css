@@ -1,0 +1,201 @@
+/* src/styles/ProductGrid.module.css */
+
+.productSection {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 28px;
+  padding: 24px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+  border: 1px solid #edf0f5;
+}
+
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #edf0f5;
+}
+
+.topBar h2 {
+  color: #182848;
+  font-size: 22px;
+  margin: 0;
+}
+
+.topBar span {
+  color: #6f7d8d;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+  align-items: start;
+}
+
+.card {
+  background: #fff;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid #edf0f5;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.1);
+}
+
+.imageWrapper {
+  position: relative;
+  height: 220px;
+}
+
+.imageWrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.stockBadge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  padding: 8px 14px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.available {
+  background: #dff7e8;
+  color: #118a45;
+}
+
+.soldout {
+  background: #ffe0e0;
+  color: #d22c2c;
+}
+
+.cardBody {
+  padding: 20px;
+}
+
+.category {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: #edf3ff;
+  color: #2f5fd0;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.cardBody h3 {
+  margin: 0 0 14px;
+  color: #182848;
+  font-size: 20px;
+  line-height: 1.4;
+}
+
+.infoRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #5e6d7c;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.bottomRow {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid #edf0f5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.priceLabel {
+  font-size: 12px;
+  color: #7c8a98;
+  margin-bottom: 4px;
+}
+
+.bottomRow h4 {
+  margin: 0;
+  color: #182848;
+  font-size: 20px;
+}
+
+.detailsBtn {
+  border: none;
+  background: linear-gradient(135deg, #182848, #4b6cb7);
+  color: white;
+  padding: 12px 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s ease;
+}
+
+.detailsBtn:hover {
+  transform: translateY(-2px);
+}
+
+.loaderWrapper {
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+}
+
+.loaderIcon {
+  font-size: 42px;
+  color: #4b6cb7;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.errorBox,
+.emptyBox {
+  padding: 40px;
+  border-radius: 24px;
+  text-align: center;
+  border: 1px dashed #d8e0ea;
+  background: #f9fbfd;
+}
+
+.errorBox p {
+  color: red;
+  font-weight: 600;
+}
+
+.emptyBox h3 {
+  color: #182848;
+  margin-bottom: 10px;
+}
+
+.emptyBox p {
+  color: #6f7d8d;
+}

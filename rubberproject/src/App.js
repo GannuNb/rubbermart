@@ -23,7 +23,8 @@ import SellerProfile from "./pages/seller/SellerProfile";
 
 //buyer
 import Home from "./pages/Home";
-
+import OurProducts from "./pages/OurProducts";
+import ProductDetails from "./pages/ProductDetails";
 
 //Admin
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -50,6 +51,8 @@ function AppContent() {
 
         {/* buyer */}
         <Route path="/home"  element={<ProtectedRoute allowedRole="buyer"><Home /></ProtectedRoute>} />
+        <Route path="/our-products" element={<OurProducts />} />
+        <Route path="/product/:productId" element={<ProductDetails />} />
 
         {/* seller */}
         <Route path="/seller-dashboard" element={<ProtectedRoute allowedRole="seller"><SellerDashboard /></ProtectedRoute>}/>
