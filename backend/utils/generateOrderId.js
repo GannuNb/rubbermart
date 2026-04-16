@@ -1,20 +1,36 @@
-// utils/generateOrderId.js
+// backend/utils/generateOrderId.js
 
 import Order from "../models/orderModel.js";
 
 const generateOrderId = async () => {
   const currentDate = new Date();
 
+  const currentMonth = currentDate.getMonth() + 1;
   const currentYear = currentDate.getFullYear();
 
-  const shortCurrentYear = currentYear.toString().slice(-2);
-  const shortNextYear = (currentYear + 1).toString().slice(-2);
+  let financialStartYear;
+  let financialEndYear;
 
-  const financialYearCode = `${shortCurrentYear}_${shortNextYear}`;
+  if (currentMonth >= 4) {
+    financialStartYear = currentYear;
+    financialEndYear = currentYear + 1;
+  } else {
+    financialStartYear = currentYear - 1;
+    financialEndYear = currentYear;
+  }
 
-  const totalOrders = await Order.countDocuments();
+  const shortStartYear = financialStartYear.toString().slice(-2);
+  const shortEndYear = financialEndYear.toString().slice(-2);
 
-  const nextOrderNumber = totalOrders + 1;
+  const financialYearCode = `${shortStartYear}_${shortEndYear}`;
+
+  const existingOrdersCount = await Order.countDocuments({
+    orderId: {
+      $regex: `^RSM_${financialYearCode}_`,
+    },
+  });
+
+  const nextOrderNumber = existingOrdersCount + 1;
 
   const formattedOrderNumber = String(nextOrderNumber).padStart(2, "0");
 

@@ -1,12 +1,15 @@
 // src/components/ProductOrderPanel.js
 
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FaBuilding, FaBarcode } from "react-icons/fa";
 import styles from "../styles/ProductOrderPanel.module.css";
 import AddressPopup from "./AddressPopup";
 import AddressDropdown from "./AddressDropdown";
 
 function ProductOrderPanel({ singleProduct }) {
+  const navigate = useNavigate();
+
   const [buyerAddresses, setBuyerAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState("");
   const [requiredQuantity, setRequiredQuantity] = useState("");
@@ -207,6 +210,39 @@ function ProductOrderPanel({ singleProduct }) {
     }
   };
 
+  const handleContinueToOrder = () => {
+    const selectedAddressObject = buyerAddresses.find(
+      (address) => address.fullAddress === selectedAddress
+    );
+
+    navigate("/order-summary", {
+      state: {
+        sellerId: singleProduct.seller?._id,
+        sellerName:
+          singleProduct.seller?.businessProfile?.companyName || "",
+        shippingAddress: selectedAddressObject,
+        orderItems: [
+          {
+            product: singleProduct._id,
+            seller: singleProduct.seller?._id,
+            category: singleProduct.category,
+            application: singleProduct.application,
+            requiredQuantity: Number(requiredQuantity),
+            pricePerMT: Number(singleProduct.pricePerMT),
+            subtotal:
+              Number(requiredQuantity) *
+              Number(singleProduct.pricePerMT),
+            loadingLocation: singleProduct.loadingLocation,
+            hsnCode: singleProduct.hsnCode,
+            productImage:
+              singleProduct.images?.[0]?.image || "",
+            fullProduct: singleProduct,
+          },
+        ],
+      },
+    });
+  };
+
   return (
     <>
       <div className={styles.sidePanelWrapper}>
@@ -282,6 +318,7 @@ function ProductOrderPanel({ singleProduct }) {
 
           <button
             className={styles.buyButton}
+            onClick={handleContinueToOrder}
             disabled={
               !selectedAddress ||
               !requiredQuantity ||

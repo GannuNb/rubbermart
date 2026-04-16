@@ -25,6 +25,11 @@ import SellerProfile from "./pages/seller/SellerProfile";
 import Home from "./pages/Home";
 import OurProducts from "./pages/OurProducts";
 import ProductDetails from "./pages/ProductDetails";
+import OrderSummary from "./pages/OrderSummary";
+import SellerProductsBySeller from "./pages/SellerProductsBySeller";
+import PlaceOrder from "./pages/PlaceOrder";
+import OrderSuccess from "./pages/OrderSuccess";
+
 
 //Admin
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -53,6 +58,10 @@ function AppContent() {
         <Route path="/home"  element={<ProtectedRoute allowedRole="buyer"><Home /></ProtectedRoute>} />
         <Route path="/our-products" element={<OurProducts />} />
         <Route path="/product/:productId" element={<ProductDetails />} />
+        <Route path="/order-summary" element={<OrderSummary />} />
+        <Route path="/seller-products/:sellerId" element={<SellerProductsBySeller />} />
+        <Route path="/place-order" element={<PlaceOrder />} />
+        <Route path="/order-success" element={<OrderSuccess />} />
 
         {/* seller */}
         <Route path="/seller-dashboard" element={<ProtectedRoute allowedRole="seller"><SellerDashboard /></ProtectedRoute>}/>

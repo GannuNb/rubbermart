@@ -75,3 +75,48 @@ export const getSingleApprovedProduct = async (req, res) => {
     });
   }
 };
+
+
+
+// backend/controllers/buyerProductController.js
+
+export const getBuyerProducts = async (req, res) => {
+  try {
+    const { sellerId } = req.query;
+
+    let filter = {
+      status: "approved",
+    };
+
+    if (sellerId) {
+      filter.seller = sellerId;
+    }
+
+    const products = await Product.find(filter)
+      .populate(
+        "seller",
+        "fullName email businessProfile addresses profileImage"
+      )
+      .sort({ createdAt: -1 });
+
+    const formattedProducts = products.map((product) => ({
+      ...product._doc,
+      images: product.images.map((img) => ({
+        contentType: img.contentType,
+        image: `data:${img.contentType};base64,${img.data.toString("base64")}`,
+      })),
+    }));
+
+    return res.status(200).json({
+      success: true,
+      products: formattedProducts,
+    });
+  } catch (error) {
+    console.log("Get Buyer Products Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch products",
+    });
+  }
+};

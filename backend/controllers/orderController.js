@@ -2,129 +2,120 @@
 
 import Order from "../models/orderModel.js";
 import Product from "../models/Product.js";
-import User from "../models/User.js";
 import generateOrderId from "../utils/generateOrderId.js";
+import generateInvoicePdf from "../utils/generateInvoicePdf.js";
+import sendOrderInvoiceEmail from "../utils/sendOrderInvoiceEmail.js";
 
 export const createOrder = async (req, res) => {
   try {
+    const buyerId = req.user._id;
+
     const {
-      sellerId,
-      selectedAddress,
-      requiredQuantity,
-      productId,
-    } = req.body;
-
-    if (
-      !sellerId ||
-      !selectedAddress ||
-      !requiredQuantity ||
-      !productId
-    ) {
-      return res.status(400).json({
-        success: false,
-        message: "Please provide all required fields",
-      });
-    }
-
-    const product = await Product.findById(productId).populate(
-      "seller",
-      "businessProfile fullName"
-    );
-
-    if (!product) {
-      return res.status(404).json({
-        success: false,
-        message: "Product not found",
-      });
-    }
-
-    if (Number(requiredQuantity) > Number(product.quantity)) {
-      return res.status(400).json({
-        success: false,
-        message: "Required quantity exceeds available stock",
-      });
-    }
-
-    const buyer = await User.findById(req.user._id);
-
-    if (!buyer) {
-      return res.status(404).json({
-        success: false,
-        message: "Buyer not found",
-      });
-    }
-
-    const shippingAddress = buyer.addresses.find(
-      (address) => address.fullAddress === selectedAddress
-    );
-
-    if (!shippingAddress) {
-      return res.status(400).json({
-        success: false,
-        message: "Selected address not found",
-      });
-    }
-
-    const taxableAmount =
-      Number(requiredQuantity) * Number(product.pricePerMT);
-
-    const gstAmount = taxableAmount * 0.18;
-
-    const totalAmount = taxableAmount + gstAmount;
-
-    const orderId = await generateOrderId();
-
-    const firstProductImage = product.images?.[0];
-
-    const newOrder = await Order.create({
-      orderId,
-      buyer: req.user._id,
-      seller: sellerId,
-
-      shippingAddress: {
-        fullName: shippingAddress.fullName,
-        mobileNumber: shippingAddress.mobileNumber,
-        flatHouse: shippingAddress.flatHouse,
-        areaStreet: shippingAddress.areaStreet,
-        landmark: shippingAddress.landmark,
-        city: shippingAddress.city,
-        state: shippingAddress.state,
-        pincode: shippingAddress.pincode,
-        fullAddress: shippingAddress.fullAddress,
-      },
-
-      orderItems: [
-        {
-          product: product._id,
-          seller: product.seller._id,
-          category: product.category,
-          application: product.application,
-
-          productImage: firstProductImage
-            ? {
-                data: firstProductImage.data,
-                contentType: firstProductImage.contentType,
-                originalName: "product-image",
-              }
-            : null,
-
-          requiredQuantity: Number(requiredQuantity),
-          pricePerMT: Number(product.pricePerMT),
-          loadingLocation: product.loadingLocation,
-          hsnCode: product.hsnCode,
-          subtotal: taxableAmount,
-        },
-      ],
-
+      seller,
+      shippingAddress,
+      orderItems,
       taxableAmount,
       gstAmount,
       totalAmount,
+    } = req.body;
+
+    if (!seller) {
+      return res.status(400).json({
+        success: false,
+        message: "Seller is required",
+      });
+    }
+
+    if (!shippingAddress || !shippingAddress.fullAddress) {
+      return res.status(400).json({
+        success: false,
+        message: "Shipping address is required",
+      });
+    }
+
+    if (!orderItems || orderItems.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "At least one product is required",
+      });
+    }
+
+    const validatedOrderItems = [];
+
+    for (const item of orderItems) {
+      const product = await Product.findById(item.product).populate("seller");
+
+      if (!product) {
+        return res.status(404).json({
+          success: false,
+          message: `Product not found for ID ${item.product}`,
+        });
+      }
+
+      if (Number(item.requiredQuantity) > Number(product.quantity)) {
+        return res.status(400).json({
+          success: false,
+          message: `${product.application} quantity exceeds available stock`,
+        });
+      }
+
+      validatedOrderItems.push({
+        product: product._id,
+        seller: product.seller._id,
+        category: product.category,
+        application: product.application,
+
+        productImage: product.images?.[0]
+          ? {
+              data: product.images[0].data,
+              contentType: product.images[0].contentType,
+              originalName: product.images[0].originalName || "product-image",
+            }
+          : undefined,
+
+        requiredQuantity: Number(item.requiredQuantity),
+        pricePerMT: Number(product.pricePerMT),
+        loadingLocation: product.loadingLocation,
+        hsnCode: product.hsnCode,
+        subtotal:
+          Number(item.requiredQuantity) * Number(product.pricePerMT),
+      });
+    }
+
+    const orderId = await generateOrderId();
+
+    const order = await Order.create({
+      orderId,
+      buyer: buyerId,
+      seller,
+      shippingAddress,
+      orderItems: validatedOrderItems,
+      taxableAmount,
+      gstAmount,
+      totalAmount,
+      orderStatus: "pending",
+    });
+
+    const populatedOrder = await Order.findById(order._id)
+      .populate("buyer", "fullName email")
+      .populate(
+        "seller",
+        "fullName email businessProfile.companyName businessProfile.companyId"
+      );
+
+    const invoicePdfBuffer = await generateInvoicePdf(populatedOrder);
+
+    await sendOrderInvoiceEmail({
+      buyerEmail: populatedOrder.buyer.email,
+      buyerName: populatedOrder.buyer.fullName,
+      orderId: populatedOrder.orderId,
+      invoicePdfBuffer,
     });
 
     return res.status(201).json({
       success: true,
-      message: "Order created successfully",
-      order: newOrder,
+      message: "Order placed successfully",
+      order: populatedOrder,
     });
   } catch (error) {
     console.log("Create Order Error:", error);
