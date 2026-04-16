@@ -14,9 +14,8 @@ function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { loginLoading, loginError, loginSuccessMessage, user } = useSelector(
-    (state) => state.auth,
-  );
+  const { loginLoading, loginError, loginSuccessMessage, user } =
+    useSelector((state) => state.auth);
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -32,6 +31,7 @@ function Login() {
     password: "",
   });
 
+  // ✅ Show success alert
   useEffect(() => {
     if (loginSuccessMessage) {
       setAlertData({
@@ -43,6 +43,7 @@ function Login() {
     }
   }, [loginSuccessMessage]);
 
+  // ✅ Show error alert
   useEffect(() => {
     if (loginError) {
       setAlertData({
@@ -54,6 +55,20 @@ function Login() {
     }
   }, [loginError]);
 
+  // ✅ 🔥 MAIN FIX: Navigate when user is set
+  useEffect(() => {
+    if (user) {
+      if (user.role === "admin") {
+        navigate("/admin-dashboard");
+      } else if (user.role === "seller") {
+        navigate("/seller-dashboard");
+      } else {
+        navigate("/home"); // buyer
+      }
+    }
+  }, [user, navigate]);
+
+  // ✅ Handle input change
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -61,11 +76,12 @@ function Login() {
     });
   };
 
+  // ✅ Google login
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
         const response = await fetch(
-          `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${tokenResponse.access_token}`,
+          `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${tokenResponse.access_token}`
         );
 
         const userData = await response.json();
@@ -73,7 +89,7 @@ function Login() {
         dispatch(
           googleLoginThunk({
             email: userData.email,
-          }),
+          })
         );
       } catch (error) {
         setAlertData({
@@ -84,7 +100,6 @@ function Login() {
         });
       }
     },
-
     onError: () => {
       setAlertData({
         show: true,
@@ -95,6 +110,7 @@ function Login() {
     },
   });
 
+  // ✅ Handle form submit
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -108,37 +124,23 @@ function Login() {
       return;
     }
 
-    dispatch(
-      loginThunk({
-        email: formData.email,
-        password: formData.password,
-      }),
-    );
+    dispatch(loginThunk(formData));
   };
 
   return (
     <>
+      {/* ✅ Alert */}
       {alertData.show && (
         <CustomAlert
           type={alertData.type}
           title={alertData.title}
           message={alertData.message}
-          onClose={() => {
+          onClose={() =>
             setAlertData((prev) => ({
               ...prev,
               show: false,
-            }));
-
-            if (alertData.type === "success") {
-              if (user?.role === "admin") {
-                navigate("/admin-dashboard");
-              } else if (user?.role === "seller") {
-                navigate("/seller-dashboard");
-              } else {
-                navigate("/");
-              }
-            }
-          }}
+            }))
+          }
         />
       )}
 
@@ -147,7 +149,11 @@ function Login() {
           <h1>Login</h1>
           <p>Login to continue to your account</p>
 
-          <form className={styles.buyerSignupForm} onSubmit={handleSubmit}>
+          <form
+            className={styles.buyerSignupForm}
+            onSubmit={handleSubmit}
+          >
+            {/* Email */}
             <div className={styles.inputGroup}>
               <label>Email</label>
               <input
@@ -159,6 +165,7 @@ function Login() {
               />
             </div>
 
+            {/* Password */}
             <div className={styles.inputGroup}>
               <label>Password</label>
 
@@ -180,26 +187,32 @@ function Login() {
               </div>
             </div>
 
+            {/* Submit */}
             <button type="submit" className={styles.signupBtn}>
               {loginLoading ? "Logging In..." : "Login"}
             </button>
 
+            {/* Divider */}
             <div className={styles.divider}>
               <span>OR</span>
             </div>
 
+            {/* Google Login */}
             <button
               type="button"
               className={styles.googleBtn}
-              onClick={() => handleGoogleLogin()}
+              onClick={handleGoogleLogin}
             >
               <FcGoogle className={styles.googleIcon} />
               Login with Google
             </button>
 
+            {/* Signup */}
             <p className={styles.loginText}>
               Don't have an account?{" "}
-              <span onClick={() => navigate("/signup")}>Sign up here</span>
+              <span onClick={() => navigate("/signup")}>
+                Sign up here
+              </span>
             </p>
           </form>
         </div>
