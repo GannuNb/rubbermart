@@ -10,6 +10,7 @@ import { uploadDocumentsErrorHandler } from "./middlewares/uploadDocumentsErrorH
 import sellerProductRoutes from "./routes/sellerProductRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import buyerProductRoutes from "./routes/buyerProductRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
 
 dotenv.config();
 
@@ -41,6 +42,7 @@ app.use("/api/seller", sellerProductRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/products", sellerProductRoutes);
 app.use("/api/buyer-products", buyerProductRoutes);
+app.use("/api/orders", orderRoutes);
 
 app.use(uploadDocumentsErrorHandler);
 
