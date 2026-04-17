@@ -16,6 +16,7 @@ function ProductOrderPanel({ singleProduct }) {
   const [showAddressPopup, setShowAddressPopup] = useState(false);
   const [saveAddressLoading, setSaveAddressLoading] = useState(false);
   const [buyerAddressesLoading, setBuyerAddressesLoading] = useState(true);
+  const [buyerProfile, setBuyerProfile] = useState(null);
 
   const [addressForm, setAddressForm] = useState({
     fullName: "",
@@ -47,6 +48,8 @@ function ProductOrderPanel({ singleProduct }) {
         const data = await response.json();
 
         if (response.ok) {
+          setBuyerProfile(data.user);
+
           let allAddresses = (data.user?.addresses || []).map((address) => ({
             ...address,
             fullAddress:
@@ -142,42 +145,6 @@ function ProductOrderPanel({ singleProduct }) {
             }`,
         }));
 
-        const profileResponse = await fetch(
-          `${process.env.REACT_APP_API_URL}/api/user/profile`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        const profileData = await profileResponse.json();
-
-        const shippingAddress =
-          profileData.user?.businessProfile?.shippingAddress;
-
-        if (
-          shippingAddress &&
-          !updatedAddresses.some(
-            (address) => address.fullAddress === shippingAddress
-          )
-        ) {
-          updatedAddresses = [
-            {
-              fullName: profileData.user.fullName,
-              mobileNumber: "",
-              flatHouse: "",
-              areaStreet: "",
-              landmark: "",
-              city: "",
-              state: "",
-              pincode: "",
-              fullAddress: shippingAddress,
-            },
-            ...updatedAddresses,
-          ];
-        }
-
         setBuyerAddresses(updatedAddresses);
 
         const latestAddress =
@@ -211,35 +178,61 @@ function ProductOrderPanel({ singleProduct }) {
   };
 
   const handleContinueToOrder = () => {
+    const quantity = Number(requiredQuantity);
+
+    if (!selectedAddress) {
+      alert("Please select delivery address");
+      return;
+    }
+
+    if (!quantity || quantity <= 0) {
+      alert("Please enter valid quantity");
+      return;
+    }
+
+    if (quantity > Number(singleProduct.quantity)) {
+      alert("Required quantity cannot exceed available stock");
+      return;
+    }
+
     const selectedAddressObject = buyerAddresses.find(
       (address) => address.fullAddress === selectedAddress
     );
 
+    if (!selectedAddressObject) {
+      alert("Selected address not found");
+      return;
+    }
+
+    const orderData = {
+      sellerId: singleProduct.seller?._id || "",
+      sellerName:
+        singleProduct.seller?.businessProfile?.companyName || "",
+      shippingAddress: selectedAddressObject,
+      buyerGstNumber:
+        buyerProfile?.businessProfile?.gstNumber || "",
+      businessProfile: buyerProfile?.businessProfile || {},
+      orderItems: [
+        {
+          product: singleProduct._id || "",
+          seller: singleProduct.seller?._id || "",
+          category: singleProduct.category || "",
+          application: singleProduct.application || "",
+          requiredQuantity: quantity,
+          pricePerMT: Number(singleProduct.pricePerMT || 0),
+          subtotal: quantity * Number(singleProduct.pricePerMT || 0),
+          loadingLocation: singleProduct.loadingLocation || "",
+          hsnCode: singleProduct.hsnCode || "",
+          productImage: singleProduct.images?.[0]?.image || "",
+          availableQuantity: Number(singleProduct.quantity || 0),
+        },
+      ],
+    };
+
+    console.log("Order Data Sent:", orderData);
+
     navigate("/order-summary", {
-      state: {
-        sellerId: singleProduct.seller?._id,
-        sellerName:
-          singleProduct.seller?.businessProfile?.companyName || "",
-        shippingAddress: selectedAddressObject,
-        orderItems: [
-          {
-            product: singleProduct._id,
-            seller: singleProduct.seller?._id,
-            category: singleProduct.category,
-            application: singleProduct.application,
-            requiredQuantity: Number(requiredQuantity),
-            pricePerMT: Number(singleProduct.pricePerMT),
-            subtotal:
-              Number(requiredQuantity) *
-              Number(singleProduct.pricePerMT),
-            loadingLocation: singleProduct.loadingLocation,
-            hsnCode: singleProduct.hsnCode,
-            productImage:
-              singleProduct.images?.[0]?.image || "",
-            fullProduct: singleProduct,
-          },
-        ],
-      },
+      state: orderData,
     });
   };
 

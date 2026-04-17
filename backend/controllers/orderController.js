@@ -15,8 +15,13 @@ export const createOrder = async (req, res) => {
       shippingAddress,
       orderItems,
       taxableAmount,
+      cgstAmount,
+      sgstAmount,
+      igstAmount,
       gstAmount,
       totalAmount,
+      buyerGstNumber,
+      gstType,
     } = req.body;
 
     if (!seller) {
@@ -59,11 +64,19 @@ export const createOrder = async (req, res) => {
         });
       }
 
+      const subtotal =
+        Number(item.requiredQuantity) * Number(product.pricePerMT);
+
+      const itemGstAmount = subtotal * 0.18;
+
       validatedOrderItems.push({
         product: product._id,
         seller: product.seller._id,
         category: product.category,
         application: product.application,
+        productName: product.productName || product.application,
+
+        subProducts: product.subProducts || [],
 
         productImage: product.images?.[0]
           ? {
@@ -77,10 +90,18 @@ export const createOrder = async (req, res) => {
         pricePerMT: Number(product.pricePerMT),
         loadingLocation: product.loadingLocation,
         hsnCode: product.hsnCode,
-        subtotal:
-          Number(item.requiredQuantity) * Number(product.pricePerMT),
+
+        subtotal,
+        gstAmount: itemGstAmount,
       });
     }
+
+    const finalTaxableAmount = Number(taxableAmount || 0);
+    const finalCgstAmount = Number(cgstAmount || 0);
+    const finalSgstAmount = Number(sgstAmount || 0);
+    const finalIgstAmount = Number(igstAmount || 0);
+    const finalGstAmount = Number(gstAmount || 0);
+    const finalTotalAmount = Number(totalAmount || 0);
 
     const orderId = await generateOrderId();
 
@@ -90,18 +111,39 @@ export const createOrder = async (req, res) => {
       seller,
       shippingAddress,
       orderItems: validatedOrderItems,
-      taxableAmount,
-      gstAmount,
-      totalAmount,
+
+      taxableAmount: finalTaxableAmount,
+
+      gstType: gstType === "cgst_sgst" ? "cgst_sgst" : "igst",
+
+      buyerGstNumber: buyerGstNumber || "",
+
+      cgstAmount: finalCgstAmount,
+      sgstAmount: finalSgstAmount,
+      igstAmount: finalIgstAmount,
+      gstAmount: finalGstAmount,
+
+      totalAmount: finalTotalAmount,
+
+      buyerPendingAmount: finalTotalAmount,
+      sellerPendingAmount: finalTotalAmount,
+
       orderStatus: "pending",
     });
 
-    const populatedOrder = await Order.findById(order._id)
-      .populate("buyer", "fullName email")
-      .populate(
-        "seller",
-        "fullName email businessProfile.companyName businessProfile.companyId"
-      );
+    const populatedOrder = await Order.findById(order._id).populate(
+      "buyer",
+      `
+        fullName
+        email
+        businessProfile.companyName
+        businessProfile.phoneNumber
+        businessProfile.email
+        businessProfile.gstNumber
+        businessProfile.billingAddress
+        businessProfile.shippingAddress
+      `
+    );
 
     const invoicePdfBuffer = await generateInvoicePdf(populatedOrder);
 
@@ -123,6 +165,7 @@ export const createOrder = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Failed to create order",
+      error: error.message,
     });
   }
 };

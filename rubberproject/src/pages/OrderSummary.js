@@ -11,6 +11,9 @@ function OrderSummary() {
   const sellerId = location.state?.sellerId || "";
   const sellerName = location.state?.sellerName || "";
   const shippingAddress = location.state?.shippingAddress || {};
+  const buyerGstNumber = location.state?.buyerGstNumber || "";
+
+  const isMaharashtraGST = buyerGstNumber.startsWith("27");
 
   const [orderItems, setOrderItems] = useState(
     location.state?.orderItems || []
@@ -22,9 +25,21 @@ function OrderSummary() {
     }, 0);
   }, [orderItems]);
 
+  const cgstAmount = useMemo(() => {
+    return isMaharashtraGST ? (taxableAmount * 9) / 100 : 0;
+  }, [taxableAmount, isMaharashtraGST]);
+
+  const sgstAmount = useMemo(() => {
+    return isMaharashtraGST ? (taxableAmount * 9) / 100 : 0;
+  }, [taxableAmount, isMaharashtraGST]);
+
+  const igstAmount = useMemo(() => {
+    return !isMaharashtraGST ? (taxableAmount * 18) / 100 : 0;
+  }, [taxableAmount, isMaharashtraGST]);
+
   const gstAmount = useMemo(() => {
-    return (taxableAmount * 18) / 100;
-  }, [taxableAmount]);
+    return cgstAmount + sgstAmount + igstAmount;
+  }, [cgstAmount, sgstAmount, igstAmount]);
 
   const totalAmount = useMemo(() => {
     return taxableAmount + gstAmount;
@@ -33,16 +48,23 @@ function OrderSummary() {
   const handleQuantityChange = (index, value) => {
     const quantity = Number(value);
 
-    if (!quantity || quantity <= 0) {
-      return;
-    }
+    if (!quantity || quantity <= 0) return;
 
     const updatedItems = [...orderItems];
 
-    updatedItems[index].requiredQuantity = quantity;
+    const maxQuantity =
+      Number(updatedItems[index].availableQuantity) || 999999;
 
-    updatedItems[index].subtotal =
-      quantity * Number(updatedItems[index].pricePerMT);
+    if (quantity > maxQuantity) {
+      alert(`Quantity cannot exceed ${maxQuantity} MT`);
+      return;
+    }
+
+    updatedItems[index] = {
+      ...updatedItems[index],
+      requiredQuantity: quantity,
+      subtotal: quantity * Number(updatedItems[index].pricePerMT),
+    };
 
     setOrderItems(updatedItems);
   };
@@ -58,7 +80,8 @@ function OrderSummary() {
         sellerId,
         sellerName,
         shippingAddress,
-        existingOrderItems: orderItems,
+        buyerGstNumber,
+        orderItems,
       },
     });
   };
@@ -69,8 +92,12 @@ function OrderSummary() {
         sellerId,
         sellerName,
         shippingAddress,
+        buyerGstNumber,
         orderItems,
         taxableAmount,
+        cgstAmount,
+        sgstAmount,
+        igstAmount,
         gstAmount,
         totalAmount,
       },
@@ -109,6 +136,20 @@ function OrderSummary() {
           <div className={styles.infoRow}>
             <span className={styles.infoLabel}>Seller Name</span>
             <span className={styles.infoValue}>{sellerName}</span>
+          </div>
+
+          <div className={styles.infoRow}>
+            <span className={styles.infoLabel}>Buyer GST Number</span>
+            <span className={styles.infoValue}>
+              {buyerGstNumber || "Not Available"}
+            </span>
+          </div>
+
+          <div className={styles.infoRow}>
+            <span className={styles.infoLabel}>GST Type</span>
+            <span className={styles.infoValue}>
+              {isMaharashtraGST ? "CGST + SGST" : "IGST"}
+            </span>
           </div>
         </div>
 
@@ -238,10 +279,24 @@ function OrderSummary() {
             <span>₹{Number(taxableAmount).toLocaleString()}</span>
           </div>
 
-          <div className={styles.summaryRow}>
-            <span>GST (18%)</span>
-            <span>₹{Number(gstAmount).toLocaleString()}</span>
-          </div>
+          {isMaharashtraGST ? (
+            <>
+              <div className={styles.summaryRow}>
+                <span>CGST (9%)</span>
+                <span>₹{Number(cgstAmount).toLocaleString()}</span>
+              </div>
+
+              <div className={styles.summaryRow}>
+                <span>SGST (9%)</span>
+                <span>₹{Number(sgstAmount).toLocaleString()}</span>
+              </div>
+            </>
+          ) : (
+            <div className={styles.summaryRow}>
+              <span>IGST (18%)</span>
+              <span>₹{Number(igstAmount).toLocaleString()}</span>
+            </div>
+          )}
 
           <div className={styles.summaryTotal}>
             <span>Total Amount</span>

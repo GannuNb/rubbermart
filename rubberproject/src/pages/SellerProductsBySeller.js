@@ -13,9 +13,10 @@ function SellerProductsBySeller() {
   const [loading, setLoading] = useState(true);
   const [selectedQuantities, setSelectedQuantities] = useState({});
 
-  const existingOrderItems = location.state?.existingOrderItems || [];
-  const shippingAddress = location.state?.shippingAddress;
+  const existingOrderItems = location.state?.orderItems || [];
+  const shippingAddress = location.state?.shippingAddress || {};
   const sellerName = location.state?.sellerName || "Seller";
+  const buyerGstNumber = location.state?.buyerGstNumber || "";
 
   useEffect(() => {
     const fetchSellerProducts = async () => {
@@ -54,19 +55,35 @@ function SellerProductsBySeller() {
       return;
     }
 
+    if (quantity > Number(product.quantity)) {
+      alert("Quantity cannot exceed available stock");
+      return;
+    }
+
     let updatedOrderItems = [...existingOrderItems];
 
     const existingProductIndex = updatedOrderItems.findIndex(
-      (item) => item.product === product._id
+      (item) => String(item.product) === String(product._id)
     );
 
     if (existingProductIndex !== -1) {
-      updatedOrderItems[existingProductIndex].requiredQuantity =
-        updatedOrderItems[existingProductIndex].requiredQuantity + quantity;
+      const existingItem = updatedOrderItems[existingProductIndex];
 
-      updatedOrderItems[existingProductIndex].subtotal =
-        updatedOrderItems[existingProductIndex].requiredQuantity *
-        updatedOrderItems[existingProductIndex].pricePerMT;
+      const updatedQuantity =
+        Number(existingItem.requiredQuantity) + quantity;
+
+      if (updatedQuantity > Number(product.quantity)) {
+        alert(
+          `Total quantity cannot exceed available stock (${product.quantity} MT)`
+        );
+        return;
+      }
+
+      updatedOrderItems[existingProductIndex] = {
+        ...existingItem,
+        requiredQuantity: updatedQuantity,
+        subtotal: updatedQuantity * Number(existingItem.pricePerMT),
+      };
     } else {
       updatedOrderItems.push({
         product: product._id,
@@ -79,6 +96,7 @@ function SellerProductsBySeller() {
         loadingLocation: product.loadingLocation,
         hsnCode: product.hsnCode,
         productImage: product.images?.[0]?.image || "",
+        availableQuantity: Number(product.quantity || 0),
       });
     }
 
@@ -87,6 +105,7 @@ function SellerProductsBySeller() {
         sellerId,
         sellerName,
         shippingAddress,
+        buyerGstNumber,
         orderItems: updatedOrderItems,
       },
     });
@@ -107,61 +126,83 @@ function SellerProductsBySeller() {
       </div>
 
       <div className={styles.productGrid}>
-        {products.map((product) => (
-          <div className={styles.productCard} key={product._id}>
-            <div className={styles.imageWrapper}>
-              <img
-                src={product.images?.[0]?.image}
-                alt={product.application}
-                className={styles.productImage}
-              />
+        {products.map((product) => {
+          const alreadyAdded = existingOrderItems.find(
+            (item) => String(item.product) === String(product._id)
+          );
+
+          return (
+            <div className={styles.productCard} key={product._id}>
+              <div className={styles.imageWrapper}>
+                <img
+                  src={
+                    product.images?.[0]?.image ||
+                    "https://via.placeholder.com/200x200?text=No+Image"
+                  }
+                  alt={product.application}
+                  className={styles.productImage}
+                  onError={(e) => {
+                    e.target.src =
+                      "https://via.placeholder.com/200x200?text=No+Image";
+                  }}
+                />
+              </div>
+
+              <div className={styles.productContent}>
+                <span className={styles.categoryBadge}>
+                  {product.category}
+                </span>
+
+                <h3>{product.application}</h3>
+
+                <div className={styles.infoRow}>
+                  <span>Price Per MT</span>
+                  <strong>
+                    ₹{Number(product.pricePerMT).toLocaleString()}
+                  </strong>
+                </div>
+
+                <div className={styles.infoRow}>
+                  <span>Available Quantity</span>
+                  <strong>{product.quantity} MT</strong>
+                </div>
+
+                <div className={styles.infoRow}>
+                  <span>Loading Location</span>
+                  <strong>{product.loadingLocation}</strong>
+                </div>
+
+                <div className={styles.infoRow}>
+                  <span>Already In Order</span>
+                  <strong>
+                    {alreadyAdded
+                      ? `${alreadyAdded.requiredQuantity} MT`
+                      : "0 MT"}
+                  </strong>
+                </div>
+
+                <input
+                  type="number"
+                  min="1"
+                  max={product.quantity}
+                  placeholder="Enter Quantity"
+                  className={styles.quantityInput}
+                  value={selectedQuantities[product._id] || ""}
+                  onChange={(e) =>
+                    handleQuantityChange(product._id, e.target.value)
+                  }
+                />
+
+                <button
+                  className={styles.addButton}
+                  onClick={() => handleAddProduct(product)}
+                >
+                  Add To Order
+                </button>
+              </div>
             </div>
-
-            <div className={styles.productContent}>
-              <span className={styles.categoryBadge}>
-                {product.category}
-              </span>
-
-              <h3>{product.application}</h3>
-
-              <div className={styles.infoRow}>
-                <span>Price Per MT</span>
-                <strong>
-                  ₹{Number(product.pricePerMT).toLocaleString()}
-                </strong>
-              </div>
-
-              <div className={styles.infoRow}>
-                <span>Available Quantity</span>
-                <strong>{product.quantity} MT</strong>
-              </div>
-
-              <div className={styles.infoRow}>
-                <span>Loading Location</span>
-                <strong>{product.loadingLocation}</strong>
-              </div>
-
-              <input
-                type="number"
-                min="1"
-                max={product.quantity}
-                placeholder="Enter Quantity"
-                className={styles.quantityInput}
-                value={selectedQuantities[product._id] || ""}
-                onChange={(e) =>
-                  handleQuantityChange(product._id, e.target.value)
-                }
-              />
-
-              <button
-                className={styles.addButton}
-                onClick={() => handleAddProduct(product)}
-              >
-                Add To Order
-              </button>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

@@ -11,6 +11,7 @@ import sellerProductRoutes from "./routes/sellerProductRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import buyerProductRoutes from "./routes/buyerProductRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
+import testInvoiceRoute from "./routes/testInvoiceRoute.js";
 
 dotenv.config();
 
@@ -43,6 +44,7 @@ app.use("/api/user", userRoutes);
 app.use("/api/products", sellerProductRoutes);
 app.use("/api/buyer-products", buyerProductRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/test", testInvoiceRoute);
 
 app.use(uploadDocumentsErrorHandler);
 

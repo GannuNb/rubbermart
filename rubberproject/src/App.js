@@ -29,7 +29,7 @@ import OrderSummary from "./pages/OrderSummary";
 import SellerProductsBySeller from "./pages/SellerProductsBySeller";
 import PlaceOrder from "./pages/PlaceOrder";
 import OrderSuccess from "./pages/OrderSuccess";
-
+import BuyerProfile from "./pages/BuyerProfile";
 
 //Admin
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -56,6 +56,7 @@ function AppContent() {
 
         {/* buyer */}
         <Route path="/home"  element={<ProtectedRoute allowedRole="buyer"><Home /></ProtectedRoute>} />
+        <Route  path="/buyer/profile"  element={    <ProtectedRoute allowedRoles={["buyer"]}>      <BuyerProfile />    </ProtectedRoute>  }/>
         <Route path="/our-products" element={<OurProducts />} />
         <Route path="/product/:productId" element={<ProductDetails />} />
         <Route path="/order-summary" element={<OrderSummary />} />

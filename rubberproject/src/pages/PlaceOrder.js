@@ -15,9 +15,22 @@ function PlaceOrder() {
   const sellerName = location.state?.sellerName || "";
   const shippingAddress = location.state?.shippingAddress || {};
   const orderItems = location.state?.orderItems || [];
+  const buyerGstNumber = location.state?.buyerGstNumber || "";
 
   const taxableAmount = useMemo(() => {
     return Number(location.state?.taxableAmount || 0);
+  }, [location.state]);
+
+  const cgstAmount = useMemo(() => {
+    return Number(location.state?.cgstAmount || 0);
+  }, [location.state]);
+
+  const sgstAmount = useMemo(() => {
+    return Number(location.state?.sgstAmount || 0);
+  }, [location.state]);
+
+  const igstAmount = useMemo(() => {
+    return Number(location.state?.igstAmount || 0);
   }, [location.state]);
 
   const gstAmount = useMemo(() => {
@@ -27,6 +40,8 @@ function PlaceOrder() {
   const totalAmount = useMemo(() => {
     return Number(location.state?.totalAmount || 0);
   }, [location.state]);
+
+  const isMaharashtraGST = buyerGstNumber.startsWith("27");
 
   const handleConfirmOrder = async () => {
     try {
@@ -59,8 +74,13 @@ function PlaceOrder() {
             shippingAddress,
             orderItems: backendOrderItems,
             taxableAmount: Number(taxableAmount),
+            cgstAmount: Number(cgstAmount),
+            sgstAmount: Number(sgstAmount),
+            igstAmount: Number(igstAmount),
             gstAmount: Number(gstAmount),
             totalAmount: Number(totalAmount),
+            buyerGstNumber,
+            gstType: isMaharashtraGST ? "cgst_sgst" : "igst",
           }),
         }
       );
@@ -112,6 +132,20 @@ function PlaceOrder() {
             <span className={styles.infoLabel}>Seller Name</span>
             <span className={styles.infoValue}>
               {sellerName || "Not Available"}
+            </span>
+          </div>
+
+          <div className={styles.infoRow}>
+            <span className={styles.infoLabel}>Buyer GST Number</span>
+            <span className={styles.infoValue}>
+              {buyerGstNumber || "Not Available"}
+            </span>
+          </div>
+
+          <div className={styles.infoRow}>
+            <span className={styles.infoLabel}>GST Type</span>
+            <span className={styles.infoValue}>
+              {isMaharashtraGST ? "CGST + SGST" : "IGST"}
             </span>
           </div>
         </div>
@@ -221,10 +255,24 @@ function PlaceOrder() {
             <span>₹{Number(taxableAmount).toLocaleString()}</span>
           </div>
 
-          <div className={styles.summaryRow}>
-            <span>GST (18%)</span>
-            <span>₹{Number(gstAmount).toLocaleString()}</span>
-          </div>
+          {isMaharashtraGST ? (
+            <>
+              <div className={styles.summaryRow}>
+                <span>CGST (9%)</span>
+                <span>₹{Number(cgstAmount).toLocaleString()}</span>
+              </div>
+
+              <div className={styles.summaryRow}>
+                <span>SGST (9%)</span>
+                <span>₹{Number(sgstAmount).toLocaleString()}</span>
+              </div>
+            </>
+          ) : (
+            <div className={styles.summaryRow}>
+              <span>IGST (18%)</span>
+              <span>₹{Number(igstAmount).toLocaleString()}</span>
+            </div>
+          )}
 
           <div className={styles.totalRow}>
             <span>Total Amount</span>
