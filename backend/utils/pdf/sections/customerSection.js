@@ -1,72 +1,78 @@
 import { invoiceColors } from "../styles.js";
-
 const { primaryPurple, darkText } = invoiceColors;
 
-export const drawCustomerSection = (doc, order) => {
-  const customerY = 242;
+export const drawCustomerSection = (doc, order, startY) => {
+  let currentY = startY;
+  const startX = 35;
+  const col1Width = 100;
+  const col2Width = 212;
+  const col3Width = 213;
+  const tableWidth = col1Width + col2Width + col3Width;
+  const headerHeight = 25;
 
-  doc.rect(72, 200, 120, 24).fill(primaryPurple);
-  doc.fillColor("#fff").font("Helvetica-Bold").fontSize(9).text("Customer", 105, 208);
+  // 1. Header Backgrounds
+  doc.rect(startX, currentY, col1Width, headerHeight).fill("#F2F2F7");
+  doc.rect(startX + col1Width, currentY, col2Width, headerHeight).fill(primaryPurple);
+  doc.rect(startX + col1Width + col2Width, currentY, col3Width, headerHeight).fill(primaryPurple);
 
-  doc.rect(375, 200, 120, 24).fill(primaryPurple);
-  doc.fillColor("#fff").text("Ship To", 415, 208);
+  // 2. Header Text
+  doc.fillColor(darkText).font("Helvetica-Bold").fontSize(10);
+  doc.text("Details", startX, currentY + 8, { width: col1Width, align: "center" });
+  doc.fillColor("#ffffff").text("Customer", startX + col1Width, currentY + 8, { width: col2Width, align: "center" });
+  doc.text("Ship To", startX + col1Width + col2Width, currentY + 8, { width: col3Width, align: "center" });
 
-  const buyerCompany = order.buyer?.businessProfile?.companyName || "-";
-  const buyerPhone =
-    order.buyer?.businessProfile?.phoneNumber ||
-    order.shippingAddress?.mobileNumber ||
-    "-";
+  currentY += headerHeight;
 
-  const buyerEmail = order.buyer?.email || "-";
+  // 3. Data Rows
+  const labels = ["Name", "Company", "Address", "Phone", "E-mail", "GSTN"];
+  const buyerData = [
+    order.buyer?.fullName || "-",
+    order.buyer?.businessProfile?.companyName || "-",
+    order.buyer?.businessProfile?.billingAddress || "-",
+    order.buyer?.businessProfile?.phoneNumber || "-",
+    order.buyer?.businessProfile?.email || "-",
+    order.buyer?.businessProfile?.gstNumber || "-"
+  ];
+  
+  const shipToAddress = [
+    order.shippingAddress?.flatHouse, order.shippingAddress?.areaStreet, 
+    order.shippingAddress?.city, order.shippingAddress?.state, order.shippingAddress?.pincode
+  ].filter(Boolean).join(", ") || "-";
 
-  const buyerGst =
-    order.buyer?.businessProfile?.gstNumber ||
-    order.buyerGstNumber ||
-    "-";
+  const shipData = [
+    order.shippingAddress?.fullName || "-",
+    order.buyer?.businessProfile?.companyName || "-",
+    shipToAddress,
+    order.shippingAddress?.mobileNumber || "-",
+    order.buyer?.email || "-",
+    order.buyer?.businessProfile?.gstNumber || "-"
+  ];
 
-  const customerAddress =
-    order.buyer?.businessProfile?.billingAddress || "-";
+  doc.lineWidth(0.5).strokeColor("#444444");
 
-  const shipToAddress =
-    order.shippingAddress?.fullAddress ||
-    [
-      order.shippingAddress?.flatHouse,
-      order.shippingAddress?.areaStreet,
-      order.shippingAddress?.landmark,
-      order.shippingAddress?.city,
-      order.shippingAddress?.state,
-      order.shippingAddress?.pincode,
-    ]
-      .filter(Boolean)
-      .join(", ") ||
-    "-";
+  labels.forEach((label, i) => {
+    const rowStartY = currentY;
+    doc.font("Helvetica").fontSize(8);
+    
+    // Calculate Height
+    const h2 = doc.heightOfString(buyerData[i], { width: col2Width - 20 });
+    const h3 = doc.heightOfString(shipData[i], { width: col3Width - 20 });
+    const dynamicRowHeight = Math.max(h2, h3, 15) + 10; 
 
-  doc
-    .fillColor(darkText)
-    .fontSize(8)
+    // Draw row lines
+    doc.moveTo(startX, rowStartY).lineTo(startX + tableWidth, rowStartY).stroke();
+    doc.rect(startX, rowStartY, col1Width, dynamicRowHeight).stroke();
+    doc.rect(startX + col1Width, rowStartY, col2Width, dynamicRowHeight).stroke();
+    doc.rect(startX + col1Width + col2Width, rowStartY, col3Width, dynamicRowHeight).stroke();
 
-    .text("Name", 72, customerY)
-    .text(order.buyer?.fullName || "-", 145, customerY)
+    // Text
+    doc.fillColor(darkText).font("Helvetica-Bold").fontSize(9).text(label, startX + 10, rowStartY + 7);
+    doc.font("Helvetica").fontSize(8);
+    doc.text(buyerData[i], startX + col1Width + 10, rowStartY + 7, { width: col2Width - 20 });
+    doc.text(shipData[i], startX + col1Width + col2Width + 10, rowStartY + 7, { width: col3Width - 20 });
 
-    .text("Company", 72, customerY + 20)
-    .text(buyerCompany, 145, customerY + 20)
+    currentY += dynamicRowHeight;
+  });
 
-    .text("Address", 72, customerY + 40)
-    .text(customerAddress, 145, customerY + 40, { width: 150 })
-
-    .text("Phone", 72, customerY + 90)
-    .text(buyerPhone, 145, customerY + 90)
-
-    .text("E-mail", 72, customerY + 110)
-    .text(buyerEmail, 145, customerY + 110)
-
-    .text("GSTN", 72, customerY + 130)
-    .text(buyerGst, 145, customerY + 130);
-
-  doc
-    .text("Name", 382, customerY)
-    .text(order.shippingAddress?.fullName || "-", 455, customerY)
-
-    .text("Address", 382, customerY + 40)
-    .text(shipToAddress, 455, customerY + 40, { width: 95 });
+  return currentY + 15; // Return ending Y + some gap
 };

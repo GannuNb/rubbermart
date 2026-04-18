@@ -3,7 +3,7 @@
 import Order from "../models/orderModel.js";
 import Product from "../models/Product.js";
 import generateOrderId from "../utils/generateOrderId.js";
-import generateInvoicePdf from "../utils/generateInvoicePdf.js";
+import generateInvoicePdf from "../utils/pdf/generateInvoicePdf.js";
 import sendOrderInvoiceEmail from "../utils/sendOrderInvoiceEmail.js";
 
 export const createOrder = async (req, res) => {

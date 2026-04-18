@@ -13,25 +13,21 @@ const generateInvoicePdf = async (order) => {
 
       const buffers = [];
       doc.on("data", buffers.push.bind(buffers));
-
       doc.on("end", () => resolve(Buffer.concat(buffers)));
 
       const pageWidth = 595;
       const pageHeight = 842;
+      doc.rect(2, 2, pageWidth - 4, pageHeight - 4).stroke();
 
-      doc
-        .rect(2, 2, pageWidth - 4, pageHeight - 4)
-        .stroke();
+      let y = drawHeader(doc, pageWidth, pageHeight, order);
 
-      drawHeader(doc, pageWidth, pageHeight, order);
-      drawCustomerSection(doc, order);
+      doc.moveTo(35, y).lineTo(pageWidth - 35, y).stroke();
+      y += 15; // Padding after the line
 
-      doc
-        .moveTo(30, 190)
-        .lineTo(565, 190)
-        .stroke();
+      y = drawCustomerSection(doc, order, y);
 
-      let y = drawItemsTable(doc, order);
+      y = drawItemsTable(doc, order, y);
+
       y = drawTotalsSection(doc, order, y);
       y = drawSummarySection(doc, order, y);
 
