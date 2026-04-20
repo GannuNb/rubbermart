@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import styles from "../styles/Buyerbusinessprofile.module.css";
+import styles from "../styles/Buyer/Buyerbusinessprofile.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { createBusinessProfileThunk } from "../redux/slices/businessProfileThunk";
-import CustomAlert from "../components/CustomAlert";
+import CustomAlert from "../components/alert/CustomAlert";
 
 function BusinessProfile() {
   const dispatch = useDispatch();

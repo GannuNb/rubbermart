@@ -9,8 +9,8 @@ import {
 } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { fetchApprovedProducts } from "../redux/slices/buyerProductThunk";
-import styles from "../styles/ProductGrid.module.css";
+import { fetchApprovedProducts } from "../../redux/slices/buyerProductThunk";
+import styles from "../../styles/Buyer/ProductGrid.module.css";
 
 function ProductGrid({ filters }) {
   const dispatch = useDispatch();

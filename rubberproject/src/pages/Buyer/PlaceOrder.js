@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import styles from "../styles/PlaceOrder.module.css";
+import styles from "../../styles/Buyer/PlaceOrder.module.css";
 
 function PlaceOrder() {
   const location = useLocation();

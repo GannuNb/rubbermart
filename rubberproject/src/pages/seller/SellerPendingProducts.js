@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPendingProductsThunk } from "../../redux/slices/pendingProductsThunk";
-import styles from "../../styles/SellerPendingProducts.module.css";
+import styles from "../../styles/Seller/SellerPendingProducts.module.css";
 
 function SellerPendingProducts() {
   const dispatch = useDispatch();

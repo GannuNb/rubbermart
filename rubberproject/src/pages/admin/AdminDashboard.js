@@ -7,7 +7,7 @@ import {
   FaClock,
   FaArrowUp,
 } from "react-icons/fa";
-import styles from "../../styles/AdminDashboard.module.css";
+import styles from "../../styles/Admin/AdminDashboard.module.css";
 
 function AdminDashboard() {
   const [dashboardData, setDashboardData] = useState({

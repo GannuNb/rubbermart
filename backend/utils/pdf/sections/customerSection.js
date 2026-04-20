@@ -34,10 +34,21 @@ export const drawCustomerSection = (doc, order, startY) => {
     order.buyer?.businessProfile?.gstNumber || "-"
   ];
   
-  const shipToAddress = [
-    order.shippingAddress?.flatHouse, order.shippingAddress?.areaStreet, 
-    order.shippingAddress?.city, order.shippingAddress?.state, order.shippingAddress?.pincode
-  ].filter(Boolean).join(", ") || "-";
+const shipToAddress =
+  order.shippingAddress?.fullAddress ||
+  [
+    order.shippingAddress?.flatHouse,
+    order.shippingAddress?.areaStreet,
+    order.shippingAddress?.landmark,
+    order.shippingAddress?.city,
+    order.shippingAddress?.state,
+    order.shippingAddress?.pincode,
+  ]
+    .filter(Boolean)
+    .join(", ") ||
+  order.buyer?.businessProfile?.shippingAddress ||
+  order.buyer?.businessProfile?.billingAddress ||
+  "-";
 
   const shipData = [
     order.shippingAddress?.fullName || "-",

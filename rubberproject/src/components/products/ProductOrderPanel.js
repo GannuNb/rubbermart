@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaBuilding, FaBarcode } from "react-icons/fa";
-import styles from "../styles/ProductOrderPanel.module.css";
+import styles from "../../styles/Buyer/ProductOrderPanel.module.css";
 import AddressPopup from "./AddressPopup";
 import AddressDropdown from "./AddressDropdown";
 
@@ -42,7 +42,7 @@ function ProductOrderPanel({ singleProduct }) {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
 
         const data = await response.json();
@@ -63,25 +63,33 @@ function ProductOrderPanel({ singleProduct }) {
               }`,
           }));
 
-          const shippingAddress =
-            data.user?.businessProfile?.shippingAddress;
+          const shippingAddress = data.user?.businessProfile?.shippingAddress;
 
           if (
             shippingAddress &&
             !allAddresses.some(
-              (address) => address.fullAddress === shippingAddress
+              (address) => address.fullAddress === shippingAddress,
             )
           ) {
             allAddresses = [
               {
-                fullName: data.user.fullName,
-                mobileNumber: "",
+                fullName:
+                  data.user?.fullName ||
+                  data.user?.businessProfile?.companyName ||
+                  "",
+
+                mobileNumber:
+                  data.user?.businessProfile?.phoneNumber ||
+                  data.user?.phoneNumber ||
+                  "",
+
                 flatHouse: "",
                 areaStreet: "",
                 landmark: "",
                 city: "",
                 state: "",
                 pincode: "",
+
                 fullAddress: shippingAddress,
               },
               ...allAddresses,
@@ -126,7 +134,7 @@ function ProductOrderPanel({ singleProduct }) {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(addressForm),
-        }
+        },
       );
 
       const data = await response.json();
@@ -147,8 +155,7 @@ function ProductOrderPanel({ singleProduct }) {
 
         setBuyerAddresses(updatedAddresses);
 
-        const latestAddress =
-          updatedAddresses[updatedAddresses.length - 1];
+        const latestAddress = updatedAddresses[updatedAddresses.length - 1];
 
         if (latestAddress?.fullAddress) {
           setSelectedAddress(latestAddress.fullAddress);
@@ -195,9 +202,10 @@ function ProductOrderPanel({ singleProduct }) {
       return;
     }
 
-    const selectedAddressObject = buyerAddresses.find(
-      (address) => address.fullAddress === selectedAddress
-    );
+    const selectedAddressObject =
+      buyerAddresses.find(
+        (address) => address.fullAddress?.trim() === selectedAddress?.trim(),
+      ) || buyerAddresses[0];
 
     if (!selectedAddressObject) {
       alert("Selected address not found");
@@ -206,11 +214,9 @@ function ProductOrderPanel({ singleProduct }) {
 
     const orderData = {
       sellerId: singleProduct.seller?._id || "",
-      sellerName:
-        singleProduct.seller?.businessProfile?.companyName || "",
+      sellerName: singleProduct.seller?.businessProfile?.companyName || "",
       shippingAddress: selectedAddressObject,
-      buyerGstNumber:
-        buyerProfile?.businessProfile?.gstNumber || "",
+      buyerGstNumber: buyerProfile?.businessProfile?.gstNumber || "",
       businessProfile: buyerProfile?.businessProfile || {},
       orderItems: [
         {

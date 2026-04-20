@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addProductThunk } from "../../redux/slices/sellerProductThunk";
-import addstyles from "../../styles/SellerAddProduct.module.css";
-import CustomAlert from "../../components/CustomAlert";
+import addstyles from "../../styles/Seller/SellerAddProduct.module.css";
+import CustomAlert from "../../components/alert/CustomAlert";
 
 import { resetProductState } from "../../redux/slices/sellerProductSlice";
 

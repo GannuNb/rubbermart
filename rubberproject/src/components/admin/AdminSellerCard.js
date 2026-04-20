@@ -1,7 +1,7 @@
 // src/components/admin/AdminSellerCard.js
 
 import React, { useState } from "react";
-import styles from "../../styles/AdminUsers.module.css";
+import styles from "../../styles/Admin/AdminUsers.module.css";
 
 function AdminSellerCard({ user }) {
   const [showMore, setShowMore] = useState(false);

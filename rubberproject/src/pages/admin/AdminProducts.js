@@ -1,7 +1,7 @@
 // src/pages/admin/AdminProducts.js
 
 import React, { useEffect, useState } from "react";
-import styles from "../../styles/AdminProducts.module.css";
+import styles from "../../styles/Admin/AdminProducts.module.css";
 
 function AdminProducts() {
   const [products, setProducts] = useState([]);

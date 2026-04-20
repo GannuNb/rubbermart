@@ -1,7 +1,7 @@
 // src/components/AddressDropdown.js
 
 import React from "react";
-import styles from "../styles/ProductOrderPanel.module.css";
+import styles from "../../styles/Buyer/ProductOrderPanel.module.css";
 
 function AddressDropdown({
   buyerAddresses,
@@ -37,8 +37,12 @@ function AddressDropdown({
               }`;
 
             return (
-              <option key={index} value={fullAddress}>
-                {address.fullName} - {fullAddress}
+              <option
+                key={index}
+                value={address.fullAddress || fullAddress}
+              >
+                {address.fullName || "Address"} -{" "}
+                {address.fullAddress || fullAddress}
               </option>
             );
           })}

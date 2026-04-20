@@ -10,9 +10,9 @@ import About from "./pages/About";
 import Login from "./pages/Login";
 
 //components
-import RoleNavbar from "./components/RoleNavbar";
-import Navbar from "./components/Navbar";
-import ProtectedRoute from "./components/ProtectedRoute";
+import RoleNavbar from "./components/navbar/RoleNavbar";
+import Navbar from "./components/navbar/Navbar";
+import ProtectedRoute from "./components/protectroute/ProtectedRoute";
 
 //seller
 import SellerDashboard from "./pages/seller/SellerDashboard";
@@ -22,14 +22,14 @@ import SellerProducts from "./pages/seller/SellerProducts";
 import SellerProfile from "./pages/seller/SellerProfile";
 
 //buyer
-import Home from "./pages/Home";
-import OurProducts from "./pages/OurProducts";
-import ProductDetails from "./pages/ProductDetails";
-import OrderSummary from "./pages/OrderSummary";
-import SellerProductsBySeller from "./pages/SellerProductsBySeller";
-import PlaceOrder from "./pages/PlaceOrder";
-import OrderSuccess from "./pages/OrderSuccess";
-import BuyerProfile from "./pages/BuyerProfile";
+import Home from "./pages/Buyer/Home";
+import OurProducts from "./pages/Buyer/OurProducts";
+import ProductDetails from "./pages/Buyer/ProductDetails";
+import OrderSummary from "./pages/Buyer/OrderSummary";
+import SellerProductsBySeller from "./pages/Buyer/SellerProductsBySeller";
+import PlaceOrder from "./pages/Buyer/PlaceOrder";
+import OrderSuccess from "./pages/Buyer/OrderSuccess";
+import BuyerProfile from "./pages/Buyer/BuyerProfile";
 
 //Admin
 import AdminDashboard from "./pages/admin/AdminDashboard";

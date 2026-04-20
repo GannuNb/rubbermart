@@ -4,8 +4,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPendingProductsThunk } from "../../redux/slices/pendingProductsThunk";
 import { updateSellerProductThunk } from "../../redux/slices/sellerProductThunk";
-import CustomAlert from "../../components/CustomAlert";
-import styles from "../../styles/SellerPendingProducts.module.css";
+import CustomAlert from "../../components/alert/CustomAlert";
+import styles from "../../styles/Seller/SellerPendingProducts.module.css";
 
 function SellerProducts() {
   const dispatch = useDispatch();

@@ -5,7 +5,7 @@ import {
     ShieldCheck, Cpu, Repeat, Target,
     Leaf, BarChart3
 } from 'lucide-react';
-import styles from '../styles/About.module.css';
+import styles from '../styles/About/About.module.css';
 
 const About = () => {
     const { scrollYProgress } = useScroll();

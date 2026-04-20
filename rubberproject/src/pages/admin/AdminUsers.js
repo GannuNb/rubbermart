@@ -1,7 +1,7 @@
 // src/pages/admin/AdminUsers.js
 
 import React, { useEffect, useState } from "react";
-import styles from "../../styles/AdminUsers.module.css";
+import styles from "../../styles/Admin/AdminUsers.module.css";
 import AdminBuyerCard from "../../components/admin/AdminBuyerCard";
 import AdminSellerCard from "../../components/admin/AdminSellerCard";
 

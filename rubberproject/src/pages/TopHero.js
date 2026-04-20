@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import styles from '../styles/CommonHome.module.css'; // Ensure path is correct
+import styles from '../styles/Components/CommonHome.module.css'; // Ensure path is correct
 
 export default function TopHero() {
   const canvasRef = useRef(null);

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProfileThunk } from "../redux/slices/profileThunk";
-import styles from "../styles/BuyerProfile.module.css";
+import { fetchProfileThunk } from "../../redux/slices/profileThunk";
+import styles from "../../styles/Buyer/BuyerProfile.module.css";
 
 function BuyerProfile() {
   const dispatch = useDispatch();

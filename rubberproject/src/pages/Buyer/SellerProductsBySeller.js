@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import styles from "../styles/SellerProductsBySeller.module.css";
+import styles from "../../styles/Seller/SellerProductsBySeller.module.css";
 
 function SellerProductsBySeller() {
   const { sellerId } = useParams();

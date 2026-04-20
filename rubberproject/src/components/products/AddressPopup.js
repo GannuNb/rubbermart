@@ -2,7 +2,7 @@
 
 import React from "react";
 import { FaTimes } from "react-icons/fa";
-import styles from "../styles/ProductOrderPanel.module.css";
+import styles from "../../styles/Buyer/ProductOrderPanel.module.css";
 
 function AddressPopup({
   showAddressPopup,

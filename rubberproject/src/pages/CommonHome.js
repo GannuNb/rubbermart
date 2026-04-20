@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ShieldCheck, Truck, Lock, BarChart3 } from 'lucide-react';
-import styles from '../styles/CommonHome.module.css';
+import styles from '../styles/Components/CommonHome.module.css';
 import TopHero from './TopHero';
 import HomeImg from '../assests/Home.jpeg';
 

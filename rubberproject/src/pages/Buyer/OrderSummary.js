@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import styles from "../styles/OrderSummary.module.css";
+import styles from "../../styles/Buyer/OrderSummary.module.css";
 
 function OrderSummary() {
   const location = useLocation();

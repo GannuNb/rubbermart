@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { IoClose } from "react-icons/io5";
 import { FiCheckCircle, FiAlertCircle, FiInfo } from "react-icons/fi";
 import { MdOutlineWarningAmber } from "react-icons/md";
-import styles from "../styles/CustomAlert.module.css";
+import styles from "../../styles/Components/CustomAlert.module.css";
 
 function CustomAlert({
   type = "info",

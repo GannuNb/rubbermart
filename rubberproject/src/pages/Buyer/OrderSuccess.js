@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import styles from "../styles/OrderSuccess.module.css";
+import styles from "../../styles/Buyer/OrderSuccess.module.css";
 
 function OrderSuccess() {
   const location = useLocation();

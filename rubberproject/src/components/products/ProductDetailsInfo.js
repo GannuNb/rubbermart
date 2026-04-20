@@ -11,7 +11,7 @@ import {
   FaBuilding,
 } from "react-icons/fa";
 import ProductOrderPanel from "./ProductOrderPanel";
-import styles from "../styles/ProductDetailsInfo.module.css";
+import styles from "../../styles/Buyer/ProductDetailsInfo.module.css";
 
 function ProductDetailsInfo({ singleProduct }) {
   const [selectedImage, setSelectedImage] = useState(

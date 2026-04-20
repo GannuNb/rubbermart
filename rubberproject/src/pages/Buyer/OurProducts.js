@@ -1,10 +1,10 @@
 // src/pages/OurProducts.js
 
 import React, { useState } from "react";
-import RoleNavbar from "../components/RoleNavbar";
-import ProductFilters from "../components/ProductFilters";
-import ProductGrid from "../components/ProductGrid";
-import styles from "../styles/OurProducts.module.css";
+import RoleNavbar from "../../components/navbar/RoleNavbar";
+import ProductFilters from "../../components/products/ProductFilters";
+import ProductGrid from "../../components/products/ProductGrid";
+import styles from "../../styles/Buyer/OurProducts.module.css";
 
 function OurProducts() {
   const [filters, setFilters] = useState({

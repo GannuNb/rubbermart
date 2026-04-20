@@ -4,7 +4,7 @@ import {
   ArrowRight, RefreshCcw, Truck, ShieldCheck, Globe,
   BarChart3, Factory, Recycle, Scale, MessageSquare, ChevronRight
 } from 'lucide-react';
-import styles from '../styles/Home.module.css';
+import styles from '../../styles/Buyer/Home.module.css';
 import HeroCloudErase from './HeroCloudErase';
 
 // Animation Variants

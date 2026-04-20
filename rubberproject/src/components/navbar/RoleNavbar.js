@@ -15,8 +15,8 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { jwtDecode } from "jwt-decode";
 
-import { logoutUser } from "../redux/slices/authSlice";
-import styles from "../styles/RoleNavbar.module.css";
+import { logoutUser } from "../../redux/slices/authSlice";
+import styles from "../../styles/Components/RoleNavbar.module.css";
 
 function RoleNavbar() {
   const navigate = useNavigate();

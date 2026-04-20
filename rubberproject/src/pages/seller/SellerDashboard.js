@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { FaBoxOpen, FaShoppingBag, FaPlusCircle, FaClock } from "react-icons/fa";
-import styles from "../../styles/SellerDashboard.module.css";
+import styles from "../../styles/Seller/SellerDashboard.module.css";
 
 function SellerDashboard() {
   return (

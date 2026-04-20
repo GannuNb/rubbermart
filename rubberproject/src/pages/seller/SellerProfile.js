@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProfileThunk } from "../../redux/slices/profileThunk";
-import styles from "../../styles/SellerProfile.module.css";
+import styles from "../../styles/Seller/SellerProfile.module.css";
 
 function SellerProfile() {
   const dispatch = useDispatch();

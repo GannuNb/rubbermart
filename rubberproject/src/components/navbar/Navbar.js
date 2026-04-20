@@ -1,10 +1,10 @@
 import React from 'react';
 import { NavLink, Link } from 'react-router-dom'; // Added Link and NavLink
-import styles from '../styles/Navbar.module.css';
+import styles from '../../styles/Components/Navbar.module.css';
 import { LogOut } from 'lucide-react';
 import { FaInstagram, FaFacebookF } from 'react-icons/fa';
-import Tyre from "../assests/Tyre.jpeg";
-import Logo from "../assests/Logo.png";
+import Tyre from "../../assests/Tyre.jpeg";
+import Logo from "../../assests/Logo.png";
 
 const Navbar = () => {
     return (

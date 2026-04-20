@@ -2,7 +2,7 @@
 
 import React from "react";
 import { FaFilter, FaSearch } from "react-icons/fa";
-import styles from "../styles/ProductFilters.module.css";
+import styles from "../../styles/Buyer/ProductFilters.module.css";
 
 function ProductFilters({ filters, setFilters }) {
   const categoryOptions = ["Tyre Scrap", "Pyro Oil", "Tyre Steel Scrap"];

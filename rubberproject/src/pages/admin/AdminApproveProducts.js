@@ -7,7 +7,7 @@ import {
   approveProductThunk,
   rejectProductThunk,
 } from "../../redux/slices/adminProductThunk";
-import styles from "../../styles/AdminApproveProducts.module.css";
+import styles from "../../styles/Admin/AdminApproveProducts.module.css";
 
 function AdminApproveProducts() {
   const dispatch = useDispatch();

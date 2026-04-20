@@ -3,8 +3,8 @@
 import React, { useEffect, useState } from "react";
 import { FaSpinner } from "react-icons/fa";
 import { useParams } from "react-router-dom";
-import ProductDetailsInfo from "../components/ProductDetailsInfo";
-import styles from "../styles/ProductDetails.module.css";
+import ProductDetailsInfo from "../../components/products/ProductDetailsInfo";
+import styles from "../../styles/Buyer/ProductDetails.module.css";
 
 function ProductDetails() {
   const { productId } = useParams();

@@ -2,13 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import styles from "../styles/Buyersignup.module.css";
+import styles from "../styles/Signup/Buyersignup.module.css";
 import { FcGoogle } from "react-icons/fc";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useDispatch, useSelector } from "react-redux";
 import { loginThunk, googleLoginThunk } from "../redux/slices/authThunk";
-import CustomAlert from "../components/CustomAlert";
+import CustomAlert from "../components/alert/CustomAlert";
 
 function Login() {
   const dispatch = useDispatch();
