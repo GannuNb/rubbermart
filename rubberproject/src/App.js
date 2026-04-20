@@ -20,6 +20,7 @@ import SellerAddproduct from "./pages/seller/SellerAddproduct";
 import SellerPendingProducts from "./pages/seller/SellerPendingProducts";
 import SellerProducts from "./pages/seller/SellerProducts";
 import SellerProfile from "./pages/seller/SellerProfile";
+import SellerOrders from "./pages/seller/SellerOrders";
 
 //buyer
 import Home from "./pages/Buyer/Home";
@@ -30,6 +31,7 @@ import SellerProductsBySeller from "./pages/Buyer/SellerProductsBySeller";
 import PlaceOrder from "./pages/Buyer/PlaceOrder";
 import OrderSuccess from "./pages/Buyer/OrderSuccess";
 import BuyerProfile from "./pages/Buyer/BuyerProfile";
+import Sellerordermanage from "./pages/seller/Sellerordermanage";
 
 //Admin
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -70,6 +72,8 @@ function AppContent() {
         <Route path="/seller-pending-products" element={<ProtectedRoute allowedRoles={["seller"]}><SellerPendingProducts /></ProtectedRoute>}/>
         <Route path="/seller-products" element={ <ProtectedRoute allowedRoles={["seller"]}><SellerProducts /></ProtectedRoute>}/>
         <Route  path="/seller-profile"  element={<ProtectedRoute allowedRole="seller"><SellerProfile /></ProtectedRoute>  }/>
+        <Route  path="/seller/orders"  element={    <ProtectedRoute>      <SellerOrders />    </ProtectedRoute>  }/>
+        <Route  path="/seller/order-manage/:orderId"  element={    <ProtectedRoute>      <Sellerordermanage />    </ProtectedRoute>  }/>
 
         {/* admin */}
         <Route path="/admin-dashboard" element={ <ProtectedRoute allowedRoles={["admin"]}><AdminDashboard /></ProtectedRoute>}/>

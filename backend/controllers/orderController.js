@@ -169,3 +169,185 @@ export const createOrder = async (req, res) => {
     });
   }
 };
+
+
+export const getSellerOrders = async (req, res) => {
+  try {
+    const sellerId = req.user._id;
+
+    const orders = await Order.find({
+      seller: sellerId,
+      isDeleted: false,
+    })
+      .populate("buyer", "fullName email")
+      .populate("orderItems.product")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      totalOrders: orders.length,
+      orders,
+    });
+  } catch (error) {
+    console.log("Get Seller Orders Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch seller orders",
+      error: error.message,
+    });
+  }
+};
+
+export const getSellerSingleOrder = async (req, res) => {
+  try {
+    const sellerId = req.user._id;
+    const { orderId } = req.params;
+
+    const order = await Order.findOne({
+      _id: orderId,
+      seller: sellerId,
+      isDeleted: false,
+    })
+      .populate(
+        "buyer",
+        `
+          fullName
+          email
+          businessProfile.companyName
+          businessProfile.phoneNumber
+          businessProfile.email
+          businessProfile.gstNumber
+          businessProfile.billingAddress
+          businessProfile.shippingAddress
+        `
+      )
+      .populate(
+        "seller",
+        `
+          fullName
+          email
+          businessProfile.companyName
+          businessProfile.phoneNumber
+          businessProfile.email
+        `
+      )
+      .populate("orderItems.product");
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      order,
+    });
+  } catch (error) {
+    console.log("Get Seller Single Order Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch order details",
+      error: error.message,
+    });
+  }
+};
+
+
+export const confirmSellerOrder = async (req, res) => {
+  try {
+    const sellerId = req.user._id;
+    const { orderId } = req.params;
+
+    const order = await Order.findOne({
+      _id: orderId,
+      seller: sellerId,
+      isDeleted: false,
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    if (order.orderStatus !== "pending") {
+      return res.status(400).json({
+        success: false,
+        message: "Only pending orders can be confirmed",
+      });
+    }
+
+    order.orderStatus = "seller_confirmed";
+    order.sellerConfirmedAt = new Date();
+
+    await order.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Order confirmed successfully",
+      order,
+    });
+  } catch (error) {
+    console.log("Confirm Seller Order Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to confirm order",
+      error: error.message,
+    });
+  }
+};
+
+export const rejectSellerOrder = async (req, res) => {
+  try {
+    const sellerId = req.user._id;
+    const { orderId } = req.params;
+    const { cancellationReason } = req.body;
+
+    const order = await Order.findOne({
+      _id: orderId,
+      seller: sellerId,
+      isDeleted: false,
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    if (order.orderStatus !== "pending") {
+      return res.status(400).json({
+        success: false,
+        message: "Only pending orders can be rejected",
+      });
+    }
+
+    order.orderStatus = "cancelled";
+    order.cancelledAt = new Date();
+    order.cancellationReason =
+      cancellationReason || "Rejected by seller";
+
+    await order.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Order rejected successfully",
+      order,
+    });
+  } catch (error) {
+    console.log("Reject Seller Order Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to reject order",
+      error: error.message,
+    });
+  }
+};

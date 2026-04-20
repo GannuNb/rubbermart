@@ -11,6 +11,7 @@ import {
   FaShoppingBag,
   FaUser,
   FaUsers,
+  FaClipboardList,
 } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { jwtDecode } from "jwt-decode";
@@ -202,6 +203,16 @@ function RoleNavbar() {
             >
               <FaBoxOpen />
               <span>Manage Products</span>
+            </Link>
+
+            <Link
+              to="/seller/orders"
+              className={`${styles.normalLink} ${
+                location.pathname === "/seller/orders" ? styles.active : ""
+              }`}
+            >
+              <FaClipboardList />
+              <span>Orders</span>
             </Link>
 
             <Link

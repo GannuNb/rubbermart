@@ -1,0 +1,121 @@
+.container {
+  padding: 30px;
+  min-height: 100vh;
+  background: #f4f6f9;
+}
+
+.heading {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 25px;
+}
+
+.loading,
+.error,
+.empty,
+.success {
+  text-align: center;
+  font-size: 16px;
+  margin-top: 20px;
+  padding: 14px;
+  border-radius: 10px;
+}
+
+.loading {
+  color: #2563eb;
+}
+
+.error {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.success {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.section {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 14px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.section h2 {
+  font-size: 22px;
+  margin-bottom: 15px;
+  color: #0f172a;
+}
+
+.section p {
+  margin-bottom: 10px;
+  font-size: 15px;
+  color: #334155;
+}
+
+.productsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.productCard {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.actions {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.confirmButton,
+.rejectButton {
+  border: none;
+  outline: none;
+  padding: 14px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.confirmButton {
+  background: #16a34a;
+  color: #ffffff;
+}
+
+.confirmButton:hover {
+  background: #15803d;
+}
+
+.rejectButton {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.rejectButton:hover {
+  background: #b91c1c;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 100px;
+  resize: none;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 14px;
+  outline: none;
+}

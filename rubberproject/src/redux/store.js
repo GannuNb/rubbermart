@@ -3,6 +3,7 @@ import authReducer from "./slices/authSlice";
 import businessProfileReducer from "./slices/businessProfileSlice";
 import sellerProductReducer from "./slices/sellerProductSlice";
 import buyerProductReducer from "./slices/buyerProductSlice";
+import sellerOrderReducer from "./slices/sellerOrderSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,5 +11,6 @@ export const store = configureStore({
     businessProfile: businessProfileReducer,
     sellerProduct: sellerProductReducer,
     buyerProducts: buyerProductReducer,
+    sellerOrders: sellerOrderReducer,
   },
 });
