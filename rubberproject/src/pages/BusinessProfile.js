@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { createBusinessProfileThunk } from "../redux/slices/businessProfileThunk";
 import CustomAlert from "../components/alert/CustomAlert";
+import { logoutUser } from "../redux/slices/authSlice";
 
 function BusinessProfile() {
   const dispatch = useDispatch();
@@ -201,6 +202,7 @@ function BusinessProfile() {
             }));
 
             if (alertData.type === "success") {
+              dispatch(logoutUser());
               navigate("/login");
             }
           }}
