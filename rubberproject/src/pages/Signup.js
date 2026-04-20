@@ -163,8 +163,12 @@ function Signup() {
 
       <div className={signupstyles.buyerSignupPage}>
         <div className={signupstyles.buyerSignupContent}>
-          <h1>Sign Up</h1>
-          <p>Create your account to continue</p>
+          <h1>{role === "seller" ? "Sign Up as Seller" : "Sign Up"}</h1>
+          <p>
+            {role === "seller"
+              ? "Create your seller account to continue"
+              : "Create your account to continue"}
+          </p>
 
           <form
             className={signupstyles.buyerSignupForm}
@@ -265,7 +269,9 @@ function Signup() {
               onClick={() => handleGoogleSignup()}
             >
               <FcGoogle className={signupstyles.googleIcon} />
-              Sign Up with Google
+              {role === "seller"
+                ? "Sign Up as Seller with Google"
+                : "Sign Up with Google"}
             </button>
 
             <p className={signupstyles.loginText}>

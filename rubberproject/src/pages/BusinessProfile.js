@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { createBusinessProfileThunk } from "../redux/slices/businessProfileThunk";
 import CustomAlert from "../components/alert/CustomAlert";
 import { logoutUser } from "../redux/slices/authSlice";
+import { resetBusinessProfileState } from "../redux/slices/businessProfileSlice";
 
 function BusinessProfile() {
   const dispatch = useDispatch();
@@ -202,6 +203,7 @@ function BusinessProfile() {
             }));
 
             if (alertData.type === "success") {
+              dispatch(resetBusinessProfileState());
               dispatch(logoutUser());
               navigate("/login");
             }

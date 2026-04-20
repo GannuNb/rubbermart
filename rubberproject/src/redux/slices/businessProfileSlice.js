@@ -1,3 +1,4 @@
+
 // src/redux/slices/businessProfileSlice.js
 
 import { createSlice } from "@reduxjs/toolkit";
@@ -33,6 +34,13 @@ const businessProfileSlice = createSlice({
       state.createBusinessProfileError = null;
       state.createBusinessProfileSuccessMessage = null;
     },
+
+    resetBusinessProfileState: (state) => {
+      state.createBusinessProfileLoading = false;
+      state.createBusinessProfileError = null;
+      state.createBusinessProfileSuccessMessage = null;
+      state.businessProfileData = null;
+    },
   },
 });
 
@@ -42,6 +50,9 @@ export const {
   setCreateBusinessProfileSuccessMessage,
   setBusinessProfileData,
   clearBusinessProfileMessages,
+  resetBusinessProfileState,
 } = businessProfileSlice.actions;
 
 export default businessProfileSlice.reducer;
+
+

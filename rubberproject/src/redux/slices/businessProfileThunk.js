@@ -1,3 +1,4 @@
+
 // src/redux/slices/businessProfileThunk.js
 
 import {
@@ -38,7 +39,11 @@ export const createBusinessProfileThunk =
           )
         );
       } else {
-        dispatch(setCreateBusinessProfileError(data.message));
+        dispatch(
+          setCreateBusinessProfileError(
+            data.message || "Failed to create business profile"
+          )
+        );
       }
     } catch (error) {
       dispatch(setCreateBusinessProfileError("Something went wrong"));
@@ -46,3 +51,4 @@ export const createBusinessProfileThunk =
       dispatch(setCreateBusinessProfileLoading(false));
     }
   };
+
