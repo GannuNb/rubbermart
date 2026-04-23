@@ -637,17 +637,14 @@ export const uploadBuyerPayment = async (req, res) => {
       });
     }
 
-    // ✅ FIXED LOGIC (IMPORTANT)
-    const blockedStatuses = ["pending", "cancelled"];
-
-    if (blockedStatuses.includes(order.orderStatus)) {
+    // ✅ allow after seller confirmation (and beyond)
+    if (!["seller_confirmed", "partially_shipped", "shipped"].includes(order.orderStatus)) {
       return res.status(400).json({
         success: false,
-        message: "Payment not allowed at this stage",
+        message: "Payment allowed only after seller confirmation",
       });
     }
 
-    // ✅ FILE
     const paymentFile = req.file
       ? {
           data: req.file.buffer,
@@ -656,7 +653,6 @@ export const uploadBuyerPayment = async (req, res) => {
         }
       : null;
 
-    // ✅ VALIDATION
     const paidAmount = Number(amount);
 
     if (!paidAmount || paidAmount <= 0) {
@@ -666,19 +662,21 @@ export const uploadBuyerPayment = async (req, res) => {
       });
     }
 
-    if (paidAmount > order.buyerPendingAmount) {
+    // ✅ calculate remaining ONLY from VERIFIED payments
+    const verifiedPaid = (order.buyerPaymentReceipts || [])
+      .filter((r) => r.status === "verified")
+      .reduce((sum, r) => sum + Number(r.amount || 0), 0);
+
+    const remaining = order.totalAmount - verifiedPaid;
+
+    if (paidAmount > remaining) {
       return res.status(400).json({
         success: false,
-        message: "Amount exceeds pending amount",
+        message: "Amount exceeds remaining amount",
       });
     }
 
-    // ✅ CALCULATIONS
-    const newTotalPaid = order.buyerPaidAmount + paidAmount;
-    const remainingAmount = order.totalAmount - newTotalPaid;
-    const isFinalPayment = remainingAmount <= 0;
-
-    // ✅ CREATE RECEIPT
+    // ✅ CREATE RECEIPT (PENDING)
     const newReceipt = {
       file: paymentFile,
       amount: paidAmount,
@@ -687,49 +685,20 @@ export const uploadBuyerPayment = async (req, res) => {
       note,
       uploadedBy: buyerId,
       paymentFor: paymentFor || "buyer_to_admin",
-      totalPaidTillNow: newTotalPaid,
-      remainingAmount: Math.max(remainingAmount, 0),
-      isPartialPayment: !isFinalPayment,
-      isFinalPayment: isFinalPayment,
+      status: "pending",
     };
 
     order.buyerPaymentReceipts.push(newReceipt);
 
-    // ✅ UPDATE AMOUNTS
-    order.buyerPaidAmount = newTotalPaid;
-    order.buyerPendingAmount = Math.max(remainingAmount, 0);
-
-    // ✅ UPDATE STATUS (DON’T BREAK SHIPMENT FLOW)
-    if (isFinalPayment) {
-      order.buyerPaymentStatus = "completed";
-
-      // only update if not already shipped
-      if (
-        !["partially_shipped", "shipped", "delivered"].includes(
-          order.orderStatus
-        )
-      ) {
-        order.orderStatus = "payment_completed";
-      }
-    } else {
-      order.buyerPaymentStatus = "partial";
-
-      if (
-        !["partially_shipped", "shipped", "delivered"].includes(
-          order.orderStatus
-        )
-      ) {
-        order.orderStatus = "partial_payment_uploaded";
-      }
-    }
-
     order.paymentUploadedAt = new Date();
+
+    // ❌ DO NOT UPDATE totals here
 
     await order.save();
 
     return res.status(200).json({
       success: true,
-      message: "Payment uploaded successfully",
+      message: "Payment uploaded successfully (pending admin approval)",
       order,
     });
   } catch (error) {

@@ -10,14 +10,22 @@ function PaymentUploadCard({ order, onPaymentUploaded }) {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
-            if (!amount || !file) {
-            alert("Amount and receipt file are required");
-            return;
-            }
-        if (Number(amount) > order.buyerPendingAmount) {
-        alert("Amount exceeds pending amount");
-        return;
-        }
+    if (!amount || !file) {
+      alert("Amount and receipt file are required");
+      return;
+    }
+
+    // ✅ calculate remaining from VERIFIED ONLY
+    const verifiedPaid = (order.buyerPaymentReceipts || [])
+      .filter((r) => r.status === "verified")
+      .reduce((sum, r) => sum + Number(r.amount || 0), 0);
+
+    const remaining = order.totalAmount - verifiedPaid;
+
+    if (Number(amount) > remaining) {
+      alert("Amount exceeds remaining amount");
+      return;
+    }
 
     try {
       setLoading(true);
@@ -40,14 +48,15 @@ function PaymentUploadCard({ order, onPaymentUploaded }) {
             Authorization: `Bearer ${token}`,
           },
           body: formData,
-        },
+        }
       );
 
       const data = await response.json();
 
       if (response.ok) {
-        alert("Payment uploaded successfully");
-        onPaymentUploaded(); // refresh order
+        alert("Payment uploaded (pending approval)");
+        onPaymentUploaded();
+
         setAmount("");
         setTransactionId("");
         setNote("");
