@@ -25,8 +25,8 @@ export const drawHeader = (doc, pageWidth, pageHeight, order) => {
   doc.save().moveTo(0, 102).lineTo(pageWidth, 70).lineTo(pageWidth, pageHeight).lineTo(0, pageHeight).closePath().fill("#ffffff").restore();
 
   // Logo
-  const logoPath = path.join(process.cwd(), "../rubberproject/public/logo_vk.png");
-  const fallbackLogoPath = path.join(process.cwd(), "rubberproject/public/logo_vk.png");
+  const logoPath = path.join(process.cwd(), "../rubberproject/public/rsm_logo.png");
+  const fallbackLogoPath = path.join(process.cwd(), "rubberproject/public/rsm_logo.png");
   const finalLogo = fs.existsSync(logoPath) ? logoPath : fs.existsSync(fallbackLogoPath) ? fallbackLogoPath : null;
 
   if (finalLogo) doc.image(finalLogo, 18, 10, { width: 72, height: 72 });

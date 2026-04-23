@@ -18,7 +18,7 @@ function OrderSuccess() {
 
         <button
           className={styles.primaryButton}
-          onClick={() => navigate("/ourproducts")}
+          onClick={() => navigate("/our-products")}
         >
           Go To Products
         </button>
@@ -76,7 +76,7 @@ function OrderSuccess() {
         <div className={styles.buttonRow}>
           <button
             className={styles.secondaryButton}
-            onClick={() => navigate("/ourproducts")}
+            onClick={() => navigate("/our-products")}
           >
             Continue Shopping
           </button>

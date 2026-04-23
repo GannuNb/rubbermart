@@ -4,6 +4,7 @@ import {
   getSellerSingleOrderThunk,
   confirmSellerOrderThunk,
   rejectSellerOrderThunk,
+  addShipmentToOrderThunk,
 } from "./sellerOrderThunk";
 
 const initialState = {
@@ -23,6 +24,10 @@ const initialState = {
   rejectOrderLoading: false,
   rejectOrderError: null,
   rejectOrderSuccess: null,
+
+  shipmentLoading: false,
+  shipmentError: null,
+  shipmentSuccess: null,
 };
 
 const sellerOrderSlice = createSlice({
@@ -34,6 +39,8 @@ const sellerOrderSlice = createSlice({
       state.confirmOrderSuccess = null;
       state.rejectOrderError = null;
       state.rejectOrderSuccess = null;
+      state.shipmentError = null;
+      state.shipmentSuccess = null;
     },
 
     clearSelectedOrder: (state) => {
@@ -111,6 +118,25 @@ const sellerOrderSlice = createSlice({
       .addCase(rejectSellerOrderThunk.rejected, (state, action) => {
         state.rejectOrderLoading = false;
         state.rejectOrderError = action.payload;
+      })
+
+      // ADD SHIPMENT
+      .addCase(addShipmentToOrderThunk.pending, (state) => {
+        state.shipmentLoading = true;
+        state.shipmentError = null;
+        state.shipmentSuccess = null;
+      })
+      .addCase(addShipmentToOrderThunk.fulfilled, (state, action) => {
+        state.shipmentLoading = false;
+        state.shipmentSuccess = "Shipment details added successfully";
+
+        if (state.selectedOrder) {
+          state.selectedOrder.shipments = action.payload;
+        }
+      })
+      .addCase(addShipmentToOrderThunk.rejected, (state, action) => {
+        state.shipmentLoading = false;
+        state.shipmentError = action.payload;
       });
   },
 });

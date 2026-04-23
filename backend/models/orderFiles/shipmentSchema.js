@@ -3,6 +3,14 @@ import uploadedFileSchema from "./uploadedFileSchema.js";
 
 const shipmentSchema = new mongoose.Schema(
   {
+    shipmentInvoiceId: {
+      type: String,
+    },
+
+    selectedItem: {
+      type: String,
+    },
+
     vehicleNumber: {
       type: String,
     },
@@ -26,10 +34,10 @@ const shipmentSchema = new mongoose.Schema(
       type: String,
       enum: [
         "pending",
-        "way_ticket_raised",
-        "approved_by_admin",
         "shipped",
+        "approved_by_admin",
         "delivered",
+        "rejected",
       ],
       default: "pending",
     },

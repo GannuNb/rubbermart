@@ -1,0 +1,379 @@
+.itemsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.itemCard {
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 16px;
+  background: #fff;
+}
+
+.statusRow {
+  margin-bottom: 10px;
+}
+
+.statusBadge {
+  background: #ede9fe;
+  color: #6d28d9;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+}
+
+.itemRow {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.itemImage {
+  width: 120px;
+  height: 90px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.itemInfo {
+  flex: 1;
+}
+
+.itemInfo h4 {
+  margin: 0;
+}
+
+.itemInfo p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.shippingBtn {
+  border: 1px solid #6d28d9;
+  color: #6d28d9;
+  padding: 8px 14px;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* PROGRESS */
+.progressSection {
+  margin-top: 14px;
+}
+
+.progressBar {
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: #6d28d9;
+  transition: 0.3s;
+}
+
+.progressLabels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.summaryCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* ✅ spread like image */
+
+  width: 100%; /* full width of left section */
+
+  background: #fff;
+  padding: 16px 20px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.summaryItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 180px; /* ✅ keeps proper spacing like columns */
+}
+
+.iconBox {
+  width: 32px;
+  height: 32px;
+  background: #ede9fe;
+  color: #6d28d9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+
+.label {
+  font-size: 11px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.amount {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.summaryItem h4 {
+  font-size: 13px;
+  margin: 0;
+}
+
+.linkText {
+  font-size: 13px;
+  color: #6d28d9;
+  font-weight: 500;
+}
+
+.pageWrapper {
+  padding: 20px;
+  background: #f5f1fe;
+  min-height: 100vh;
+}
+
+/* HEADER */
+.topHeaderCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  padding: 16px 20px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+}
+
+.pageTitleSection {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.orderIconBox img {
+  width: 32px;
+}
+
+.profileIcon img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+/* MAIN CARD */
+.contentCard {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+/* BACK BUTTON */
+.backBtn {
+  color: #6d28d9;
+  font-size: 14px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.productName {
+  color: #6d28d9;
+  font-weight: 600;
+}
+
+.remainingQty {
+  color: #dc2626;
+  font-weight: 600;
+}
+/* GRID */
+.detailsGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.leftSection {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 2;
+}
+
+.rightSection {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+}
+
+
+/* ADDRESS CARD */
+.addressCard {
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+}
+
+.cardTitle {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.addressBox {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.addressContent h4 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.addressContent p {
+  margin: 4px 0;
+  font-size: 13px;
+  color: #555;
+}
+
+.phone {
+  margin-top: 6px;
+  font-weight: 500;
+}
+
+/* payment */
+.paymentCard {
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.formGroup label {
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.formGroup input,
+.formGroup select,
+.formGroup textarea {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.submitBtn {
+  margin-top: 10px;
+  width: 100%;
+  padding: 10px;
+  background: #6d28d9;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+
+.paymentSummaryCard {
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+}
+
+/* SUMMARY */
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.paid {
+  color: green;
+}
+
+.remaining {
+  color: red;
+}
+
+/* HISTORY */
+.historyTitle {
+  margin: 10px 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.noHistory {
+  font-size: 13px;
+  color: #777;
+}
+
+.historyList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.historyItem {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-radius: 8px;
+  background: #f9fafb;
+}
+
+.amountText {
+  font-weight: 600;
+}
+
+.metaText {
+  font-size: 12px;
+  color: #555;
+}
+
+.dateText {
+  font-size: 11px;
+  color: #888;
+}
+
+/* STATUS */
+.pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.verified {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.rejected {
+  background: #fee2e2;
+  color: #991b1b;
+}

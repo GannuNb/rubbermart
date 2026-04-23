@@ -32,12 +32,16 @@ import PlaceOrder from "./pages/Buyer/PlaceOrder";
 import OrderSuccess from "./pages/Buyer/OrderSuccess";
 import BuyerProfile from "./pages/Buyer/BuyerProfile";
 import Sellerordermanage from "./pages/seller/Sellerordermanage";
+import BuyerOrders from "./pages/Buyer/BuyerOrders";
+import BuyerOrderDetails from "./pages/Buyer/BuyerOrderDetails";
+
 
 //Admin
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminApproveProducts from "./pages/admin/AdminApproveProducts";
 import AdminProducts from "./pages/admin/AdminProducts";
 import AdminUsers from "./pages/admin/AdminUsers";
+
 
 function AppContent() {
   const location = useLocation();
@@ -65,6 +69,8 @@ function AppContent() {
         <Route path="/seller-products/:sellerId" element={<SellerProductsBySeller />} />
         <Route path="/place-order" element={<PlaceOrder />} />
         <Route path="/order-success" element={<OrderSuccess />} />
+        <Route  path="/buyer-orders"  element={    <ProtectedRoute allowedRoles={["buyer"]}>      <BuyerOrders />    </ProtectedRoute>  }/>
+        <Route  path="/buyer-orders/:id"  element={    <ProtectedRoute>      <BuyerOrderDetails />    </ProtectedRoute>  }/>        
 
         {/* seller */}
         <Route path="/seller-dashboard" element={<ProtectedRoute allowedRole="seller"><SellerDashboard /></ProtectedRoute>}/>

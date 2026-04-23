@@ -1,0 +1,343 @@
+.pageWrapper {
+  min-height: 100vh;
+  background: #f4f2f8;
+  padding: 18px;
+}
+
+.loadingText {
+  text-align: center;
+  font-size: 18px;
+  color: #555;
+  margin-top: 100px;
+}
+
+.topHeaderCard {
+  background: #ffffff;
+  border-radius: 18px 18px 0 0;
+  padding: 18px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ece8f3;
+}
+
+.pageTitleSection {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.orderIconBox {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.orderIconBox img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pageTitleSection h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.profileIcon {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+}
+
+.profileIcon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.contentCard {
+  background: #f5f1fe;
+  border-radius: 0 0 18px 18px;
+  padding: 24px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.filterRow {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+  align-items: center;
+}
+
+.filterBtn {
+  border: 1px solid #1f1f1f;
+  background: #fff;
+  color: #111;
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: 0.3s ease;
+}
+
+.filterBtn:hover {
+  background: #f4f4f5;
+}
+
+.activeFilter {
+  background: #c08cf5;
+  color: #111;
+  border-color: #9b5de5;
+}
+
+.ordersList {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.orderCard {
+  background: #fff;
+  border-radius: 14px;
+  padding: 18px 18px 14px;
+  border: 1px solid #ece8f3;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #ececec;
+  margin-bottom: 16px;
+}
+
+.statusPill {
+  background: #edf3fb;
+  color: #475569;
+  padding: 7px 16px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.orderDate {
+  color: #8a8a8a;
+  font-size: 13px;
+}
+
+.cardBody {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.productImage {
+  width: 120px;
+  height: 85px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.orderContent {
+  flex: 1;
+}
+
+.orderContent h3 {
+  font-size: 14px;
+  color: #7c3aed;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.orderContent p {
+  color: #5b5b5b;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.orderContent h2 {
+  font-size: 32px;
+  color: #111827;
+  font-weight: 700;
+}
+
+.arrowButton {
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 50%;
+  background: #f4ebff;
+  color: #7c3aed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.arrowButton:hover {
+  background: #eadcff;
+}
+
+.progressWrapper {
+  margin-top: 18px;
+}
+
+.progressBar {
+  width: 100%;
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 999px;
+  background: #7c3aed;
+}
+
+.inProgressBar {
+  width: 35%;
+}
+
+.partialProgress {
+  width: 72%;
+}
+
+.fullProgress {
+  width: 100%;
+}
+
+.progressLabels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+.progressLabels span {
+  font-size: 11px;
+  color: #111827;
+  font-weight: 600;
+}
+
+.bottomRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
+.trackButton {
+  border: 1px solid #111827;
+  background: #fff;
+  color: #111827;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.trackButton:hover {
+  background: #f8f8f8;
+}
+
+.emptyState {
+  background: #fafafa;
+  border: 1px dashed #d4d4d8;
+  border-radius: 14px;
+  padding: 50px 20px;
+  text-align: center;
+}
+
+.emptyState h2 {
+  font-size: 24px;
+  margin-bottom: 8px;
+  color: #111827;
+}
+
+.emptyState p {
+  font-size: 14px;
+  color: #71717a;
+}
+
+@media (max-width: 768px) {
+  .pageWrapper {
+    padding: 12px;
+  }
+
+  .topHeaderCard {
+    padding: 16px;
+  }
+
+  .pageTitleSection h1 {
+    font-size: 24px;
+  }
+
+  .contentCard {
+    padding: 16px;
+  }
+
+  .cardBody {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .productImage {
+    width: 100%;
+    height: 180px;
+  }
+
+  .arrowButton {
+    align-self: flex-end;
+  }
+
+  .progressLabels {
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .bottomRow {
+    justify-content: stretch;
+  }
+
+  .trackButton {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.pendingProgress {
+  width: 15%;
+}
+
+.confirmedProgress {
+  width: 35%;
+}
+
+.partialProgress {
+  width: 65%;
+}
+
+.shippedProgress {
+  width: 85%;
+}
+
+.fullProgress {
+  width: 100%;
+}

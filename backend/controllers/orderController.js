@@ -5,6 +5,7 @@ import Product from "../models/Product.js";
 import generateOrderId from "../utils/generateOrderId.js";
 import generateInvoicePdf from "../utils/pdf/generateInvoicePdf.js";
 import sendOrderInvoiceEmail from "../utils/sendOrderInvoiceEmail.js";
+import generateShipmentInvoiceId from "../utils/generateShipmentInvoiceId.js";
 
 export const createOrder = async (req, res) => {
   try {
@@ -214,6 +215,7 @@ export const getSellerSingleOrder = async (req, res) => {
         `
           fullName
           email
+          addresses
           businessProfile.companyName
           businessProfile.phoneNumber
           businessProfile.email
@@ -227,12 +229,24 @@ export const getSellerSingleOrder = async (req, res) => {
         `
           fullName
           email
+          addresses
           businessProfile.companyName
           businessProfile.phoneNumber
           businessProfile.email
+          businessProfile.gstNumber
+          businessProfile.billingAddress
+          businessProfile.shippingAddress
         `
       )
-      .populate("orderItems.product");
+      .populate(
+        "orderItems.product",
+        `
+          productName
+          loadingLocation
+          category
+          application
+        `
+      );
 
     if (!order) {
       return res.status(404).json({
@@ -347,6 +361,383 @@ export const rejectSellerOrder = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Failed to reject order",
+      error: error.message,
+    });
+  }
+};
+
+
+export const addShipmentToOrder = async (req, res) => {
+  try {
+    const sellerId = req.user._id;
+    const { orderId } = req.params;
+
+    const {
+      selectedItem,
+      shippedQuantity,
+      vehicleNumber,
+      driverName,
+      driverMobile,
+      shipmentFrom,
+      shipmentTo,
+      selectedSubProducts,
+    } = req.body;
+
+    const order = await Order.findOne({
+      _id: orderId,
+      seller: sellerId,
+      isDeleted: false,
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    const existingShippedQuantity = order.shipments
+      .filter((shipment) => shipment.selectedItem === selectedItem)
+      .reduce(
+        (total, shipment) =>
+          total + Number(shipment.shippedQuantity || 0),
+        0
+      );
+
+    const selectedOrderItem = order.orderItems.find(
+      (item) => item.productName === selectedItem
+    );
+
+    if (!selectedOrderItem) {
+      return res.status(400).json({
+        success: false,
+        message: "Selected item not found in order",
+      });
+    }
+
+    const totalAllowedQuantity = Number(
+      selectedOrderItem.requiredQuantity
+    );
+
+    const newTotalQuantity =
+      existingShippedQuantity + Number(shippedQuantity);
+
+    if (newTotalQuantity > totalAllowedQuantity) {
+      return res.status(400).json({
+        success: false,
+        message: `Maximum allowed quantity for ${selectedItem} is ${totalAllowedQuantity}. Already shipped ${existingShippedQuantity}.`,
+      });
+    }
+
+    const shipmentInvoiceId = await generateShipmentInvoiceId();
+
+    const shipmentFile = req.file
+      ? {
+          data: req.file.buffer,
+          contentType: req.file.mimetype,
+          originalName: req.file.originalname,
+        }
+      : null;
+
+    const newShipment = {
+      shipmentInvoiceId,
+      selectedItem,
+      shippedQuantity: Number(shippedQuantity),
+      vehicleNumber,
+      driverName,
+      driverMobile,
+      shipmentFrom,
+      shipmentTo,
+
+      selectedSubProducts: selectedSubProducts
+        ? JSON.parse(selectedSubProducts)
+        : [],
+
+      shipmentFile,
+
+      shipmentStatus: "shipped",
+      approvedByAdmin: false,
+      approvedBy: null,
+      approvedAt: null,
+      shippedAt: new Date(),
+      deliveredAt: null,
+    };
+
+    order.shipments.push(newShipment);
+
+    const allItemsFullyShipped = order.orderItems.every((item) => {
+      const totalShippedForItem = order.shipments
+        .filter(
+          (shipment) => shipment.selectedItem === item.productName
+        )
+        .reduce(
+          (total, shipment) =>
+            total + Number(shipment.shippedQuantity || 0),
+          0
+        );
+
+      return totalShippedForItem >= Number(item.requiredQuantity);
+    });
+
+    const hasAnyShipment = order.shipments.length > 0;
+
+    if (allItemsFullyShipped) {
+      order.orderStatus = "shipped";
+      order.shippedAt = new Date();
+    } else if (hasAnyShipment) {
+      order.orderStatus = "partially_shipped";
+    }
+
+    await order.save();
+
+    return res.status(200).json({
+      success: true,
+      message:
+        "Shipment details uploaded successfully. Waiting for admin approval.",
+      shipments: order.shipments,
+      orderStatus: order.orderStatus,
+    });
+  } catch (error) {
+    console.log("Add Shipment To Order Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to add shipment details",
+      error: error.message,
+    });
+  }
+};
+
+
+
+
+export const getBuyerOrders = async (req, res) => {
+  try {
+    const buyerId = req.user._id;
+
+    const orders = await Order.find({
+      buyer: buyerId,
+      isDeleted: false,
+    })
+      .populate(
+        "seller",
+        `
+          fullName
+          email
+          businessProfile.companyName
+          businessProfile.phoneNumber
+          businessProfile.companyId
+        `
+      )
+      .populate(
+        "orderItems.product",
+        `
+          productName
+          category
+          application
+          loadingLocation
+        `
+      )
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      totalOrders: orders.length,
+      orders,
+    });
+  } catch (error) {
+    console.log("Get Buyer Orders Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch buyer orders",
+      error: error.message,
+    });
+  }
+};
+
+
+export const getBuyerSingleOrder = async (req, res) => {
+  try {
+    const buyerId = req.user._id;
+    const { orderId } = req.params;
+
+    const order = await Order.findOne({
+      _id: orderId,
+      buyer: buyerId,
+      isDeleted: false,
+    })
+      .populate(
+        "seller",
+        `
+          fullName
+          email
+          businessProfile.companyName
+          businessProfile.phoneNumber
+          businessProfile.companyId
+        `
+      )
+      .populate(
+        "orderItems.product",
+        `
+          productName
+          category
+          application
+          loadingLocation
+        `
+      );
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      order,
+    });
+  } catch (error) {
+    console.log("Get Buyer Single Order Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch order",
+      error: error.message,
+    });
+  }
+};
+
+
+
+export const uploadBuyerPayment = async (req, res) => {
+  try {
+    const buyerId = req.user._id;
+    const { orderId } = req.params;
+
+    const {
+      amount,
+      paymentMode,
+      transactionId,
+      note,
+      paymentFor,
+    } = req.body;
+
+    const order = await Order.findOne({
+      _id: orderId,
+      buyer: buyerId,
+      isDeleted: false,
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    // ✅ FIXED LOGIC (IMPORTANT)
+    const blockedStatuses = ["pending", "cancelled"];
+
+    if (blockedStatuses.includes(order.orderStatus)) {
+      return res.status(400).json({
+        success: false,
+        message: "Payment not allowed at this stage",
+      });
+    }
+
+    // ✅ FILE
+    const paymentFile = req.file
+      ? {
+          data: req.file.buffer,
+          contentType: req.file.mimetype,
+          originalName: req.file.originalname,
+        }
+      : null;
+
+    // ✅ VALIDATION
+    const paidAmount = Number(amount);
+
+    if (!paidAmount || paidAmount <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid payment amount",
+      });
+    }
+
+    if (paidAmount > order.buyerPendingAmount) {
+      return res.status(400).json({
+        success: false,
+        message: "Amount exceeds pending amount",
+      });
+    }
+
+    // ✅ CALCULATIONS
+    const newTotalPaid = order.buyerPaidAmount + paidAmount;
+    const remainingAmount = order.totalAmount - newTotalPaid;
+    const isFinalPayment = remainingAmount <= 0;
+
+    // ✅ CREATE RECEIPT
+    const newReceipt = {
+      file: paymentFile,
+      amount: paidAmount,
+      paymentMode,
+      transactionId,
+      note,
+      uploadedBy: buyerId,
+      paymentFor: paymentFor || "buyer_to_admin",
+      totalPaidTillNow: newTotalPaid,
+      remainingAmount: Math.max(remainingAmount, 0),
+      isPartialPayment: !isFinalPayment,
+      isFinalPayment: isFinalPayment,
+    };
+
+    order.buyerPaymentReceipts.push(newReceipt);
+
+    // ✅ UPDATE AMOUNTS
+    order.buyerPaidAmount = newTotalPaid;
+    order.buyerPendingAmount = Math.max(remainingAmount, 0);
+
+    // ✅ UPDATE STATUS (DON’T BREAK SHIPMENT FLOW)
+    if (isFinalPayment) {
+      order.buyerPaymentStatus = "completed";
+
+      // only update if not already shipped
+      if (
+        !["partially_shipped", "shipped", "delivered"].includes(
+          order.orderStatus
+        )
+      ) {
+        order.orderStatus = "payment_completed";
+      }
+    } else {
+      order.buyerPaymentStatus = "partial";
+
+      if (
+        !["partially_shipped", "shipped", "delivered"].includes(
+          order.orderStatus
+        )
+      ) {
+        order.orderStatus = "partial_payment_uploaded";
+      }
+    }
+
+    order.paymentUploadedAt = new Date();
+
+    await order.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Payment uploaded successfully",
+      order,
+    });
+  } catch (error) {
+    console.log("Upload Payment Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to upload payment",
       error: error.message,
     });
   }

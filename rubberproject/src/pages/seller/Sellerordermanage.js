@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import {
-  getSellerSingleOrderThunk,
-  confirmSellerOrderThunk,
-  rejectSellerOrderThunk,
-} from "../../redux/slices/sellerOrderThunk";
-import {
-  clearSellerOrderMessages,
-} from "../../redux/slices/sellerOrderSlice";
+import {  getSellerSingleOrderThunk,  confirmSellerOrderThunk,  rejectSellerOrderThunk,} from "../../redux/slices/sellerOrderThunk";
+import { clearSellerOrderMessages } from "../../redux/slices/sellerOrderSlice";
+import SellerPaymentSection from "../../components/orders/SellerPaymentSection";
+import SellerShipmentSection from "../../components/orders/SellerShipmentSection";
 import styles from "../../styles/Seller/Sellerordermanage.module.css";
 
 const Sellerordermanage = () => {
@@ -84,13 +80,11 @@ const Sellerordermanage = () => {
         </p>
 
         <p>
-          <strong>Buyer Name:</strong>{" "}
-          {selectedOrder.buyer?.fullName}
+          <strong>Buyer Name:</strong> {selectedOrder.buyer?.fullName}
         </p>
 
         <p>
-          <strong>Buyer Email:</strong>{" "}
-          {selectedOrder.buyer?.email}
+          <strong>Buyer Email:</strong> {selectedOrder.buyer?.email}
         </p>
       </div>
 
@@ -129,6 +123,10 @@ const Sellerordermanage = () => {
           ))}
         </div>
       </div>
+
+      <SellerPaymentSection selectedOrder={selectedOrder} />
+
+      <SellerShipmentSection selectedOrder={selectedOrder} />
 
       {confirmOrderSuccess && (
         <div className={styles.success}>{confirmOrderSuccess}</div>

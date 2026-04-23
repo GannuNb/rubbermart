@@ -201,6 +201,13 @@ function ProductOrderPanel({ singleProduct }) {
       alert("Required quantity cannot exceed available stock");
       return;
     }
+    if (
+      singleProduct.stockStatus !== "available" ||
+      Number(singleProduct.quantity) <= 0
+    ) {
+      alert("This product is currently out of stock");
+      return;
+    }
 
     const selectedAddressObject =
       buyerAddresses.find(
@@ -315,18 +322,23 @@ function ProductOrderPanel({ singleProduct }) {
             )}
           </div>
 
-          <button
-            className={styles.buyButton}
-            onClick={handleContinueToOrder}
-            disabled={
-              !selectedAddress ||
-              !requiredQuantity ||
-              Number(requiredQuantity) <= 0 ||
-              Number(requiredQuantity) > Number(singleProduct.quantity)
-            }
-          >
-            Continue To Order
-          </button>
+                <button
+                  className={styles.buyButton}
+                  onClick={handleContinueToOrder}
+                  disabled={
+                    singleProduct.stockStatus !== "available" ||
+                    Number(singleProduct.quantity) <= 0 ||
+                    !selectedAddress ||
+                    !requiredQuantity ||
+                    Number(requiredQuantity) <= 0 ||
+                    Number(requiredQuantity) > Number(singleProduct.quantity)
+                  }
+                >
+                  {singleProduct.stockStatus !== "available" ||
+                  Number(singleProduct.quantity) <= 0
+                    ? "Currently Unavailable"
+                    : "Continue To Order"}
+                </button>
         </div>
       </div>
 

@@ -50,7 +50,7 @@ function SellerDashboard() {
           <FaShoppingBag className={styles.icon} />
           <h2>Orders</h2>
           <p>Track and manage buyer orders</p>
-          <Link to="/seller-orders" className={styles.btn}>
+          <Link to="/seller/orders" className={styles.btn}>
             View Orders
           </Link>
         </div>
