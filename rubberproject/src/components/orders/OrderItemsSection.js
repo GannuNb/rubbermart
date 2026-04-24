@@ -1,8 +1,10 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "../../styles/Buyer/BuyerOrderDetails.module.css";
 
 function OrderItemsSection({ order }) {
-  // ✅ IMAGE HANDLER
+  const navigate = useNavigate();
+
   const getImage = (item) => {
     if (item?.productImage?.data) {
       let base64 = "";
@@ -13,8 +15,8 @@ function OrderItemsSection({ order }) {
         base64 = btoa(
           new Uint8Array(item.productImage.data.data).reduce(
             (d, b) => d + String.fromCharCode(b),
-            "",
-          ),
+            ""
+          )
         );
       }
 
@@ -26,28 +28,30 @@ function OrderItemsSection({ order }) {
     return "/logo192.png";
   };
 
-  // ✅ CORE LOGIC
   const getItemProgress = (item) => {
     const approvedShipments =
       order.shipments?.filter(
-        (s) =>
-          s.approvedByAdmin === true &&
-          s.selectedItem === item.productName,
+        (shipment) =>
+          shipment.approvedByAdmin === true &&
+          shipment.selectedItem === item.productName
       ) || [];
 
     const shippedQty = approvedShipments.reduce(
-      (sum, s) => sum + Number(s.shippedQuantity || 0),
-      0,
+      (total, shipment) =>
+        total + Number(shipment.shippedQuantity || 0),
+      0
     );
 
     const requiredQty = Number(item.requiredQuantity);
 
-    const remainingQty = Math.max(requiredQty - shippedQty, 0);
+    const remainingQty = Math.max(
+      requiredQty - shippedQty,
+      0
+    );
 
-    // ✅ DELIVERED
     if (order.orderStatus === "delivered") {
       return {
-        stage: 3,
+        stage: 4,
         label: "Delivered",
         type: "delivered",
         shippedQty,
@@ -55,7 +59,6 @@ function OrderItemsSection({ order }) {
       };
     }
 
-    // ✅ NO SHIPMENT
     if (shippedQty === 0) {
       return {
         stage: 1,
@@ -66,7 +69,6 @@ function OrderItemsSection({ order }) {
       };
     }
 
-    // ✅ PARTIAL
     if (shippedQty < requiredQty) {
       return {
         stage: 2,
@@ -77,7 +79,6 @@ function OrderItemsSection({ order }) {
       };
     }
 
-    // ✅ FULL SHIPPED
     return {
       stage: 3,
       label: "Shipped",
@@ -87,15 +88,20 @@ function OrderItemsSection({ order }) {
     };
   };
 
-  // ✅ PROGRESS WIDTH
   const getProgressWidth = (stage) => {
     switch (stage) {
       case 1:
-        return "33%";
+        return "25%";
+
       case 2:
-        return "66%";
+        return "50%";
+
       case 3:
+        return "75%";
+
+      case 4:
         return "100%";
+
       default:
         return "0%";
     }
@@ -112,25 +118,20 @@ function OrderItemsSection({ order }) {
 
         return (
           <div key={index} className={styles.itemCard}>
-            {/* STATUS BADGE */}
             <div className={styles.statusRow}>
               <span className={styles.statusBadge}>
                 {progress.label}
               </span>
             </div>
 
-            {/* MAIN ROW */}
             <div className={styles.itemRow}>
-              {/* IMAGE */}
               <img
                 src={getImage(item)}
                 alt="product"
                 className={styles.itemImage}
               />
 
-              {/* INFO */}
               <div className={styles.itemInfo}>
-                {/* ✅ COLORED PRODUCT NAME */}
                 <h4 className={styles.productName}>
                   {item.productName}
                 </h4>
@@ -140,7 +141,6 @@ function OrderItemsSection({ order }) {
                   {item.requiredQuantity}
                 </p>
 
-                {/* ✅ NEW FIELD */}
                 <p>
                   Remaining Quantity / MT :{" "}
                   <span className={styles.remainingQty}>
@@ -153,13 +153,25 @@ function OrderItemsSection({ order }) {
                 </p>
               </div>
 
-              {/* BUTTON */}
-              <button className={styles.shippingBtn}>
+              <button
+                className={styles.shippingBtn}
+                onClick={() =>
+                  navigate(
+                    `/buyer/order/${order._id}/shipping/${encodeURIComponent(
+                      item.productName
+                    )}`,
+                    {
+                      state: {
+                        order,
+                      },
+                    }
+                  )
+                }
+              >
                 View Shipping
               </button>
             </div>
 
-            {/* PROGRESS BAR */}
             <div className={styles.progressSection}>
               <div className={styles.progressBar}>
                 <div
@@ -170,16 +182,10 @@ function OrderItemsSection({ order }) {
                 />
               </div>
 
-              {/* LABELS */}
               <div className={styles.progressLabels}>
                 <span>Order Confirmed</span>
-
-                <span>
-                  {progress.type === "partial"
-                    ? "Partial Shipment"
-                    : "Shipped"}
-                </span>
-
+                <span>Partial Shipment</span>
+                <span>Shipped</span>
                 <span>Delivered</span>
               </div>
             </div>

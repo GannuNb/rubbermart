@@ -21,6 +21,8 @@ import SellerPendingProducts from "./pages/seller/SellerPendingProducts";
 import SellerProducts from "./pages/seller/SellerProducts";
 import SellerProfile from "./pages/seller/SellerProfile";
 import SellerOrders from "./pages/seller/SellerOrders";
+import Sellerordermanage from "./pages/seller/Sellerordermanage";
+
 
 //buyer
 import Home from "./pages/Buyer/Home";
@@ -31,9 +33,11 @@ import SellerProductsBySeller from "./pages/Buyer/SellerProductsBySeller";
 import PlaceOrder from "./pages/Buyer/PlaceOrder";
 import OrderSuccess from "./pages/Buyer/OrderSuccess";
 import BuyerProfile from "./pages/Buyer/BuyerProfile";
-import Sellerordermanage from "./pages/seller/Sellerordermanage";
 import BuyerOrders from "./pages/Buyer/BuyerOrders";
 import BuyerOrderDetails from "./pages/Buyer/BuyerOrderDetails";
+import BuyerShippingInvoices from "./pages/Buyer/BuyerShippingInvoices";
+import BuyerSingleShippingInvoice from "./pages/Buyer/BuyerSingleShippingInvoice";
+
 
 
 //Admin
@@ -70,7 +74,9 @@ function AppContent() {
         <Route path="/place-order" element={<PlaceOrder />} />
         <Route path="/order-success" element={<OrderSuccess />} />
         <Route  path="/buyer-orders"  element={    <ProtectedRoute allowedRoles={["buyer"]}>      <BuyerOrders />    </ProtectedRoute>  }/>
-        <Route  path="/buyer-orders/:id"  element={    <ProtectedRoute>      <BuyerOrderDetails />    </ProtectedRoute>  }/>        
+        <Route  path="/buyer-orders/:id"  element={    <ProtectedRoute>      <BuyerOrderDetails />   </ProtectedRoute>  }/>  
+        <Route  path="/buyer/order/:orderId/shipping/:itemName"  element={<BuyerShippingInvoices />}/>   
+        <Route  path="/buyer/shipping-invoice/:shipmentId"  element={<BuyerSingleShippingInvoice />}/> 
 
         {/* seller */}
         <Route path="/seller-dashboard" element={<ProtectedRoute allowedRole="seller"><SellerDashboard /></ProtectedRoute>}/>
