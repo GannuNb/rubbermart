@@ -1,0 +1,150 @@
+/* src/styles/Admin/AdminOrderItemsCard.module.css */
+
+.wrapper {
+  margin-top: 18px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 22px;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.header {
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* =========================
+   TABLE HEADER
+========================= */
+
+.tableHeader {
+  display: grid;
+  grid-template-columns: 2.2fr 1fr 1.4fr 1.2fr 1.2fr 1.2fr;
+  gap: 18px;
+  padding: 14px 0;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 14px;
+  font-weight: 600;
+  color: #692ca0;
+}
+
+/* =========================
+   ITEM ROW
+========================= */
+
+.itemRow {
+  display: grid;
+  grid-template-columns: 2.2fr 1fr 1.4fr 1.2fr 1.2fr 1.2fr;
+  gap: 18px;
+  align-items: center;
+  padding: 18px 0;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 14px;
+  color: #111827;
+}
+
+/* =========================
+   PRODUCT BOX
+========================= */
+
+.productBox {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-weight: 500;
+}
+
+.productImage {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 1px solid #ececec;
+}
+
+.placeholderImage {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  background: #f3f4f6;
+  border: 1px solid #ececec;
+}
+
+/* =========================
+   BUTTON
+========================= */
+
+.invoiceBtn {
+  height: 40px;
+  padding: 0 18px;
+  border: 1px solid #d8c7ff;
+  background: #ffffff;
+  color: #692ca0;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.invoiceBtn:hover {
+  background: #faf7ff;
+}
+
+/* =========================
+   SUMMARY SECTION
+========================= */
+
+.summarySection {
+  width: 340px;
+  margin-left: auto;
+  margin-top: 24px;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  font-size: 14px;
+  color: #374151;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.summaryRow span:last-child {
+  font-weight: 600;
+  color: #111827;
+}
+
+/* =========================
+   TOTAL BOX
+========================= */
+
+.totalBox {
+  margin-top: 14px;
+  background: #f8f5ff;
+  border: 1px solid #e9ddff;
+  border-radius: 10px;
+  padding: 16px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.totalBox span:last-child {
+  color: #5b2be0;
+}

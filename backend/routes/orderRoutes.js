@@ -1,9 +1,10 @@
 // backend/routes/orderRoutes.js
 
 import express from "express";
-import { protectUser } from "../middlewares/authMiddleware.js";
+import { protectAdmin, protectUser } from "../middlewares/authMiddleware.js";
 import uploadDocuments from "../middlewares/uploadDocuments.js";
-import { createOrder,getSellerOrders,  getSellerSingleOrder,  confirmSellerOrder,rejectSellerOrder,addShipmentToOrder,getBuyerOrders,getBuyerSingleOrder,uploadBuyerPayment } from "../controllers/orderController.js";
+import { createOrder,getSellerOrders,  getSellerSingleOrder,  confirmSellerOrder,rejectSellerOrder,addShipmentToOrder,getBuyerOrders,
+    getBuyerSingleOrder, uploadBuyerPayment ,getAdminAllOrders,getAdminSingleOrderDetails,approveBuyerPayment, uploadAdminToSellerPayment, } from "../controllers/orderController.js";
 
 const router = express.Router();
 
@@ -16,5 +17,15 @@ router.post("/seller-orders/:orderId/shipment",  protectUser,  uploadDocuments.s
 router.get("/buyer-orders", protectUser, getBuyerOrders);
 router.get(  "/buyer-orders/:orderId",  protectUser,  getBuyerSingleOrder);
 router.post(  "/buyer-orders/:orderId/payment",  protectUser,  uploadDocuments.single("file"),  uploadBuyerPayment);
+router.get(  "/admin/all-orders",  protectUser, protectAdmin,  getAdminAllOrders);
+router.get(  "/admin/:orderId",  protectUser,  protectAdmin,  getAdminSingleOrderDetails);
+router.put(  "/admin/:orderId/payment/:paymentId/approve",  protectUser,  protectAdmin,  approveBuyerPayment);
+router.post(
+  "/admin/:orderId/seller-payment",
+  protectUser,
+  protectAdmin,
+  uploadDocuments.single("file"),
+  uploadAdminToSellerPayment
+);
 
 export default router;

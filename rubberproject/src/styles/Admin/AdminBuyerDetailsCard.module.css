@@ -1,0 +1,86 @@
+/* src/styles/Admin/AdminBuyerDetailsCard.module.css */
+
+.infoCard {
+  margin-top: 18px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+/* =========================
+   CARD HEADER
+========================= */
+
+.cardHeader {
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.cardTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* =========================
+   GRID
+   (FORCE 2 ROWS LOOK)
+========================= */
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+/*
+Row 1:
+Buyer Name | Email | Phone | Company
+
+Row 2:
+Address full width
+*/
+
+.infoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.fullWidth {
+  grid-column: span 4;
+}
+
+/* =========================
+   TOP LABEL + ICON
+========================= */
+
+.infoTop {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #692ca0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.infoTop svg {
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+/* =========================
+   VALUE
+========================= */
+
+.infoValue {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+  line-height: 1.5;
+  word-break: break-word;
+}

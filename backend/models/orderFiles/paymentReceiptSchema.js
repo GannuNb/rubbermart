@@ -3,12 +3,15 @@ import uploadedFileSchema from "./uploadedFileSchema.js";
 
 const paymentReceiptSchema = new mongoose.Schema(
   {
+    /* =========================
+       RECEIPT FILE
+    ========================= */
+
     file: uploadedFileSchema,
 
-    uploadedAt: {
-      type: Date,
-      default: Date.now,
-    },
+    /* =========================
+       BASIC PAYMENT INFO
+    ========================= */
 
     amount: {
       type: Number,
@@ -18,17 +21,59 @@ const paymentReceiptSchema = new mongoose.Schema(
 
     paymentMode: {
       type: String,
-      enum: ["bank_transfer", "upi", "cash", "cheque", "rtgs", "neft"],
+      enum: [
+        "bank_transfer",
+        "upi",
+        "cash",
+        "cheque",
+        "rtgs",
+        "neft",
+      ],
       default: "bank_transfer",
     },
 
     transactionId: {
       type: String,
+      default: "",
+      trim: true,
     },
 
     note: {
       type: String,
+      default: "",
+      trim: true,
     },
+
+    /* =========================
+       PAYMENT TYPE
+    ========================= */
+
+    paymentFor: {
+      type: String,
+      enum: [
+        "buyer_to_admin",
+        "admin_to_seller",
+      ],
+      required: true,
+    },
+
+    /* =========================
+       PAYMENT STATUS
+    ========================= */
+
+    status: {
+      type: String,
+      enum: [
+        "pending",
+        "verified",
+        "rejected",
+      ],
+      default: "pending",
+    },
+
+    /* =========================
+       TRACKING
+    ========================= */
 
     uploadedBy: {
       type: mongoose.Schema.Types.ObjectId,
@@ -40,21 +85,18 @@ const paymentReceiptSchema = new mongoose.Schema(
       ref: "User",
     },
 
+    uploadedAt: {
+      type: Date,
+      default: Date.now,
+    },
+
     verifiedAt: {
       type: Date,
     },
 
-    status: {
-      type: String,
-      enum: ["pending", "verified", "rejected"],
-      default: "pending",
-    },
-
-    paymentFor: {
-      type: String,
-      enum: ["buyer_to_admin", "admin_to_seller"],
-      required: true,
-    },
+    /* =========================
+       PAYMENT CALCULATION
+    ========================= */
 
     totalPaidTillNow: {
       type: Number,

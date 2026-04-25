@@ -1,0 +1,126 @@
+/* src/styles/Admin/AdminPaymentSummaryCard.module.css */
+
+.card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 22px;
+  margin-bottom: 18px;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.iconBox {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #f4edff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #692ca0;
+  font-size: 18px;
+}
+
+.cardHeader h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* =========================
+   SECTION
+========================= */
+
+.section {
+  border: 1px solid #f1f5f9;
+  border-radius: 12px;
+  padding: 18px;
+  background: #fcfcff;
+  margin-bottom: 18px;
+}
+
+.section:last-child {
+  margin-bottom: 0;
+}
+
+.section h4 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #5b2be0;
+  margin-bottom: 16px;
+}
+
+/* =========================
+   ROWS
+========================= */
+
+.row,
+.statusRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.row:last-child,
+.statusRow:last-child {
+  margin-bottom: 0;
+}
+
+.row span,
+.statusRow span {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.row strong {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* =========================
+   STATUS BADGE
+========================= */
+
+.badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+/* completed */
+
+.completed {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+/* partial */
+
+.partial {
+  background: #fff7d6;
+  color: #b7791f;
+}
+
+/* pending */
+
+.pending {
+  background: #ede9fe;
+  color: #692ca0;
+}

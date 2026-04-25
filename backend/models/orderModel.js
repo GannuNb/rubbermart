@@ -114,9 +114,6 @@ const orderSchema = new mongoose.Schema(
       enum: [
         "pending",
         "seller_confirmed",
-        "partial_payment_uploaded",
-        "partial_payment_verified",
-        "payment_completed",
         "partially_shipped",
         "shipped",
         "delivered",

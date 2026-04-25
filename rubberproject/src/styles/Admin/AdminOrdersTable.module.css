@@ -1,0 +1,191 @@
+/* src/styles/Admin/AdminOrdersTable.module.css */
+
+.wrapper {
+  background: #ffffff;
+  border: 1px solid #e7eaf0;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 6px 24px rgba(17, 24, 39, 0.04);
+  margin-top: 10px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table thead {
+  background: #faf8ff;
+}
+
+.table thead th {
+  padding: 22px 20px;
+  text-align: left;
+  border-bottom: 1px solid #ececf3;
+  white-space: nowrap;
+}
+
+/* Header with Icons */
+
+.headerCell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #692ca0;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.headerCell svg {
+  font-size: 15px;
+  color: #692ca0;
+}
+
+.table tbody td {
+  padding: 22px 20px;
+  border-bottom: 1px solid #f3f4f6;
+  vertical-align: middle;
+  font-size: 14px;
+  color: #1f2937;
+}
+
+.table tbody tr {
+  transition: 0.2s ease;
+}
+
+.table tbody tr:hover {
+  background: #fcfbff;
+}
+
+/* Order Cell */
+
+.orderCell {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.productImage {
+  width: 74px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #ececec;
+  background: #fff;
+}
+
+.placeholderImage {
+  width: 74px;
+  height: 56px;
+  border-radius: 10px;
+  background: #f3f4f6;
+  border: 1px solid #ececec;
+}
+
+.orderId {
+  color: #692ca0;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+/* Buyer */
+
+.buyerName {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Amount */
+
+.amount {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* Status Badges */
+
+.statusBadge {
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: capitalize;
+  letter-spacing: 0.2px;
+  min-width: 120px;
+}
+
+/* Pending */
+
+.pending {
+  background: #fff8db;
+  color: #b7791f;
+  border: 1px solid #fde68a;
+}
+
+/* Partial Shipment */
+
+.partial {
+  background: #fff1e6;
+  color: #c05621;
+  border: 1px solid #fdba74;
+}
+
+/* Cancelled */
+
+.cancelled {
+  background: #ffe8ea;
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+}
+
+/* Delivered */
+
+.delivered {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #86efac;
+}
+
+/* In Progress */
+
+.inProgress {
+  background: #f3e8ff;
+  color: #7c3aed;
+  border: 1px solid #d8b4fe;
+}
+
+/* View Button */
+
+.viewBtn {
+  height: 42px;
+  padding: 0 22px;
+  border: 1px solid #d8b4fe;
+  background: #ffffff;
+  color: #692ca0;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.viewBtn:hover {
+  background: #faf5ff;
+  border-color: #692ca0;
+}
+
+/* Empty Row */
+
+.emptyRow {
+  text-align: center;
+  padding: 50px;
+  color: #6b7280;
+  font-size: 15px;
+  font-weight: 500;
+}

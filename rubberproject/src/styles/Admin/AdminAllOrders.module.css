@@ -1,0 +1,75 @@
+/* src/styles/Admin/AdminAllOrders.module.css */
+
+.container {
+  padding: 24px 32px;
+  background: #fbf9ff;
+  min-height: 100vh;
+}
+
+.topHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 22px;
+  margin-bottom: 26px;
+  border-bottom: 1px solid #e5e7eb; /* horizontal line after heading */
+}
+
+.pageTitle {
+  font-size: 38px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 10px;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 15px;
+  color: #6b7280;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.topSearch {
+  width: 370px;
+  height: 48px;
+  border: 1px solid #dcdcdc;
+  border-radius: 10px;
+  padding: 0 18px;
+  font-size: 14px;
+  outline: none;
+  background: white;
+}
+
+.topSearch:focus {
+  border-color: #5b2be0;
+}
+
+.adminProfile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #dddddd;
+}
+
+.filterRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 24px;
+}

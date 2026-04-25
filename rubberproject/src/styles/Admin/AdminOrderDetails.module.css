@@ -1,0 +1,202 @@
+/* src/styles/Admin/AdminOrderDetails.module.css */
+
+.container {
+  padding: 20px 24px;
+  background: #f8f5ff;
+  min-height: 100vh;
+}
+
+/* =========================
+   TOP HEADER
+========================= */
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.mainTitle {
+  font-size: 28px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.adminProfile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #dddddd;
+}
+
+/* =========================
+   BREADCRUMB
+========================= */
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* =========================
+   BACK SECTION
+========================= */
+
+.backSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+  margin-bottom: 18px;
+}
+
+.backBtn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sectionTitle {
+  font-size: 22px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* =========================
+   MAIN GRID
+========================= */
+
+.mainLayout {
+  display: grid;
+  grid-template-columns: 68% 32%;
+  gap: 18px;
+  align-items: flex-start;
+}
+
+/* =========================
+   LEFT SECTION
+========================= */
+
+.leftSection {
+  width: 100%;
+}
+
+/* =========================
+   RIGHT SECTION
+========================= */
+
+.rightSection {
+  width: 100%;
+}
+
+/* =========================
+   SUMMARY CARD
+========================= */
+
+.summaryCard {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+}
+
+/* =========================
+   SUMMARY ITEM
+========================= */
+
+.summaryItem {
+  flex: 1;
+}
+
+/* =========================
+   ICON + LABEL
+========================= */
+
+.itemTop {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #692ca0;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.itemTop svg {
+  font-size: 13px;
+}
+
+/* =========================
+   ORDER ID
+========================= */
+
+.orderId {
+  font-size: 18px;
+  font-weight: 700;
+  color: #5b2be0;
+  line-height: 1.3;
+}
+
+/* =========================
+   STATUS BADGES
+========================= */
+
+.badge {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+/* In Progress */
+
+.progress {
+  background: #efe7ff;
+  color: #6d28d9;
+}
+
+/* Pending */
+
+.pending {
+  background: #fff3dc;
+  color: #b7791f;
+}
+
+/* =========================
+   DATE TEXT
+========================= */
+
+.dateText {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+  line-height: 1.5;
+}

@@ -1,0 +1,125 @@
+/* src/styles/Admin/AdminToSellerPaymentCard.module.css */
+
+.card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 22px;
+  margin-bottom: 18px;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.iconBox {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #f4edff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #692ca0;
+  font-size: 18px;
+}
+
+.cardHeader h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+}
+/* =========================
+   SUCCESS MESSAGE
+========================= */
+
+.successBox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #ecfdf3;
+  border: 1px solid #bbf7d0;
+  color: #15803d;
+  padding: 14px 16px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.successBox svg {
+  font-size: 16px;
+}
+
+/* =========================
+   FORM
+========================= */
+
+.formGroup {
+  margin-bottom: 18px;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.formGroup input,
+.formGroup select,
+.formGroup textarea {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 14px;
+  outline: none;
+  background: #ffffff;
+}
+
+.formGroup textarea {
+  resize: none;
+}
+
+/* =========================
+   FILE UPLOAD
+========================= */
+
+.uploadBox {
+  border: 1px dashed #c4b5fd;
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  color: #692ca0;
+  font-size: 14px;
+  font-weight: 500;
+  background: #faf7ff;
+}
+
+/* =========================
+   BUTTON
+========================= */
+
+.submitBtn {
+  width: 100%;
+  height: 46px;
+  border: none;
+  border-radius: 10px;
+  background: #5b2be0;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}

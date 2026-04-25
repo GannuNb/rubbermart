@@ -1,0 +1,161 @@
+/* src/styles/Admin/AdminBuyerPaymentCard.module.css */
+
+.card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 22px;
+  margin-bottom: 18px;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.iconBox {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #f4edff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #692ca0;
+  font-size: 18px;
+}
+
+.cardHeader h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* =========================
+   EACH PAYMENT BOX
+========================= */
+
+.paymentBox {
+  border: 1px solid #f1f5f9;
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 18px;
+  background: #fcfcff;
+}
+
+.paymentBox:last-child {
+  margin-bottom: 0;
+}
+
+.paymentTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #5b2be0;
+  margin-bottom: 16px;
+}
+
+/* =========================
+   DETAILS
+========================= */
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.row span {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.row strong {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  text-align: right;
+  text-transform: capitalize;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.buttonRow {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.lightBtn {
+  flex: 1;
+  height: 44px;
+  border: 1px solid #d8c7ff;
+  background: #ffffff;
+  color: #692ca0;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primaryBtn {
+  flex: 1;
+  height: 44px;
+  border: none;
+  background: #5b2be0;
+  color: #ffffff;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* =========================
+   EMPTY TEXT
+========================= */
+
+.emptyText {
+  text-align: center;
+  font-size: 14px;
+  color: #6b7280;
+  padding: 20px 0;
+}
+
+/* =========================
+   APPROVED BUTTON
+========================= */
+
+.approvedBtn {
+  flex: 1;
+  height: 44px;
+  border: none;
+  background: #dcfce7;
+  color: #15803d;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: default;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

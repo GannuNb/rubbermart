@@ -45,6 +45,8 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminApproveProducts from "./pages/admin/AdminApproveProducts";
 import AdminProducts from "./pages/admin/AdminProducts";
 import AdminUsers from "./pages/admin/AdminUsers";
+import AdminAllOrders from "./pages/admin/AdminAllOrders";
+import AdminOrderDetails from "./pages/admin/AdminOrderDetails";
 
 
 function AppContent() {
@@ -92,6 +94,9 @@ function AppContent() {
         <Route path="/admin-approve-products" element={<ProtectedRoute allowedRole="admin"><AdminApproveProducts /></ProtectedRoute>}/>
         <Route  path="/admin-products" element={<ProtectedRoute allowedRole="admin"><AdminProducts /></ProtectedRoute>}/>
         <Route  path="/admin-users"  element={<ProtectedRoute allowedRole="admin"><AdminUsers /></ProtectedRoute>}/>
+        <Route  path="/admin/orders"  element={    <ProtectedRoute allowedRoles={["admin"]}>      <AdminAllOrders />    </ProtectedRoute>  }/>
+        <Route  path="/admin/order-details/:orderId"  element={<AdminOrderDetails />}/>
+
         
       </Routes>
     </>

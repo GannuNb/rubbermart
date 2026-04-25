@@ -1,0 +1,45 @@
+.wrapper {
+  margin-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.leftSection {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.centerSection {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.navBtn {
+  height: 42px;
+  padding: 0 20px;
+  border: 1px solid #d8d8d8;
+  background: white;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.navBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.activePage {
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 8px;
+  background: #5b2be0;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+}
