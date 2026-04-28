@@ -47,6 +47,8 @@ import AdminProducts from "./pages/admin/AdminProducts";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminAllOrders from "./pages/admin/AdminAllOrders";
 import AdminOrderDetails from "./pages/admin/AdminOrderDetails";
+import AdminAllInvoices from "./pages/admin/AdminAllInvoices";
+import AdminSingleShippingInvoice from "./pages/admin/AdminSingleShippingInvoice";
 
 
 function AppContent() {
@@ -59,6 +61,7 @@ function AppContent() {
       {!shouldHideNavbar && <RoleNavbar />}
 
       <Routes>
+
         {/* pages */}
         <Route path="/" element={<CommonHome />} />
         <Route path="/signup" element={<Signup />} />
@@ -66,36 +69,48 @@ function AppContent() {
         <Route path="/business-profile" element={<BusinessProfile />} />
         <Route path="/about" element={<About />} />
 
+
         {/* buyer */}
         <Route path="/home"  element={<ProtectedRoute allowedRole="buyer"><Home /></ProtectedRoute>} />
-        <Route  path="/buyer/profile"  element={    <ProtectedRoute allowedRoles={["buyer"]}>      <BuyerProfile />    </ProtectedRoute>  }/>
+        <Route  path="/buyer/profile"  element={<ProtectedRoute allowedRoles={["buyer"]}><BuyerProfile /></ProtectedRoute>  }/>
         <Route path="/our-products" element={<OurProducts />} />
         <Route path="/product/:productId" element={<ProductDetails />} />
         <Route path="/order-summary" element={<OrderSummary />} />
         <Route path="/seller-products/:sellerId" element={<SellerProductsBySeller />} />
         <Route path="/place-order" element={<PlaceOrder />} />
         <Route path="/order-success" element={<OrderSuccess />} />
-        <Route  path="/buyer-orders"  element={    <ProtectedRoute allowedRoles={["buyer"]}>      <BuyerOrders />    </ProtectedRoute>  }/>
-        <Route  path="/buyer-orders/:id"  element={    <ProtectedRoute>      <BuyerOrderDetails />   </ProtectedRoute>  }/>  
-        <Route  path="/buyer/order/:orderId/shipping/:itemName"  element={<BuyerShippingInvoices />}/>   
-        <Route  path="/buyer/shipping-invoice/:shipmentId"  element={<BuyerSingleShippingInvoice />}/> 
+        <Route  path="/buyer-orders"  element={<ProtectedRoute allowedRoles={["buyer"]}><BuyerOrders /> </ProtectedRoute>  }/>
+        <Route  path="/buyer-orders/:id"  element={<ProtectedRoute><BuyerOrderDetails /></ProtectedRoute>  }/>  
+        <Route
+  path="/buyer/order/:orderId/shipping/:itemName"
+  element={<BuyerShippingInvoices />}
+/>
+
+<Route
+  path="/buyer/order/:orderId/shipping-invoice/:shipmentId"
+  element={<BuyerSingleShippingInvoice />}
+/>
+
 
         {/* seller */}
         <Route path="/seller-dashboard" element={<ProtectedRoute allowedRole="seller"><SellerDashboard /></ProtectedRoute>}/>
         <Route path="/seller-add-products" element={<ProtectedRoute allowedRole="seller"><SellerAddproduct /></ProtectedRoute>}/>
         <Route path="/seller-pending-products" element={<ProtectedRoute allowedRoles={["seller"]}><SellerPendingProducts /></ProtectedRoute>}/>
         <Route path="/seller-products" element={ <ProtectedRoute allowedRoles={["seller"]}><SellerProducts /></ProtectedRoute>}/>
-        <Route  path="/seller-profile"  element={<ProtectedRoute allowedRole="seller"><SellerProfile /></ProtectedRoute>  }/>
-        <Route  path="/seller/orders"  element={    <ProtectedRoute>      <SellerOrders />    </ProtectedRoute>  }/>
-        <Route  path="/seller/order-manage/:orderId"  element={    <ProtectedRoute>      <Sellerordermanage />    </ProtectedRoute>  }/>
+        <Route  path="/seller-profile" element={<ProtectedRoute allowedRole="seller"><SellerProfile /></ProtectedRoute>  }/>
+        <Route  path="/seller/orders"  element={<ProtectedRoute><SellerOrders/> </ProtectedRoute>}/>
+        <Route  path="/seller/order-manage/:orderId"  element={<ProtectedRoute> <Sellerordermanage /> </ProtectedRoute>  }/>
+
 
         {/* admin */}
-        <Route path="/admin-dashboard" element={ <ProtectedRoute allowedRoles={["admin"]}><AdminDashboard /></ProtectedRoute>}/>
+        <Route path="/admin-dashboard" element={<ProtectedRoute allowedRoles={["admin"]}><AdminDashboard/> </ProtectedRoute>}/>
         <Route path="/admin-approve-products" element={<ProtectedRoute allowedRole="admin"><AdminApproveProducts /></ProtectedRoute>}/>
         <Route  path="/admin-products" element={<ProtectedRoute allowedRole="admin"><AdminProducts /></ProtectedRoute>}/>
         <Route  path="/admin-users"  element={<ProtectedRoute allowedRole="admin"><AdminUsers /></ProtectedRoute>}/>
-        <Route  path="/admin/orders"  element={    <ProtectedRoute allowedRoles={["admin"]}>      <AdminAllOrders />    </ProtectedRoute>  }/>
+        <Route  path="/admin/orders"  element={<ProtectedRoute allowedRoles={["admin"]}> <AdminAllOrders /> </ProtectedRoute>  }/>
         <Route  path="/admin/order-details/:orderId"  element={<AdminOrderDetails />}/>
+        <Route  path="/admin/order/:orderId/invoices/:itemName"  element={<AdminAllInvoices />}/>
+        <Route  path="/admin/shipping-invoice/:shipmentId"  element={<AdminSingleShippingInvoice />}/>
 
         
       </Routes>

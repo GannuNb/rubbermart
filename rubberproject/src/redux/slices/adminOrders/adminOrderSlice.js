@@ -1,9 +1,13 @@
+// src/redux/slices/adminOrders/adminOrderSlice.js
+
 import { createSlice } from "@reduxjs/toolkit";
 
 import { getAdminAllOrders } from "./adminOrderThunk";
 import { getAdminSingleOrderDetails } from "./adminSingleOrderThunk";
 import { approveBuyerPayment } from "./approveBuyerPaymentThunk";
 import { uploadAdminToSellerPayment } from "./uploadAdminToSellerPaymentThunk";
+import { approveShipmentByAdmin } from "./approveShipmentThunk";
+import { markShipmentDeliveredByAdmin } from "./markShipmentDeliveredThunk";
 
 const initialState = {
   /* =========================
@@ -47,6 +51,16 @@ const initialState = {
 
   uploadSellerPaymentLoading: false,
   uploadSellerPaymentError: null,
+
+  /* =========================
+     SHIPMENT ACTIONS
+  ========================= */
+
+  approveShipmentLoading: false,
+  approveShipmentError: null,
+
+  markDeliveredLoading: false,
+  markDeliveredError: null,
 };
 
 const adminOrderSlice = createSlice({
@@ -72,6 +86,19 @@ const adminOrderSlice = createSlice({
       state.uploadSellerPaymentError =
         null;
     },
+
+    clearApproveShipmentError: (
+      state
+    ) => {
+      state.approveShipmentError =
+        null;
+    },
+
+    clearMarkDeliveredError: (
+      state
+    ) => {
+      state.markDeliveredError = null;
+    },
   },
 
   extraReducers: (builder) => {
@@ -81,15 +108,19 @@ const adminOrderSlice = createSlice({
          GET ALL ORDERS
       ========================= */
 
-      .addCase(getAdminAllOrders.pending, (state) => {
-        state.adminOrdersLoading = true;
-        state.adminOrdersError = null;
-      })
+      .addCase(
+        getAdminAllOrders.pending,
+        (state) => {
+          state.adminOrdersLoading = true;
+          state.adminOrdersError = null;
+        }
+      )
 
       .addCase(
         getAdminAllOrders.fulfilled,
         (state, action) => {
           state.adminOrdersLoading = false;
+
           state.orders =
             action.payload.orders || [];
 
@@ -138,6 +169,7 @@ const adminOrderSlice = createSlice({
         getAdminSingleOrderDetails.fulfilled,
         (state, action) => {
           state.singleOrderLoading = false;
+
           state.singleOrder =
             action.payload.order || null;
         }
@@ -168,6 +200,7 @@ const adminOrderSlice = createSlice({
         approveBuyerPayment.fulfilled,
         (state, action) => {
           state.approvePaymentLoading = false;
+
           state.singleOrder =
             action.payload.order || null;
         }
@@ -203,7 +236,6 @@ const adminOrderSlice = createSlice({
           state.uploadSellerPaymentLoading =
             false;
 
-          /* instant UI refresh */
           state.singleOrder =
             action.payload.order || null;
         }
@@ -218,6 +250,80 @@ const adminOrderSlice = createSlice({
           state.uploadSellerPaymentError =
             action.payload;
         }
+      )
+
+      /* =========================
+         APPROVE SHIPMENT
+      ========================= */
+
+      .addCase(
+        approveShipmentByAdmin.pending,
+        (state) => {
+          state.approveShipmentLoading =
+            true;
+
+          state.approveShipmentError =
+            null;
+        }
+      )
+
+      .addCase(
+        approveShipmentByAdmin.fulfilled,
+        (state, action) => {
+          state.approveShipmentLoading =
+            false;
+
+          state.singleOrder =
+            action.payload.order || null;
+        }
+      )
+
+      .addCase(
+        approveShipmentByAdmin.rejected,
+        (state, action) => {
+          state.approveShipmentLoading =
+            false;
+
+          state.approveShipmentError =
+            action.payload;
+        }
+      )
+
+      /* =========================
+         MARK DELIVERED
+      ========================= */
+
+      .addCase(
+        markShipmentDeliveredByAdmin.pending,
+        (state) => {
+          state.markDeliveredLoading =
+            true;
+
+          state.markDeliveredError =
+            null;
+        }
+      )
+
+      .addCase(
+        markShipmentDeliveredByAdmin.fulfilled,
+        (state, action) => {
+          state.markDeliveredLoading =
+            false;
+
+          state.singleOrder =
+            action.payload.order || null;
+        }
+      )
+
+      .addCase(
+        markShipmentDeliveredByAdmin.rejected,
+        (state, action) => {
+          state.markDeliveredLoading =
+            false;
+
+          state.markDeliveredError =
+            action.payload;
+        }
       );
   },
 });
@@ -227,6 +333,8 @@ export const {
   clearSingleOrderError,
   clearApprovePaymentError,
   clearUploadSellerPaymentError,
+  clearApproveShipmentError,
+  clearMarkDeliveredError,
 } = adminOrderSlice.actions;
 
 export default adminOrderSlice.reducer;

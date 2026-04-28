@@ -5,6 +5,7 @@ import sellerProductReducer from "./slices/sellerProductSlice";
 import buyerProductReducer from "./slices/buyerProductSlice";
 import sellerOrderReducer from "./slices/sellerOrderSlice";
 import adminOrderReducer from "./slices/adminOrders/adminOrderSlice";
+import buyerOrderReducer from "./slices/buyerOrderSlice";
 
 export const store = configureStore({
   reducer: {
@@ -14,5 +15,6 @@ export const store = configureStore({
     buyerProducts: buyerProductReducer,
     sellerOrders: sellerOrderReducer,
     adminOrders: adminOrderReducer,
+    buyerOrders: buyerOrderReducer,
   },
 });

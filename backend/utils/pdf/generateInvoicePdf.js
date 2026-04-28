@@ -4,6 +4,7 @@ import { drawCustomerSection } from "./sections/customerSection.js";
 import { drawItemsTable } from "./sections/itemsTable.js";
 import { drawTotalsSection } from "./sections/totalsSection.js";
 import { drawSummarySection } from "./sections/summarySection.js";
+import { drawBankingDetailsSection } from "./sections/bankingDetailsSection.js";
 import { drawFooterSection } from "./sections/footerSection.js";
 
 const generateInvoicePdf = async (order) => {
@@ -30,6 +31,13 @@ const generateInvoicePdf = async (order) => {
 
       y = drawTotalsSection(doc, order, y);
       y = drawSummarySection(doc, order, y);
+
+       /* =========================
+         BANKING DETAILS SECTION
+      ========================= */
+
+      y = drawBankingDetailsSection(doc, y);
+
 
       drawFooterSection(doc, y);
 

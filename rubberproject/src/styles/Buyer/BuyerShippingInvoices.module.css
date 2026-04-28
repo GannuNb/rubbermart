@@ -166,6 +166,18 @@
   line-height: 1.5;
 }
 
+/* STATUS COLORS */
+
+.deliveredStatus {
+  color: #16a34a;
+  font-weight: 700;
+}
+
+.inTransitStatus {
+  color: #7c3aed;
+  font-weight: 700;
+}
+
 /* =========================
    BUTTON
 ========================= */

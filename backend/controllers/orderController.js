@@ -296,15 +296,58 @@ export const confirmSellerOrder = async (req, res) => {
       });
     }
 
-    order.orderStatus = "seller_confirmed";
-    order.sellerConfirmedAt = new Date();
+    /* =========================
+       UPDATE ONLY REQUIRED FIELDS
+       (NO FULL order.save())
+    ========================= */
 
-    await order.save();
+    await Order.updateOne(
+      {
+        _id: orderId,
+        seller: sellerId,
+        isDeleted: false,
+      },
+      {
+        $set: {
+          orderStatus: "seller_confirmed",
+          sellerConfirmedAt: new Date(),
+        },
+      }
+    );
+
+    const updatedOrder = await Order.findById(orderId)
+      .populate(
+        "buyer",
+        `
+        fullName
+        email
+        addresses
+        businessProfile
+        `
+      )
+      .populate(
+        "seller",
+        `
+        fullName
+        email
+        addresses
+        businessProfile
+        `
+      )
+      .populate(
+        "orderItems.product",
+        `
+        productName
+        category
+        application
+        loadingLocation
+        `
+      );
 
     return res.status(200).json({
       success: true,
       message: "Order confirmed successfully",
-      order,
+      order: updatedOrder,
     });
   } catch (error) {
     console.log("Confirm Seller Order Error:", error);
@@ -343,17 +386,60 @@ export const rejectSellerOrder = async (req, res) => {
       });
     }
 
-    order.orderStatus = "cancelled";
-    order.cancelledAt = new Date();
-    order.cancellationReason =
-      cancellationReason || "Rejected by seller";
+    /* =========================
+       UPDATE ONLY REQUIRED FIELDS
+       (NO FULL order.save())
+    ========================= */
 
-    await order.save();
+    await Order.updateOne(
+      {
+        _id: orderId,
+        seller: sellerId,
+        isDeleted: false,
+      },
+      {
+        $set: {
+          orderStatus: "cancelled",
+          cancelledAt: new Date(),
+          cancellationReason:
+            cancellationReason || "Rejected by seller",
+        },
+      }
+    );
+
+    const updatedOrder = await Order.findById(orderId)
+      .populate(
+        "buyer",
+        `
+        fullName
+        email
+        addresses
+        businessProfile
+        `
+      )
+      .populate(
+        "seller",
+        `
+        fullName
+        email
+        addresses
+        businessProfile
+        `
+      )
+      .populate(
+        "orderItems.product",
+        `
+        productName
+        category
+        application
+        loadingLocation
+        `
+      );
 
     return res.status(200).json({
       success: true,
       message: "Order rejected successfully",
-      order,
+      order: updatedOrder,
     });
   } catch (error) {
     console.log("Reject Seller Order Error:", error);
@@ -383,6 +469,9 @@ export const addShipmentToOrder = async (req, res) => {
       selectedSubProducts,
     } = req.body;
 
+    const normalizedSelectedItem =
+      selectedItem?.trim()?.toLowerCase();
+
     const order = await Order.findOne({
       _id: orderId,
       seller: sellerId,
@@ -396,22 +485,45 @@ export const addShipmentToOrder = async (req, res) => {
       });
     }
 
+    /* =========================
+       EXISTING SHIPPED QUANTITY
+       safer comparison added
+    ========================= */
+
     const existingShippedQuantity = order.shipments
-      .filter((shipment) => shipment.selectedItem === selectedItem)
+      .filter(
+        (shipment) =>
+          shipment.selectedItem
+            ?.trim()
+            ?.toLowerCase() ===
+          normalizedSelectedItem
+      )
       .reduce(
         (total, shipment) =>
-          total + Number(shipment.shippedQuantity || 0),
+          total +
+          Number(shipment.shippedQuantity || 0),
         0
       );
 
-    const selectedOrderItem = order.orderItems.find(
-      (item) => item.productName === selectedItem
-    );
+    /* =========================
+       FIND ORDER ITEM
+       safer comparison added
+    ========================= */
+
+    const selectedOrderItem =
+      order.orderItems.find(
+        (item) =>
+          item.productName
+            ?.trim()
+            ?.toLowerCase() ===
+          normalizedSelectedItem
+      );
 
     if (!selectedOrderItem) {
       return res.status(400).json({
         success: false,
-        message: "Selected item not found in order",
+        message:
+          "Selected item not found in order",
       });
     }
 
@@ -420,38 +532,59 @@ export const addShipmentToOrder = async (req, res) => {
     );
 
     const newTotalQuantity =
-      existingShippedQuantity + Number(shippedQuantity);
+      existingShippedQuantity +
+      Number(shippedQuantity);
 
-    if (newTotalQuantity > totalAllowedQuantity) {
+    if (
+      newTotalQuantity > totalAllowedQuantity
+    ) {
       return res.status(400).json({
         success: false,
         message: `Maximum allowed quantity for ${selectedItem} is ${totalAllowedQuantity}. Already shipped ${existingShippedQuantity}.`,
       });
     }
 
-    const shipmentInvoiceId = await generateShipmentInvoiceId();
+    /* =========================
+       GENERATE SHIPMENT ID
+    ========================= */
+
+    const shipmentInvoiceId =
+      await generateShipmentInvoiceId();
+
+    /* =========================
+       FILE BUFFER
+    ========================= */
 
     const shipmentFile = req.file
       ? {
           data: req.file.buffer,
           contentType: req.file.mimetype,
-          originalName: req.file.originalname,
+          originalName:
+            req.file.originalname,
         }
       : null;
+
+    /* =========================
+       NEW SHIPMENT OBJECT
+    ========================= */
 
     const newShipment = {
       shipmentInvoiceId,
       selectedItem,
-      shippedQuantity: Number(shippedQuantity),
+      shippedQuantity:
+        Number(shippedQuantity),
       vehicleNumber,
       driverName,
       driverMobile,
       shipmentFrom,
       shipmentTo,
 
-      selectedSubProducts: selectedSubProducts
-        ? JSON.parse(selectedSubProducts)
-        : [],
+      selectedSubProducts:
+        selectedSubProducts
+          ? JSON.parse(
+              selectedSubProducts
+            )
+          : [],
 
       shipmentFile,
 
@@ -463,46 +596,106 @@ export const addShipmentToOrder = async (req, res) => {
       deliveredAt: null,
     };
 
-    order.shipments.push(newShipment);
+    /* =========================
+       TEMP CALCULATION USING
+       EXISTING + NEW SHIPMENT
+    ========================= */
 
-    const allItemsFullyShipped = order.orderItems.every((item) => {
-      const totalShippedForItem = order.shipments
-        .filter(
-          (shipment) => shipment.selectedItem === item.productName
-        )
-        .reduce(
-          (total, shipment) =>
-            total + Number(shipment.shippedQuantity || 0),
-          0
+    const tempShipments = [
+      ...order.shipments,
+      newShipment,
+    ];
+
+    const allItemsFullyShipped =
+      order.orderItems.every((item) => {
+        const totalShippedForItem =
+          tempShipments
+            .filter(
+              (shipment) =>
+                shipment.selectedItem
+                  ?.trim()
+                  ?.toLowerCase() ===
+                item.productName
+                  ?.trim()
+                  ?.toLowerCase()
+            )
+            .reduce(
+              (total, shipment) =>
+                total +
+                Number(
+                  shipment.shippedQuantity ||
+                    0
+                ),
+              0
+            );
+
+        return (
+          totalShippedForItem >=
+          Number(item.requiredQuantity)
         );
+      });
 
-      return totalShippedForItem >= Number(item.requiredQuantity);
-    });
+    let updatedOrderStatus =
+      "partially_shipped";
 
-    const hasAnyShipment = order.shipments.length > 0;
+    let updatedShippedAt = null;
 
     if (allItemsFullyShipped) {
-      order.orderStatus = "shipped";
-      order.shippedAt = new Date();
-    } else if (hasAnyShipment) {
-      order.orderStatus = "partially_shipped";
+      updatedOrderStatus = "shipped";
+      updatedShippedAt = new Date();
     }
 
-    await order.save();
+    /* =========================
+       UPDATE ONLY REQUIRED FIELDS
+       (NO FULL order.save())
+    ========================= */
+
+    await Order.updateOne(
+      {
+        _id: orderId,
+        seller: sellerId,
+        isDeleted: false,
+      },
+      {
+        $push: {
+          shipments: newShipment,
+        },
+
+        $set: {
+          orderStatus:
+            updatedOrderStatus,
+          shippedAt:
+            updatedShippedAt,
+        },
+      }
+    );
+
+    /* =========================
+       FETCH UPDATED ORDER
+    ========================= */
+
+    const updatedOrder =
+      await Order.findById(orderId);
 
     return res.status(200).json({
       success: true,
       message:
         "Shipment details uploaded successfully. Waiting for admin approval.",
-      shipments: order.shipments,
-      orderStatus: order.orderStatus,
+      shipments:
+        updatedOrder.shipments || [],
+      orderStatus:
+        updatedOrder.orderStatus,
     });
   } catch (error) {
-    console.log("Add Shipment To Order Error:", error);
+    console.log(
+      "Add Shipment To Order Error:",
+      error
+    );
 
     return res.status(500).json({
       success: false,
-      message: "Failed to add shipment details",
+      message:
+        "Failed to add shipment details",
       error: error.message,
     });
   }
@@ -713,7 +906,7 @@ export const uploadBuyerPayment = async (req, res) => {
 };
 
 
-
+// admin
 
 export const getAdminAllOrders = async (req, res) => {
   try {
@@ -991,8 +1184,7 @@ export const approveBuyerPayment = async (req, res) => {
       });
     }
 
-    const payment =
-      order.buyerPaymentReceipts.id(paymentId);
+    const payment = order.buyerPaymentReceipts.id(paymentId);
 
     if (!payment) {
       return res.status(404).json({
@@ -1009,135 +1201,108 @@ export const approveBuyerPayment = async (req, res) => {
     }
 
     /* =========================
-       VERIFY PAYMENT ONLY
+       UPDATE PAYMENT ONLY
+       (NO FULL SAVE)
     ========================= */
 
-    payment.status = "verified";
-    payment.verifiedBy = req.user._id;
-    payment.verifiedAt = new Date();
-
-    await order.save();
+    await Order.updateOne(
+      {
+        _id: orderId,
+        "buyerPaymentReceipts._id": paymentId,
+      },
+      {
+        $set: {
+          "buyerPaymentReceipts.$.status": "verified",
+          "buyerPaymentReceipts.$.verifiedBy": req.user._id,
+          "buyerPaymentReceipts.$.verifiedAt": new Date(),
+        },
+      }
+    );
 
     /* =========================
-       RECALCULATE VERIFIED TOTAL
+       FETCH UPDATED ORDER
     ========================= */
 
-    const refreshedOrder =
-      await Order.findById(order._id);
+    const refreshedOrder = await Order.findById(orderId);
 
-    const verifiedTotal =
-      refreshedOrder.buyerPaymentReceipts
-        .filter(
-          (item) => item.status === "verified"
-        )
-        .reduce(
-          (sum, item) =>
-            sum + (item.amount || 0),
-          0
-        );
-
-    refreshedOrder.buyerPaidAmount =
-      verifiedTotal;
-
-    refreshedOrder.buyerPendingAmount =
-      Math.max(
-        (refreshedOrder.totalAmount || 0) -
-          verifiedTotal,
+    const verifiedTotal = refreshedOrder.buyerPaymentReceipts
+      .filter((item) => item.status === "verified")
+      .reduce(
+        (sum, item) => sum + Number(item.amount || 0),
         0
       );
 
-    /* =========================
-       UPDATE ONLY
-       buyerPaymentStatus
-       (NOT orderStatus)
-    ========================= */
+    const buyerPendingAmount = Math.max(
+      Number(refreshedOrder.totalAmount || 0) - verifiedTotal,
+      0
+    );
 
-    if (
-      refreshedOrder.buyerPendingAmount <= 0
-    ) {
-      refreshedOrder.buyerPaymentStatus =
-        "completed";
+    let buyerPaymentStatus = "pending";
+
+    if (buyerPendingAmount <= 0) {
+      buyerPaymentStatus = "completed";
     } else if (verifiedTotal > 0) {
-      refreshedOrder.buyerPaymentStatus =
-        "partial";
-    } else {
-      refreshedOrder.buyerPaymentStatus =
-        "pending";
+      buyerPaymentStatus = "partial";
     }
 
-    await refreshedOrder.save();
-
     /* =========================
-       RETURN POPULATED ORDER
+       UPDATE ONLY PAYMENT SUMMARY
     ========================= */
 
-    const updatedOrder =
-      await Order.findById(
-        refreshedOrder._id
+    await Order.updateOne(
+      { _id: orderId },
+      {
+        $set: {
+          buyerPaidAmount: verifiedTotal,
+          buyerPendingAmount: buyerPendingAmount,
+          buyerPaymentStatus: buyerPaymentStatus,
+        },
+      }
+    );
+
+    /* =========================
+       RETURN FINAL POPULATED ORDER
+    ========================= */
+
+    const updatedOrder = await Order.findById(orderId)
+      .populate("buyer", "fullName email addresses businessProfile")
+      .populate("seller", "fullName email addresses businessProfile")
+      .populate(
+        "orderItems.product",
+        "productName category application"
       )
-        .populate(
-          "buyer",
-          `
-          fullName
-          email
-          addresses
-          businessProfile
-          `
-        )
-        .populate(
-          "seller",
-          `
-          fullName
-          email
-          addresses
-          businessProfile
-          `
-        )
-        .populate(
-          "orderItems.product",
-          `
-          productName
-          category
-          application
-          `
-        )
-        .populate(
-          "buyerPaymentReceipts.uploadedBy",
-          "fullName"
-        )
-        .populate(
-          "buyerPaymentReceipts.verifiedBy",
-          "fullName"
-        )
-        .populate(
-          "sellerPaymentReceipts.uploadedBy",
-          "fullName"
-        )
-        .populate(
-          "sellerPaymentReceipts.verifiedBy",
-          "fullName"
-        )
-        .populate(
-          "shipments.approvedBy",
-          "fullName"
-        );
+      .populate(
+        "buyerPaymentReceipts.uploadedBy",
+        "fullName"
+      )
+      .populate(
+        "buyerPaymentReceipts.verifiedBy",
+        "fullName"
+      )
+      .populate(
+        "sellerPaymentReceipts.uploadedBy",
+        "fullName"
+      )
+      .populate(
+        "sellerPaymentReceipts.verifiedBy",
+        "fullName"
+      )
+      .populate(
+        "shipments.approvedBy",
+        "fullName"
+      );
 
     return res.status(200).json({
       success: true,
-      message:
-        "Buyer payment approved successfully",
+      message: "Buyer payment approved successfully",
       order: updatedOrder,
     });
   } catch (error) {
-    console.log(
-      "Approve Buyer Payment Error:",
-      error
-    );
+    console.log("Approve Buyer Payment Error:", error);
 
     return res.status(500).json({
       success: false,
-      message:
-        "Failed to approve buyer payment",
+      message: "Failed to approve buyer payment",
       error: error.message,
     });
   }
@@ -1175,140 +1340,127 @@ export const uploadAdminToSellerPayment = async (req, res) => {
       });
     }
 
-    /* =========================
-       FILE BUFFER
-    ========================= */
-
     let uploadedFile = {};
 
     if (req.file) {
       uploadedFile = {
         data: req.file.buffer,
         contentType: req.file.mimetype,
-        originalName:
-          req.file.originalname,
+        originalName: req.file.originalname,
       };
     }
 
     /* =========================
-       CURRENT CALCULATION
+       CALCULATE PAYMENT
     ========================= */
 
     const newPaidAmount =
-      (order.sellerPaidAmount || 0) +
+      Number(order.sellerPaidAmount || 0) +
       Number(amount);
 
-    const newPendingAmount =
-      Math.max(
-        (order.totalAmount || 0) -
-          newPaidAmount,
-        0
-      );
+    const newPendingAmount = Math.max(
+      Number(order.totalAmount || 0) - newPaidAmount,
+      0
+    );
 
     const isFinalPayment =
       newPendingAmount <= 0;
 
-    /* =========================
-       PUSH RECEIPT
-    ========================= */
-
-    order.sellerPaymentReceipts.push({
-      file: uploadedFile,
-      amount: Number(amount),
-      paymentMode,
-      transactionId,
-      note,
-
-      uploadedBy: req.user._id,
-
-      paymentFor: "admin_to_seller",
-
-      status: "verified",
-
-      totalPaidTillNow:
-        newPaidAmount,
-
-      remainingAmount:
-        newPendingAmount,
-
-      isPartialPayment:
-        !isFinalPayment,
-
-      isFinalPayment:
-        isFinalPayment,
-
-      verifiedBy: req.user._id,
-      verifiedAt: new Date(),
-    });
-
-    /* =========================
-       UPDATE ORDER PAYMENT ONLY
-    ========================= */
-
-    order.sellerPaidAmount =
-      newPaidAmount;
-
-    order.sellerPendingAmount =
-      newPendingAmount;
+    let sellerPaymentStatus = "pending";
 
     if (newPendingAmount <= 0) {
-      order.sellerPaymentStatus =
-        "completed";
+      sellerPaymentStatus = "completed";
     } else if (newPaidAmount > 0) {
-      order.sellerPaymentStatus =
-        "partial";
-    } else {
-      order.sellerPaymentStatus =
-        "pending";
+      sellerPaymentStatus = "partial";
     }
 
-    await order.save();
+    /* =========================
+       UPDATE ONLY PAYMENT FIELDS
+       (NO FULL ORDER SAVE)
+    ========================= */
+
+    await Order.updateOne(
+      { _id: orderId },
+      {
+        $push: {
+          sellerPaymentReceipts: {
+            file: uploadedFile,
+            amount: Number(amount),
+            paymentMode,
+            transactionId,
+            note,
+
+            uploadedBy: req.user._id,
+            paymentFor: "admin_to_seller",
+
+            status: "verified",
+
+            totalPaidTillNow: newPaidAmount,
+            remainingAmount: newPendingAmount,
+
+            isPartialPayment: !isFinalPayment,
+            isFinalPayment: isFinalPayment,
+
+            verifiedBy: req.user._id,
+            verifiedAt: new Date(),
+          },
+        },
+
+        $set: {
+          sellerPaidAmount: newPaidAmount,
+          sellerPendingAmount: newPendingAmount,
+          sellerPaymentStatus: sellerPaymentStatus,
+        },
+      }
+    );
 
     /* =========================
        RETURN POPULATED ORDER
     ========================= */
 
-    const updatedOrder =
-      await Order.findById(order._id)
-        .populate(
-          "buyer",
-          `
-          fullName
-          email
-          addresses
-          businessProfile
-          `
-        )
-        .populate(
-          "seller",
-          `
-          fullName
-          email
-          addresses
-          businessProfile
-          `
-        )
-        .populate(
-          "buyerPaymentReceipts.uploadedBy",
-          "fullName"
-        )
-        .populate(
-          "buyerPaymentReceipts.verifiedBy",
-          "fullName"
-        )
-        .populate(
-          "sellerPaymentReceipts.uploadedBy",
-          "fullName"
-        )
-        .populate(
-          "sellerPaymentReceipts.verifiedBy",
-          "fullName"
-        );
+    const updatedOrder = await Order.findById(orderId)
+      .populate(
+        "buyer",
+        `
+        fullName
+        email
+        addresses
+        businessProfile
+        `
+      )
+      .populate(
+        "seller",
+        `
+        fullName
+        email
+        addresses
+        businessProfile
+        `
+      )
+      .populate(
+        "buyerPaymentReceipts.uploadedBy",
+        "fullName"
+      )
+      .populate(
+        "buyerPaymentReceipts.verifiedBy",
+        "fullName"
+      )
+      .populate(
+        "sellerPaymentReceipts.uploadedBy",
+        "fullName"
+      )
+      .populate(
+        "sellerPaymentReceipts.verifiedBy",
+        "fullName"
+      )
+      .populate(
+        "shipments.approvedBy",
+        "fullName"
+      );
 
     return res.status(200).json({
       success: true,
-      message:
-        "Payment sent to seller successfully",
+      message: "Payment sent to seller successfully",
       order: updatedOrder,
     });
   } catch (error) {
@@ -1319,8 +1471,205 @@ export const uploadAdminToSellerPayment = async (req, res) => {
 
     return res.status(500).json({
       success: false,
+      message: "Failed to upload seller payment",
+      error: error.message,
+    });
+  }
+};
+
+
+
+export const approveShipmentByAdmin = async (
+  req,
+  res
+) => {
+  try {
+    const { orderId, shipmentId } =
+      req.params;
+
+    const adminId = req.user._id;
+
+    const order = await Order.findOne({
+      _id: orderId,
+      isDeleted: false,
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    const shipment =
+      order.shipments.id(shipmentId);
+
+    if (!shipment) {
+      return res.status(404).json({
+        success: false,
+        message: "Shipment not found",
+      });
+    }
+
+    if (shipment.approvedByAdmin) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Shipment already approved",
+      });
+    }
+
+    /* =========================
+       APPROVE SHIPMENT
+    ========================= */
+
+    shipment.approvedByAdmin = true;
+    shipment.approvedBy = adminId;
+    shipment.approvedAt = new Date();
+    shipment.shipmentStatus =
+      "approved_by_admin";
+
+    /* =========================
+       ORDER STATUS UPDATE
+    ========================= */
+
+    const approvedShipments =
+      order.shipments.filter(
+        (item) =>
+          item.approvedByAdmin === true
+      );
+
+    if (
+      approvedShipments.length > 0 &&
+      order.orderStatus ===
+        "seller_confirmed"
+    ) {
+      order.orderStatus =
+        "partially_shipped";
+    }
+
+    await order.save();
+
+    return res.status(200).json({
+      success: true,
       message:
-        "Failed to upload seller payment",
+        "Shipment approved successfully",
+      order,
+      shipment,
+    });
+  } catch (error) {
+    console.log(
+      "Approve Shipment Error:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message:
+        "Failed to approve shipment",
+      error: error.message,
+    });
+  }
+};
+
+
+export const markShipmentDeliveredByAdmin = async (
+  req,
+  res
+) => {
+  try {
+    const { orderId, shipmentId } =
+      req.params;
+
+    const order = await Order.findOne({
+      _id: orderId,
+      isDeleted: false,
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    const shipment =
+      order.shipments.id(shipmentId);
+
+    if (!shipment) {
+      return res.status(404).json({
+        success: false,
+        message: "Shipment not found",
+      });
+    }
+
+    if (!shipment.approvedByAdmin) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Approve shipment before delivery",
+      });
+    }
+
+    if (
+      shipment.shipmentStatus ===
+      "delivered"
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Shipment already delivered",
+      });
+    }
+
+    /* =========================
+       MARK DELIVERED
+    ========================= */
+
+    shipment.shipmentStatus =
+      "delivered";
+
+    shipment.deliveredAt =
+      new Date();
+
+    /* =========================
+       ORDER STATUS CHECK
+    ========================= */
+
+    const allDelivered =
+      order.shipments.every(
+        (item) =>
+          item.shipmentStatus ===
+          "delivered"
+      );
+
+    if (allDelivered) {
+      order.orderStatus =
+        "delivered";
+
+      order.deliveredAt =
+        new Date();
+    }
+
+    await order.save();
+
+    return res.status(200).json({
+      success: true,
+      message:
+        "Shipment marked as delivered",
+      order,
+      shipment,
+    });
+  } catch (error) {
+    console.log(
+      "Mark Delivered Error:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message:
+        "Failed to mark shipment delivered",
       error: error.message,
     });
   }

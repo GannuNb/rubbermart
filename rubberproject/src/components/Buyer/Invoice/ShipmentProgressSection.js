@@ -1,3 +1,5 @@
+// src/components/Buyer/Invoice/ShipmentProgressSection.js
+
 import React from "react";
 import { FaTruck } from "react-icons/fa";
 import styles from "../../../styles/Buyer/BuyerSingleShippingInvoice.module.css";
@@ -6,12 +8,25 @@ const ShipmentProgressSection = ({ shipment, order }) => {
   const isDelivered =
     shipment?.shipmentStatus === "delivered";
 
+  const isShipped =
+    shipment?.shippedAt ? true : false;
+
+  const progressWidth = isDelivered
+    ? "100%"
+    : isShipped
+    ? "65%"
+    : "30%";
+
   const getProgressMessage = () => {
     if (isDelivered) {
       return "Your shipment has been successfully delivered";
     }
 
-    return "Your shipment is in transit and will be delivered soon";
+    if (isShipped) {
+      return "Your shipment is in transit and will be delivered soon";
+    }
+
+    return "Your order has been confirmed and shipment is being prepared";
   };
 
   return (
@@ -22,7 +37,14 @@ const ShipmentProgressSection = ({ shipment, order }) => {
 
       <div className={styles.progressWrapper}>
         {/* LINE */}
-        <div className={styles.progressLine}></div>
+        <div className={styles.progressLine}>
+          <div
+            className={styles.progressFill}
+            style={{
+              width: progressWidth,
+            }}
+          />
+        </div>
 
         {/* STEPS */}
         <div className={styles.progressSteps}>
@@ -34,14 +56,22 @@ const ShipmentProgressSection = ({ shipment, order }) => {
 
             <p>
               {order?.createdAt
-                ? new Date(order.createdAt).toLocaleString()
+                ? new Date(
+                    order.createdAt
+                  ).toLocaleString()
                 : "-"}
             </p>
           </div>
 
           {/* STEP 2 */}
           <div className={styles.step}>
-            <div className={styles.activeCircle}></div>
+            <div
+              className={
+                isShipped
+                  ? styles.activeCircle
+                  : styles.inactiveCircle
+              }
+            ></div>
 
             <h4>Shipment Date</h4>
 
@@ -50,7 +80,8 @@ const ShipmentProgressSection = ({ shipment, order }) => {
                 ? new Date(
                     shipment.shippedAt
                   ).toLocaleString()
-                : "-"}
+                : "Pending"
+              }
             </p>
           </div>
 
@@ -78,7 +109,7 @@ const ShipmentProgressSection = ({ shipment, order }) => {
         </div>
       </div>
 
-      {/* BOTTOM MESSAGE */}
+      {/* MESSAGE */}
       <div className={styles.progressMessage}>
         <FaTruck
           style={{

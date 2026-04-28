@@ -1,7 +1,15 @@
 // src/pages/BuyerOrderDetails.js
 
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useEffect } from "react";
+import {
+  useNavigate,
+  useParams,
+} from "react-router-dom";
+import {
+  useDispatch,
+  useSelector,
+} from "react-redux";
+
 import styles from "../../styles/Buyer/BuyerOrderDetails.module.css";
 
 import OrderItemsSection from "../../components/orders/OrderItemsSection";
@@ -10,63 +18,95 @@ import DeliveryAddressCard from "../../components/orders/DeliveryAddressCard";
 import PaymentUploadCard from "../../components/orders/PaymentUploadCard";
 import PaymentSummaryCard from "../../components/orders/PaymentSummaryCard";
 
+import {
+  getBuyerSingleOrderThunk,
+} from "../../redux/slices/buyerOrderThunk";
+
 function BuyerOrderDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const [order, setOrder] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const {
+    singleOrder,
+    singleOrderLoading,
+    singleOrderError,
+  } = useSelector(
+    (state) => state.buyerOrders
+  );
+
+  const order = singleOrder;
+
+  /* =========================
+     FETCH ORDER DETAILS
+  ========================= */
 
   useEffect(() => {
-    fetchOrderDetails();
-  }, []);
-
-  const fetchOrderDetails = async () => {
-    try {
-      setLoading(true);
-
-      const token = localStorage.getItem("token");
-
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/orders/buyer-orders/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+    if (id) {
+      dispatch(
+        getBuyerSingleOrderThunk(
+          id
+        )
       );
+    }
+  }, [dispatch, id]);
 
-      const data = await response.json();
+  /* =========================
+     REFETCH AFTER PAYMENT
+  ========================= */
 
-      if (response.ok) {
-        setOrder(data.order);
-      } else {
-        alert(data.message || "Failed to fetch order");
-      }
-    } catch (error) {
-      console.log("Fetch Order Details Error:", error);
-      alert("Failed to fetch order");
-    } finally {
-      setLoading(false);
+  const fetchOrderDetails = () => {
+    if (id) {
+      dispatch(
+        getBuyerSingleOrderThunk(
+          id
+        )
+      );
     }
   };
 
-  // LOADING
-  if (loading) {
+  /* =========================
+     LOADING
+  ========================= */
+
+  if (singleOrderLoading) {
     return (
       <div className={styles.pageWrapper}>
-        <div className={styles.loadingText}>
+        <div
+          className={styles.loadingText}
+        >
           Loading order details...
         </div>
       </div>
     );
   }
 
-  // EMPTY
+  /* =========================
+     ERROR
+  ========================= */
+
+  if (singleOrderError) {
+    return (
+      <div className={styles.pageWrapper}>
+        <div
+          className={styles.emptyState}
+        >
+          {singleOrderError}
+        </div>
+      </div>
+    );
+  }
+
+  /* =========================
+     EMPTY
+  ========================= */
+
   if (!order) {
     return (
       <div className={styles.pageWrapper}>
-        <div className={styles.emptyState}>
+        <div
+          className={styles.emptyState}
+        >
           Order not found
         </div>
       </div>
@@ -75,16 +115,37 @@ function BuyerOrderDetails() {
 
   return (
     <div className={styles.pageWrapper}>
-      {/* 🔷 TOP HEADER */}
-      <div className={styles.topHeaderCard}>
-        <div className={styles.pageTitleSection}>
-          <div className={styles.orderIconBox}>
-            <img src="/logo192.png" alt="orders" />
+      {/* TOP HEADER */}
+
+      <div
+        className={
+          styles.topHeaderCard
+        }
+      >
+        <div
+          className={
+            styles.pageTitleSection
+          }
+        >
+          <div
+            className={
+              styles.orderIconBox
+            }
+          >
+            <img
+              src="/logo192.png"
+              alt="orders"
+            />
           </div>
+
           <h1>My Orders</h1>
         </div>
 
-        <div className={styles.profileIcon}>
+        <div
+          className={
+            styles.profileIcon
+          }
+        >
           <img
             src="https://i.pravatar.cc/100?img=32"
             alt="profile"
@@ -92,38 +153,64 @@ function BuyerOrderDetails() {
         </div>
       </div>
 
-      {/* 🔷 MAIN CARD */}
+      {/* MAIN CARD */}
+
       <div className={styles.contentCard}>
         {/* BACK */}
+
         <div
           className={styles.backBtn}
-          onClick={() => navigate(-1)}
+          onClick={() =>
+            navigate(-1)
+          }
         >
           ← Back to Orders
         </div>
 
-        {/* 🔷 GRID */}
-        <div className={styles.detailsGrid}>
-          {/* ✅ LEFT SIDE */}
-          <div className={styles.leftSection}>
-            
-            {/* ✅ MOVE HEADER HERE (IMPORTANT FIX) */}
-            <OrderSummaryHeader order={order} />
+        {/* GRID */}
 
-            {/* ITEMS */}
-            <OrderItemsSection order={order} />
+        <div
+          className={
+            styles.detailsGrid
+          }
+        >
+          {/* LEFT */}
+
+          <div
+            className={
+              styles.leftSection
+            }
+          >
+            <OrderSummaryHeader
+              order={order}
+            />
+
+            <OrderItemsSection
+              order={order}
+            />
           </div>
 
-          {/* ✅ RIGHT SIDE */}
-          <div className={styles.rightSection}>
-            <DeliveryAddressCard order={order} />
+          {/* RIGHT */}
+
+          <div
+            className={
+              styles.rightSection
+            }
+          >
+            <DeliveryAddressCard
+              order={order}
+            />
 
             <PaymentUploadCard
               order={order}
-              onPaymentUploaded={fetchOrderDetails}
+              onPaymentUploaded={
+                fetchOrderDetails
+              }
             />
 
-            <PaymentSummaryCard order={order} />
+            <PaymentSummaryCard
+              order={order}
+            />
           </div>
         </div>
       </div>

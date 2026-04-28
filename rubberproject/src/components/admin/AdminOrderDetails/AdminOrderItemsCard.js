@@ -1,8 +1,11 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "../../../styles/Admin/AdminOrderItemsCard.module.css";
 
 const AdminOrderItemsCard = ({ order }) => {
   const items = order?.orderItems || [];
+
+  const navigate = useNavigate();
 
   const getImageSrc = (image) => {
     if (!image || !image.data) return null;
@@ -16,10 +19,9 @@ const AdminOrderItemsCard = ({ order }) => {
 
       const base64String = btoa(
         new Uint8Array(byteArray).reduce(
-          (data, byte) =>
-            data + String.fromCharCode(byte),
-          ""
-        )
+          (data, byte) => data + String.fromCharCode(byte),
+          "",
+        ),
       );
 
       return `data:${image.contentType};base64,${base64String}`;
@@ -32,10 +34,7 @@ const AdminOrderItemsCard = ({ order }) => {
     <div className={styles.wrapper}>
       {/* Header */}
       <div className={styles.header}>
-        <h3>
-          Products / Items Details (
-          {items.length})
-        </h3>
+        <h3>Products / Items Details ({items.length})</h3>
       </div>
 
       {/* Table Header */}
@@ -50,15 +49,10 @@ const AdminOrderItemsCard = ({ order }) => {
 
       {/* Items */}
       {items.map((item, index) => {
-        const imageSrc = getImageSrc(
-          item?.productImage
-        );
+        const imageSrc = getImageSrc(item?.productImage);
 
         return (
-          <div
-            key={index}
-            className={styles.itemRow}
-          >
+          <div key={index} className={styles.itemRow}>
             {/* Product */}
             <div className={styles.productBox}>
               {imageSrc ? (
@@ -68,44 +62,37 @@ const AdminOrderItemsCard = ({ order }) => {
                   className={styles.productImage}
                 />
               ) : (
-                <div
-                  className={
-                    styles.placeholderImage
-                  }
-                />
+                <div className={styles.placeholderImage} />
               )}
 
-              <span>
-                {item?.productName || "-"}
-              </span>
+              <span>{item?.productName || "-"}</span>
             </div>
 
             {/* Quantity */}
-            <div>
-              {item?.requiredQuantity || 0}
-            </div>
+            <div>{item?.requiredQuantity || 0}</div>
 
             {/* Loading */}
-            <div>
-              {item?.loadingLocation || "-"}
-            </div>
+            <div>{item?.loadingLocation || "-"}</div>
 
             {/* Price */}
-            <div>
-              ₹ {item?.pricePerMT || 0} / MT
-            </div>
+            <div>₹ {item?.pricePerMT || 0} / MT</div>
 
             {/* Total */}
-            <div>
-              ₹ {item?.subtotal || 0}
-            </div>
+            <div>₹ {item?.subtotal || 0}</div>
 
             {/* Invoice */}
             <div>
               <button
                 className={styles.invoiceBtn}
+                onClick={() =>
+                  navigate(
+                    `/admin/order/${order?._id}/invoices/${encodeURIComponent(
+                      item?.productName || "",
+                    )}`,
+                  )
+                }
               >
-                View Invoice
+                View Shipings/invoices
               </button>
             </div>
           </div>
@@ -116,41 +103,31 @@ const AdminOrderItemsCard = ({ order }) => {
       <div className={styles.summarySection}>
         <div className={styles.summaryRow}>
           <span>Subtotal</span>
-          <span>
-            ₹ {order?.taxableAmount || 0}
-          </span>
+          <span>₹ {order?.taxableAmount || 0}</span>
         </div>
 
         {order?.gstType === "igst" ? (
           <div className={styles.summaryRow}>
             <span>IGST</span>
-            <span>
-              ₹ {order?.igstAmount || 0}
-            </span>
+            <span>₹ {order?.igstAmount || 0}</span>
           </div>
         ) : (
           <>
             <div className={styles.summaryRow}>
               <span>CGST</span>
-              <span>
-                ₹ {order?.cgstAmount || 0}
-              </span>
+              <span>₹ {order?.cgstAmount || 0}</span>
             </div>
 
             <div className={styles.summaryRow}>
               <span>SGST</span>
-              <span>
-                ₹ {order?.sgstAmount || 0}
-              </span>
+              <span>₹ {order?.sgstAmount || 0}</span>
             </div>
           </>
         )}
 
         <div className={styles.totalBox}>
           <span>Total Amount</span>
-          <span>
-            ₹ {order?.totalAmount || 0}
-          </span>
+          <span>₹ {order?.totalAmount || 0}</span>
         </div>
       </div>
     </div>

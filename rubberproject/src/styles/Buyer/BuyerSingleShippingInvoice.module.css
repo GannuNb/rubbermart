@@ -266,13 +266,19 @@
   margin-bottom: 28px;
 }
 
-/* WRAPPER */
+/* =========================
+   WRAPPER
+========================= */
+
 .progressWrapper {
   position: relative;
   padding: 10px 10px 0;
 }
 
-/* MAIN LINE */
+/* =========================
+   MAIN LINE
+========================= */
+
 .progressLine {
   position: absolute;
   top: 28px;
@@ -282,21 +288,23 @@
   background: #d9dce3;
   border-radius: 50px;
   z-index: 1;
+  overflow: hidden;
 }
 
-/* PURPLE ACTIVE LINE */
-.progressLine::after {
-  content: "";
+.progressFill {
   position: absolute;
   left: 0;
   top: 0;
-  width: 68%;
   height: 100%;
   background: #6d28d9;
   border-radius: 50px;
+  transition: width 0.4s ease;
 }
 
-/* STEPS */
+/* =========================
+   STEPS
+========================= */
+
 .progressSteps {
   display: flex;
   justify-content: space-between;
@@ -309,7 +317,10 @@
   text-align: center;
 }
 
-/* CIRCLES */
+/* =========================
+   CIRCLES
+========================= */
+
 .activeCircle,
 .inactiveCircle {
   width: 34px;
@@ -333,7 +344,7 @@
   border: 3px solid #d1d5db;
 }
 
-/* WHITE CHECK LOOK */
+/* white tick */
 .activeCircle::after {
   content: "✓";
   color: white;
@@ -341,7 +352,10 @@
   font-weight: 700;
 }
 
-/* TITLES */
+/* =========================
+   TITLES
+========================= */
+
 .step h4 {
   font-size: 14px;
   font-weight: 700;
@@ -349,7 +363,10 @@
   margin-bottom: 6px;
 }
 
-/* DATE TEXT */
+/* =========================
+   DATE TEXT
+========================= */
+
 .step p {
   font-size: 13px;
   color: #6b7280;
@@ -357,7 +374,10 @@
   font-weight: 500;
 }
 
-/* BOTTOM MESSAGE BOX */
+/* =========================
+   MESSAGE BOX
+========================= */
+
 .progressMessage {
   margin-top: 30px;
   background: #f5f1ff;
@@ -372,7 +392,6 @@
   align-items: center;
   justify-content: center;
 }
-
 
 /* =========================
    DRIVER + SHIPMENT SUMMARY

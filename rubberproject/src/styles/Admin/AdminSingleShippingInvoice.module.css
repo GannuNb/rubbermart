@@ -1,0 +1,372 @@
+/* =========================
+   MAIN CONTAINER
+========================= */
+
+.container {
+  padding: 28px;
+  background: #f8fafc;
+  min-height: 100vh;
+}
+
+/* =========================
+   PAGE HEADER
+========================= */
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.mainTitle {
+  font-size: 30px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.adminProfile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #d1d5db;
+}
+
+/* =========================
+   BREADCRUMB
+========================= */
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 28px;
+}
+
+/* =========================
+   BACK SECTION
+========================= */
+
+.backSection {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.backBtn {
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 10px;
+  background: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+}
+
+.sectionTitle {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* =========================
+   TOP CARD
+========================= */
+
+.topCard {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 26px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-bottom: 28px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+}
+
+.topItem {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.iconBox {
+  width: 48px;
+  height: 48px;
+  background: #f3edff;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7c3aed;
+  font-size: 18px;
+}
+
+.label {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.value {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.linkValue {
+  font-size: 15px;
+  font-weight: 700;
+  color: #7c3aed;
+}
+
+.fileBtn {
+  border: none;
+  background: transparent;
+  color: #7c3aed;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* =========================
+   PRODUCT CARD
+========================= */
+
+.productCard {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 28px;
+  margin-bottom: 28px;
+}
+
+.productLeft {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.cardTitle {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.productTitle,
+.productSub {
+  display: none;
+}
+
+.productImage {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #f1f5f9;
+}
+
+/* =========================
+   PRODUCT TABLE HEADER
+========================= */
+
+.productTableHeader {
+  display: grid;
+  grid-template-columns:
+    1.6fr
+    1.3fr
+    1.2fr
+    1.4fr
+    1fr
+    1fr;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  padding: 16px 22px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* =========================
+   PRODUCT TABLE VALUE ROW
+========================= */
+
+.tableRow {
+  display: grid;
+  grid-template-columns:
+    1.6fr
+    1.3fr
+    1.2fr
+    1.4fr
+    1fr
+    1fr;
+  align-items: center;
+  padding: 30px 22px;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 15px;
+  color: #111827;
+}
+
+.productCell {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.productName {
+  font-weight: 600;
+  font-size: 15px;
+  color: #111827;
+}
+
+/* =========================
+   SUMMARY SECTION
+========================= */
+
+.summaryBox {
+  width: 340px;
+  margin-left: auto;
+  margin-top: 24px;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 15px;
+  color: #6b7280;
+}
+
+.summaryRow span:last-child {
+  font-weight: 500;
+  color: #111827;
+}
+
+.totalBox {
+  margin-top: 10px;
+  background: #f8f5ff;
+  padding: 16px 18px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.totalBox span:first-child {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.totalBox span:last-child {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* =========================
+   BOTTOM GRID
+========================= */
+
+.bottomGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.infoCard {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 26px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+}
+
+.infoList {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.infoRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  color: #374151;
+  font-size: 14px;
+}
+
+/* =========================
+   ACTIONS CARD
+========================= */
+
+.actionsCard {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 28px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+}
+
+.actionsRow {
+  display: flex;
+  gap: 18px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.approveBtn,
+.deliverBtn {
+  border: none;
+  padding: 15px 26px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.approveBtn {
+  background: #5b21b6;
+  color: white;
+}
+
+.deliverBtn {
+  background: #16a34a;
+  color: white;
+}
+
+.approveBtn:disabled,
+.deliverBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* =========================
+   EMPTY STATE
+========================= */
+
+.emptyState {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 60px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  color: #6b7280;
+}

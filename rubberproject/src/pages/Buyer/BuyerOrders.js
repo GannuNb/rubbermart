@@ -1,124 +1,207 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  useDispatch,
+  useSelector,
+} from "react-redux";
+
 import styles from "../../styles/Buyer/BuyerOrders.module.css";
 
 import OrderCard from "../../components/orders/OrderCard";
 import OrderFilters from "../../components/orders/OrderFilters";
 import OrderHeader from "../../components/orders/OrderHeader";
 
-import { getDisplayStatus } from "../../utils/orderStatusHelpers";
+import {
+  getBuyerOrdersThunk,
+} from "../../redux/slices/getBuyerOrdersThunk";
+
+import {
+  getDisplayStatus,
+} from "../../utils/orderStatusHelpers";
 
 function BuyerOrders() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [activeFilter, setActiveFilter] = useState("all");
+  const [activeFilter, setActiveFilter] =
+    useState("all");
+
+  const {
+    orders,
+    ordersLoading,
+    ordersError,
+  } = useSelector(
+    (state) => state.buyerOrders
+  );
+
+  /* =========================
+     FETCH BUYER ORDERS
+  ========================= */
 
   useEffect(() => {
-    fetchBuyerOrders();
-  }, []);
+    dispatch(
+      getBuyerOrdersThunk()
+    );
+  }, [dispatch]);
 
-  const fetchBuyerOrders = async () => {
-    try {
-      setLoading(true);
+  /* =========================
+     FILTER LOGIC
+  ========================= */
 
-      const token = localStorage.getItem("token");
-
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/orders/buyer-orders`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setOrders(data.orders || []);
-      } else {
-        alert(data.message || "Failed to fetch orders");
-      }
-    } catch (error) {
-      console.log("Fetch Buyer Orders Error:", error);
-      alert("Failed to fetch orders");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // ✅ FILTER LOGIC
   const filteredOrders = useMemo(() => {
-    if (activeFilter === "all") return orders;
+    if (activeFilter === "all")
+      return orders;
 
     return orders.filter((order) => {
-      const displayStatus = getDisplayStatus(order);
+      const displayStatus =
+        getDisplayStatus(order);
 
-      if (activeFilter === "in_progress") {
+      if (
+        activeFilter ===
+        "in_progress"
+      ) {
         return (
-          displayStatus !== "Delivered" &&
-          displayStatus !== "Cancelled"
+          displayStatus !==
+            "Delivered" &&
+          displayStatus !==
+            "Cancelled"
         );
       }
 
-      if (activeFilter === "partial_shipments") {
-        return displayStatus === "Partial Shipment";
+      if (
+        activeFilter ===
+        "partial_shipments"
+      ) {
+        return (
+          displayStatus ===
+          "Partial Shipment"
+        );
       }
 
-      if (activeFilter === "shipped") {
-        return displayStatus === "Shipped";
+      if (
+        activeFilter === "shipped"
+      ) {
+        return (
+          displayStatus ===
+          "Shipped"
+        );
       }
 
-      if (activeFilter === "delivered") {
-        return displayStatus === "Delivered";
+      if (
+        activeFilter ===
+        "delivered"
+      ) {
+        return (
+          displayStatus ===
+          "Delivered"
+        );
       }
 
-      if (activeFilter === "cancelled") {
-        return displayStatus === "Cancelled";
+      if (
+        activeFilter ===
+        "cancelled"
+      ) {
+        return (
+          displayStatus ===
+          "Cancelled"
+        );
       }
 
       return true;
     });
   }, [orders, activeFilter]);
 
-  if (loading) {
+  /* =========================
+     LOADING
+  ========================= */
+
+  if (ordersLoading) {
     return (
       <div className={styles.pageWrapper}>
-        <div className={styles.loadingText}>Loading orders...</div>
+        <div
+          className={styles.loadingText}
+        >
+          Loading orders...
+        </div>
+      </div>
+    );
+  }
+
+  /* =========================
+     ERROR
+  ========================= */
+
+  if (ordersError) {
+    return (
+      <div className={styles.pageWrapper}>
+        <div
+          className={styles.loadingText}
+        >
+          {ordersError}
+        </div>
       </div>
     );
   }
 
   return (
     <div className={styles.pageWrapper}>
-      {/* ✅ HEADER */}
+      {/* HEADER */}
+
       <OrderHeader />
 
       {/* CONTENT */}
+
       <div className={styles.contentCard}>
-        {/* ✅ FILTERS */}
+        {/* FILTERS */}
+
         <OrderFilters
-          activeFilter={activeFilter}
-          setActiveFilter={setActiveFilter}
+          activeFilter={
+            activeFilter
+          }
+          setActiveFilter={
+            setActiveFilter
+          }
         />
 
         {/* LIST */}
-        {filteredOrders.length === 0 ? (
-          <div className={styles.emptyState}>
-            <h2>No Orders Found</h2>
-            <p>No orders available for this filter.</p>
+
+        {filteredOrders.length ===
+        0 ? (
+          <div
+            className={
+              styles.emptyState
+            }
+          >
+            <h2>
+              No Orders Found
+            </h2>
+
+            <p>
+              No orders available
+              for this filter.
+            </p>
           </div>
         ) : (
-          <div className={styles.ordersList}>
-            {filteredOrders.map((order) => (
-              <OrderCard
-                key={order._id}
-                order={order}
-                navigate={navigate}
-              />
-            ))}
+          <div
+            className={
+              styles.ordersList
+            }
+          >
+            {filteredOrders.map(
+              (order) => (
+                <OrderCard
+                  key={order._id}
+                  order={order}
+                  navigate={
+                    navigate
+                  }
+                />
+              )
+            )}
           </div>
         )}
       </div>

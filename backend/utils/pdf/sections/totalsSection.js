@@ -6,33 +6,145 @@ export const drawTotalsSection = (doc, order, currentY) => {
   const startX = 35;
   const tableWidth = 525;
 
-  // Draw the border box starting at the dynamic Y
-  doc.rect(startX, currentY, tableWidth, height).strokeColor(borderColor).stroke();
+  // Draw border box
+  doc
+    .rect(startX, currentY, tableWidth, height)
+    .strokeColor(borderColor)
+    .stroke();
 
-  // Vertical separators aligned with the Items Table columns
-  [72, 155, 210, 278, 340, 425].forEach(x => {
-    doc.moveTo(x, currentY).lineTo(x, currentY + height).stroke();
+  // Vertical separators aligned with Items Table
+  [72, 155, 210, 278, 340, 425].forEach((x) => {
+    doc
+      .moveTo(x, currentY)
+      .lineTo(x, currentY + height)
+      .stroke();
   });
 
-  doc.fillColor(darkText).font("Helvetica-Bold");
+  doc
+    .fillColor(darkText)
+    .font("Helvetica-Bold");
 
-  // Aligned centering for the totals
+  /* =========================
+     CGST + SGST
+  ========================= */
+
   if (order.gstType === "cgst_sgst") {
-    doc.fontSize(7).text("Taxable Value", 282, currentY + 15, { width: 55, align: "center" })
-       .text(Number(order.taxableAmount || 0).toFixed(2), 282, currentY + 35, { width: 55, align: "center" })
-       .text("CGST + SGST", 345, currentY + 15, { width: 75, align: "center" })
-       .text(Number(order.gstAmount || 0).toFixed(2), 345, currentY + 35, { width: 75, align: "center" })
-       .fontSize(10).text("Grand Total", 432, currentY + 15, { width: 115, align: "center" })
-       .text(Number(order.totalAmount || 0).toFixed(2), 432, currentY + 35, { width: 115, align: "center" });
-  } else {
-    // Similar centering for IGST...
-    doc.fontSize(7).text("Taxable Value", 282, currentY + 15, { width: 55, align: "center" })
-       .text(Number(order.taxableAmount || 0).toFixed(2), 282, currentY + 35, { width: 55, align: "center" })
-       .text("IGST (18%)", 345, currentY + 15, { width: 75, align: "center" })
-       .text(Number(order.igstAmount || 0).toFixed(2), 345, currentY + 35, { width: 75, align: "center" })
-       .fontSize(10).text("Grand Total", 432, currentY + 15, { width: 115, align: "center" })
-       .text(Number(order.totalAmount || 0).toFixed(2), 432, currentY + 35, { width: 115, align: "center" });
+    doc
+
+      // reduced font size here
+      .fontSize(6.5)
+      .text("TAXABLE VALUE", 282, currentY + 15, {
+        width: 55,
+        align: "center",
+      })
+
+      .fontSize(7.5)
+      .text(
+        Number(order.taxableAmount || 0).toFixed(2),
+        282,
+        currentY + 35,
+        {
+          width: 55,
+          align: "center",
+        }
+      )
+
+      .fontSize(6.5)
+      .text("CGST + SGST", 345, currentY + 15, {
+        width: 75,
+        align: "center",
+      })
+
+      .fontSize(7.5)
+      .text(
+        Number(order.gstAmount || 0).toFixed(2),
+        345,
+        currentY + 35,
+        {
+          width: 75,
+          align: "center",
+        }
+      )
+
+      // reduced GRAND TOTAL font size here
+      .fontSize(8.5)
+      .text("GRAND TOTAL", 432, currentY + 15, {
+        width: 115,
+        align: "center",
+      })
+
+      .fontSize(8.5)
+      .text(
+        Number(order.totalAmount || 0).toFixed(2),
+        432,
+        currentY + 35,
+        {
+          width: 115,
+          align: "center",
+        }
+      );
   }
 
-  return currentY + height + 10; // Extra 10px padding before Summary
+  /* =========================
+     IGST
+  ========================= */
+
+  else {
+    doc
+
+      // reduced font size here
+      .fontSize(6.5)
+      .text("TAXABLE VALUE", 282, currentY + 15, {
+        width: 55,
+        align: "center",
+      })
+
+      .fontSize(7.5)
+      .text(
+        Number(order.taxableAmount || 0).toFixed(2),
+        282,
+        currentY + 35,
+        {
+          width: 55,
+          align: "center",
+        }
+      )
+
+      .fontSize(6.5)
+      .text("IGST (18%)", 345, currentY + 15, {
+        width: 75,
+        align: "center",
+      })
+
+      .fontSize(7.5)
+      .text(
+        Number(order.igstAmount || 0).toFixed(2),
+        345,
+        currentY + 35,
+        {
+          width: 75,
+          align: "center",
+        }
+      )
+
+      // reduced GRAND TOTAL font size here
+      .fontSize(8.5)
+      .text("GRAND TOTAL", 432, currentY + 15, {
+        width: 115,
+        align: "center",
+      })
+
+      .fontSize(8.5)
+      .text(
+        Number(order.totalAmount || 0).toFixed(2),
+        432,
+        currentY + 35,
+        {
+          width: 115,
+          align: "center",
+        }
+      );
+  }
+
+  return currentY + height + 10;
 };
