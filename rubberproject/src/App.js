@@ -81,15 +81,9 @@ function AppContent() {
         <Route path="/order-success" element={<OrderSuccess />} />
         <Route  path="/buyer-orders"  element={<ProtectedRoute allowedRoles={["buyer"]}><BuyerOrders /> </ProtectedRoute>  }/>
         <Route  path="/buyer-orders/:id"  element={<ProtectedRoute><BuyerOrderDetails /></ProtectedRoute>  }/>  
-        <Route
-  path="/buyer/order/:orderId/shipping/:itemName"
-  element={<BuyerShippingInvoices />}
-/>
+        <Route  path="/buyer/order/:orderId/shipping/:itemName"  element={<BuyerShippingInvoices />}/>
 
-<Route
-  path="/buyer/order/:orderId/shipping-invoice/:shipmentId"
-  element={<BuyerSingleShippingInvoice />}
-/>
+        <Route          path="/buyer/order/:orderId/shipping-invoice/:shipmentId"          element={<BuyerSingleShippingInvoice />}        />
 
 
         {/* seller */}
@@ -110,7 +104,7 @@ function AppContent() {
         <Route  path="/admin/orders"  element={<ProtectedRoute allowedRoles={["admin"]}> <AdminAllOrders /> </ProtectedRoute>  }/>
         <Route  path="/admin/order-details/:orderId"  element={<AdminOrderDetails />}/>
         <Route  path="/admin/order/:orderId/invoices/:itemName"  element={<AdminAllInvoices />}/>
-        <Route  path="/admin/shipping-invoice/:shipmentId"  element={<AdminSingleShippingInvoice />}/>
+        <Route  path="/admin/order/:orderId/shipping-invoice/:shipmentId"  element={<AdminSingleShippingInvoice />}/>
 
         
       </Routes>

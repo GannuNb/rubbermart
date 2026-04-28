@@ -1,12 +1,17 @@
-import React from "react";
+// src/pages/admin/AdminSingleShippingInvoice.js
+
+import React, { useEffect } from "react";
 import {
   FaArrowLeft,
 } from "react-icons/fa";
 import {
   useNavigate,
   useParams,
-  useLocation,
 } from "react-router-dom";
+import {
+  useDispatch,
+  useSelector,
+} from "react-redux";
 
 import AdminShipmentTopCard from "../../components/admin/AdminSingleShipping/AdminShipmentTopCard";
 import AdminShipmentProductCard from "../../components/admin/AdminSingleShipping/AdminShipmentProductCard";
@@ -14,18 +19,78 @@ import AdminDriverDetailsCard from "../../components/admin/AdminSingleShipping/A
 import AdminShipmentSummaryCard from "../../components/admin/AdminSingleShipping/AdminShipmentSummaryCard";
 import AdminShipmentActionsCard from "../../components/admin/AdminSingleShipping/AdminShipmentActionsCard";
 
+import {
+  getAdminSingleOrderDetails,
+} from "../../redux/slices/adminOrders/adminSingleOrderThunk";
+
 import styles from "../../styles/Admin/AdminSingleShippingInvoice.module.css";
 
 const AdminSingleShippingInvoice = () => {
   const navigate = useNavigate();
-  const { shipmentId } = useParams();
-  const location = useLocation();
+  const dispatch = useDispatch();
+
+  const {
+    orderId,
+    shipmentId,
+  } = useParams();
+
+  const {
+    singleOrder,
+    singleOrderLoading,
+    singleOrderError,
+  } = useSelector(
+    (state) => state.adminOrders
+  );
+
+  const order = singleOrder;
+
+  /* =========================
+     FETCH FRESH ORDER
+  ========================= */
+
+  useEffect(() => {
+    if (orderId) {
+      dispatch(
+        getAdminSingleOrderDetails(
+          orderId
+        )
+      );
+    }
+  }, [dispatch, orderId]);
+
+  /* =========================
+     FIND SHIPMENT
+  ========================= */
 
   const shipment =
-    location.state?.shipment;
+    order?.shipments?.find(
+      (item) =>
+        item?._id === shipmentId
+    );
 
-  const order =
-    location.state?.order;
+  /* =========================
+     LOADING
+  ========================= */
+
+  if (singleOrderLoading) {
+    return (
+      <div className={styles.container}>
+        Loading shipment details...
+      </div>
+    );
+  }
+
+  /* =========================
+     ERROR
+  ========================= */
+
+  if (singleOrderError) {
+    return (
+      <div className={styles.container}>
+        {singleOrderError}
+      </div>
+    );
+  }
 
   /* =========================
      SAFETY CHECK
@@ -34,7 +99,11 @@ const AdminSingleShippingInvoice = () => {
   if (!shipment || !order) {
     return (
       <div className={styles.container}>
-        <div className={styles.emptyState}>
+        <div
+          className={
+            styles.emptyState
+          }
+        >
           Shipment details not found
         </div>
       </div>
@@ -43,83 +112,115 @@ const AdminSingleShippingInvoice = () => {
 
   return (
     <div className={styles.container}>
-      {/* =========================
-          PAGE HEADER
-      ========================= */}
+      {/* PAGE HEADER */}
 
-      <div className={styles.pageHeader}>
-        <h1 className={styles.mainTitle}>
+      <div
+        className={
+          styles.pageHeader
+        }
+      >
+        <h1
+          className={
+            styles.mainTitle
+          }
+        >
           Admin Orders
         </h1>
 
-        <div className={styles.adminProfile}>
-          <div className={styles.avatar}></div>
+        <div
+          className={
+            styles.adminProfile
+          }
+        >
+          <div
+            className={
+              styles.avatar
+            }
+          ></div>
+
           <span>Admin</span>
         </div>
       </div>
 
-      {/* =========================
-          BREADCRUMB
-      ========================= */}
+      {/* BREADCRUMB */}
 
-      <div className={styles.breadcrumb}>
+      <div
+        className={
+          styles.breadcrumb
+        }
+      >
         <span>Orders</span>
         <span>{">"}</span>
 
         <span>All Orders</span>
         <span>{">"}</span>
 
-        <span>Order Details</span>
+        <span>
+          Order Details
+        </span>
         <span>{">"}</span>
 
-        <span>All Invoices</span>
+        <span>
+          All Invoices
+        </span>
         <span>{">"}</span>
 
-        <span>Shipping Details</span>
+        <span>
+          Shipping Details
+        </span>
       </div>
 
-      {/* =========================
-          BACK
-      ========================= */}
+      {/* BACK */}
 
-      <div className={styles.backSection}>
+      <div
+        className={
+          styles.backSection
+        }
+      >
         <button
-          className={styles.backBtn}
-          onClick={() => navigate(-1)}
+          className={
+            styles.backBtn
+          }
+          onClick={() =>
+            navigate(-1)
+          }
         >
           <FaArrowLeft />
         </button>
 
-        <h2 className={styles.sectionTitle}>
-          Shipping Details - Invoice{" "}
+        <h2
+          className={
+            styles.sectionTitle
+          }
+        >
+          Shipping Details -
+          Invoice{" "}
           {shipment?.shipmentInvoiceId ||
             shipmentId}
         </h2>
       </div>
 
-      {/* =========================
-          TOP CARD
-      ========================= */}
+      {/* TOP CARD */}
 
       <AdminShipmentTopCard
         shipment={shipment}
         order={order}
       />
 
-      {/* =========================
-          PRODUCT CARD
-      ========================= */}
+      {/* PRODUCT CARD */}
 
       <AdminShipmentProductCard
         shipment={shipment}
         order={order}
       />
 
-      {/* =========================
-          BOTTOM GRID
-      ========================= */}
+      {/* BOTTOM GRID */}
 
-      <div className={styles.bottomGrid}>
+      <div
+        className={
+          styles.bottomGrid
+        }
+      >
         <AdminDriverDetailsCard
           shipment={shipment}
         />
@@ -129,9 +230,7 @@ const AdminSingleShippingInvoice = () => {
         />
       </div>
 
-      {/* =========================
-          ACTIONS
-      ========================= */}
+      {/* ACTIONS */}
 
       <AdminShipmentActionsCard
         shipment={shipment}

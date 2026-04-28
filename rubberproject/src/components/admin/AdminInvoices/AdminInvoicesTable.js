@@ -4,16 +4,12 @@ import { FaEye } from "react-icons/fa";
 
 import styles from "../../../styles/Admin/AdminAllInvoices.module.css";
 
-const AdminInvoicesTable = ({
-  order,
-  itemName,
-}) => {
+const AdminInvoicesTable = ({ order, itemName }) => {
   const shipments =
     order?.shipments?.filter(
-      (shipment) =>
-        shipment?.selectedItem === itemName
+      (shipment) => shipment?.selectedItem === itemName,
     ) || [];
-const navigate = useNavigate();
+  const navigate = useNavigate();
   return (
     <div className={styles.tableWrapper}>
       {/* Header */}
@@ -36,29 +32,16 @@ const navigate = useNavigate();
 
       {/* Rows */}
       {shipments.map((item, index) => (
-        <div
-          key={index}
-          className={styles.tableRow}
-        >
-          <div>
-            {item?.shipmentInvoiceId || "-"}
-          </div>
+        <div key={index} className={styles.tableRow}>
+          <div>{item?.shipmentInvoiceId || "-"}</div>
 
-          <div>
-            {item?.vehicleNumber || "-"}
-          </div>
+          <div>{item?.vehicleNumber || "-"}</div>
 
-          <div>
-            {item?.driverName || "-"}
-          </div>
+          <div>{item?.driverName || "-"}</div>
 
-          <div>
-            {item?.shippedQuantity || 0} MT
-          </div>
+          <div>{item?.shippedQuantity || 0} MT</div>
 
-          <div>
-            {item?.shipmentFrom || "-"}
-          </div>
+          <div>{item?.shipmentFrom || "-"}</div>
 
           <div>
             <span className={styles.statusPill}>
@@ -68,22 +51,16 @@ const navigate = useNavigate();
 
           <div>
             <button
-  className={styles.viewBtn}
-  onClick={() =>
-    navigate(
-      `/admin/shipping-invoice/${item?._id}`,
-      {
-        state: {
-          shipment: item,
-          order,
-        },
-      }
-    )
-  }
->
-  <FaEye />
-  View Shipping
-</button>
+              className={styles.viewBtn}
+              onClick={() =>
+                navigate(
+                  `/admin/order/${order?._id}/shipping-invoice/${item?._id}`,
+                )
+              }
+            >
+              <FaEye />
+              View Shipping
+            </button>
           </div>
         </div>
       ))}
