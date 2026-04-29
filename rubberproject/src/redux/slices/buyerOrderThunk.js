@@ -35,3 +35,40 @@ export const getBuyerSingleOrderThunk =
       }
     }
   );
+
+
+  export const downloadProformaInvoiceThunk =
+  (orderId) => async (dispatch, getState) => {
+    try {
+      const token = getState().auth.token;
+
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/orders/buyer-orders/${orderId}/proforma-invoice`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to download invoice");
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `Proforma-Invoice-${orderId}.pdf`;
+
+      document.body.appendChild(link);
+      link.click();
+
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.log("Download Invoice Error:", error);
+    }
+  };

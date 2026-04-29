@@ -5,19 +5,28 @@ import { protectAdmin, protectUser } from "../middlewares/authMiddleware.js";
 import uploadDocuments from "../middlewares/uploadDocuments.js";
 import { createOrder,getSellerOrders,  getSellerSingleOrder,  confirmSellerOrder,rejectSellerOrder,addShipmentToOrder,getBuyerOrders,
     getBuyerSingleOrder, uploadBuyerPayment ,getAdminAllOrders,getAdminSingleOrderDetails,approveBuyerPayment, uploadAdminToSellerPayment,
-    approveShipmentByAdmin,  markShipmentDeliveredByAdmin, } from "../controllers/orderController.js";
+    approveShipmentByAdmin,  markShipmentDeliveredByAdmin,downloadProformaInvoice, } from "../controllers/orderController.js";
 
 const router = express.Router();
 
+
+//buyer
 router.post("/create", protectUser, createOrder);
+router.get("/buyer-orders", protectUser, getBuyerOrders);
+router.get("/buyer-orders/:orderId",  protectUser,  getBuyerSingleOrder);
+router.post("/buyer-orders/:orderId/payment",  protectUser,  uploadDocuments.single("file"),  uploadBuyerPayment);
+router.get(  "/buyer-orders/:orderId/proforma-invoice",  protectUser,  downloadProformaInvoice);
+
+
+//seller
 router.get("/seller-orders", protectUser, getSellerOrders);
 router.get("/seller-orders/:orderId",  protectUser,  getSellerSingleOrder);
 router.put("/seller-orders/:orderId/confirm",  protectUser,  confirmSellerOrder);
 router.put("/seller-orders/:orderId/reject",  protectUser,  rejectSellerOrder);
 router.post("/seller-orders/:orderId/shipment",  protectUser,  uploadDocuments.single("shipmentFile"),  addShipmentToOrder);
-router.get("/buyer-orders", protectUser, getBuyerOrders);
-router.get("/buyer-orders/:orderId",  protectUser,  getBuyerSingleOrder);
-router.post("/buyer-orders/:orderId/payment",  protectUser,  uploadDocuments.single("file"),  uploadBuyerPayment);
+
+
+//admin
 router.get("/admin/all-orders",  protectUser, protectAdmin,  getAdminAllOrders);
 router.get("/admin/:orderId",  protectUser,  protectAdmin,  getAdminSingleOrderDetails);
 router.put("/admin/:orderId/payment/:paymentId/approve",  protectUser,  protectAdmin,  approveBuyerPayment);

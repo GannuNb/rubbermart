@@ -11,7 +11,6 @@ import AdminBuyerPaymentCard from "../../components/admin/AdminOrderDetails/Admi
 import AdminToSellerPaymentCard from "../../components/admin/AdminOrderDetails/AdminToSellerPaymentCard";
 import AdminSellerPaymentHistoryCard from "../../components/admin/AdminOrderDetails/AdminSellerPaymentHistoryCard";
 import AdminPaymentSummaryCard from "../../components/admin/AdminOrderDetails/AdminPaymentSummaryCard";
-
 import { getAdminSingleOrderDetails } from "../../redux/slices/adminOrders/adminSingleOrderThunk";
 
 import styles from "../../styles/Admin/AdminOrderDetails.module.css";
@@ -20,43 +19,29 @@ const AdminOrderDetails = () => {
   const dispatch = useDispatch();
   const { orderId } = useParams();
 
-  const {
-    singleOrder,
-    singleOrderLoading,
-    singleOrderError,
-  } = useSelector((state) => state.adminOrders);
+  const { singleOrder, singleOrderLoading, singleOrderError } = useSelector(
+    (state) => state.adminOrders,
+  );
 
   useEffect(() => {
     if (orderId) {
-      dispatch(
-        getAdminSingleOrderDetails(orderId)
-      );
+      dispatch(getAdminSingleOrderDetails(orderId));
     }
   }, [dispatch, orderId]);
 
   if (singleOrderLoading) {
-    return (
-      <div className={styles.container}>
-        Loading order details...
-      </div>
-    );
+    return <div className={styles.container}>Loading order details...</div>;
   }
 
   if (singleOrderError) {
-    return (
-      <div className={styles.container}>
-        {singleOrderError}
-      </div>
-    );
+    return <div className={styles.container}>{singleOrderError}</div>;
   }
 
   return (
     <div className={styles.container}>
       {/* HEADER */}
       <div className={styles.pageHeader}>
-        <h1 className={styles.mainTitle}>
-          Admin Orders
-        </h1>
+        <h1 className={styles.mainTitle}>Admin Orders</h1>
 
         <div className={styles.adminProfile}>
           <div className={styles.avatar}></div>
@@ -79,54 +64,36 @@ const AdminOrderDetails = () => {
           <FaArrowLeft />
         </button>
 
-        <h2 className={styles.sectionTitle}>
-          Order Details
-        </h2>
+        <h2 className={styles.sectionTitle}>Order Details</h2>
       </div>
 
       {/* MAIN LAYOUT */}
       <div className={styles.mainLayout}>
         {/* LEFT SIDE */}
         <div className={styles.leftSection}>
-          <AdminOrderSummaryCard
-            order={singleOrder}
-          />
+          <AdminOrderSummaryCard order={singleOrder} />
 
-          <AdminBuyerDetailsCard
-            order={singleOrder}
-          />
+          <AdminBuyerDetailsCard order={singleOrder} />
 
-          <AdminSellerDetailsCard
-            order={singleOrder}
-          />
+          <AdminSellerDetailsCard order={singleOrder} />
 
-          <AdminOrderItemsCard
-            order={singleOrder}
-          />
+          <AdminOrderItemsCard order={singleOrder} />
         </div>
 
         {/* RIGHT SIDE */}
-<div className={styles.rightSection}>
-  {/* Buyer Payment History */}
-  <AdminBuyerPaymentCard
-    order={singleOrder}
-  />
+        <div className={styles.rightSection}>
+          {/* Buyer Payment History */}
+          <AdminBuyerPaymentCard order={singleOrder} />
 
-  {/* Admin → Seller Payment */}
-  <AdminToSellerPaymentCard
-    order={singleOrder}
-  />
+          {/* Admin → Seller Payment */}
+          <AdminToSellerPaymentCard order={singleOrder} />
 
-  {/* Seller Payment History */}
-  <AdminSellerPaymentHistoryCard
-    order={singleOrder}
-  />
+          {/* Seller Payment History */}
+          <AdminSellerPaymentHistoryCard order={singleOrder} />
 
-  {/* Final Payment Summary */}
-  <AdminPaymentSummaryCard
-    order={singleOrder}
-  />
-</div>
+          {/* Final Payment Summary */}
+          <AdminPaymentSummaryCard order={singleOrder} />
+        </div>
       </div>
     </div>
   );

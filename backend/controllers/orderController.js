@@ -1674,3 +1674,99 @@ export const markShipmentDeliveredByAdmin = async (
     });
   }
 };
+
+
+
+export const downloadProformaInvoice = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+
+    /* =========================
+       FETCH COMPLETE ORDER DATA
+    ========================= */
+
+    const populatedOrder = await Order.findById(orderId)
+      .populate(
+        "buyer",
+        `
+          fullName
+          email
+          businessProfile.companyName
+          businessProfile.phoneNumber
+          businessProfile.email
+          businessProfile.gstNumber
+          businessProfile.billingAddress
+          businessProfile.shippingAddress
+        `
+      )
+      .populate(
+        "seller",
+        `
+          fullName
+          email
+          businessProfile.companyName
+          businessProfile.phoneNumber
+          businessProfile.email
+          businessProfile.gstNumber
+          businessProfile.billingAddress
+          businessProfile.shippingAddress
+        `
+      );
+
+    if (!populatedOrder) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    /* =========================
+       SAFETY CHECK FOR SHIPPING
+    ========================= */
+
+    if (
+      !populatedOrder.shippingAddress ||
+      !populatedOrder.shippingAddress.fullAddress
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Shipping address not found for this order",
+      });
+    }
+
+    /* =========================
+       GENERATE PDF
+    ========================= */
+
+    const invoicePdfBuffer =
+      await generateInvoicePdf(populatedOrder);
+
+    /* =========================
+       FORCE DOWNLOAD
+    ========================= */
+
+    res.setHeader(
+      "Content-Type",
+      "application/pdf"
+    );
+
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=Proforma-Invoice-${populatedOrder.orderId}.pdf`
+    );
+
+    return res.send(invoicePdfBuffer);
+  } catch (error) {
+    console.log(
+      "Download Proforma Invoice Error:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message:
+        "Failed to download proforma invoice",
+      error: error.message,
+    });
+  }
+};

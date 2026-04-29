@@ -1,23 +1,18 @@
+// src/components/navbar/RoleNavbar.js
+// FINAL corrected version (important fix: pass location prop)
+
 import React, { useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import {
-  FaUserPlus,
-  FaSignInAlt,
-  FaSignOutAlt,
-  FaHome,
-  FaInfoCircle,
-  FaTachometerAlt,
-  FaBoxOpen,
-  FaShoppingBag,
-  FaUser,
-  FaUsers,
-  FaClipboardList,
-} from "react-icons/fa";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { jwtDecode } from "jwt-decode";
 
 import { logoutUser } from "../../redux/slices/authSlice";
 import styles from "../../styles/Components/RoleNavbar.module.css";
+
+import GuestNavbar from "./GuestNavbar";
+import BuyerNavbar from "./BuyerNavbar";
+import SellerNavbar from "./SellerNavbar";
+import AdminNavbar from "./AdminNavbar";
 
 function RoleNavbar() {
   const navigate = useNavigate();
@@ -26,7 +21,7 @@ function RoleNavbar() {
 
   const { user } = useSelector((state) => state.auth);
 
-  // 🔐 Auto logout on token expiry
+  // Auto logout on token expiry
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) return;
@@ -61,204 +56,39 @@ function RoleNavbar() {
     navigate("/");
   };
 
+  const getLogoPath = () => {
+    if (!user) return "/";
+    if (user.role === "admin") return "/admin-dashboard";
+    if (user.role === "seller") return "/seller-dashboard";
+    return "/home";
+  };
+
   return (
     <nav className={styles.navbar}>
-      {/* LOGO */}
       <div className={styles.logo}>
-        <Link
-          to={
-            user
-              ? user.role === "admin"
-                ? "/admin-dashboard"
-                : user.role === "seller"
-                ? "/seller-dashboard"
-                : "/home"
-              : "/"
-          }
-        >
+        <Link to={getLogoPath()}>
           Rubber Scrap Mart
         </Link>
       </div>
 
       <div className={styles.navLinks}>
-        {/* NOT LOGGED IN */}
         {!user ? (
-          <>
-            <Link
-              to="/"
-              className={`${styles.normalLink} ${
-                location.pathname === "/" ? styles.active : ""
-              }`}
-            >
-              <FaHome />
-              <span>Home</span>
-            </Link>
-
-            <Link
-              to="/about"
-              className={`${styles.normalLink} ${
-                location.pathname === "/about" ? styles.active : ""
-              }`}
-            >
-              <FaInfoCircle />
-              <span>About</span>
-            </Link>
-
-            <Link to="/signup" className={styles.authBtn}>
-              <FaUserPlus />
-              <span>Signup</span>
-            </Link>
-
-            <Link to="/login" className={styles.authBtn}>
-              <FaSignInAlt />
-              <span>Login</span>
-            </Link>
-          </>
+          <GuestNavbar />
         ) : user.role === "admin" ? (
-          <>
-            <Link
-              to="/admin-dashboard"
-              className={`${styles.normalLink} ${
-                location.pathname === "/admin-dashboard"
-                  ? styles.active
-                  : ""
-              }`}
-            >
-              <FaTachometerAlt />
-              <span>Dashboard</span>
-            </Link>
-
-            <Link
-              to="/admin-approve-products"
-              className={`${styles.normalLink} ${
-                location.pathname === "/admin-approve-products"
-                  ? styles.active
-                  : ""
-              }`}
-            >
-              <FaBoxOpen />
-              <span>Approve Products</span>
-            </Link>
-
-            <Link
-              to="/admin-products"
-              className={`${styles.normalLink} ${
-                location.pathname === "/admin-products"
-                  ? styles.active
-                  : ""
-              }`}
-            >
-              <FaBoxOpen />
-              <span>Products</span>
-            </Link>
-
-            <Link
-              to="/admin-users"
-              className={`${styles.normalLink} ${
-                location.pathname === "/admin-users" ? styles.active : ""
-              }`}
-            >
-              <FaUsers />
-              <span>Users</span>
-            </Link>
-
-            <button className={styles.logoutBtn} onClick={handleLogout}>
-              <FaSignOutAlt />
-              <span>Logout</span>
-            </button>
-          </>
+          <AdminNavbar
+            handleLogout={handleLogout}
+            location={location}
+          />
         ) : user.role === "seller" ? (
-          <>
-            <Link
-              to="/seller-dashboard"
-              className={`${styles.normalLink} ${
-                location.pathname === "/seller-dashboard"
-                  ? styles.active
-                  : ""
-              }`}
-            >
-              <FaTachometerAlt />
-              <span>Dashboard</span>
-            </Link>
-
-            <Link
-              to="/seller-add-products"
-              className={`${styles.normalLink} ${
-                location.pathname === "/seller-add-products"
-                  ? styles.active
-                  : ""
-              }`}
-            >
-              <FaBoxOpen />
-              <span>Add Products</span>
-            </Link>
-
-            <Link
-              to="/seller-products"
-              className={`${styles.normalLink} ${
-                location.pathname === "/seller-products"
-                  ? styles.active
-                  : ""
-              }`}
-            >
-              <FaBoxOpen />
-              <span>Manage Products</span>
-            </Link>
-
-            <Link
-              to="/seller/orders"
-              className={`${styles.normalLink} ${
-                location.pathname === "/seller/orders" ? styles.active : ""
-              }`}
-            >
-              <FaClipboardList />
-              <span>Orders</span>
-            </Link>
-
-            <Link
-              to="/seller-profile"
-              className={`${styles.normalLink} ${
-                location.pathname === "/seller-profile"
-                  ? styles.active
-                  : ""
-              }`}
-            >
-              <FaUser />
-              <span>Profile</span>
-            </Link>
-
-            <button className={styles.logoutBtn} onClick={handleLogout}>
-              <FaSignOutAlt />
-              <span>Logout</span>
-            </button>
-          </>
+          <SellerNavbar
+            handleLogout={handleLogout}
+            location={location}
+          />
         ) : (
-          <>
-            <Link
-              to="/home"
-              className={`${styles.normalLink} ${
-                location.pathname === "/home" ? styles.active : ""
-              }`}
-            >
-              <FaHome />
-              <span>Home</span>
-            </Link>
-
-            <Link
-              to="/about"
-              className={`${styles.normalLink} ${
-                location.pathname === "/about" ? styles.active : ""
-              }`}
-            >
-              <FaInfoCircle />
-              <span>About</span>
-            </Link>
-
-            <button className={styles.logoutBtn} onClick={handleLogout}>
-              <FaSignOutAlt />
-              <span>Logout</span>
-            </button>
-          </>
+          <BuyerNavbar
+            handleLogout={handleLogout}
+            location={location}
+          />
         )}
       </div>
     </nav>

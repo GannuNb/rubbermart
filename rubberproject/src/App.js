@@ -82,8 +82,7 @@ function AppContent() {
         <Route  path="/buyer-orders"  element={<ProtectedRoute allowedRoles={["buyer"]}><BuyerOrders /> </ProtectedRoute>  }/>
         <Route  path="/buyer-orders/:id"  element={<ProtectedRoute><BuyerOrderDetails /></ProtectedRoute>  }/>  
         <Route  path="/buyer/order/:orderId/shipping/:itemName"  element={<BuyerShippingInvoices />}/>
-
-        <Route          path="/buyer/order/:orderId/shipping-invoice/:shipmentId"          element={<BuyerSingleShippingInvoice />}        />
+        <Route path="/buyer/order/:orderId/shipping-invoice/:shipmentId" element={<BuyerSingleShippingInvoice />} />
 
 
         {/* seller */}

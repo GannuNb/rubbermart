@@ -1,17 +1,9 @@
 // src/pages/admin/AdminSingleShippingInvoice.js
 
 import React, { useEffect } from "react";
-import {
-  FaArrowLeft,
-} from "react-icons/fa";
-import {
-  useNavigate,
-  useParams,
-} from "react-router-dom";
-import {
-  useDispatch,
-  useSelector,
-} from "react-redux";
+import {  FaArrowLeft,} from "react-icons/fa";
+import {  useNavigate,  useParams,} from "react-router-dom";
+import {  useDispatch,  useSelector,} from "react-redux";
 
 import AdminShipmentTopCard from "../../components/admin/AdminSingleShipping/AdminShipmentTopCard";
 import AdminShipmentProductCard from "../../components/admin/AdminSingleShipping/AdminShipmentProductCard";
@@ -19,9 +11,7 @@ import AdminDriverDetailsCard from "../../components/admin/AdminSingleShipping/A
 import AdminShipmentSummaryCard from "../../components/admin/AdminSingleShipping/AdminShipmentSummaryCard";
 import AdminShipmentActionsCard from "../../components/admin/AdminSingleShipping/AdminShipmentActionsCard";
 
-import {
-  getAdminSingleOrderDetails,
-} from "../../redux/slices/adminOrders/adminSingleOrderThunk";
+import {  getAdminSingleOrderDetails,} from "../../redux/slices/adminOrders/adminSingleOrderThunk";
 
 import styles from "../../styles/Admin/AdminSingleShippingInvoice.module.css";
 
@@ -29,18 +19,9 @@ const AdminSingleShippingInvoice = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const {
-    orderId,
-    shipmentId,
-  } = useParams();
+  const {orderId,shipmentId,} = useParams();
 
-  const {
-    singleOrder,
-    singleOrderLoading,
-    singleOrderError,
-  } = useSelector(
-    (state) => state.adminOrders
-  );
+  const {singleOrder,singleOrderLoading,singleOrderError,} = useSelector((state) => state.adminOrders );
 
   const order = singleOrder;
 

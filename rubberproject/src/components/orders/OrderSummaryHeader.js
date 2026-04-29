@@ -1,16 +1,19 @@
 import React from "react";
-import {
-  FaBox,
-  FaCalendarAlt,
-  FaFileAlt,
-  FaRupeeSign,
-} from "react-icons/fa";
+import { FaBox, FaCalendarAlt, FaFileAlt, FaRupeeSign } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+
 import styles from "../../styles/Buyer/BuyerOrderDetails.module.css";
+import { downloadProformaInvoiceThunk } from "../../redux/slices/buyerOrderThunk";
 
 function OrderSummaryHeader({ order }) {
+  const dispatch = useDispatch();
+
+  const handleDownloadInvoice = () => {
+    dispatch(downloadProformaInvoiceThunk(order._id));
+  };
+
   return (
     <div className={styles.summaryCard}>
-      
       {/* ORDER ID */}
       <div className={styles.summaryItem}>
         <div className={styles.iconBox}>
@@ -42,13 +45,11 @@ function OrderSummaryHeader({ order }) {
         </div>
         <div>
           <p className={styles.label}>Ordered Date</p>
-          <h4>
-            {new Date(order.createdAt).toLocaleDateString()}
-          </h4>
+          <h4>{new Date(order.createdAt).toLocaleDateString()}</h4>
         </div>
       </div>
 
-      {/* BUY REPORTS */}
+      {/* REPORTS */}
       <div className={styles.summaryItem}>
         <div className={styles.iconBox}>
           <FaFileAlt />
@@ -59,16 +60,21 @@ function OrderSummaryHeader({ order }) {
         </div>
       </div>
 
-      {/* ✅ NEW: PROFORMA INVOICE */}
-      <div className={styles.summaryItem}>
+      {/* PROFORMA INVOICE */}
+
+      <div
+        className={styles.summaryItem}
+        onClick={handleDownloadInvoice}
+        style={{ cursor: "pointer" }}
+      >
         <div className={styles.iconBox}>
           <FaFileAlt />
         </div>
+
         <div>
           <p className={styles.label}>Invoice</p>
-          <h4 className={styles.linkText}>
-            Proforma Invoice
-          </h4>
+
+          <h4 className={styles.linkText}>Proforma Invoice</h4>
         </div>
       </div>
     </div>
