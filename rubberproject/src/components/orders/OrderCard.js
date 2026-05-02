@@ -1,10 +1,6 @@
 import React from "react";
 import { FaTruck, FaArrowRight } from "react-icons/fa";
-import {
-  getDisplayStatus,
-  getProgressClass,
-  getProgressLabels,
-} from "../../utils/orderStatusHelpers";
+import {  getDisplayStatus,  getProgressClass,  getProgressLabels,} from "../../utils/orderStatusHelpers";
 import styles from "../../styles/Buyer/BuyerOrders.module.css";
 
 function OrderCard({ order, navigate }) {

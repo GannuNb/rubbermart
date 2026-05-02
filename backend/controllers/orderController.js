@@ -6,6 +6,7 @@ import generateOrderId from "../utils/generateOrderId.js";
 import generateInvoicePdf from "../utils/pdf/generateInvoicePdf.js";
 import sendOrderInvoiceEmail from "../utils/sendOrderInvoiceEmail.js";
 import generateShipmentInvoiceId from "../utils/generateShipmentInvoiceId.js";
+import generateShippingInvoicePdf from "../utils/pdf/shipping/generateShippingInvoicePdf.js";
 
 export const createOrder = async (req, res) => {
   try {
@@ -905,6 +906,81 @@ export const uploadBuyerPayment = async (req, res) => {
   }
 };
 
+export const downloadShippingInvoice = async (req, res) => {
+  try {
+    const { orderId, shipmentId } = req.params;
+
+    /* =========================
+       FETCH ORDER
+    ========================= */
+
+    const order = await Order.findById(orderId).populate(
+      "buyer seller",
+      `
+        fullName
+        email
+        businessProfile.companyName
+        businessProfile.phoneNumber
+        businessProfile.email
+        businessProfile.gstNumber
+        businessProfile.billingAddress
+        businessProfile.shippingAddress
+      `
+    );
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    /* =========================
+       FIND SHIPMENT
+    ========================= */
+
+    const shipment = order.shipments?.find(
+      (s) => s._id.toString() === shipmentId
+    );
+
+    if (!shipment) {
+      return res.status(404).json({
+        success: false,
+        message: "Shipment not found",
+      });
+    }
+
+    /* =========================
+       GENERATE PDF
+    ========================= */
+
+    const pdfBuffer = await generateShippingInvoicePdf(
+      order,
+      shipment
+    );
+
+    /* =========================
+       SEND FILE
+    ========================= */
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=Shipping-Invoice-${shipment.shipmentInvoiceId}.pdf`
+    );
+
+    return res.send(pdfBuffer);
+  } catch (error) {
+    console.log("Shipping Invoice Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to download shipping invoice",
+      error: error.message,
+    });
+  }
+};
+
 
 // admin
 
@@ -1770,3 +1846,4 @@ export const downloadProformaInvoice = async (req, res) => {
     });
   }
 };
+

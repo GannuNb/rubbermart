@@ -20,9 +20,11 @@ const BuyerShippingInvoices = () => {
 
   const { orderId, itemName } = useParams();
 
-  const { singleOrder, singleOrderLoading, singleOrderError } = useSelector(
-    (state) => state.buyerOrders,
-  );
+  const {
+    singleOrder,
+    singleOrderLoading,
+    singleOrderError,
+  } = useSelector((state) => state.buyerOrders);
 
   const order = singleOrder;
 
@@ -41,7 +43,11 @@ const BuyerShippingInvoices = () => {
   ========================= */
 
   if (singleOrderLoading) {
-    return <div className={styles.container}>Loading shipment invoices...</div>;
+    return (
+      <div className={styles.container}>
+        Loading shipment invoices...
+      </div>
+    );
   }
 
   /* =========================
@@ -49,7 +55,11 @@ const BuyerShippingInvoices = () => {
   ========================= */
 
   if (singleOrderError) {
-    return <div className={styles.container}>{singleOrderError}</div>;
+    return (
+      <div className={styles.container}>
+        {singleOrderError}
+      </div>
+    );
   }
 
   /* =========================
@@ -67,16 +77,22 @@ const BuyerShippingInvoices = () => {
   }
 
   /* =========================
-     FILTER APPROVED SHIPMENTS
+     FILTER SHIPMENTS (NO ADMIN FILTER)
   ========================= */
 
-  const approvedShipments =
+  const shipments =
     order?.shipments?.filter((shipment) => {
-      const shipmentItem = shipment?.selectedItem?.trim()?.toLowerCase();
+      const shipmentItem = shipment?.selectedItem
+        ?.trim()
+        ?.toLowerCase();
 
-      const currentItem = decodeURIComponent(itemName)?.trim()?.toLowerCase();
+      const currentItem = decodeURIComponent(
+        itemName
+      )
+        ?.trim()
+        ?.toLowerCase();
 
-      return shipmentItem === currentItem && shipment?.approvedByAdmin === true;
+      return shipmentItem === currentItem;
     }) || [];
 
   return (
@@ -84,14 +100,19 @@ const BuyerShippingInvoices = () => {
       {/* TOP SECTION */}
 
       <div className={styles.topSection}>
-        <button className={styles.backButton} onClick={() => navigate(-1)}>
+        <button
+          className={styles.backButton}
+          onClick={() => navigate(-1)}
+        >
           <FaArrowLeft />
           Back to Order Details
         </button>
 
         <div className={styles.titleRow}>
           <div>
-            <h1 className={styles.heading}>Shipping Details</h1>
+            <h1 className={styles.heading}>
+              Shipping Details
+            </h1>
 
             <p className={styles.subText}>
               Complete Shipment Invoice Information and Tracking Details
@@ -100,19 +121,26 @@ const BuyerShippingInvoices = () => {
 
           <div className={styles.orderIdBox}>
             <span>Order ID</span>
-            <strong>{order?.orderId || orderId}</strong>
+            <strong>
+              {order?.orderId || orderId}
+            </strong>
           </div>
         </div>
       </div>
 
       {/* SHIPMENT LIST */}
 
-      {approvedShipments.length === 0 ? (
-        <div className={styles.empty}>No approved shipment invoices found</div>
+      {shipments.length === 0 ? (
+        <div className={styles.empty}>
+          No shipment invoices found
+        </div>
       ) : (
         <div className={styles.invoiceList}>
-          {approvedShipments.map((shipment) => (
-            <div key={shipment?._id} className={styles.invoiceCard}>
+          {shipments.map((shipment) => (
+            <div
+              key={shipment?._id}
+              className={styles.invoiceCard}
+            >
               <div className={styles.cardLeft}>
                 <div className={styles.infoBlock}>
                   <div className={styles.iconBox}>
@@ -120,9 +148,12 @@ const BuyerShippingInvoices = () => {
                   </div>
 
                   <div>
-                    <p className={styles.label}>Invoice ID</p>
-
-                    <h4>{shipment?.shipmentInvoiceId || "-"}</h4>
+                    <p className={styles.label}>
+                      Invoice ID
+                    </p>
+                    <h4>
+                      {shipment?.shipmentInvoiceId || "-"}
+                    </h4>
                   </div>
                 </div>
 
@@ -132,11 +163,14 @@ const BuyerShippingInvoices = () => {
                   </div>
 
                   <div>
-                    <p className={styles.label}>Shipment Date</p>
-
+                    <p className={styles.label}>
+                      Shipment Date
+                    </p>
                     <h4>
                       {shipment?.shippedAt
-                        ? new Date(shipment.shippedAt).toLocaleDateString()
+                        ? new Date(
+                            shipment.shippedAt
+                          ).toLocaleDateString()
                         : "-"}
                     </h4>
                   </div>
@@ -148,11 +182,15 @@ const BuyerShippingInvoices = () => {
                   </div>
 
                   <div>
-                    <p className={styles.label}>Item</p>
-
-                    <h4>{shipment?.selectedItem || "-"}</h4>
+                    <p className={styles.label}>
+                      Item
+                    </p>
+                    <h4>
+                      {shipment?.selectedItem || "-"}
+                    </h4>
                   </div>
                 </div>
+
                 {/* STATUS */}
 
                 <div className={styles.infoBlock}>
@@ -161,16 +199,20 @@ const BuyerShippingInvoices = () => {
                   </div>
 
                   <div>
-                    <p className={styles.label}>Status</p>
+                    <p className={styles.label}>
+                      Status
+                    </p>
 
                     <h4
                       className={
-                        shipment?.shipmentStatus === "delivered"
+                        shipment?.shipmentStatus ===
+                        "delivered"
                           ? styles.deliveredStatus
                           : styles.inTransitStatus
                       }
                     >
-                      {shipment?.shipmentStatus === "delivered"
+                      {shipment?.shipmentStatus ===
+                      "delivered"
                         ? "Delivered"
                         : "In Transit"}
                     </h4>
@@ -182,7 +224,7 @@ const BuyerShippingInvoices = () => {
                 className={styles.viewButton}
                 onClick={() =>
                   navigate(
-                    `/buyer/order/${order?._id}/shipping-invoice/${shipment?._id}`,
+                    `/buyer/order/${order?._id}/shipping-invoice/${shipment?._id}`
                   )
                 }
               >

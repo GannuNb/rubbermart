@@ -1,34 +1,36 @@
 // src/utils/orderStatusHelpers.js
 
 export const getShipmentDetails = (order) => {
-  const approvedShipments =
-    order.shipments?.filter(
-      (shipment) => shipment.approvedByAdmin === true,
-    ) || [];
+  // ✅ REMOVED admin approval dependency
+  const shipments = order.shipments || [];
 
-  const totalApprovedQuantity = approvedShipments.reduce(
+  const totalShippedQuantity = shipments.reduce(
     (total, shipment) =>
       total + Number(shipment.shippedQuantity || 0),
-    0,
+    0
   );
 
   const totalRequiredQuantity = order.orderItems.reduce(
     (total, item) =>
       total + Number(item.requiredQuantity || 0),
-    0,
+    0
   );
 
   return {
-    approvedShipments,
-    totalApprovedQuantity,
+    shipments,
+    totalShippedQuantity,
     totalRequiredQuantity,
   };
 };
 
+/* =========================
+   DISPLAY STATUS
+========================= */
+
 export const getDisplayStatus = (order) => {
   const {
-    approvedShipments,
-    totalApprovedQuantity,
+    shipments,
+    totalShippedQuantity,
     totalRequiredQuantity,
   } = getShipmentDetails(order);
 
@@ -41,20 +43,23 @@ export const getDisplayStatus = (order) => {
     return "Delivered";
   }
 
+  // ✅ FULL SHIPPED
   if (
-    approvedShipments.length > 0 &&
-    totalApprovedQuantity >= totalRequiredQuantity
+    shipments.length > 0 &&
+    totalShippedQuantity >= totalRequiredQuantity
   ) {
     return "Shipped";
   }
 
+  // ✅ PARTIAL SHIPPED
   if (
-    approvedShipments.length > 0 &&
-    totalApprovedQuantity < totalRequiredQuantity
+    shipments.length > 0 &&
+    totalShippedQuantity < totalRequiredQuantity
   ) {
     return "Partial Shipment";
   }
 
+  // ✅ ORDER CONFIRMED (before shipment)
   if (
     order.orderStatus === "seller_confirmed" ||
     order.orderStatus === "partially_shipped" ||
@@ -66,10 +71,14 @@ export const getDisplayStatus = (order) => {
   return "Placed Order";
 };
 
+/* =========================
+   PROGRESS BAR
+========================= */
+
 export const getProgressClass = (order, styles) => {
   const {
-    approvedShipments,
-    totalApprovedQuantity,
+    shipments,
+    totalShippedQuantity,
     totalRequiredQuantity,
   } = getShipmentDetails(order);
 
@@ -81,15 +90,15 @@ export const getProgressClass = (order, styles) => {
   }
 
   if (
-    approvedShipments.length > 0 &&
-    totalApprovedQuantity >= totalRequiredQuantity
+    shipments.length > 0 &&
+    totalShippedQuantity >= totalRequiredQuantity
   ) {
     return styles.shippedProgress;
   }
 
   if (
-    approvedShipments.length > 0 &&
-    totalApprovedQuantity < totalRequiredQuantity
+    shipments.length > 0 &&
+    totalShippedQuantity < totalRequiredQuantity
   ) {
     return styles.partialProgress;
   }
@@ -105,10 +114,14 @@ export const getProgressClass = (order, styles) => {
   return styles.pendingProgress;
 };
 
+/* =========================
+   PROGRESS LABELS
+========================= */
+
 export const getProgressLabels = (order) => {
   const {
-    approvedShipments,
-    totalApprovedQuantity,
+    shipments,
+    totalShippedQuantity,
     totalRequiredQuantity,
   } = getShipmentDetails(order);
 
@@ -125,8 +138,8 @@ export const getProgressLabels = (order) => {
   }
 
   if (
-    approvedShipments.length > 0 &&
-    totalApprovedQuantity >= totalRequiredQuantity
+    shipments.length > 0 &&
+    totalShippedQuantity >= totalRequiredQuantity
   ) {
     return [
       "Placed Order",
@@ -137,8 +150,8 @@ export const getProgressLabels = (order) => {
   }
 
   if (
-    approvedShipments.length > 0 &&
-    totalApprovedQuantity < totalRequiredQuantity
+    shipments.length > 0 &&
+    totalShippedQuantity < totalRequiredQuantity
   ) {
     return [
       "Placed Order",

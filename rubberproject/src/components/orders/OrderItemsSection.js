@@ -15,8 +15,8 @@ function OrderItemsSection({ order }) {
         base64 = btoa(
           new Uint8Array(item.productImage.data.data).reduce(
             (d, b) => d + String.fromCharCode(b),
-            "",
-          ),
+            ""
+          )
         );
       }
 
@@ -29,16 +29,17 @@ function OrderItemsSection({ order }) {
   };
 
   const getItemProgress = (item) => {
-    const approvedShipments =
+    // ✅ REMOVED admin filter
+    const shipments =
       order.shipments?.filter(
         (shipment) =>
-          shipment.approvedByAdmin === true &&
-          shipment.selectedItem === item.productName,
+          shipment.selectedItem === item.productName
       ) || [];
 
-    const shippedQty = approvedShipments.reduce(
-      (total, shipment) => total + Number(shipment.shippedQuantity || 0),
-      0,
+    const shippedQty = shipments.reduce(
+      (total, shipment) =>
+        total + Number(shipment.shippedQuantity || 0),
+      0
     );
 
     const requiredQty = Number(item.requiredQuantity);
@@ -88,16 +89,12 @@ function OrderItemsSection({ order }) {
     switch (stage) {
       case 1:
         return "25%";
-
       case 2:
         return "50%";
-
       case 3:
         return "75%";
-
       case 4:
         return "100%";
-
       default:
         return "0%";
     }
@@ -105,7 +102,9 @@ function OrderItemsSection({ order }) {
 
   return (
     <div className={styles.itemsSection}>
-      <h3 className={styles.sectionTitle}>Items Ordered & Delivery Details</h3>
+      <h3 className={styles.sectionTitle}>
+        Items Ordered & Delivery Details
+      </h3>
 
       {order.orderItems.map((item, index) => {
         const progress = getItemProgress(item);
@@ -113,7 +112,9 @@ function OrderItemsSection({ order }) {
         return (
           <div key={index} className={styles.itemCard}>
             <div className={styles.statusRow}>
-              <span className={styles.statusBadge}>{progress.label}</span>
+              <span className={styles.statusBadge}>
+                {progress.label}
+              </span>
             </div>
 
             <div className={styles.itemRow}>
@@ -124,9 +125,14 @@ function OrderItemsSection({ order }) {
               />
 
               <div className={styles.itemInfo}>
-                <h4 className={styles.productName}>{item.productName}</h4>
+                <h4 className={styles.productName}>
+                  {item.productName}
+                </h4>
 
-                <p>Required Quantity / MT : {item.requiredQuantity}</p>
+                <p>
+                  Required Quantity / MT :{" "}
+                  {item.requiredQuantity}
+                </p>
 
                 <p>
                   Remaining Quantity / MT :{" "}
@@ -135,7 +141,10 @@ function OrderItemsSection({ order }) {
                   </span>
                 </p>
 
-                <p>Loading Location : {item.loadingLocation}</p>
+                <p>
+                  Loading Location :{" "}
+                  {item.loadingLocation}
+                </p>
               </div>
 
               <button
@@ -143,8 +152,8 @@ function OrderItemsSection({ order }) {
                 onClick={() =>
                   navigate(
                     `/buyer/order/${order._id}/shipping/${encodeURIComponent(
-                      item.productName,
-                    )}`,
+                      item.productName
+                    )}`
                   )
                 }
               >
@@ -157,7 +166,9 @@ function OrderItemsSection({ order }) {
                 <div
                   className={styles.progressFill}
                   style={{
-                    width: getProgressWidth(progress.stage),
+                    width: getProgressWidth(
+                      progress.stage
+                    ),
                   }}
                 />
               </div>

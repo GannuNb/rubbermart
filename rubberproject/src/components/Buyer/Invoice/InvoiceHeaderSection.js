@@ -6,9 +6,14 @@ import {
   FaFileAlt,
   FaDownload,
 } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { downloadShippingInvoiceThunk } from "../../../redux/slices/buyerOrderThunk";
 import styles from "../../../styles/Buyer/BuyerSingleShippingInvoice.module.css";
 
 const InvoiceHeaderSection = ({ shipment, order }) => {
+
+  const dispatch = useDispatch();
+  
   const handleViewWeightTicket = () => {
     if (!shipment?.shipmentFile?.data) {
       return alert("Weight ticket not available");
@@ -34,9 +39,14 @@ const InvoiceHeaderSection = ({ shipment, order }) => {
     window.open(fileUrl, "_blank");
   };
 
-  const handleInvoiceDownload = () => {
-    alert("Invoice PDF feature will be added next");
-  };
+const handleInvoiceDownload = () => {
+  dispatch(
+    downloadShippingInvoiceThunk(
+      order._id,
+      shipment._id
+    )
+  );
+};
 
   return (
     <>

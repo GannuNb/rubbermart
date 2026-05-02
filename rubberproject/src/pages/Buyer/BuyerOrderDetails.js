@@ -1,14 +1,8 @@
 // src/pages/BuyerOrderDetails.js
 
 import React, { useEffect } from "react";
-import {
-  useNavigate,
-  useParams,
-} from "react-router-dom";
-import {
-  useDispatch,
-  useSelector,
-} from "react-redux";
+import {  useNavigate,  useParams,} from "react-router-dom";
+import {  useDispatch,  useSelector,} from "react-redux";
 
 import styles from "../../styles/Buyer/BuyerOrderDetails.module.css";
 
@@ -18,22 +12,14 @@ import DeliveryAddressCard from "../../components/orders/DeliveryAddressCard";
 import PaymentUploadCard from "../../components/orders/PaymentUploadCard";
 import PaymentSummaryCard from "../../components/orders/PaymentSummaryCard";
 
-import {
-  getBuyerSingleOrderThunk,
-} from "../../redux/slices/buyerOrderThunk";
+import {  getBuyerSingleOrderThunk,} from "../../redux/slices/buyerOrderThunk";
 
 function BuyerOrderDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const {
-    singleOrder,
-    singleOrderLoading,
-    singleOrderError,
-  } = useSelector(
-    (state) => state.buyerOrders
-  );
+  const {singleOrder,singleOrderLoading,singleOrderError,} = useSelector((state) => state.buyerOrders);
 
   const order = singleOrder;
 
