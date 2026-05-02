@@ -176,7 +176,7 @@ export const getProgressLabels = (order) => {
 
   return [
     "Placed Order",
-    "Waiting Seller",
+    "Waiting for Seller",
     "Shipment Pending",
     "Delivered Pending",
   ];

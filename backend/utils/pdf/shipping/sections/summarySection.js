@@ -1,30 +1,47 @@
+// backend/utils/pdf/shipping/sections/summarySection.js
+
 import { numberToWordsIndian } from "../../../mathHelpers.js";
 
-export const drawSummarySection = (doc, order, startY) => {
-  const summaryTop = startY + 5;
+export const drawSummarySection = (doc, totalAmount, startY) => {
+  const summaryTop = startY + 10;
+
+  /* =========================
+     SAFE VALUE
+  ========================= */
+
+  const safeTotal = Number(totalAmount || 0);
+
+  /* =========================
+     BACKGROUND
+  ========================= */
 
   doc
-    .rect(35, summaryTop, 525, 50)
+    .rect(35, summaryTop, 525, 45)
     .fill("#6859c9");
 
-  const amountText =
-    order.amountInWords ||
-    numberToWordsIndian(
-      Math.round(Number(order.totalAmount || 0))
-    );
+  /* =========================
+     WORD CONVERSION
+  ========================= */
+
+  const words =
+    numberToWordsIndian(Math.round(safeTotal)) || "Zero";
+
+  /* =========================
+     TEXT
+  ========================= */
 
   doc
     .fillColor("#ffffff")
     .font("Helvetica-Bold")
     .fontSize(9)
     .text(
-      `Total Amount In words : ${amountText}`,
+      `Total Amount In words : ${words}`,
       55,
-      summaryTop + 18,
+      summaryTop + 15,
       {
         width: 460,
       }
     );
 
-  return summaryTop + 58;
+  return summaryTop + 55;
 };

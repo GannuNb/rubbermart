@@ -1,10 +1,10 @@
+// backend/utils/pdf/shipping/generateShippingInvoicePdf.js
+
 import PDFDocument from "pdfkit";
 
 import { drawHeader } from "./sections/header.js";
 import { drawCustomerSection } from "./sections/customerSection.js";
-import { drawShippingDetailsSection } from "./sections/shippingDetailsSection.js";
 import { drawItemsTable } from "./sections/itemsTable.js";
-import { drawTotalsSection } from "./sections/totalsSection.js";
 import { drawSummarySection } from "./sections/summarySection.js";
 import { drawBankingDetailsSection } from "./sections/bankingDetailsSection.js";
 import { drawFooterSection } from "./sections/footerSection.js";
@@ -35,29 +35,21 @@ const generateShippingInvoicePdf = async (order, shipment) => {
       y += 15;
 
       /* =========================
-         CUSTOMER
+         CUSTOMER + SHIPPING
       ========================= */
-      y = drawCustomerSection(doc, order, y);
+      y = drawCustomerSection(doc, order, shipment, y);
 
       /* =========================
-         SHIPPING DETAILS (NEW)
+         ITEMS (IMPORTANT FIX)
       ========================= */
-      y = drawShippingDetailsSection(doc, shipment, y);
+      const tableResult = drawItemsTable(doc, order, shipment, y);
+
+      y = tableResult.y;
 
       /* =========================
-         ITEMS (shipment based)
+         SUMMARY (PASS TOTAL)
       ========================= */
-      y = drawItemsTable(doc, order, shipment, y);
-
-      /* =========================
-         TOTALS
-      ========================= */
-      y = drawTotalsSection(doc, order, shipment, y);
-
-      /* =========================
-         SUMMARY
-      ========================= */
-      y = drawSummarySection(doc, order, y);
+      y = drawSummarySection(doc, tableResult.total, y);
 
       /* =========================
          BANKING

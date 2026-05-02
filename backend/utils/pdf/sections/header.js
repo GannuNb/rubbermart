@@ -109,11 +109,11 @@ export const drawHeader = (doc, pageWidth, pageHeight, order) => {
     .font("Helvetica")
     .fontSize(7)
     .text(
-      "Ground Floor, Office No-52/ Plot No-144,\n" +
-        "Sai Chamber, CHS Wing A, Sector -11,\n" +
-        "Sai Chambers, CBD Belapur, Navi Mumbai,\n" +
-        "Thane, Maharashtra, 400614, GSTIN\n" +
-        "27AAVFV4635R1ZY",
+      "Office No. 217 ,\n" +
+        "Skylark Premises Co-operative Society Ltd, \n" +
+        "Plot No. 63, Sector 11, CBD Belapur,\n" +
+        "Navi Mumbai – 400614, \n" +
+        "GSTIN : 27AAVFV4635R1ZY",
       40,
       130,
       {
