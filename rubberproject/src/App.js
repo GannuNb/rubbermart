@@ -3,7 +3,7 @@ import {BrowserRouter as Router,Routes,Route, useLocation,} from "react-router-d
 import "bootstrap/dist/css/bootstrap.min.css";
 
 //pages
-import CommonHome from "./pages/CommonHome";
+import CommonHome from "./pages/CommonHome/CommonHome";
 import Signup from "./pages/Signup";
 import BusinessProfile from "./pages/BusinessProfile";
 import About from "./pages/About";
@@ -49,7 +49,7 @@ import AdminAllOrders from "./pages/admin/AdminAllOrders";
 import AdminOrderDetails from "./pages/admin/AdminOrderDetails";
 import AdminAllInvoices from "./pages/admin/AdminAllInvoices";
 import AdminSingleShippingInvoice from "./pages/admin/AdminSingleShippingInvoice";
-
+import Footer from "./components/footer/Footer";
 
 function AppContent() {
   const location = useLocation();
@@ -107,6 +107,8 @@ function AppContent() {
 
         
       </Routes>
+
+      {!shouldHideNavbar && <Footer />}                               
     </>
   );
 }
