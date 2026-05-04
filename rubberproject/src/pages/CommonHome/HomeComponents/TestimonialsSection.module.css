@@ -1,0 +1,145 @@
+.testimonialSection {
+  padding: 40px 0;
+  background: #fcfcff;
+  overflow: hidden;
+}
+
+/* --- Header Styling --- */
+.header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.title {
+  font-size: clamp(26px, 5vw, 36px);
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 10px;
+}
+
+.titleUnderline {
+  width: 60px;
+  height: 4px;
+  background: #7d3cb5;
+  margin: 0 auto 20px auto;
+  border-radius: 10px;
+}
+
+.subtitle {
+  max-width: 550px;
+  font-size: 16px;
+  color: #6b7280;
+  margin: 0 auto;
+}
+
+/* --- Card Styling --- */
+.cardBox {
+  background: #ffffff;
+  padding: 40px 30px;
+  border-radius: 24px;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  opacity: 0; /* Hidden for animation */
+}
+
+/* Staggered Animation Trigger */
+.animateIn .cardBox {
+  animation: fadeInUp 0.8s ease forwards;
+  animation-delay: var(--delay);
+}
+
+.cardBox:hover {
+  transform: translateY(-12px);
+  box-shadow: 0 20px 40px rgba(99, 102, 241, 0.1);
+  border-color: #c7d2fe;
+}
+
+/* Decorative Quote Icon */
+.quoteIcon {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 2rem;
+  color: #e0e7ff;
+  transition: color 0.3s ease;
+}
+
+.cardBox:hover .quoteIcon {
+  color: #c7d2fe;
+}
+
+.stars {
+  margin-bottom: 20px;
+}
+
+.starIcon {
+  font-size: 16px;
+  color: #fbbf24;
+  margin-right: 2px;
+}
+
+.feedback {
+  font-size: 16px;
+  color: #4b5563;
+  line-height: 1.7;
+  margin-bottom: 30px;
+  flex-grow: 1;
+}
+
+/* --- User Info Restructure --- */
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding-top: 20px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.userAvatar {
+  width: 45px;
+  height: 45px;
+  background: #7d3cb5;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.name {
+  font-size: 17px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.role {
+  font-size: 13px;
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+/* --- Animations --- */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .cardBox {
+    padding: 30px 20px;
+  }
+}

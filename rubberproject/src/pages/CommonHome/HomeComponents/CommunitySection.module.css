@@ -1,0 +1,261 @@
+.communitySection {
+  padding: 80px 0;
+  background-color: #e7ddf6;
+  overflow: hidden;
+}
+
+/* Main Banner Box */
+.heroWrapper {
+  display: flex;
+  flex-direction: column; /* Stacks on mobile by default */
+  background: #ffffff;
+  border-radius: 30px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+  margin-bottom: 60px;
+  border: 1px solid #f1f5f9;
+}
+
+/* Left/Top Blue Side */
+.ctaSide {
+  padding: 50px 40px;
+  background: linear-gradient(135deg, #7d3cb5 0%, #4f46e5 100%);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.bannerTitle {
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin-bottom: 15px;
+  line-height: 1.1;
+  color: #ffffff;
+}
+
+.bannerSubtitle {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  margin-bottom: 30px;
+}
+
+.bannerBtns {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.buyerBtn {
+  background: #ffffff;
+  color: #7d3cb5;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 12px;
+  font-weight: 700;
+  transition: 0.3s;
+  cursor: pointer;
+  width: 100%;
+}
+
+.sellerBtn {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 12px 25px;
+  border-radius: 12px;
+  font-weight: 700;
+  backdrop-filter: blur(5px);
+  transition: 0.3s;
+  cursor: pointer;
+  width: 100%;
+}
+
+/* Right/Bottom White Side */
+.statsSide {
+  padding: 40px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  width: 100%;
+}
+
+.statItem {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 20px;
+  background: #f1f5f9;
+  border-radius: 20px;
+  transition: 0.3s;
+  opacity: 0; /* Animated via JS */
+}
+
+.statIcon {
+  font-size: 1.5rem;
+  color: #7d3cb5;
+  background: #ffffff;
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(99, 102, 241, 0.1);
+  flex-shrink: 0;
+}
+
+.statText h4 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.statText span {
+  font-size: 0.85rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* Feature Cards Below */
+.featureCard {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 30px;
+  height: 100%;
+  position: relative;
+  border: 1px solid #f1f5f9;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  opacity: 0;
+}
+
+.featureCard:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.featureTag {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #7d3cb5;
+  background: #f5f3ff;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+.featureIconBox {
+  font-size: 1.5rem;
+  color: #7d3cb5;
+}
+
+.cardBody h4 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 12px;
+}
+
+.cardBody p {
+  color: #64748b;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* Mobile Responsive Logic */
+@media (max-width: 991px) {
+  .bannerBtns {
+    flex-direction: column;
+  }
+}
+
+@media (min-width: 992px) {
+  .heroWrapper {
+    flex-direction: row;
+    min-height: 400px;
+  }
+
+  .ctaSide {
+    width: 45%;
+    text-align: left;
+    padding: 60px;
+  }
+
+  .bannerBtns {
+    justify-content: flex-start;
+  }
+
+  .buyerBtn, .sellerBtn {
+    width: auto;
+  }
+
+  .statsSide {
+    width: 55%;
+    padding: 60px;
+  }
+}
+
+@media (max-width: 768px) {
+  .communitySection {
+    padding: 40px 0;
+  }
+
+  .bannerTitle {
+    font-size: 1.6rem;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .statItem {
+    flex-direction: column;
+    text-align: center;
+    padding: 15px 10px;
+  }
+
+  .statIcon {
+    margin: 0 auto;
+  }
+
+  .statText h4 {
+    font-size: 1.1rem;
+  }
+}
+
+/* Extremely small phones */
+@media (max-width: 380px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Animation Classes */
+.animateIn .statItem, 
+.animateIn .featureCard {
+  animation: fadeInUp 0.6s ease forwards;
+  animation-delay: var(--delay);
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

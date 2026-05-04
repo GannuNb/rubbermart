@@ -1,0 +1,111 @@
+.trustedSection {
+  padding: 60px 0;
+  background-color: #e7ddf6;
+  border-top: 1px solid #f1f5f9;
+  border-bottom: 1px solid #f1f5f9;
+  overflow: hidden;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #94a3b8; /* Muted color for a professional sub-header look */
+  margin: 0;
+  white-space: nowrap;
+}
+
+.line {
+  height: 1px;
+  background: #e2e8f0;
+  width: 100%;
+}
+
+/* --- Marquee Logic --- */
+.marqueeContainer {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  padding: 10px 0;
+}
+
+/* Adds a fade effect to the edges of the scroll */
+.marqueeContainer::before,
+.marqueeContainer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 100px;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.marqueeContainer::before {
+  left: 0;
+  background: linear-gradient(to right, #b777f0, transparent);
+}
+
+.marqueeContainer::after {
+  right: 0;
+  background: linear-gradient(to left, #b777f0, transparent);
+}
+
+.marqueeTrack {
+  display: flex;
+  width: max-content;
+  animation: scroll 30s linear infinite;
+}
+
+.marqueeTrack:hover {
+  animation-play-state: paused; /* Stops on hover so user can see a logo */
+}
+
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); } /* Scrolls half-way (the length of the original list) */
+}
+
+.logoWrapper {
+  padding: 0 40px; /* Space between logos */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.partnerLogo {
+  height: 45px;
+  width: auto;
+  max-width: 180px;
+  object-fit: contain;
+  filter: grayscale(100%); /* Monochrome by default */
+  opacity: 0.6;
+  transition: all 0.3s ease;
+}
+
+.partnerLogo:hover {
+  filter: grayscale(0%); /* Full color on hover */
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .partnerLogo {
+    height: 35px;
+  }
+  .logoWrapper {
+    padding: 0 25px;
+  }
+  .marqueeTrack {
+    animation-duration: 20s; /* Faster scroll for mobile */
+  }
+}

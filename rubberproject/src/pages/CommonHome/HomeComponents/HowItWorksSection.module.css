@@ -1,0 +1,136 @@
+.sectionPadding {
+  padding: 50px 0;
+}
+
+.mainContainer {
+  background-color: #e7ddf6;
+  border-radius: 32px;
+  padding: 60px 40px;
+  border: 1px solid #f1f1f1;
+}
+
+.headerText {
+  margin-bottom: 60px;
+  text-align: center;
+}
+
+.title {
+  font-size: clamp(28px, 5vw, 36px);
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 12px;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: #4b5563;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.stepsWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* --- THE STEP ITEM & HOVER ANIMATION --- */
+.stepItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: default;
+}
+
+.iconCircle {
+  width: 64px;
+  height: 64px;
+  background-color: #f3f0ff; /* Light Violet */
+  color: #7d3cb5;            /* Medium Violet Icon */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 0 0 rgba(139, 92, 246, 0);
+}
+
+/* Hover State */
+.stepItem:hover .iconCircle {
+  background-color: #7d3cb5; /* Deep Violet */
+  color: #ffffff;            /* White Icon */
+  transform: translateY(-8px);
+  box-shadow: 0 10px 20px -5px rgba(124, 58, 237, 0.3);
+}
+
+.stepItem:hover .stepTitle {
+  color: #7d3cb5;
+}
+
+.stepTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 12px;
+  transition: color 0.3s ease;
+}
+
+.stepDesc {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.6;
+  max-width: 220px;
+}
+
+/* --- THE ARROW --- */
+.arrowWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 64px;         /* Match icon height */
+  margin-bottom: 24px;  /* Match icon margin */
+  color: #485668;       /* Light grey for the arrow */
+  transform: rotate(90deg);
+  flex-shrink: 0;
+}
+
+/* --- DESKTOP LAYOUT --- */
+@media (min-width: 992px) {
+  .stepsWrapper {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .stepItem {
+    flex: 1;
+    text-align: left;
+    align-items: flex-start;
+  }
+
+  .arrowWrapper {
+    transform: rotate(0deg);
+    flex: 0.5;
+    padding: 0 10px;
+  }
+
+  .arrowIcon {
+    transform: scaleX(1.3);
+    opacity: 0.6;
+  }
+}
+
+/* TABLET CLEANUP */
+@media (min-width: 768px) and (max-width: 991px) {
+  .stepsWrapper {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px;
+  }
+  .arrowWrapper { display: none; }
+}
