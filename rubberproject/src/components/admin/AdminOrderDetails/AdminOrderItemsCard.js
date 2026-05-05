@@ -92,7 +92,7 @@ const AdminOrderItemsCard = ({ order }) => {
                   )
                 }
               >
-                View Shipings/invoices
+                View Shipings
               </button>
             </div>
           </div>

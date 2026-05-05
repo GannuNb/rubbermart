@@ -153,102 +153,63 @@ const AdminOrdersTable = ({ orders }) => {
         <tbody>
           {orders && orders.length > 0 ? (
             orders.map((order) => {
-              const firstImage =
-                order?.orderItems?.[0]
-                  ?.productImage;
-
-              const imageSrc =
-                getImageSrc(firstImage);
-
-              const formattedDate =
-                formatDate(order.createdAt);
+              const firstImage = order?.orderItems?.[0]?.productImage;
+              const imageSrc = getImageSrc(firstImage);
+              const formattedDate = formatDate(order.createdAt);
 
               return (
-                <tr key={order._id}>
-                  {/* ORDER ID + IMAGE */}
-                  <td>
-                    <div
-                      className={styles.orderCell}
-                    >
+                <tr key={order._id} className={styles.tableRow}>
+                  
+                  {/* ORDER */}
+                  <td data-label="Order">
+                    <div className={styles.orderCell}>
                       {imageSrc ? (
-                        <img
-                          src={imageSrc}
-                          alt="product"
-                          className={
-                            styles.productImage
-                          }
-                        />
+                        <img src={imageSrc} alt="product" className={styles.productImage} />
                       ) : (
-                        <div
-                          className={
-                            styles.placeholderImage
-                          }
-                        />
+                        <div className={styles.placeholderImage} />
                       )}
-
-                      <span
-                        className={styles.orderId}
-                      >
+                      <span className={styles.orderId}>
                         {order?.orderId || "-"}
                       </span>
                     </div>
                   </td>
 
                   {/* BUYER */}
-                  <td
-                    className={styles.buyerName}
-                  >
-                    {order?.buyer?.fullName ||
-                      "-"}
+                  <td data-label="Buyer" className={styles.buyerName}>
+                    {order?.buyer?.fullName || "-"}
                   </td>
 
                   {/* ITEMS */}
-                  <td>
-                    {order?.orderItems?.length ||
-                      0}{" "}
-                    Items
+                  <td data-label="Items">
+                    {order?.orderItems?.length || 0} Items
                   </td>
 
-                  {/* TOTAL */}
-                  <td className={styles.amount}>
+                  {/* AMOUNT */}
+                  <td data-label="Amount" className={styles.amount}>
                     ₹ {order?.totalAmount || 0}
                   </td>
 
                   {/* STATUS */}
-                  <td>
-                    <span
-                      className={`${
-                        styles.statusBadge
-                      } ${getStatusClass(
-                        order?.orderStatus
-                      )}`}
-                    >
-                      {order?.orderStatus
-                        ?.replaceAll("_", " ") ||
-                        "-"}
+                  <td data-label="Status">
+                    <span className={`${styles.statusBadge} ${getStatusClass(order?.orderStatus)}`}>
+                      {order?.orderStatus?.replaceAll("_", " ") || "-"}
                     </span>
                   </td>
 
                   {/* DATE */}
-                  <td>
+                  <td data-label="Date">
                     <div>
-                      <p>
-                        {formattedDate.date}
-                      </p>
-                      <p>
-                        {formattedDate.time}
-                      </p>
+                      <p>{formattedDate.date}</p>
+                      <p>{formattedDate.time}</p>
                     </div>
                   </td>
 
                   {/* ACTION */}
-                  <td>
+                  <td data-label="Action">
                     <button
                       className={styles.viewBtn}
                       onClick={() =>
-                        navigate(
-                          `/admin/order-details/${order._id}`
-                        )
+                        navigate(`/admin/order-details/${order._id}`)
                       }
                     >
                       View
@@ -259,10 +220,7 @@ const AdminOrdersTable = ({ orders }) => {
             })
           ) : (
             <tr>
-              <td
-                colSpan="7"
-                className={styles.emptyRow}
-              >
+              <td colSpan="7" className={styles.emptyRow}>
                 No orders found
               </td>
             </tr>

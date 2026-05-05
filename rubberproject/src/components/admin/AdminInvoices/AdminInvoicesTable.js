@@ -5,14 +5,18 @@ import { FaEye } from "react-icons/fa";
 import styles from "../../../styles/Admin/AdminAllInvoices.module.css";
 
 const AdminInvoicesTable = ({ order, itemName }) => {
+  const navigate = useNavigate();
+
   const shipments =
     order?.shipments?.filter(
-      (shipment) => shipment?.selectedItem === itemName,
+      (shipment) => shipment?.selectedItem === itemName
     ) || [];
-  const navigate = useNavigate();
+
   return (
     <div className={styles.tableWrapper}>
-      {/* Header */}
+      {/* =========================
+          TABLE HEADER
+      ========================= */}
       <div className={styles.tableHeader}>
         <div>Shipment ID</div>
         <div>Vehicle No</div>
@@ -23,38 +27,55 @@ const AdminInvoicesTable = ({ order, itemName }) => {
         <div>Action</div>
       </div>
 
-      {/* Empty State */}
+      {/* =========================
+          EMPTY STATE
+      ========================= */}
       {shipments.length === 0 && (
         <div className={styles.emptyState}>
           No shipments found for this item
         </div>
       )}
 
-      {/* Rows */}
+      {/* =========================
+          TABLE ROWS
+      ========================= */}
       {shipments.map((item, index) => (
-        <div key={index} className={styles.tableRow}>
-          <div>{item?.shipmentInvoiceId || "-"}</div>
+        <div
+          key={item?._id || index}
+          className={styles.tableRow}
+        >
+          <div data-label="Shipment ID">
+            {item?.shipmentInvoiceId || "-"}
+          </div>
 
-          <div>{item?.vehicleNumber || "-"}</div>
+          <div data-label="Vehicle No">
+            {item?.vehicleNumber || "-"}
+          </div>
 
-          <div>{item?.driverName || "-"}</div>
+          <div data-label="Driver Name">
+            {item?.driverName || "-"}
+          </div>
 
-          <div>{item?.shippedQuantity || 0} MT</div>
+          <div data-label="Shipped Qty">
+            {item?.shippedQuantity || 0} MT
+          </div>
 
-          <div>{item?.shipmentFrom || "-"}</div>
+          <div data-label="Shipment From">
+            {item?.shipmentFrom || "-"}
+          </div>
 
-          <div>
+          <div data-label="Status">
             <span className={styles.statusPill}>
               {item?.shipmentStatus || "-"}
             </span>
           </div>
 
-          <div>
+          <div data-label="Action">
             <button
               className={styles.viewBtn}
               onClick={() =>
                 navigate(
-                  `/admin/order/${order?._id}/shipping-invoice/${item?._id}`,
+                  `/admin/order/${order?._id}/shipping-invoice/${item?._id}`
                 )
               }
             >

@@ -6,7 +6,7 @@
   width: 100%;
   min-height: 100vh;
   background: #f6f2fd;
-  padding: 28px;
+  padding: clamp(1rem, 3vw, 2rem);
   box-sizing: border-box;
 }
 
@@ -15,21 +15,20 @@
 ========================= */
 
 .topSection {
-  margin-bottom: 32px;
+  margin-bottom: clamp(1.5rem, 3vw, 2rem);
 }
 
 .backButton {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.6rem;
   background: transparent;
   border: none;
   color: #6d28d9;
-  font-size: 14px;
+  font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
-  margin-bottom: 22px;
-  padding: 0;
+  margin-bottom: 1.4rem;
 }
 
 .backButton:hover {
@@ -40,41 +39,41 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 20px;
+  gap: 1.2rem;
 }
 
 .heading {
   margin: 0;
-  font-size: 34px;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
   font-weight: 700;
   color: #111827;
 }
 
 .subText {
-  margin-top: 8px;
-  font-size: 14px;
+  margin-top: 0.4rem;
+  font-size: 0.9rem;
   color: #6b7280;
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 .orderIdBox {
   background: #ffffff;
   border: 1px solid #e7dcff;
-  border-radius: 12px;
-  padding: 16px 24px;
-  min-width: 220px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+  border-radius: 0.8rem;
+  padding: 0.9rem 1.4rem;
+  min-width: 12rem;
+  box-shadow: 0 0.2rem 0.6rem rgba(0, 0, 0, 0.03);
 }
 
 .orderIdBox span {
   display: block;
-  font-size: 13px;
+  font-size: 0.8rem;
   color: #6b7280;
-  margin-bottom: 6px;
+  margin-bottom: 0.3rem;
 }
 
 .orderIdBox strong {
-  font-size: 16px;
+  font-size: 1rem;
   color: #111827;
   font-weight: 700;
 }
@@ -85,12 +84,12 @@
 
 .empty {
   background: #ffffff;
-  border-radius: 14px;
-  padding: 60px;
+  border-radius: 0.9rem;
+  padding: clamp(2rem, 5vw, 3.5rem);
   text-align: center;
   border: 1px solid #ececec;
   color: #6b7280;
-  font-size: 15px;
+  font-size: 0.95rem;
 }
 
 /* =========================
@@ -100,7 +99,7 @@
 .invoiceList {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 1.5rem;
 }
 
 /* =========================
@@ -110,21 +109,29 @@
 .invoiceCard {
   background: #ffffff;
   border: 1px solid #ece7fa;
-  border-radius: 14px;
-  padding: 28px;
+  border-radius: 0.9rem;
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 24px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  gap: 1.2rem;
+
+  box-shadow: 0 0.3rem 0.9rem rgba(0, 0, 0, 0.04);
 }
+
+/* =========================
+   LEFT SECTION
+========================= */
 
 .cardLeft {
   display: flex;
   align-items: center;
-  gap: 42px;
+
+  gap: clamp(1rem, 2.5vw, 2.5rem); /* ⭐ responsive spacing */
+
   flex: 1;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 /* =========================
@@ -134,39 +141,45 @@
 .infoBlock {
   display: flex;
   align-items: center;
-  gap: 14px;
-  min-width: 240px;
+  gap: 0.7rem;
+
+  min-width: 0;
 }
 
 .iconBox {
-  width: 46px;
-  height: 46px;
+  width: 2.6rem;
+  height: 2.6rem;
   background: #f4efff;
-  border-radius: 12px;
+  border-radius: 0.6rem;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #6d28d9;
-  font-size: 18px;
+  font-size: 1rem;
   flex-shrink: 0;
 }
 
 .label {
-  margin: 0 0 6px;
-  font-size: 13px;
+  margin: 0 0 0.2rem;
+  font-size: 0.75rem;
   font-weight: 500;
   color: #6b7280;
 }
 
 .infoBlock h4 {
   margin: 0;
-  font-size: 15px;
+  font-size: 0.9rem;
   font-weight: 700;
   color: #111827;
-  line-height: 1.5;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* STATUS COLORS */
+/* =========================
+   STATUS
+========================= */
 
 .deliveredStatus {
   color: #16a34a;
@@ -186,16 +199,18 @@
   background: #6d28d9;
   color: white;
   border: none;
-  border-radius: 10px;
-  padding: 14px 22px;
-  font-size: 14px;
+  border-radius: 0.6rem;
+  padding: 0.7rem 1rem;
+  font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
-  min-width: 150px;
+  min-width: 8.5rem;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 0.5rem;
+
   transition: 0.2s;
 }
 
@@ -208,6 +223,7 @@
 ========================= */
 
 @media (max-width: 992px) {
+
   .invoiceCard {
     flex-direction: column;
     align-items: flex-start;
@@ -224,28 +240,33 @@
   .orderIdBox {
     width: 100%;
   }
+
+  .cardLeft {
+    flex-wrap: wrap;
+  }
 }
 
 @media (max-width: 768px) {
+
   .container {
-    padding: 16px;
+    padding: 1rem;
   }
 
   .heading {
-    font-size: 26px;
+    font-size: 1.5rem;
   }
 
   .cardLeft {
     flex-direction: column;
     align-items: flex-start;
-    gap: 18px;
+    gap: 1rem;
   }
 
   .infoBlock {
-    min-width: 100%;
+    width: 100%;
   }
 
   .empty {
-    padding: 40px 20px;
+    padding: 2rem 1rem;
   }
 }

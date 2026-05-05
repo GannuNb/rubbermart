@@ -1,49 +1,77 @@
-/* src/styles/Admin/AdminAllOrders.module.css */
+/* =========================
+   CONTAINER
+========================= */
 
 .container {
-  padding: 24px 32px;
+  padding: clamp(16px, 3vw, 32px);
   background: #fbf9ff;
   min-height: 100vh;
 }
 
+/* =========================
+   TOP HEADER
+========================= */
+
 .topHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  padding-bottom: 18px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* TITLE ROW */
+.titleRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 22px;
-  margin-bottom: 26px;
-  border-bottom: 1px solid #e5e7eb; /* horizontal line after heading */
 }
 
+/* TITLE */
 .pageTitle {
-  font-size: 38px;
+  font-size: clamp(22px, 3vw, 34px);
   font-weight: 700;
   color: #111827;
-  margin-bottom: 10px;
+  margin: 0;
 }
 
-.breadcrumb {
+/* PROFILE */
+.adminProfile {
   display: flex;
   align-items: center;
-  gap: 14px;
-  font-size: 15px;
+  gap: 10px;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #dddddd;
+}
+
+/* BREADCRUMB */
+.breadcrumb {
+  display: flex;
+  gap: 8px;
+  font-size: 13px;
   color: #6b7280;
 }
 
+/* SEARCH */
 .headerRight {
-  display: flex;
-  align-items: center;
-  gap: 24px;
+  width: 100%;
 }
 
 .topSearch {
-  width: 370px;
-  height: 48px;
+  width: 100%;
+  max-width: 380px;
+  height: 44px;
   border: 1px solid #dcdcdc;
   border-radius: 10px;
-  padding: 0 18px;
-  font-size: 14px;
-  outline: none;
+  padding: 0 14px;
+  font-size: 13px;
   background: white;
 }
 
@@ -51,25 +79,80 @@
   border-color: #5b2be0;
 }
 
-.adminProfile {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 17px;
-  font-weight: 500;
-}
+/* =========================
+   FILTER ROW (MAIN FIX)
+========================= */
 
-.avatar {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: #dddddd;
-}
+/* =========================
+   FILTER ROW (FINAL FIX)
+========================= */
 
 .filterRow {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 24px;
+  align-items: center;
+  gap: 16px;
   margin-bottom: 24px;
+
+  width: 100%;
+  overflow: hidden;            /* ⭐ prevents overflow */
+  overflow-x: auto;  
+}
+
+/* LEFT → SUMMARY CARDS */
+.filterRow > :first-child {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* RIGHT → FILTERS */
+.filterRow > :last-child {
+  flex-shrink: 0;              /* ⭐ don't push down */
+}
+
+/* =========================
+   LAPTOP FIX
+========================= */
+
+@media (max-width: 1100px) {
+
+  .filterRow {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .filterRow > :last-child {
+    align-self: flex-end;
+  }
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 768px) {
+
+  .container {
+    padding: 14px;
+  }
+
+  .pageTitle {
+    font-size: 22px;
+  }
+
+  .adminProfile span {
+    display: none;
+  }
+
+  .topSearch {
+    width: 100%;
+  }
+
+  .filterRow {
+    flex-direction: column;
+  }
+
+  .filterRow > :last-child {
+    width: 100%;
+  }
 }

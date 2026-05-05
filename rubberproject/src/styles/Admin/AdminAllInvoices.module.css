@@ -1,36 +1,39 @@
+/* =========================
+   CONTAINER
+========================= */
+
 .container {
-  padding: 28px;
+  padding: 24px;
   background: #f8fafc;
   min-height: 100vh;
 }
 
 /* =========================
-   TOP HEADER
+   HEADER
 ========================= */
 
 .pageHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
 .mainTitle {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 700;
-  color: #111827;
 }
 
 .adminProfile {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   font-weight: 600;
 }
 
 .avatar {
-  width: 42px;
-  height: 42px;
+  width: 40px;
+  height: 40px;
   background: #d1d5db;
   border-radius: 50%;
 }
@@ -41,10 +44,10 @@
 
 .breadcrumb {
   display: flex;
-  gap: 10px;
-  font-size: 14px;
+  gap: 8px;
+  font-size: 13px;
   color: #6b7280;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 /* =========================
@@ -54,24 +57,22 @@
 .backSection {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 24px;
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
 .backBtn {
-  width: 42px;
-  height: 42px;
+  width: 40px;
+  height: 40px;
   border: none;
-  background: #ffffff;
-  border-radius: 10px;
+  background: #fff;
+  border-radius: 8px;
   cursor: pointer;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
 }
 
 .sectionTitle {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
-  color: #111827;
 }
 
 /* =========================
@@ -79,109 +80,184 @@
 ========================= */
 
 .summaryCard {
-  background: #ffffff;
-  border-radius: 18px;
-  padding: 26px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
-  margin-bottom: 28px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  gap: 18px;
+  margin-bottom: 22px;
 }
 
 .summaryItem {
   display: flex;
+  gap: 12px;
   align-items: center;
-  gap: 14px;
 }
 
 .iconWrap {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   background: #f3edff;
-  border-radius: 14px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #7c3aed;
-  font-size: 18px;
 }
 
 .label {
-  font-size: 13px;
+  font-size: 12px;
   color: #6b7280;
-  margin-bottom: 4px;
 }
 
 .value {
-  font-size: 16px;
-  font-weight: 700;
-  color: #111827;
+  font-size: 15px;
+  font-weight: 600;
 }
 
 .valueLink {
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 600;
   color: #7c3aed;
 }
 
 .statusBadge {
   background: #ecfdf3;
   color: #16a34a;
-  padding: 8px 14px;
+  padding: 6px 12px;
   border-radius: 999px;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 12px;
 }
 
 /* =========================
-   TABLE
+   TABLE WRAPPER
 ========================= */
 
 .tableWrapper {
-  background: #ffffff;
-  border-radius: 18px;
-  overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  background: #fff;
+  border-radius: 16px;
+  overflow-x: auto; /* 🔥 ONLY SCROLL HERE */
 }
 
-.tableHeader {
-  display: grid;
-  grid-template-columns: 1.2fr 1.3fr 1fr 1fr 1fr 1fr 1.2fr;
-  padding: 18px 22px;
-  background: #f9fafb;
-  font-weight: 700;
-  font-size: 14px;
-  color: #374151;
-}
+/* =========================
+   TABLE BASE (STABLE)
+========================= */
 
+.tableHeader,
 .tableRow {
   display: grid;
-  grid-template-columns: 1.2fr 1.3fr 1fr 1fr 1fr 1fr 1.2fr;
-  padding: 20px 22px;
-  border-top: 1px solid #f1f5f9;
+
+  /* FIXED + FLEX MIX (BEST) */
+  grid-template-columns:
+    180px   /* Shipment ID */
+    140px   /* Vehicle */
+    140px   /* Driver */
+    100px   /* Qty */
+    200px   /* From */
+    140px   /* Status */
+    160px;  /* Action */
+
+  gap: 12px;
+  padding: 16px 18px;
   align-items: center;
-  font-size: 14px;
 }
 
-.statusPill {
-  background: #eff6ff;
-  color: #2563eb;
-  padding: 8px 14px;
-  border-radius: 999px;
+/* HEADER */
+.tableHeader {
+  background: #f9fafb;
   font-size: 13px;
   font-weight: 600;
+  color: #6b7280;
+}
+
+/* ROW */
+.tableRow {
+  font-size: 14px;
+  border-top: 1px solid #f1f5f9;
+}
+
+/* =========================
+   ALIGNMENT
+========================= */
+
+.tableHeader div,
+.tableRow div {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+/* center qty */
+.tableHeader div:nth-child(4),
+.tableRow div:nth-child(4) {
+  justify-content: center;
+}
+
+/* right align status + action */
+.tableHeader div:nth-child(6),
+.tableRow div:nth-child(6),
+.tableHeader div:nth-child(7),
+.tableRow div:nth-child(7) {
+  justify-content: flex-end;
+}
+
+/* =========================
+   STATUS + BUTTON
+========================= */
+
+.statusPill {
+  background: #eef2ff;
+  color: #4f46e5;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
 }
 
 .viewBtn {
   border: none;
   background: #7c3aed;
   color: white;
-  padding: 10px 16px;
-  border-radius: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
   cursor: pointer;
-  font-weight: 600;
   display: flex;
+  gap: 6px;
   align-items: center;
-  gap: 8px;
+  white-space: nowrap;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+/* Tablet + Mobile → scroll */
+@media (max-width: 1100px) {
+  .tableHeader,
+  .tableRow {
+    width: max-content;
+    min-width: 1060px; /* exact table width */
+  }
+}
+
+/* Summary responsive */
+@media (max-width: 900px) {
+  .summaryCard {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .summaryCard {
+    grid-template-columns: 1fr;
+  }
+
+  .container {
+    padding: 14px;
+  }
+
+  .sectionTitle {
+    font-size: 18px;
+  }
 }

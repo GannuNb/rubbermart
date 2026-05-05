@@ -50,57 +50,91 @@ dispatch(
     toDate,
   ]);
 
-  return (
-    <div className={styles.container}>
-      {/* TOP HEADER */}
-      <div className={styles.topHeader}>
-        <div>
-          <h1 className={styles.pageTitle}>
-            Admin Orders
-          </h1>
+return (
+  <div className={styles.container}>
+    {/* =========================
+        TOP HEADER
+    ========================= */}
+    <div className={styles.topHeader}>
+      
+      {/* LEFT SIDE (IMPORTANT WRAPPER) */}
+      <div className={styles.topLeft}>
+  
+  {/* TITLE ROW */}
+  <div className={styles.titleRow}>
+    <h1 className={styles.pageTitle}>
+      Admin Orders
+    </h1>
 
-          <div className={styles.breadcrumb}>
-            <span>Dashboard</span>
-            <span>{">"}</span>
-            <span>All Orders</span>
-          </div>
-        </div>
-
-        <div className={styles.headerRight}>
-          <input
-            type="text"
-            placeholder="Search by Order ID, Buyer, Email..."
-            value={search}
-            onChange={(e) =>
-              setSearch(e.target.value)
-            }
-            className={styles.topSearch}
-          />
-
-          <div className={styles.adminProfile}>
-            <div className={styles.avatar}></div>
-            <span>Admin</span>
-          </div>
-        </div>
-      </div>
-
-      {/* SUMMARY CARDS + DATE FILTERS SAME ROW */}
-      <div className={styles.filterRow}>
-        <AdminOrdersSummaryCards  counts={counts} status={status} setStatus={setStatus}/>
-        <AdminOrdersFilters  fromDate={fromDate}  setFromDate={setFromDate}  toDate={toDate} setToDate={setToDate}  />
-      </div>
-
-      {/* TABLE */}
-      {adminOrdersLoading ? (
-        <p>Loading orders...</p>
-      ) : (
-        <AdminOrdersTable orders={orders} />
-      )}
-
-      {/* PAGINATION */}
-      <AdminOrdersPagination page={page} setPage={setPage} totalPages={totalPages} totalOrders={totalOrders} />
+    <div className={styles.adminProfile}>
+      <div className={styles.avatar}></div>
+      <span>Admin</span>
     </div>
-  );
+  </div>
+
+  {/* BREADCRUMB */}
+  <div className={styles.breadcrumb}>
+    <span>Dashboard</span>
+    <span>{">"}</span>
+    <span>All Orders</span>
+  </div>
+
+</div>
+
+      {/* RIGHT SIDE */}
+      <div className={styles.headerRight}>
+        <input
+          type="text"
+          placeholder="Search by Order ID, Buyer, Email..."
+          value={search}
+          onChange={(e) =>
+            setSearch(e.target.value)
+          }
+          className={styles.topSearch}
+        />
+
+
+      </div>
+    </div>
+
+    {/* =========================
+        SUMMARY + FILTERS
+    ========================= */}
+    <div className={styles.filterRow}>
+      <AdminOrdersSummaryCards
+        counts={counts}
+        status={status}
+        setStatus={setStatus}
+      />
+
+      <AdminOrdersFilters
+        fromDate={fromDate}
+        setFromDate={setFromDate}
+        toDate={toDate}
+        setToDate={setToDate}
+      />
+    </div>
+
+    {/* =========================
+        TABLE
+    ========================= */}
+    {adminOrdersLoading ? (
+      <p>Loading orders...</p>
+    ) : (
+      <AdminOrdersTable orders={orders} />
+    )}
+
+    {/* =========================
+        PAGINATION
+    ========================= */}
+    <AdminOrdersPagination
+      page={page}
+      setPage={setPage}
+      totalPages={totalPages}
+      totalOrders={totalOrders}
+    />
+  </div>
+);
 };
 
 export default AdminAllOrders;
