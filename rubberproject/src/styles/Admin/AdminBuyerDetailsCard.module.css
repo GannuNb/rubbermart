@@ -1,11 +1,14 @@
-/* src/styles/Admin/AdminBuyerDetailsCard.module.css */
+/* =========================
+   CARD
+========================= */
 
 .infoCard {
   margin-top: 18px;
   background: #ffffff;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
-  padding: 20px;
+  padding: 18px;
+  box-sizing: border-box;
 }
 
 /* =========================
@@ -13,8 +16,8 @@
 ========================= */
 
 .cardHeader {
-  margin-bottom: 18px;
-  padding-bottom: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
   border-bottom: 1px solid #f1f5f9;
 }
 
@@ -22,47 +25,47 @@
   font-size: 18px;
   font-weight: 600;
   color: #111827;
+  margin: 0;
 }
 
 /* =========================
    GRID
-   (FORCE 2 ROWS LOOK)
 ========================= */
 
 .infoGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
+  grid-template-columns: repeat(4, 1fr); /* desktop */
+  gap: 16px;
   align-items: start;
 }
 
-/*
-Row 1:
-Buyer Name | Email | Phone | Company
-
-Row 2:
-Address full width
-*/
+/* =========================
+   ITEMS
+========================= */
 
 .infoItem {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  min-width: 0;
+  gap: 6px;
+
+  min-width: 0;              /* ⭐ prevents overflow */
+  word-break: break-word;
 }
 
+/* Address full width */
 .fullWidth {
   grid-column: span 4;
 }
 
 /* =========================
-   TOP LABEL + ICON
+   LABEL + ICON
 ========================= */
 
 .infoTop {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+
   color: #692ca0;
   font-size: 13px;
   font-weight: 600;
@@ -81,6 +84,75 @@ Address full width
   font-size: 14px;
   font-weight: 500;
   color: #111827;
-  line-height: 1.5;
-  word-break: break-word;
+  line-height: 1.4;
+
+  overflow-wrap: break-word;
+}
+
+/* =========================
+   LAPTOP (FIX MAIN ISSUE)
+========================= */
+
+@media (max-width: 1200px) {
+  .infoGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .fullWidth {
+    grid-column: span 2;
+  }
+}
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 768px) {
+  .infoCard {
+    padding: 16px;
+  }
+
+  .infoGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  .cardTitle {
+    font-size: 16px;
+  }
+
+  .infoValue {
+    font-size: 13px;
+  }
+
+  .fullWidth {
+    grid-column: span 2;
+  }
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 480px) {
+  .infoGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .fullWidth {
+    grid-column: span 1;
+  }
+
+  .infoCard {
+    padding: 14px;
+  }
+
+  .infoTop {
+    font-size: 12px;
+  }
+
+  .infoValue {
+    font-size: 12px;
+  }
 }

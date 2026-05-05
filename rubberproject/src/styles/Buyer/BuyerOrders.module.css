@@ -11,6 +11,10 @@
   margin-top: 100px;
 }
 
+/* =========================
+   HEADER
+========================= */
+
 .topHeaderCard {
   background: #ffffff;
   border-radius: 18px 18px 0 0;
@@ -41,15 +45,15 @@
 }
 
 .pageTitleSection h1 {
-  font-size: 32px;
+  font-size: 30px;
   font-weight: 700;
   color: #111827;
   margin: 0;
 }
 
 .profileIcon {
-  width: 46px;
-  height: 46px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   overflow: hidden;
   border: 2px solid #ffffff;
@@ -62,19 +66,35 @@
   object-fit: cover;
 }
 
+/* =========================
+   CONTENT
+========================= */
+
 .contentCard {
   background: #f5f1fe;
   border-radius: 0 0 18px 18px;
-  padding: 24px;
+  padding: 22px;
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
 }
 
+/* =========================
+   FILTERS (PREMIUM)
+========================= */
+
 .filterRow {
   display: flex;
-  gap: 14px;
-  flex-wrap: wrap;
-  margin-bottom: 30px;
+  gap: 10px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  margin-bottom: 20px;
   align-items: center;
+  padding-bottom: 4px;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+}
+
+.filterRow::-webkit-scrollbar {
+  display: none;
 }
 
 .filterBtn {
@@ -82,14 +102,17 @@
   background: #fff;
   color: #111;
   border-radius: 999px;
-  padding: 10px 18px;
-  font-size: 13px;
+  padding: 8px 14px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
-  transition: 0.3s ease;
+  gap: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: 0.25s ease;
+  scroll-snap-align: start;
 }
 
 .filterBtn:hover {
@@ -102,51 +125,58 @@
   border-color: #9b5de5;
 }
 
+/* =========================
+   ORDERS
+========================= */
+
 .ordersList {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 20px;
 }
 
 .orderCard {
   background: #fff;
   border-radius: 14px;
-  padding: 18px 18px 14px;
+  padding: 16px;
   border: 1px solid #ece8f3;
 }
 
+/* Header */
 .cardHeader {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 16px;
-  padding-bottom: 14px;
+  gap: 12px;
+  padding-bottom: 12px;
   border-bottom: 1px solid #ececec;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .statusPill {
   background: #edf3fb;
   color: #475569;
-  padding: 7px 16px;
+  padding: 6px 14px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
 }
 
 .orderDate {
   color: #8a8a8a;
-  font-size: 13px;
+  font-size: 12px;
 }
 
+/* Body */
 .cardBody {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
 }
 
 .productImage {
-  width: 120px;
-  height: 85px;
+  width: 100px;
+  height: 75px;
   border-radius: 8px;
   object-fit: cover;
 }
@@ -156,27 +186,27 @@
 }
 
 .orderContent h3 {
-  font-size: 14px;
+  font-size: 13px;
   color: #7c3aed;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   font-weight: 700;
 }
 
 .orderContent p {
   color: #5b5b5b;
-  font-size: 14px;
-  margin-bottom: 10px;
+  font-size: 13px;
+  margin-bottom: 8px;
 }
 
 .orderContent h2 {
-  font-size: 32px;
+  font-size: 24px;
   color: #111827;
   font-weight: 700;
 }
 
 .arrowButton {
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   border: none;
   border-radius: 50%;
   background: #f4ebff;
@@ -191,10 +221,19 @@
   background: #eadcff;
 }
 
+/* =========================
+   PROGRESS (FIXED)
+========================= */
+
+/* =========================
+   PROGRESS (HYBRID SOLUTION)
+========================= */
+
 .progressWrapper {
-  margin-top: 18px;
+  margin-top: 12px;
 }
 
+/* Bar */
 .progressBar {
   width: 100%;
   height: 6px;
@@ -207,36 +246,73 @@
   height: 100%;
   border-radius: 999px;
   background: #7c3aed;
+  transition: width 0.4s ease;
 }
 
-.inProgressBar {
-  width: 35%;
-}
+/* Progress Levels */
+.pendingProgress { width: 15%; }
+.confirmedProgress { width: 35%; }
+.partialProgress { width: 60%; }
+.shippedProgress { width: 85%; }
+.fullProgress { width: 100%; }
 
-.partialProgress {
-  width: 72%;
-}
-
-.fullProgress {
-  width: 100%;
-}
+/* =========================
+   DESKTOP LABELS
+========================= */
 
 .progressLabels {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 8px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin-top: 6px;
+  gap: 4px;
 }
 
 .progressLabels span {
-  font-size: 11px;
-  color: #111827;
+  font-size: 10px;
   font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
 }
+
+/* =========================
+   MOBILE SIMPLIFIED
+========================= */
+
+.mobileProgressText {
+  display: none;
+  margin-top: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #7c3aed;
+  text-align: right;
+}
+
+/* =========================
+   MOBILE BEHAVIOR
+========================= */
+
+@media (max-width: 768px) {
+  .progressLabels {
+    display: none; /* ❌ hide messy labels */
+  }
+
+  .mobileProgressText {
+    display: block; /* ✅ show simple text */
+  }
+
+  .progressBar {
+    height: 5px;
+  }
+}
+
+/* =========================
+   BOTTOM
+========================= */
 
 .bottomRow {
   display: flex;
   justify-content: flex-end;
-  margin-top: 18px;
+  margin-top: 14px;
 }
 
 .trackButton {
@@ -244,37 +320,44 @@
   background: #fff;
   color: #111827;
   border-radius: 8px;
-  padding: 10px 18px;
-  font-size: 12px;
+  padding: 8px 14px;
+  font-size: 11px;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .trackButton:hover {
   background: #f8f8f8;
 }
 
+/* =========================
+   EMPTY STATE
+========================= */
+
 .emptyState {
   background: #fafafa;
   border: 1px dashed #d4d4d8;
   border-radius: 14px;
-  padding: 50px 20px;
+  padding: 40px 16px;
   text-align: center;
 }
 
 .emptyState h2 {
-  font-size: 24px;
-  margin-bottom: 8px;
-  color: #111827;
+  font-size: 20px;
+  margin-bottom: 6px;
 }
 
 .emptyState p {
-  font-size: 14px;
+  font-size: 13px;
   color: #71717a;
 }
+
+/* =========================
+   MOBILE
+========================= */
 
 @media (max-width: 768px) {
   .pageWrapper {
@@ -282,15 +365,15 @@
   }
 
   .topHeaderCard {
-    padding: 16px;
+    padding: 14px;
   }
 
   .pageTitleSection h1 {
-    font-size: 24px;
+    font-size: 22px;
   }
 
   .contentCard {
-    padding: 16px;
+    padding: 14px;
   }
 
   .cardBody {
@@ -300,16 +383,17 @@
 
   .productImage {
     width: 100%;
-    height: 180px;
+    height: 150px;
   }
 
   .arrowButton {
     align-self: flex-end;
   }
 
-  .progressLabels {
-    gap: 12px;
-    flex-wrap: wrap;
+
+
+  .progressLabels span {
+    font-size: 9px;
   }
 
   .bottomRow {
@@ -320,24 +404,4 @@
     width: 100%;
     justify-content: center;
   }
-}
-
-.pendingProgress {
-  width: 15%;
-}
-
-.confirmedProgress {
-  width: 35%;
-}
-
-.partialProgress {
-  width: 65%;
-}
-
-.shippedProgress {
-  width: 85%;
-}
-
-.fullProgress {
-  width: 100%;
 }

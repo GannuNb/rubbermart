@@ -87,11 +87,17 @@ function OrderCard({ order, navigate }) {
           />
         </div>
 
+        {/* Desktop labels */}
         <div className={styles.progressLabels}>
           <span>{progressLabels[0]}</span>
           <span>{progressLabels[1]}</span>
           <span>{progressLabels[2]}</span>
           <span>{progressLabels[3]}</span>
+        </div>
+
+        {/* Mobile simple status */}
+        <div className={styles.mobileProgressText}>
+          {displayStatus}
         </div>
       </div>
 

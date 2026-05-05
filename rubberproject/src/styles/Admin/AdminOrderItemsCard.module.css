@@ -1,4 +1,6 @@
-/* src/styles/Admin/AdminOrderItemsCard.module.css */
+/* =========================
+   WRAPPER
+========================= */
 
 .wrapper {
   margin-top: 18px;
@@ -6,6 +8,19 @@
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   padding: 22px;
+
+  overflow-x: auto;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Scrollbar */
+.wrapper::-webkit-scrollbar {
+  height: 6px;
+}
+.wrapper::-webkit-scrollbar-thumb {
+  background: #d1c4ff;
+  border-radius: 10px;
 }
 
 /* =========================
@@ -22,6 +37,29 @@
   font-size: 18px;
   font-weight: 600;
   color: #111827;
+  margin: 0;
+}
+
+/* =========================
+   TABLE BASE (FINAL FIXED GRID)
+========================= */
+
+.tableHeader,
+.itemRow {
+  display: grid;
+
+  grid-template-columns: 
+    minmax(220px, 2fr)   /* Product */
+    100px                /* Quantity */
+    minmax(140px, 1.5fr) /* Location */
+    120px                /* Price */
+    120px                /* Total */
+    170px;               /* Button */
+
+  gap: 16px;
+
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* =========================
@@ -29,11 +67,9 @@
 ========================= */
 
 .tableHeader {
-  display: grid;
-  grid-template-columns: 2.2fr 1fr 1.4fr 1.2fr 1.2fr 1.2fr;
-  gap: 18px;
   padding: 14px 0;
   border-bottom: 1px solid #e5e7eb;
+
   font-size: 14px;
   font-weight: 600;
   color: #692ca0;
@@ -44,14 +80,55 @@
 ========================= */
 
 .itemRow {
-  display: grid;
-  grid-template-columns: 2.2fr 1fr 1.4fr 1.2fr 1.2fr 1.2fr;
-  gap: 18px;
   align-items: center;
   padding: 18px 0;
+
   border-bottom: 1px solid #f3f4f6;
+
   font-size: 14px;
   color: #111827;
+}
+
+/* =========================
+   CELL BASE
+========================= */
+
+.tableHeader div,
+.itemRow div {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* =========================
+   ALIGNMENT FIX
+========================= */
+
+/* Product & Location → LEFT */
+.tableHeader div:nth-child(1),
+.itemRow div:nth-child(1),
+.tableHeader div:nth-child(3),
+.itemRow div:nth-child(3) {
+  justify-content: flex-start;
+}
+
+/* Quantity → CENTER */
+.tableHeader div:nth-child(2),
+.itemRow div:nth-child(2) {
+  justify-content: center;
+}
+
+/* Price & Total → RIGHT */
+.tableHeader div:nth-child(4),
+.itemRow div:nth-child(4),
+.tableHeader div:nth-child(5),
+.itemRow div:nth-child(5) {
+  justify-content: flex-end;
+}
+
+/* Button → RIGHT */
+.itemRow div:last-child {
+  justify-content: flex-end;
 }
 
 /* =========================
@@ -61,24 +138,32 @@
 .productBox {
   display: flex;
   align-items: center;
-  gap: 14px;
-  font-weight: 500;
+  gap: 12px;
+  min-width: 0;
+}
+
+.productBox span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .productImage {
-  width: 56px;
-  height: 56px;
+  width: 52px;
+  height: 52px;
   border-radius: 10px;
   object-fit: cover;
   border: 1px solid #ececec;
+  flex-shrink: 0;
 }
 
 .placeholderImage {
-  width: 56px;
-  height: 56px;
+  width: 52px;
+  height: 52px;
   border-radius: 10px;
   background: #f3f4f6;
   border: 1px solid #ececec;
+  flex-shrink: 0;
 }
 
 /* =========================
@@ -86,16 +171,22 @@
 ========================= */
 
 .invoiceBtn {
-  height: 40px;
-  padding: 0 18px;
+  height: 36px;
+  padding: 0 12px;
+
   border: 1px solid #d8c7ff;
   background: #ffffff;
   color: #692ca0;
+
   border-radius: 8px;
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 600;
+
   cursor: pointer;
   transition: 0.2s;
+
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .invoiceBtn:hover {
@@ -107,7 +198,9 @@
 ========================= */
 
 .summarySection {
-  width: 340px;
+  width: 320px;
+  min-width: 280px;
+
   margin-left: auto;
   margin-top: 24px;
 }
@@ -116,9 +209,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+
   padding: 10px 0;
   font-size: 14px;
   color: #374151;
+
   border-bottom: 1px solid #f3f4f6;
 }
 
@@ -136,15 +231,63 @@
   background: #f8f5ff;
   border: 1px solid #e9ddff;
   border-radius: 10px;
-  padding: 16px 18px;
+
+  padding: 14px 16px;
+
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 15px;
+
+  font-size: 14px;
   font-weight: 700;
   color: #111827;
 }
 
 .totalBox span:last-child {
   color: #5b2be0;
+}
+
+/* =========================
+   SCROLL ONLY FOR SMALL SCREENS
+========================= */
+
+@media (max-width: 900px) {
+  .tableHeader,
+  .itemRow {
+    width: max-content;
+    min-width: 820px;
+  }
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 768px) {
+  .wrapper {
+    padding: 14px;
+  }
+
+  .header h3 {
+    font-size: 16px;
+  }
+
+  .summarySection {
+    width: 100%;
+    min-width: 100%;
+  }
+}
+
+/* =========================
+   SMALL MOBILE
+========================= */
+
+@media (max-width: 480px) {
+  .summaryRow {
+    font-size: 13px;
+  }
+
+  .totalBox {
+    font-size: 13px;
+  }
 }

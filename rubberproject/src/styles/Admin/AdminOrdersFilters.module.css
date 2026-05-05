@@ -1,64 +1,95 @@
-/* src/styles/Admin/AdminOrdersFilters.module.css */
+/* =========================
+   WRAPPER (FORCE INLINE)
+========================= */
 
 .wrapper {
   display: flex;
   align-items: center;
-  gap: 18px;
-  margin-bottom: 22px;
-  flex-wrap: nowrap;
+  gap: 8px;
+
+  flex-wrap: nowrap;        /* ⭐ NEVER BREAK */
+  max-width: 100%;
 }
 
+/* DATE GROUP */
 .dateGroup {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 8px;
 }
 
-/* Label on LEFT side */
-
+/* DATE BOX */
 .dateBox {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 4px;
 }
 
+/* LABEL */
 .label {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   color: #374151;
-  min-width: 40px;
 }
 
+/* INPUT */
 .dateInput {
-  width: 180px;
-  height: 46px;
+  width: 105px;             /* ⭐ tighter */
+  height: 36px;
+
   border: 1px solid #d8d8d8;
-  border-radius: 10px;
-  padding: 0 14px;
-  font-size: 14px;
-  background: #ffffff;
-  outline: none;
-  transition: 0.2s ease;
+  border-radius: 8px;
+  padding: 0 6px;
+
+  font-size: 12px;
 }
 
-.dateInput:focus {
-  border-color: #692ca0;
-  box-shadow: 0 0 0 3px rgba(105, 44, 160, 0.06);
-}
-
+/* BUTTON */
 .filterBtn {
-  height: 46px;
-  padding: 0 28px;
-  border: none;
-  border-radius: 10px;
+  height: 36px;
+  padding: 0 12px;
+
   background: #692ca0;
   color: white;
-  font-size: 14px;
+  border: none;
+  border-radius: 8px;
+
+  font-size: 12px;
   font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s ease;
+
+  white-space: nowrap;      /* ⭐ prevent breaking */
 }
 
-.filterBtn:hover {
-  background: #5b248d;
+/* =========================
+   MOBILE ONLY
+========================= */
+
+@media (max-width: 768px) {
+
+  .filterRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .wrapper {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dateGroup {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .dateBox {
+    width: 48%;
+  }
+
+  .dateInput {
+    width: 100%;
+  }
+
+  .filterBtn {
+    width: 100%;
+  }
 }
