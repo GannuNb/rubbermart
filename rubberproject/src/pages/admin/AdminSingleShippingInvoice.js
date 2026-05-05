@@ -169,15 +169,16 @@ const AdminSingleShippingInvoice = () => {
           <FaArrowLeft />
         </button>
 
-        <h2
-          className={
-            styles.sectionTitle
-          }
-        >
-          Shipping Details -
-          Invoice{" "}
-          {shipment?.shipmentInvoiceId ||
-            shipmentId}
+        <h2 className={styles.sectionTitle}>
+          Shipping Details
+          <div className={styles.idRow}>
+            <span>
+              Order Id: {order?.orderId || orderId}
+            </span>
+            {/* <span>
+              Invoice: {shipment?.shipmentInvoiceId || shipmentId}
+            </span> */}
+          </div>
         </h2>
       </div>
 
