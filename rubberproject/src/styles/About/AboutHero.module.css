@@ -1,0 +1,323 @@
+.aboutHero {
+  position: relative;
+
+  width: 100%;
+  min-height: 920px;
+
+  padding: 80px 0;
+
+  background-image: url("../../assests/Aboutherobg.png");
+  background-repeat: no-repeat;
+
+  /* IMPORTANT */
+  background-size: cover;
+
+  /* THIS FIXES IT */
+  background-position: center bottom;
+
+  display: flex;
+  align-items: center;
+
+  overflow: hidden;
+}
+
+/* LIGHT OVERLAY */
+
+.overlay {
+  position: absolute;
+  inset: 0;
+
+  background: rgba(255, 255, 255, 0.55);
+
+  z-index: 1;
+}
+
+/* CONTAINER */
+
+.container {
+  position: relative;
+  z-index: 2;
+
+  width: 96%;
+  max-width: 1450px;
+  margin: 0 auto;
+}
+
+/* GRID */
+
+.heroGrid {
+  display: grid;
+  grid-template-columns: 1.08fr 1fr;
+  gap: 52px;
+  align-items: center;
+}
+
+/* LEFT */
+
+.heroLeft {
+  padding-top: 10px;
+}
+
+.sectionTag {
+  display: inline-block;
+
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+
+  color: #7c3aed;
+
+  margin-bottom: 18px;
+}
+
+.heroLeft h1 {
+  font-size: 58px;
+  line-height: 1.1;
+  font-weight: 800;
+
+  color: #111827;
+
+  letter-spacing: -2px;
+
+  margin-bottom: 24px;
+}
+
+.highlight {
+  color: #7d3cb5;
+}
+
+.heroLeft p {
+  max-width: 680px;
+
+  font-size: 16px;
+  line-height: 1.95;
+
+  color: #4b5563;
+
+  margin-bottom: 44px;
+}
+
+/* STATS */
+
+.heroStats {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+.statCard {
+  min-width: 210px;
+
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.iconBox {
+  width: 56px;
+  height: 56px;
+
+  border-radius: 18px;
+
+  background: rgba(255, 255, 255, 0.9);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #7d3cb5;
+
+  flex-shrink: 0;
+
+  box-shadow: 0 10px 30px rgba(124, 58, 237, 0.08);
+}
+
+.statCard h3 {
+  font-size: 24px;
+  line-height: 1;
+
+  color: #7d3cb5;
+  font-weight: 800;
+
+  margin-bottom: 6px;
+}
+
+.statCard span {
+  font-size: 14px;
+  color: #4b5563;
+  font-weight: 500;
+}
+
+/* RIGHT */
+
+.heroRight {
+  position: relative;
+}
+
+.heroRight img {
+  width: 100%;
+  height: 500px;
+
+  object-fit: cover;
+
+  border-radius: 28px;
+
+  display: block;
+
+  box-shadow: 0 30px 70px rgba(124, 58, 237, 0.15);
+}
+
+/* TRUST CARD */
+
+.trustedCard {
+  position: absolute;
+
+  left: -24px;
+  bottom: 26px;
+
+  width: 320px;
+
+  background: rgba(255, 255, 255, 0.96);
+
+  backdrop-filter: blur(12px);
+
+  border-radius: 24px;
+
+  padding: 18px 22px;
+
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+}
+
+.trustedIcon {
+  width: 62px;
+  height: 62px;
+
+  border-radius: 18px;
+
+  background: #f4edff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #7d3cb5;
+
+  flex-shrink: 0;
+}
+
+.trustedCard h4 {
+  font-size: 18px;
+  font-weight: 800;
+
+  color: #111827;
+
+  margin-bottom: 4px;
+}
+
+.trustedCard p {
+  font-size: 14px;
+  line-height: 1.5;
+
+  color: #374151;
+  font-weight: 600;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1200px) {
+  .aboutHero {
+    min-height: auto;
+    padding: 70px 0;
+  }
+
+  .heroGrid {
+    grid-template-columns: 1fr;
+    gap: 42px;
+  }
+
+  .heroRight {
+    order: -1;
+  }
+
+  .trustedCard {
+    left: 20px;
+  }
+}
+
+@media (max-width: 992px) {
+  .heroLeft h1 {
+    font-size: 46px;
+  }
+
+  .heroStats {
+    gap: 22px;
+  }
+
+  .heroRight img {
+    height: 420px;
+  }
+}
+
+@media (max-width: 768px) {
+  .aboutHero {
+    padding: 55px 0 65px;
+  }
+
+  .heroGrid {
+    gap: 34px;
+  }
+
+  .heroLeft h1 {
+    font-size: 36px;
+    line-height: 1.2;
+  }
+
+  .heroLeft p {
+    font-size: 15px;
+    line-height: 1.8;
+  }
+
+  .heroStats {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+  }
+
+  .statCard {
+    min-width: 100%;
+  }
+
+  .heroRight img {
+    height: 330px;
+    border-radius: 22px;
+  }
+
+  .trustedCard {
+    width: calc(100% - 30px);
+
+    left: 15px;
+    bottom: 15px;
+
+    padding: 16px;
+
+    border-radius: 18px;
+  }
+
+  .trustedIcon {
+    width: 52px;
+    height: 52px;
+  }
+
+  .trustedCard h4 {
+    font-size: 15px;
+  }
+
+  .trustedCard p {
+    font-size: 13px;
+  }
+}

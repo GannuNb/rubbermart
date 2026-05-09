@@ -1,0 +1,202 @@
+/* src/styles/About/WhyChoose.module.css */
+
+.whySection {
+  position: relative;
+
+  width: 100%;
+  padding: 90px 0;
+
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+
+  overflow: hidden;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+
+  background: rgba(255, 255, 255, 0.82);
+
+  z-index: 1;
+}
+
+.container {
+  position: relative;
+  z-index: 2;
+
+  width: 96%;
+  max-width: 1450px;
+  margin: 0 auto;
+}
+
+/* HEADING */
+
+.centerHeading {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.sectionTag {
+  display: inline-block;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  color: #7c3aed;
+
+  letter-spacing: 1.5px;
+
+  margin-bottom: 14px;
+}
+
+.centerHeading h2 {
+  font-size: 44px;
+  line-height: 1.15;
+  font-weight: 800;
+
+  color: #111827;
+
+  letter-spacing: -1.3px;
+}
+
+/* GRID */
+
+.whyGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 24px;
+}
+
+/* CARD */
+
+.whyCard {
+  background: rgba(255, 255, 255, 0.9);
+
+  border: 1px solid rgba(234, 226, 255, 0.8);
+
+  backdrop-filter: blur(14px);
+
+  border-radius: 26px;
+
+  padding: 38px 26px;
+
+  text-align: center;
+
+  transition: all 0.35s ease;
+
+  box-shadow: 0 10px 30px rgba(124, 58, 237, 0.04);
+}
+
+.whyCard:hover {
+  transform: translateY(-8px);
+
+  border-color: #d9c2ff;
+
+  box-shadow: 0 24px 50px rgba(124, 58, 237, 0.12);
+}
+
+/* ICON */
+
+.iconBox {
+  width: 74px;
+  height: 74px;
+
+  border-radius: 22px;
+
+  background: linear-gradient(
+    135deg,
+    rgba(124, 58, 237, 0.12),
+    rgba(168, 85, 247, 0.2)
+  );
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #7c3aed;
+
+  margin: 0 auto 24px;
+
+  box-shadow: 0 12px 30px rgba(124, 58, 237, 0.1);
+}
+
+/* TEXT */
+
+.whyCard h3 {
+  font-size: 21px;
+  line-height: 1.3;
+  font-weight: 800;
+
+  color: #111827;
+
+  margin-bottom: 14px;
+}
+
+.whyCard p {
+  font-size: 15px;
+  line-height: 1.9;
+
+  color: #5f6778;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1280px) {
+  .whyGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .centerHeading h2 {
+    font-size: 38px;
+  }
+
+  .whyGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .whySection {
+    padding: 65px 0;
+  }
+
+  .centerHeading {
+    margin-bottom: 42px;
+  }
+
+  .centerHeading h2 {
+    font-size: 32px;
+  }
+
+  .whyGrid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .whyCard {
+    padding: 30px 22px;
+    border-radius: 22px;
+  }
+
+  .iconBox {
+    width: 64px;
+    height: 64px;
+
+    border-radius: 18px;
+
+    margin-bottom: 18px;
+  }
+
+  .whyCard h3 {
+    font-size: 18px;
+  }
+
+  .whyCard p {
+    font-size: 14px;
+    line-height: 1.8;
+  }
+}
