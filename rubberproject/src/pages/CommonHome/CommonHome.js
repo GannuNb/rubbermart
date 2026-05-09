@@ -7,6 +7,7 @@ import FeaturedProductsSection from './HomeComponents/FeaturedProductsSection';
 import CommunitySection from './HomeComponents/CommunitySection';
 import TrustedBySection from './HomeComponents/TrustedBySection';
 import TestimonialsSection from './HomeComponents/TestimonialsSection.js';
+import MoreForYouSection from './HomeComponents/MoreForYouSection.js';
 
 function CommonHome() {
   return (
@@ -19,6 +20,7 @@ function CommonHome() {
       <FeaturedProductsSection />
       <CommunitySection />
       <TestimonialsSection/>
+      <MoreForYouSection />
       <TrustedBySection />
 
     </div>

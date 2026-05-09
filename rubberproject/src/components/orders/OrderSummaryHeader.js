@@ -3,13 +3,20 @@ import { FaBox, FaCalendarAlt, FaFileAlt, FaRupeeSign } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 
 import styles from "../../styles/Buyer/BuyerOrderDetails.module.css";
-import { downloadProformaInvoiceThunk } from "../../redux/slices/buyerOrderThunk";
+import {
+  downloadProformaInvoiceThunk,
+  downloadBuyReportThunk,
+} from "../../redux/slices/buyerOrderThunk";
 
 function OrderSummaryHeader({ order }) {
   const dispatch = useDispatch();
 
   const handleDownloadInvoice = () => {
     dispatch(downloadProformaInvoiceThunk(order._id));
+  };
+
+  const handleDownloadBuyReport = () => {
+    dispatch(downloadBuyReportThunk(order._id));
   };
 
   return (
@@ -50,12 +57,20 @@ function OrderSummaryHeader({ order }) {
       </div>
 
       {/* REPORTS */}
-      <div className={styles.summaryItem}>
+      {/* REPORTS */}
+
+      <div
+        className={styles.summaryItem}
+        onClick={handleDownloadBuyReport}
+        style={{ cursor: "pointer" }}
+      >
         <div className={styles.iconBox}>
           <FaFileAlt />
         </div>
+
         <div>
           <p className={styles.label}>Reports</p>
+
           <h4 className={styles.linkText}>Buy Reports</h4>
         </div>
       </div>

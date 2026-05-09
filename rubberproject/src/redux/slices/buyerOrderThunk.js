@@ -73,6 +73,53 @@ export const getBuyerSingleOrderThunk =
     }
   };
 
+  export const downloadBuyReportThunk =
+  (orderId) => async (dispatch, getState) => {
+    try {
+      const token = getState().auth.token;
+
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/orders/buyer-orders/${orderId}/buy-report`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to download buy report");
+      }
+
+      const blob = await response.blob();
+
+      const url =
+        window.URL.createObjectURL(blob);
+
+      const link =
+        document.createElement("a");
+
+      link.href = url;
+
+      link.download = `Buy-Report-${orderId}.pdf`;
+
+      document.body.appendChild(link);
+
+      link.click();
+
+      link.remove();
+
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.log(
+        "Download Buy Report Error:",
+        error
+      );
+    }
+  };
+  
+
   export const downloadShippingInvoiceThunk =
   (orderId, shipmentId) => async (dispatch, getState) => {
     try {

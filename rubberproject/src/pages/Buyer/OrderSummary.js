@@ -1,7 +1,24 @@
-// src/pages/OrderSummary.js
+// src/pages/Buyer/OrderSummary.js
 
 import React, { useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+
+import {
+  FaClipboardList,
+  FaStore,
+  FaMapMarkerAlt,
+  FaFileInvoice,
+  FaShoppingCart,
+  FaTrashAlt,
+  FaPlus,
+  FaBriefcase,
+  FaUser,
+  FaPhoneAlt,
+  FaHome,
+  FaIdCard,
+  FaPercent,
+} from "react-icons/fa";
+
 import styles from "../../styles/Buyer/OrderSummary.module.css";
 
 function OrderSummary() {
@@ -16,7 +33,7 @@ function OrderSummary() {
   const isMaharashtraGST = buyerGstNumber.startsWith("27");
 
   const [orderItems, setOrderItems] = useState(
-    location.state?.orderItems || []
+    location.state?.orderItems || [],
   );
 
   const taxableAmount = useMemo(() => {
@@ -52,8 +69,7 @@ function OrderSummary() {
 
     const updatedItems = [...orderItems];
 
-    const maxQuantity =
-      Number(updatedItems[index].availableQuantity) || 999999;
+    const maxQuantity = Number(updatedItems[index].availableQuantity) || 999999;
 
     if (quantity > maxQuantity) {
       alert(`Quantity cannot exceed ${maxQuantity} MT`);
@@ -109,6 +125,7 @@ function OrderSummary() {
       <div className={styles.emptyState}>
         <div className={styles.emptyCard}>
           <h2>No Order Data Found</h2>
+
           <p>Please select a product and continue again.</p>
 
           <button
@@ -124,54 +141,129 @@ function OrderSummary() {
 
   return (
     <div className={styles.pageWrapper}>
+      {/* =========================================
+      HEADER
+      ========================================= */}
+
       <div className={styles.headerSection}>
-        <h1>Order Summary</h1>
-        <p>Review selected products before placing your order.</p>
+        <div className={styles.headerTop}>
+          <div className={styles.headerIcon}>
+            <FaClipboardList />
+          </div>
+
+          <div>
+            <h1>Order Summary</h1>
+
+            <p>Review selected products before placing your order.</p>
+          </div>
+        </div>
       </div>
 
+      {/* =========================================
+      TOP GRID
+      ========================================= */}
+
       <div className={styles.topGrid}>
+        {/* SELLER INFO */}
+
         <div className={styles.infoCard}>
-          <h3>Seller Information</h3>
+          <div className={styles.cardHeading}>
+            <div className={styles.cardIconPurple}>
+              <FaStore />
+            </div>
+
+            <h3>Information</h3>
+          </div>
 
           <div className={styles.infoRow}>
-            <span className={styles.infoLabel}>Seller Name</span>
+            <div className={styles.infoLeft}>
+              <FaStore className={styles.rowIcon} />
+
+              <span className={styles.infoLabel}>Seller Name</span>
+            </div>
+
+            <span>:</span>
+
             <span className={styles.infoValue}>{sellerName}</span>
           </div>
 
           <div className={styles.infoRow}>
-            <span className={styles.infoLabel}>Buyer GST Number</span>
+            <div className={styles.infoLeft}>
+              <FaIdCard className={styles.rowIcon} />
+
+              <span className={styles.infoLabel}>Buyer GST Number</span>
+            </div>
+
+            <span>:</span>
+
             <span className={styles.infoValue}>
               {buyerGstNumber || "Not Available"}
             </span>
           </div>
 
           <div className={styles.infoRow}>
-            <span className={styles.infoLabel}>GST Type</span>
+            <div className={styles.infoLeft}>
+              <FaPercent className={styles.rowIcon} />
+
+              <span className={styles.infoLabel}>GST Type</span>
+            </div>
+
+            <span>:</span>
+
             <span className={styles.infoValue}>
               {isMaharashtraGST ? "CGST + SGST" : "IGST"}
             </span>
           </div>
         </div>
 
+        {/* ADDRESS */}
+
         <div className={styles.infoCard}>
-          <h3>Delivery Address</h3>
+          <div className={styles.cardHeading}>
+            <div className={styles.cardIconBlue}>
+              <FaMapMarkerAlt />
+            </div>
+
+            <h3>Delivery Address</h3>
+          </div>
 
           <div className={styles.infoRow}>
-            <span className={styles.infoLabel}>Full Name</span>
+            <div className={styles.infoLeft}>
+              <FaUser className={styles.rowIcon} />
+
+              <span className={styles.infoLabel}>Full Name</span>
+            </div>
+
+            <span>:</span>
+
             <span className={styles.infoValue}>
               {shippingAddress?.fullName || "Not Available"}
             </span>
           </div>
 
           <div className={styles.infoRow}>
-            <span className={styles.infoLabel}>Mobile Number</span>
+            <div className={styles.infoLeft}>
+              <FaPhoneAlt className={styles.rowIcon} />
+
+              <span className={styles.infoLabel}>Mobile Number</span>
+            </div>
+
+            <span>:</span>
+
             <span className={styles.infoValue}>
               {shippingAddress?.mobileNumber || "Not Available"}
             </span>
           </div>
 
           <div className={styles.infoRow}>
-            <span className={styles.infoLabel}>Address</span>
+            <div className={styles.infoLeft}>
+              <FaHome className={styles.rowIcon} />
+
+              <span className={styles.infoLabel}>Address</span>
+            </div>
+
+            <span>:</span>
+
             <span className={styles.infoValue}>
               {shippingAddress?.fullAddress || "Not Available"}
             </span>
@@ -179,103 +271,136 @@ function OrderSummary() {
         </div>
       </div>
 
-      <div className={styles.productsSection}>
-        <h2 className={styles.productsTitle}>Selected Products</h2>
+      {/* =========================================
+      BOTTOM SECTION
+      ========================================= */}
 
-        {orderItems.map((item, index) => (
-          <div className={styles.productCard} key={index}>
-            <div className={styles.productImageWrapper}>
-              <img
-                src={
-                  item.productImagePreview
-                    ? item.productImagePreview
-                    : item.productImage
-                    ? item.productImage
-                    : "https://via.placeholder.com/150x150?text=No+Image"
-                }
-                alt={item.application || "Product"}
-                className={styles.productImage}
-                onError={(e) => {
-                  e.target.src =
-                    "https://via.placeholder.com/150x150?text=No+Image";
-                }}
-              />
+      <div className={styles.bottomSection}>
+        {/* PRODUCTS */}
+
+        <div className={styles.productsSection}>
+          <div className={styles.productsHeader}>
+            <div className={styles.cardIconGreen}>
+              <FaShoppingCart />
             </div>
 
-            <div className={styles.productDetails}>
-              <h3>{item.application}</h3>
+            <h2 className={styles.productsTitle}>Selected Products</h2>
+          </div>
 
-              <div className={styles.productMeta}>
-                <span className={styles.metaBadge}>
-                  {item.category || "Category"}
-                </span>
+          {orderItems.map((item, index) => (
+            <div className={styles.productCard} key={index}>
+              {/* IMAGE */}
 
-                <span className={styles.metaBadge}>
-                  {item.loadingLocation || "Location Not Available"}
-                </span>
-
-                <span className={styles.metaBadge}>
-                  HSN: {item.hsnCode || "N/A"}
-                </span>
+              <div className={styles.productImageWrapper}>
+                <img
+                  src={
+                    item.productImagePreview
+                      ? item.productImagePreview
+                      : item.productImage
+                        ? item.productImage
+                        : "https://via.placeholder.com/150x150?text=No+Image"
+                  }
+                  alt={item.application || "Product"}
+                  className={styles.productImage}
+                  onError={(e) => {
+                    e.target.src =
+                      "https://via.placeholder.com/150x150?text=No+Image";
+                  }}
+                />
               </div>
 
-              <div className={styles.priceRow}>
-                <span className={styles.priceLabel}>Price Per MT</span>
+              {/* DETAILS */}
 
-                <div className={styles.priceValue}>
-                  ₹{Number(item.pricePerMT || 0).toLocaleString()}
+              <div className={styles.productDetails}>
+                <h3>{item.application}</h3>
+
+                <div className={styles.productMeta}>
+                  <span className={styles.metaBadge}>
+                    {item.category || "Category"}
+                  </span>
+
+                  <span className={styles.metaBadge}>
+                    {item.loadingLocation || "Location Not Available"}
+                  </span>
+
+                  <span className={styles.metaBadge}>
+                    HSN : {item.hsnCode || "N/A"}
+                  </span>
+                </div>
+
+                <div className={styles.priceRow}>
+                  <span className={styles.priceLabel}>Price Per MT</span>
+
+                  <div className={styles.priceValue}>
+                    ₹{Number(item.pricePerMT || 0).toLocaleString()}
+                  </div>
+                </div>
+
+                <div className={styles.quantityWrapper}>
+                  <label>Required Quantity (MT)</label>
+
+                  <input
+                    type="number"
+                    min="1"
+                    max={item.availableQuantity || 999999}
+                    value={item.requiredQuantity}
+                    onChange={(e) =>
+                      handleQuantityChange(index, e.target.value)
+                    }
+                    className={styles.quantityInput}
+                  />
                 </div>
               </div>
 
-              <div className={styles.quantityWrapper}>
-                <label>Required Quantity (MT)</label>
+              {/* ACTIONS */}
 
-                <input
-                  type="number"
-                  min="1"
-                  max={item.availableQuantity || 999999}
-                  value={item.requiredQuantity}
-                  onChange={(e) =>
-                    handleQuantityChange(index, e.target.value)
-                  }
-                  className={styles.quantityInput}
-                />
+              <div className={styles.productActions}>
+                <div>
+                  <div className={styles.subtotalLabel}>Subtotal</div>
+
+                  <div className={styles.subtotalText}>
+                    ₹{Number(item.subtotal || 0).toLocaleString()}
+                  </div>
+                </div>
+
+                <button
+                  className={styles.removeButton}
+                  onClick={() => handleRemoveItem(index)}
+                >
+                  <FaTrashAlt />
+                  Remove
+                </button>
               </div>
             </div>
+          ))}
 
-            <div className={styles.productActions}>
-              <div className={styles.subtotalLabel}>Subtotal</div>
+          {/* ADD MORE */}
 
-              <div className={styles.subtotalText}>
-                ₹{Number(item.subtotal || 0).toLocaleString()}
-              </div>
-
-              <button
-                className={styles.removeButton}
-                onClick={() => handleRemoveItem(index)}
-              >
-                Remove
-              </button>
-            </div>
+          <div className={styles.actionButtons}>
+            <button
+              className={styles.addMoreButton}
+              onClick={handleAddMoreProducts}
+            >
+              <FaPlus />
+              Add More Products From This Seller
+            </button>
           </div>
-        ))}
-      </div>
-
-      <div className={styles.bottomSection}>
-        <div className={styles.actionButtons}>
-          <button
-            className={styles.addMoreButton}
-            onClick={handleAddMoreProducts}
-          >
-            Add More Products From This Seller
-          </button>
         </div>
 
+        {/* SUMMARY */}
+
         <div className={styles.summaryCard}>
-          <h3>Order Amount Summary</h3>
+          <div className={styles.cardHeading}>
+            <div className={styles.cardIconPurple}>
+              <FaFileInvoice />
+            </div>
+
+            <h3>Order Amount Summary</h3>
+          </div>
 
           <div className={styles.summaryRow}>
             <span>Taxable Amount</span>
+
             <span>₹{Number(taxableAmount).toLocaleString()}</span>
           </div>
 
@@ -283,23 +408,27 @@ function OrderSummary() {
             <>
               <div className={styles.summaryRow}>
                 <span>CGST (9%)</span>
+
                 <span>₹{Number(cgstAmount).toLocaleString()}</span>
               </div>
 
               <div className={styles.summaryRow}>
                 <span>SGST (9%)</span>
+
                 <span>₹{Number(sgstAmount).toLocaleString()}</span>
               </div>
             </>
           ) : (
             <div className={styles.summaryRow}>
               <span>IGST (18%)</span>
+
               <span>₹{Number(igstAmount).toLocaleString()}</span>
             </div>
           )}
 
           <div className={styles.summaryTotal}>
             <span>Total Amount</span>
+
             <span>₹{Number(totalAmount).toLocaleString()}</span>
           </div>
 
@@ -308,6 +437,7 @@ function OrderSummary() {
             onClick={handlePlaceOrder}
             disabled={orderItems.length === 0}
           >
+            <FaBriefcase />
             Continue To Place Order
           </button>
         </div>

@@ -1,61 +1,117 @@
-/* src/styles/PlaceOrder.module.css */
+/* src/styles/Buyer/PlaceOrder.module.css */
 
 .pageWrapper {
   display: grid;
-  grid-template-columns: 1.5fr 420px;
-  gap: 24px;
+  grid-template-columns: minmax(0, 1fr) 410px;
+  gap: 26px;
   padding: 32px;
-  background: #f8fafc;
+  background: #f5f5f5;
   min-height: 100vh;
 }
+
+/* =========================================
+LEFT SECTION
+========================================= */
 
 .leftSection {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 22px;
 }
+
+/* =========================================
+COMMON CARD
+========================================= */
 
 .card {
   background: #ffffff;
-  border: 1px solid #e5eaf2;
-  border-radius: 24px;
+  border: 1px solid #dddddd;
+  border-radius: 16px;
   padding: 24px;
 }
 
-.card h2 {
-  margin: 0 0 20px;
-  color: #182848;
-  font-size: 22px;
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
 }
 
-.infoRow {
+.cardIcon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: #f1e8fb;
+  color: #7d3cb5;
   display: flex;
-  justify-content: space-between;
-  gap: 20px;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.card h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* =========================================
+INFO ROWS
+========================================= */
+
+.infoRow {
+  display: grid;
+  grid-template-columns: 210px 20px 1fr;
+  align-items: center;
+  gap: 10px;
   padding: 14px 0;
-  border-bottom: 1px solid #edf0f5;
+  border-bottom: 1px solid #eeeeee;
 }
 
 .infoRow:last-child {
   border-bottom: none;
+  padding-bottom: 0;
 }
 
-.infoRow span {
+.infoLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rowIcon {
+  font-size: 15px;
+  color: #7d3cb5;
+  min-width: 16px;
+}
+
+.infoLabel {
   color: #6b7280;
+  font-size: 13px;
+}
+
+.infoValue {
+  color: #111827;
   font-size: 14px;
+  font-weight: 600;
+  line-height: 1.6;
+  word-break: break-word;
 }
 
-.infoRow strong {
-  color: #182848;
-  font-size: 15px;
+/* =========================================
+ADDRESS BOX
+========================================= */
+
+.addressBox {
+  display: flex;
+  flex-direction: column;
 }
 
-.addressBox p {
-  margin: 0 0 10px;
-  color: #374151;
-  font-size: 15px;
-  line-height: 1.7;
-}
+/* =========================================
+PRODUCTS
+========================================= */
 
 .productList {
   display: flex;
@@ -65,44 +121,94 @@
 
 .productItem {
   display: grid;
-  grid-template-columns: 110px 1fr auto;
-  gap: 18px;
-  padding-bottom: 18px;
-  border-bottom: 1px solid #edf0f5;
+  grid-template-columns: 130px minmax(0, 1fr) 120px;
+  gap: 22px;
+  align-items: center;
+  padding: 20px;
+  border: 1px solid #ececec;
+  border-radius: 14px;
 }
 
-.productItem:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
+.imageWrapper {
+  width: 130px;
+  height: 130px;
 }
 
 .productImage {
-  width: 110px;
-  height: 110px;
+  width: 130px;
+  height: 130px;
   object-fit: cover;
-  border-radius: 18px;
-  border: 1px solid #edf0f5;
+  border-radius: 14px;
+  border: 1px solid #eeeeee;
 }
 
 .productInfo h3 {
-  margin: 0 0 10px;
-  color: #182848;
+  margin: 0 0 12px;
+  color: #111827;
   font-size: 18px;
+  font-weight: 700;
 }
 
-.productInfo p {
-  margin: 0 0 8px;
+.badgeWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.productBadge {
+  background: #f1e8fb;
+  color: #7d3cb5;
+  padding: 5px 10px;
+  border-radius: 30px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.productMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.metaRow {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.metaRow span {
   color: #6b7280;
-  font-size: 14px;
+  font-size: 12px;
+  min-width: 110px;
+}
+
+.metaRow strong {
+  color: #111827;
+  font-size: 13px;
 }
 
 .productSubtotal {
-  font-size: 18px;
-  font-weight: 700;
-  color: #182848;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
 }
+
+.productSubtotal span {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.productSubtotal strong {
+  color: #111827;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+/* =========================================
+RIGHT SECTION
+========================================= */
 
 .rightSection {
   position: sticky;
@@ -110,56 +216,119 @@
   height: fit-content;
 }
 
+/* =========================================
+SUMMARY CARD
+========================================= */
+
 .summaryCard {
   background: #ffffff;
-  border: 1px solid #e5eaf2;
-  border-radius: 24px;
+  border: 1px solid #dddddd;
+  border-radius: 16px;
   padding: 24px;
 }
 
+.summaryHeader {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.summaryIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #f1e8fb;
+  color: #7d3cb5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
 .summaryCard h2 {
-  margin: 0 0 20px;
-  color: #182848;
-  font-size: 22px;
+  margin: 0;
+  color: #111827;
+  font-size: 18px;
+  font-weight: 700;
 }
 
 .summaryRow {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 16px;
+  align-items: center;
+  margin-bottom: 18px;
   color: #374151;
   font-size: 15px;
+}
+
+.summaryRow span:last-child {
+  font-weight: 600;
+  color: #111827;
 }
 
 .totalRow {
   display: flex;
   justify-content: space-between;
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid #edf0f5;
-  font-size: 20px;
-  font-weight: 700;
-  color: #182848;
+  align-items: center;
+  margin-top: 24px;
+  padding-top: 22px;
+  border-top: 1px solid #ececec;
 }
+
+.totalRow span:first-child {
+  color: #111827;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.totalRow span:last-child {
+  color: #7d3cb5;
+  font-size: 44px;
+  font-weight: 800;
+}
+
+/* =========================================
+NOTICE BOX
+========================================= */
 
 .noticeBox {
-  margin-top: 24px;
-  background: #f8fbff;
-  border: 1px solid #dbe7ff;
-  border-radius: 18px;
-  padding: 16px;
+  margin-top: 28px;
+  background: #f8f5fc;
+  border: 1px solid #e6d8f5;
+  border-radius: 14px;
+  padding: 18px;
 }
 
-.noticeBox p {
-  margin: 0 0 10px;
+.noticeItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.noticeItem:last-child {
+  margin-bottom: 0;
+}
+
+.noticeItem svg {
+  color: #7d3cb5;
+  font-size: 15px;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.noticeItem p {
+  margin: 0;
   color: #4b5563;
   font-size: 14px;
   line-height: 1.7;
 }
 
-.noticeBox p:last-child {
-  margin-bottom: 0;
-}
+/* =========================================
+CHECKBOX
+========================================= */
 
 .checkboxWrapper {
   display: flex;
@@ -169,28 +338,37 @@
   margin-bottom: 24px;
   color: #374151;
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
 .checkboxWrapper input {
-  margin-top: 3px;
+  width: 18px;
+  height: 18px;
+  accent-color: #7d3cb5;
+  margin-top: 2px;
+  cursor: pointer;
 }
+
+/* =========================================
+BUTTON
+========================================= */
 
 .confirmButton {
   width: 100%;
   border: none;
-  border-radius: 16px;
-  background: linear-gradient(135deg, #182848, #4b6cb7);
+  border-radius: 12px;
+  background: #7d3cb5;
   color: #ffffff;
-  padding: 16px;
-  font-size: 15px;
+  height: 54px;
+  font-size: 16px;
   font-weight: 700;
   cursor: pointer;
-  transition: 0.3s ease;
+  transition: 0.2s ease;
 }
 
 .confirmButton:hover {
-  transform: translateY(-2px);
+  background: #6c2ea2;
+  transform: translateY(-1px);
 }
 
 .confirmButton:disabled {
@@ -199,24 +377,56 @@
   transform: none;
 }
 
+/* =========================================
+EMPTY STATE
+========================================= */
+
 .emptyState {
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  color: #182848;
+  background: #f5f5f5;
+  padding: 30px;
 }
 
-.emptyState h2 {
+.emptyCard {
+  background: white;
+  padding: 40px;
+  border-radius: 16px;
+  text-align: center;
+  border: 1px solid #e5e7eb;
+  max-width: 420px;
+  width: 100%;
+}
+
+.emptyCard h2 {
+  font-size: 24px;
   margin-bottom: 10px;
+  color: #111827;
 }
 
-.emptyState p {
+.emptyCard p {
   color: #6b7280;
+  margin-bottom: 24px;
+  font-size: 14px;
 }
 
-@media (max-width: 1100px) {
+.backButton {
+  border: none;
+  background: #7d3cb5;
+  color: white;
+  padding: 14px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* =========================================
+RESPONSIVE
+========================================= */
+
+@media (max-width: 1200px) {
   .pageWrapper {
     grid-template-columns: 1fr;
   }
@@ -229,20 +439,179 @@
 @media (max-width: 768px) {
   .pageWrapper {
     padding: 18px;
+    gap: 18px;
   }
 
   .card,
   .summaryCard {
     padding: 18px;
-    border-radius: 20px;
+    border-radius: 14px;
+  }
+
+  .cardHeader,
+  .summaryHeader {
+    margin-bottom: 20px;
+  }
+
+  .card h2,
+  .summaryCard h2 {
+    font-size: 17px;
+  }
+
+  .infoRow {
+    grid-template-columns: 130px 10px 1fr;
+    gap: 6px;
+    align-items: flex-start;
+  }
+
+  .infoLabel {
+    font-size: 12px;
+  }
+
+  .infoValue {
+    font-size: 12px;
   }
 
   .productItem {
     grid-template-columns: 1fr;
+    gap: 18px;
   }
 
+  .imageWrapper,
   .productImage {
     width: 100%;
     height: 220px;
+  }
+
+  .productSubtotal {
+    align-items: flex-start;
+  }
+
+  .totalRow span:last-child {
+    font-size: 34px;
+  }
+
+  .confirmButton {
+    height: 50px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pageWrapper {
+    padding: 14px;
+  }
+
+  .infoRow {
+  grid-template-columns: 135px 10px 1fr;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.infoLeft {
+  gap: 8px;
+}
+
+.infoLabel {
+  font-size: 12px;
+}
+
+.infoValue {
+  font-size: 12px;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+  .productInfo h3 {
+    font-size: 16px;
+  }
+
+  .badgeWrapper {
+    gap: 6px;
+  }
+
+  .productBadge {
+    font-size: 10px;
+  }
+
+  .metaRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .totalRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .totalRow span:last-child {
+    font-size: 30px;
+  }
+}
+
+
+.pageHeader {
+  padding: 28px 32px 0;
+  background: #f5f5f5;
+}
+
+.pageHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.pageHeaderIcon {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  background: #f1e8fb;
+  color: #7d3cb5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.pageHeader h1 {
+  margin: 0 0 4px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.pageHeader p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .pageHeader {
+    padding: 18px 18px 0;
+  }
+
+  .pageHeaderLeft {
+    gap: 14px;
+    padding-bottom: 18px;
+  }
+
+  .pageHeaderIcon {
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+
+  .pageHeader h1 {
+    font-size: 20px;
+  }
+
+  .pageHeader p {
+    font-size: 13px;
   }
 }

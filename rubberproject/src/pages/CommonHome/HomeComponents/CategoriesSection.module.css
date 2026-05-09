@@ -1,139 +1,393 @@
 .categoriesSection {
-  padding: 60px 0;
-  background-color: #ffffff;
-  overflow: hidden; /* Contains the negative margin of the wrapper */
+  padding: 80px 0;
+  background: #fcfbff;
+  overflow: hidden;
 }
+
+/* =========================
+   HEADER
+========================= */
+
+.topHeader {
+  margin-bottom: -6px;
+}
+
+.leftContent {
+  width: 100%;
+}
+
+/* =========================
+   TOP TAG
+========================= */
 
 .topTag {
-  color: #7d3cb5;
-  font-weight: 800;
-  font-size: 11px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 9px 18px;
+
+  border-radius: 999px;
+
+  background: rgba(23, 236, 46, 0.08);
+
+  color: #239b18;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  margin-bottom: 18px;
 }
 
-.sectionHeading {
-  font-weight: 800;
+/* =========================
+   HEADING ROW
+========================= */
+
+.headingRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+
+  margin-bottom: 0;
+}
+
+.heading {
+  font-size: clamp(32px, 4vw, 48px);
+
+  line-height: 1.1;
+
+  font-weight: 900;
+
+  letter-spacing: -1.5px;
+
+  margin-bottom: 10px;
+
   color: #0f172a;
-  font-size: 1.8rem;
+}
+
+.heading span {
+  color: #7d3cb5;
+}
+
+.subText {
+  max-width: 620px;
+
+  font-size: 16px;
+
+  line-height: 1.7;
+
+  color: #64748b;
+
   margin: 0;
 }
 
+/* =========================
+   VIEW ALL
+========================= */
+
 .viewAllBtn {
-  background-color: #0f172a;
-  color: #ffffff;
-  padding: 8px 20px;
-  border-radius: 50px;
   border: none;
-  font-weight: 600;
-  font-size: 12px;
+  background: transparent;
+
+  color: #7d3cb5;
+
   display: flex;
   align-items: center;
-  transition: all 0.3s ease;
+  gap: 8px;
+
+  font-size: 15px;
+  font-weight: 700;
+
+  transition: 0.3s ease;
+
+  white-space: nowrap;
+
+  padding-top: 6px;
 }
 
 .viewAllBtn:hover {
-  background-color: #1e293b;
-  transform: translateY(-1px);
+  transform: translateX(3px);
 }
 
-/* Fixes the "Hiding Top" Issue */
-.sliderWrapper {
-  padding: 30px 0; /* Creates internal "room" for the card to lift into */
-  margin-top: -10px; /* Adjusts layout to compensate for extra padding */
-}
+/* =========================
+   TOP CONTROLS
+========================= */
 
-.swiperInstance {
-  overflow: visible !important; /* Allows cards to move outside the Swiper box */
-  width: 100%;
-}
-
-.swiperSlideCustom {
-  overflow: visible !important; /* Ensures the slide itself doesn't clip */
-}
-
-/* Card Architecture */
-.categoryCard {
-  background: #ffffff;
-  border-radius: 16px;
-  border: 1px solid #f1f5f9;
-  overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-  max-width: 185px; 
-  margin: 0 auto;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-}
-
-.cardHeader {
-  background-color: #e6dcee; /* Professional pale purple tint */
-  padding: 14px; 
+.sliderTop {
   display: flex;
-  justify-content: center;
-  position: relative;
+  justify-content: flex-end;
+
+  margin-top: -10px;
+  margin-bottom: 10px;
 }
 
-.imgContainer {
-  width: 100%;
-  aspect-ratio: 1 / 1.15;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-}
-
-.categoryImg {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.cardFooter {
-  padding: 14px 12px;
+.sliderArrows {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  background: #ffffff;
+  gap: 10px;
 }
 
-.categoryLabel {
-  font-size: 13px;
-  font-weight: 700;
-  color: #0f172a;
-  letter-spacing: -0.2px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+.arrowControl {
+  width: 42px;
+  height: 42px;
 
-.smallArrow {
-  width: 24px;
-  height: 24px;
-  background-color: #f8fafc;
   border-radius: 50%;
+
+  border: 1px solid #e9ddff;
+
+  background: white;
+
+  color: #7d3cb5;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #94a3b8;
-  transition: all 0.3s ease;
+
+  transition: 0.3s ease;
+}
+
+.arrowControl:hover {
+  background: #7d3cb5;
+  color: white;
+}
+
+/* =========================
+   SLIDER
+========================= */
+
+.categoriesSlider {
+  display: flex;
+
+  gap: 18px;
+
+  overflow-x: auto;
+
+  scroll-behavior: smooth;
+
+  scrollbar-width: none;
+
+  padding-bottom: 10px;
+}
+
+.categoriesSlider::-webkit-scrollbar {
+  display: none;
+}
+
+/* =========================
+   CARD
+========================= */
+
+.categoryCard {
+  min-width: 255px;
+
+  background: rgba(255,255,255,0.92);
+
+  border: 1px solid #ede9fe;
+
+  border-radius: 22px;
+
+  overflow: hidden;
+
+  transition: 0.3s ease;
+
   flex-shrink: 0;
 }
 
-/* Pro Hover Animation */
 .categoryCard:hover {
-  transform: translateY(-12px); /* Lifts up into the sliderWrapper padding */
-  border-color: #7d3cb5;
-  box-shadow: 0 20px 25px -5px rgba(125, 60, 181, 0.15);
+  transform: translateY(-6px);
+
+  border-color: rgba(125, 60, 181, 0.2);
+
+  box-shadow:
+    0 12px 30px rgba(125, 60, 181, 0.10);
 }
 
-.categoryCard:hover .smallArrow {
-  background-color: #7d3cb5;
-  color: #ffffff;
-  transform: translateX(2px);
+/* =========================
+   IMAGE
+========================= */
+
+.imageWrapper {
+  padding: 14px 14px 0;
 }
 
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-  .sectionHeading { font-size: 1.4rem; }
-  .categoryCard { max-width: 160px; }
-  .sliderWrapper { padding: 20px 0; }
+.categoryImage {
+  width: 100%;
+
+  height: 150px;
+
+  object-fit: contain;
+
+  border-radius: 20px;
+
+  background: linear-gradient(
+    180deg,
+    #faf7ff 0%,
+    #f4ecff 100%
+  );
+
+  padding: 14px;
+}
+
+/* =========================
+   CONTENT
+========================= */
+
+.cardContent {
+  padding: 18px;
+}
+
+.cardContent h3 {
+  font-size: 17px;
+
+  line-height: 1.3;
+
+  font-weight: 800;
+
+  margin-bottom: 8px;
+
+  background: linear-gradient(
+    90deg,
+    #7d3cb5,
+    #5b21b6
+  );
+
+  background-clip: text;
+  -webkit-background-clip: text;
+
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.cardContent p {
+  font-size: 13px;
+
+  line-height: 1.6;
+
+  color: #64748b;
+
+  margin-bottom: 18px;
+}
+
+/* =========================
+   BOTTOM
+========================= */
+
+.bottomRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bottomLine {
+  width: 42px;
+  height: 4px;
+
+  border-radius: 999px;
+
+  background: #7d3cb5;
+}
+
+.arrowBtn {
+  width: 36px;
+  height: 36px;
+
+  border-radius: 50%;
+
+  background: #7d3cb5;
+
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  opacity: 0;
+  visibility: hidden;
+
+  transform: translateX(-8px);
+
+  transition: 0.3s ease;
+}
+
+.categoryCard:hover .arrowBtn {
+  opacity: 1;
+  visibility: visible;
+
+  transform: translateX(0);
+}
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 992px) {
+
+  .headingRow {
+    flex-direction: column;
+  }
+
+  .heading {
+    font-size: 38px;
+  }
+
+  .subText {
+    font-size: 15px;
+  }
+
+  .sliderTop {
+    margin-top: -6px;
+    margin-bottom: 10px;
+  }
+
+  .categoryCard {
+    min-width: 230px;
+  }
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 576px) {
+
+  .categoriesSection {
+    padding: 55px 0;
+  }
+
+  .heading {
+    font-size: 30px;
+  }
+
+  .subText {
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .sliderTop {
+    justify-content: flex-start;
+
+    margin-top: -4px;
+    margin-bottom: 8px;
+  }
+
+  .categoryCard {
+    min-width: 200px;
+  }
+
+  .categoryImage {
+    height: 120px;
+  }
+
+  .cardContent {
+    padding: 15px;
+  }
+
+  .cardContent h3 {
+    font-size: 15px;
+  }
+
+  .cardContent p {
+    font-size: 12px;
+  }
 }

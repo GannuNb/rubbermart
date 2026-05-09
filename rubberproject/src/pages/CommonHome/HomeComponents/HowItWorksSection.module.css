@@ -1,136 +1,518 @@
-.sectionPadding {
-  padding: 50px 0;
+.sectionWrapper {
+  position: relative;
+
+  padding: 40px 0 60px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff 0%,
+      #fcfbff 55%,
+      #f8fcf9 100%
+    );
+
+  overflow: hidden;
 }
 
-.mainContainer {
-  background-color: #e7ddf6;
-  border-radius: 32px;
-  padding: 60px 40px;
-  border: 1px solid #f1f1f1;
+/* =========================
+   DOTS
+========================= */
+
+.leftDots,
+.rightDots {
+  position: absolute;
+
+  width: 180px;
+  height: 180px;
+
+  opacity: 0.14;
+
+  background-image: radial-gradient(
+    circle,
+    #7d3cb5 2px,
+    transparent 2px
+  );
+
+  background-size: 15px 15px;
+
+  pointer-events: none;
 }
 
-.headerText {
-  margin-bottom: 60px;
+.leftDots {
+  left: -30px;
+  top: 10px;
+}
+
+.rightDots {
+  right: -10px;
+  top: 40px;
+
+  background-image: radial-gradient(
+    circle,
+    #22c55e 2px,
+    transparent 2px
+  );
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.headerSection {
   text-align: center;
+
+  margin-bottom: 42px;
 }
 
-.title {
-  font-size: clamp(28px, 5vw, 36px);
-  font-weight: 800;
-  color: #111827;
-  margin-bottom: 12px;
+.topBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  padding: 8px 18px;
+
+  border-radius: 999px;
+
+  background: rgba(125, 60, 181, 0.08);
+
+  color: #7d3cb5;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  margin-bottom: 18px;
 }
 
-.subtitle {
-  font-size: 16px;
-  color: #4b5563;
-  max-width: 600px;
-  margin: 0 auto;
+.mainTitle {
+  font-size: clamp(40px, 5vw, 72px);
+
+  line-height: 1;
+
+  font-weight: 900;
+
+  letter-spacing: -2px;
+
+  color: #0f172a;
+
+  margin-bottom: 14px;
 }
+
+.mainTitle span {
+  background: linear-gradient(
+    90deg,
+    #7d3cb5,
+    #6d28d9
+  );
+
+  background-clip: text;
+  -webkit-background-clip: text;
+
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.subTitle {
+  max-width: 580px;
+
+  margin: auto;
+
+  font-size: 15px;
+
+  line-height: 1.8;
+
+  color: #667085;
+}
+
+/* =========================
+   STEPS
+========================= */
 
 .stepsWrapper {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
+  align-items: stretch;
+  justify-content: center;
+
+  gap: 16px;
+
+  margin-bottom: 45px;
+
+  flex-wrap: nowrap;
 }
 
-/* --- THE STEP ITEM & HOVER ANIMATION --- */
-.stepItem {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: default;
+/* =========================
+   CARD
+========================= */
+
+.stepCard {
+  width: 255px;
+
+  background: #ffffff;
+
+  border: 1px solid #ede9fe;
+
+  border-radius: 22px;
+
+  padding: 24px 22px;
+
+  transition: 0.3s ease;
 }
 
-.iconCircle {
-  width: 64px;
-  height: 64px;
-  background-color: #f3f0ff; /* Light Violet */
-  color: #7d3cb5;            /* Medium Violet Icon */
+.stepCard:hover {
+  transform: translateY(-5px);
+
+  box-shadow:
+    0 16px 40px rgba(125, 60, 181, 0.08);
+}
+
+/* =========================
+   ICON
+========================= */
+
+.iconBox {
+  width: 68px;
+  height: 68px;
+
   border-radius: 50%;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 24px;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 0 0 rgba(139, 92, 246, 0);
+
+  margin-bottom: 22px;
 }
 
-/* Hover State */
-.stepItem:hover .iconCircle {
-  background-color: #7d3cb5; /* Deep Violet */
-  color: #ffffff;            /* White Icon */
-  transform: translateY(-8px);
-  box-shadow: 0 10px 20px -5px rgba(124, 58, 237, 0.3);
-}
+.purpleIcon {
+  background: rgba(125, 60, 181, 0.08);
 
-.stepItem:hover .stepTitle {
   color: #7d3cb5;
 }
 
-.stepTitle {
+.greenIcon {
+  background: rgba(34, 197, 94, 0.08);
+
+  color: #22c55e;
+}
+
+/* =========================
+   TITLE
+========================= */
+
+.stepCard h4 {
   font-size: 18px;
-  font-weight: 700;
+
+  font-weight: 800;
+
   color: #111827;
+
   margin-bottom: 12px;
-  transition: color 0.3s ease;
 }
 
-.stepDesc {
+/* =========================
+   SMALL LINE
+========================= */
+
+.smallLine {
+  width: 36px;
+  height: 3px;
+
+  border-radius: 999px;
+
+  margin-bottom: 14px;
+}
+
+.purpleLine {
+  background: #7d3cb5;
+}
+
+.greenLine {
+  background: #22c55e;
+}
+
+/* =========================
+   DESC
+========================= */
+
+.stepCard p {
   font-size: 14px;
-  color: #6b7280;
-  line-height: 1.6;
-  max-width: 220px;
+
+  line-height: 1.9;
+
+  color: #667085;
+
+  margin-bottom: 28px;
 }
 
-/* --- THE ARROW --- */
+/* =========================
+   BOTTOM LINE
+========================= */
+
+.bottomLine {
+  width: 110px;
+  height: 4px;
+
+  border-radius: 999px;
+}
+
+.purpleBg {
+  background: #7d3cb5;
+}
+
+.greenBg {
+  background: #22c55e;
+}
+
+/* =========================
+   DASHED ARROWS
+========================= */
+
 .arrowWrapper {
   display: flex;
   align-items: center;
-  justify-content: center;
-  height: 64px;         /* Match icon height */
-  margin-bottom: 24px;  /* Match icon margin */
-  color: #485668;       /* Light grey for the arrow */
-  transform: rotate(90deg);
-  flex-shrink: 0;
+
+  margin-top: 105px;
+
+  gap: 6px;
 }
 
-/* --- DESKTOP LAYOUT --- */
-@media (min-width: 992px) {
-  .stepsWrapper {
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: space-between;
-  }
+.dashedLine {
+  width: 34px;
 
-  .stepItem {
-    flex: 1;
-    text-align: left;
-    align-items: flex-start;
+  border-top: 2px dashed;
+}
+
+.purpleDash {
+  border-color: #7d3cb5;
+}
+
+.greenDash {
+  border-color: #22c55e;
+}
+
+.purpleArrow {
+  color: #7d3cb5;
+}
+
+.greenArrow {
+  color: #22c55e;
+}
+
+/* =========================
+   GUIDE WRAPPER
+========================= */
+
+.guideWrapper {
+  display: grid;
+
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 20px;
+
+  max-width: 920px;
+
+  margin: auto;
+}
+
+/* =========================
+   GUIDE CARD
+========================= */
+
+.guideCard {
+  position: relative;
+
+  background: rgba(255,255,255,0.8);
+
+  border: 1px solid #ece8ff;
+
+  border-radius: 22px;
+
+  padding: 22px 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  overflow: hidden;
+
+  transition: 0.3s ease;
+}
+
+.guideCard:hover {
+  transform: translateY(-5px);
+
+  box-shadow:
+    0 16px 35px rgba(125, 60, 181, 0.08);
+}
+
+.guideLeft {
+  display: flex;
+  align-items: center;
+
+  gap: 16px;
+}
+
+.guideIcon {
+  width: 76px;
+  height: 76px;
+
+  border-radius: 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: 0.3s ease;
+}
+
+.guideCard:hover .guideIcon {
+  transform: scale(1.05);
+}
+
+.guideText h5 {
+  font-size: 18px;
+
+  font-weight: 800;
+
+  color: #7d3cb5;
+
+  margin-bottom: 8px;
+}
+
+.greenText {
+  color: #22c55e !important;
+}
+
+.guideText p {
+  font-size: 14px;
+
+  line-height: 1.8;
+
+  color: #667085;
+
+  margin: 0;
+}
+
+/* =========================
+   GUIDE ARROW
+========================= */
+
+.guideArrow {
+  width: 48px;
+  height: 48px;
+
+  border-radius: 50%;
+
+  border: 2px solid #7d3cb5;
+
+  background: transparent;
+
+  color: #7d3cb5;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: 0.3s ease;
+
+  z-index: 2;
+}
+
+.guideCard:hover .guideArrow {
+  background: #7d3cb5;
+
+  color: white;
+}
+
+.greenGuideArrow {
+  border-color: #22c55e;
+
+  color: #22c55e;
+}
+
+.guideCard:hover .greenGuideArrow {
+  background: #22c55e;
+
+  color: white;
+}
+
+/* =========================
+   GUIDE DOTS
+========================= */
+
+.guideDotsPurple,
+.guideDotsGreen {
+  position: absolute;
+
+  width: 100px;
+  height: 100px;
+
+  right: -20px;
+  bottom: -20px;
+
+  opacity: 0.12;
+
+  background-size: 12px 12px;
+}
+
+.guideDotsPurple {
+  background-image: radial-gradient(
+    circle,
+    #7d3cb5 1.8px,
+    transparent 1.8px
+  );
+}
+
+.guideDotsGreen {
+  background-image: radial-gradient(
+    circle,
+    #22c55e 1.8px,
+    transparent 1.8px
+  );
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1400px) {
+
+  .stepsWrapper {
+    flex-wrap: wrap;
   }
 
   .arrowWrapper {
-    transform: rotate(0deg);
-    flex: 0.5;
-    padding: 0 10px;
-  }
-
-  .arrowIcon {
-    transform: scaleX(1.3);
-    opacity: 0.6;
+    display: none;
   }
 }
 
-/* TABLET CLEANUP */
-@media (min-width: 768px) and (max-width: 991px) {
-  .stepsWrapper {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 40px;
+@media (max-width: 992px) {
+
+  .guideWrapper {
+    grid-template-columns: 1fr;
   }
-  .arrowWrapper { display: none; }
+}
+
+@media (max-width: 576px) {
+
+  .sectionWrapper {
+    padding: 50px 0;
+  }
+
+  .mainTitle {
+    font-size: 42px;
+  }
+
+  .stepsWrapper {
+    gap: 14px;
+  }
+
+  .stepCard {
+    width: 100%;
+  }
+
+  .guideCard {
+    flex-direction: column;
+    align-items: flex-start;
+
+    gap: 20px;
+  }
 }

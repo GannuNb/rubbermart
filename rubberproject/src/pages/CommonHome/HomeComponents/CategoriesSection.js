@@ -1,82 +1,187 @@
-import React from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Autoplay } from "swiper/modules";
-import { MoveRight } from "lucide-react"; 
-
-// Import Swiper styles
-import "swiper/css";
-import "swiper/css/navigation";
+import React, { useRef } from "react";
+import {
+  MoveRight,
+  Store,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 
 import tyreImg from "../../../assests/Tyre.jpeg";
+
 import styles from "./CategoriesSection.module.css";
 
 function CategoriesSection() {
-    const categories = [
-        { label: "Rubber Crumb" },
-        { label: "Baled Tyres PCR" },
-        { label: "Baled Tyres TBR" },
-        { label: "Mulch PCR" },
-        { label: "Three Piece PCR" },
-        { label: "Three Piece TBR" },
-        { label: "Shredds" },
-        { label: "Pyro Oil" },
-    ];
 
-    return (
-        <section className={styles.categoriesSection}>
-            <div className="container-fluid px-md-5">
-                {/* Header Section */}
-                <div className="d-flex justify-content-between align-items-end mb-4">
-                    <div>
-                        <span className={styles.topTag}>MARKETPLACE</span>
-                        <h2 className={styles.sectionHeading}>Explore Top Categories</h2>
-                    </div>
-                    <button className={styles.viewAllBtn}>
-                        View all <MoveRight size={14} className="ms-2" />
-                    </button>
-                </div>
+  const scrollRef = useRef(null);
 
-                {/* Slider Wrapper with safety padding */}
-                <div className={styles.sliderWrapper}>
-                    <Swiper
-                        modules={[Navigation, Autoplay]}
-                        autoplay={{ delay: 3500, disableOnInteraction: false }}
-                        loop={true}
-                        spaceBetween={15}
-                        slidesPerView={2.2}
-                        className={styles.swiperInstance} // Apply specific swiper class
-                        breakpoints={{
-                            768: { slidesPerView: 4.5 },
-                            1024: { slidesPerView: 5.5 }, 
-                            1440: { slidesPerView: 6.5 },
-                        }}
-                    >
-                        {categories.map((item, index) => (
-                            <SwiperSlide key={index} className={styles.swiperSlideCustom}>
-                                <div className={styles.categoryCard}>
-                                    <div className={styles.cardHeader}>
-                                        <div className={styles.imgContainer}>
-                                            <img 
-                                                src={tyreImg} 
-                                                alt={item.label} 
-                                                className={styles.categoryImg} 
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className={styles.cardFooter}>
-                                        <span className={styles.categoryLabel}>{item.label}</span>
-                                        <div className={styles.smallArrow}>
-                                            <MoveRight size={12} />
-                                        </div>
-                                    </div>
-                                </div>
-                            </SwiperSlide>
-                        ))}
-                    </Swiper>
-                </div>
+  const categories = [
+    {
+      label: "Baled Tyres PCR",
+      desc: "Passenger car radial tyres",
+    },
+    {
+      label: "Baled Tyres TBR",
+      desc: "Truck & bus radial tyres",
+    },
+    {
+      label: "Three Piece PCR",
+      desc: "Processed PCR rubber",
+    },
+    {
+      label: "Three Piece TBR",
+      desc: "Industrial TBR material",
+    },
+    {
+      label: "Shredds",
+      desc: "Premium tyre shredds",
+    },
+    {
+      label: "Pyro Oil",
+      desc: "Industrial pyrolysis oil",
+    },
+    {
+      label: "Pyro Steel",
+      desc: "Recovered industrial steel",
+    },
+  ];
+
+  const scrollLeft = () => {
+    scrollRef.current.scrollBy({
+      left: -320,
+      behavior: "smooth",
+    });
+  };
+
+  const scrollRight = () => {
+    scrollRef.current.scrollBy({
+      left: 320,
+      behavior: "smooth",
+    });
+  };
+
+  return (
+    <section className={styles.categoriesSection}>
+
+      <div className="container-fluid px-xl-5 px-lg-4 px-3">
+
+        {/* =========================
+            HEADER
+        ========================= */}
+        <div className={styles.topHeader}>
+
+          <div className={styles.leftContent}>
+
+            <div className={styles.topTag}>
+              <Store size={14} />
+              <span>Marketplace</span>
             </div>
-        </section>
-    );
+
+            <div className={styles.headingRow}>
+
+              <div>
+
+                <h2 className={styles.heading}>
+                  Explore <span>Top Categories</span>
+                </h2>
+
+                <p className={styles.subText}>
+                  Browse high-quality rubber derived products
+                  from verified global suppliers.
+                </p>
+
+              </div>
+
+              <button className={styles.viewAllBtn}>
+                View all Categories
+                <MoveRight size={16} />
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        {/* =========================
+            SLIDER HEADER
+        ========================= */}
+        <div className={styles.sliderTop}>
+
+          <div className={styles.sliderArrows}>
+
+            <button
+              className={styles.arrowControl}
+              onClick={scrollLeft}
+            >
+              <ChevronLeft size={18} />
+            </button>
+
+            <button
+              className={styles.arrowControl}
+              onClick={scrollRight}
+            >
+              <ChevronRight size={18} />
+            </button>
+
+          </div>
+
+        </div>
+
+        {/* =========================
+            HORIZONTAL CARDS
+        ========================= */}
+        <div
+          className={styles.categoriesSlider}
+          ref={scrollRef}
+        >
+
+          {categories.map((item, index) => (
+
+            <div
+              className={styles.categoryCard}
+              key={index}
+            >
+
+              {/* IMAGE */}
+              <div className={styles.imageWrapper}>
+
+                <img
+                  src={tyreImg}
+                  alt={item.label}
+                  className={styles.categoryImage}
+                />
+
+              </div>
+
+              {/* CONTENT */}
+              <div className={styles.cardContent}>
+
+                <h3>{item.label}</h3>
+
+                <p>{item.desc}</p>
+
+                <div className={styles.bottomRow}>
+
+                  <div className={styles.bottomLine}></div>
+
+                  <div className={styles.arrowBtn}>
+                    <MoveRight size={14} />
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          ))}
+
+        </div>
+
+      </div>
+
+    </section>
+  );
 }
 
 export default CategoriesSection;

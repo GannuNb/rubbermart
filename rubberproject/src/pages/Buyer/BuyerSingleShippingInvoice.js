@@ -145,6 +145,7 @@ const BuyerSingleShippingInvoice = () => {
 
       <ShipmentTrackingActionsSection
         shipment={shipment}
+        order={order}
       />
     </div>
   );

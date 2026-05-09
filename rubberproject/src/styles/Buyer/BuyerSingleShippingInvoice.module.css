@@ -656,19 +656,17 @@
 
 
 /* =========================
-   ITEMS TABLE
-========================= */
-/* =========================
    ITEMS CARD
 ========================= */
 
 .itemsCard {
   background: #ffffff;
-  border-radius: 14px;
-  padding: 20px;
+  border-radius: 18px;
+  padding: 22px;
   margin-bottom: 24px;
-  border: 1px solid #e7e2f3;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  border: 1px solid #ebe7f5;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+  overflow: hidden;
 }
 
 /* =========================
@@ -678,23 +676,21 @@
 .itemsHeader {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 16px;
+  gap: 10px;
+  margin-bottom: 18px;
 }
 
 .itemsIcon {
-  font-size: 16px;
+  font-size: 17px;
   color: #6d28d9;
-  display: flex;
-  align-items: center;
+  flex-shrink: 0;
 }
 
 .sectionTitle {
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 700;
-  color: #1f2937;
+  color: #111827;
   margin: 0;
-  line-height: 1;
 }
 
 /* =========================
@@ -704,36 +700,40 @@
 .tableWrapper {
   width: 100%;
   overflow-x: auto;
+  border-radius: 14px;
+  border: 1px solid #ece8f7;
 }
 
-/* Scrollbar (optional polish) */
+/* Smooth scrollbar */
+
 .tableWrapper::-webkit-scrollbar {
-  height: 6px;
+  height: 7px;
 }
 
 .tableWrapper::-webkit-scrollbar-thumb {
-  background: #d1d5db;
-  border-radius: 10px;
+  background: #d4d4d8;
+  border-radius: 20px;
 }
 
 /* =========================
-   TABLE GRID (FIXED STRUCTURE)
+   TABLE STRUCTURE
 ========================= */
 
 .tableHeader,
 .tableRow {
   display: grid;
 
-  /* ⭐ PERFECT COLUMN CONTROL */
-  grid-template-columns: 
-    minmax(220px, 2fr)
-    minmax(90px, 1fr)
-    minmax(90px, 1fr)
-    minmax(110px, 1fr)
-    minmax(130px, 1fr);
+  grid-template-columns:
+    minmax(260px, 2.2fr)
+    minmax(110px, 0.8fr)
+    minmax(110px, 0.8fr)
+    minmax(130px, 1fr)
+    minmax(150px, 1fr)
+    minmax(120px, 1fr)
+    minmax(150px, 1fr);
 
-  min-width: 700px; /* ⭐ forces scroll instead of breaking */
   align-items: center;
+  min-width: 1050px;
 }
 
 /* =========================
@@ -741,16 +741,17 @@
 ========================= */
 
 .tableHeader {
-  background: #f3f4f6;
-  padding: 12px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #4b5563;
-  border-radius: 8px 8px 0 0;
+  background: #f6f4fd;
+  padding: 15px 18px;
+  border-bottom: 1px solid #ece8f7;
 }
 
 .tableHeader div {
+  font-size: 13px;
+  font-weight: 700;
+  color: #5b6475;
   text-align: center;
+  white-space: nowrap;
 }
 
 .tableHeader div:first-child {
@@ -762,10 +763,13 @@
 ========================= */
 
 .tableRow {
-  padding: 14px 12px;
-  border: 1px solid #eee;
-  border-top: none;
+  padding: 16px 18px;
   background: #ffffff;
+  transition: background 0.2s ease;
+}
+
+.tableRow:hover {
+  background: #faf9ff;
 }
 
 /* =========================
@@ -775,24 +779,25 @@
 .itemDetails {
   display: flex;
   align-items: center;
-  gap: 10px;
-  min-width: 0; /* ⭐ prevents overflow */
+  gap: 14px;
+  min-width: 0;
 }
 
 .itemImage {
-  width: 55px;
-  height: 55px;
-  border-radius: 8px;
+  width: 62px;
+  height: 62px;
   object-fit: cover;
+  border-radius: 12px;
   border: 1px solid #ececec;
+  background: #f9fafb;
   flex-shrink: 0;
 }
 
 .itemDetails h4 {
   font-size: 14px;
-  margin: 0;
   font-weight: 700;
   color: #111827;
+  margin: 0 0 4px;
 
   overflow: hidden;
   text-overflow: ellipsis;
@@ -802,8 +807,8 @@
 .itemDetails p {
   font-size: 12px;
   color: #6b7280;
-  margin: 4px 0 0;
-  line-height: 1.4;
+  margin: 0;
+  line-height: 1.5;
 }
 
 /* =========================
@@ -812,21 +817,80 @@
 
 .centerCell {
   text-align: center;
+
   font-size: 14px;
   font-weight: 600;
   color: #374151;
 
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 /* =========================
-   MOBILE (NO BREAK, ONLY SCROLL)
+   PRICE HIGHLIGHT
+========================= */
+
+.amountCell {
+  color: #111827;
+  font-weight: 700;
+}
+
+/* =========================
+   MOBILE
 ========================= */
 
 @media (max-width: 768px) {
+  .itemsCard {
+    padding: 16px;
+    border-radius: 16px;
+  }
 
+  .sectionTitle {
+    font-size: 16px;
+  }
+
+  .tableHeader,
+  .tableRow {
+    min-width: 980px;
+  }
+
+  .tableHeader {
+    padding: 13px 14px;
+  }
+
+  .tableRow {
+    padding: 14px;
+  }
+
+  .tableHeader div {
+    font-size: 12px;
+  }
+
+  .centerCell {
+    font-size: 13px;
+  }
+
+  .itemImage {
+    width: 54px;
+    height: 54px;
+    border-radius: 10px;
+  }
+
+  .itemDetails h4 {
+    font-size: 13px;
+  }
+
+  .itemDetails p {
+    font-size: 11px;
+  }
+}
+
+/* =========================
+   EXTRA SMALL MOBILE
+========================= */
+
+@media (max-width: 480px) {
   .itemsCard {
     padding: 14px;
   }
@@ -835,16 +899,19 @@
     font-size: 15px;
   }
 
-  .itemImage {
-    width: 50px;
-    height: 50px;
+  .itemsHeader {
+    margin-bottom: 14px;
+  }
+
+  .tableHeader,
+  .tableRow {
+    min-width: 930px;
   }
 
   .centerCell {
-    font-size: 13px;
+    font-size: 12px;
   }
 }
-
     /* =========================
    BOTTOM SECTION
 ========================= */

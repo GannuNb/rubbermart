@@ -1,72 +1,227 @@
 import React from "react";
-import { UserPlus, Search, ClipboardList, Truck, CheckCircle2, MoveRight } from "lucide-react";
+
+import {
+  UserPlus,
+  Search,
+  ClipboardCheck,
+  CreditCard,
+  Truck,
+  MoveRight,
+  ShoppingBag,
+  Store,
+  Sparkles,
+} from "lucide-react";
+
 import styles from "./HowItWorksSection.module.css";
 
 function HowItWorksSection() {
+
   const steps = [
     {
-      icon: <UserPlus size={24} />,
-      title: "1. Get Started",
-      desc: "Create your profile in seconds. Register as a buyer to source materials or a seller to reach global rubber markets.",
+      icon: <UserPlus size={22} />,
+      title: "Get Started",
+      desc: "Create your profile and access global rubber markets as a buyer or seller.",
+      theme: "purple",
     },
+
     {
-      icon: <Search size={24} />,
-      title: "2. Explore & Connect",
-      desc: "Use advanced filters to find specific rubber grades, verified suppliers, and lucrative trade opportunities worldwide.",
+      icon: <Search size={22} />,
+      title: "Explore & Connect",
+      desc: "Find verified suppliers, products, and connect with buyers or sellers worldwide.",
+      theme: "green",
     },
+
     {
-      icon: <ClipboardList size={24} />,
-      title: "3. Order & Negotiate",
-      desc: "Communicate directly with partners to discuss specifications, negotiate pricing, and finalize secure digital contracts.",
+      icon: <ClipboardCheck size={22} />,
+      title: "Order Confirmed",
+      desc: "Buyer places the order and seller confirms quantity, pricing, and delivery details.",
+      theme: "purple",
     },
+
     {
-      icon: <Truck size={24} />,
-      title: "4. Ship & Track",
-      desc: "Benefit from integrated logistics. Monitor your shipment’s journey from the warehouse to your doorstep in real-time.",
+      icon: <CreditCard size={22} />,
+      title: "Payment",
+      desc: "Buyer securely makes the payment to our official bank account after confirmation.",
+      theme: "green",
     },
+
     {
-      icon: <CheckCircle2 size={24} />,
-      title: "5. Complete Trade",
-      desc: "Inspect your delivery and release payment securely. Leave feedback to maintain a trusted community ecosystem.",
+      icon: <Truck size={22} />,
+      title: "Ship & Track",
+      desc: "Seller ships the material and buyer tracks the shipment until delivery.",
+      theme: "purple",
     },
   ];
 
   return (
-    <section className={styles.sectionPadding}>
-      <div className="container-fluid px-md-5">
-        <div className={styles.mainContainer}>
-          <div className={styles.headerText}>
-            <h2 className={styles.title}>How It Works</h2>
-            <p className={styles.subtitle}>Our streamlined process ensures a secure and efficient trading experience.</p>
+    <section className={styles.sectionWrapper}>
+
+      <div className={styles.leftDots}></div>
+      <div className={styles.rightDots}></div>
+
+      <div className="container-fluid px-xl-5 px-lg-4 px-3">
+
+        {/* HEADER */}
+        <div className={styles.headerSection}>
+
+          <div className={styles.topBadge}>
+            <Sparkles size={13} />
+            <span>SIMPLE, SECURE & TRANSPARENT</span>
           </div>
 
-          <div className={styles.stepsWrapper}>
-            {steps.map((step, index) => (
-              <React.Fragment key={index}>
-                <div className={styles.stepItem}>
-                  <div className={styles.iconCircle}>
-                    {step.icon}
-                  </div>
-                  <div className={styles.stepContent}>
-                    <h5 className={styles.stepTitle}>{step.title}</h5>
-                    <p className={styles.stepDesc}>{step.desc}</p>
-                  </div>
-                </div>
-                
-                {index !== steps.length - 1 && (
-                  <div className={styles.arrowWrapper}>
-                    <MoveRight 
-                      className={styles.arrowIcon} 
-                      size={32} 
-                      strokeWidth={2.5} 
-                    />
-                  </div>
-                )}
-              </React.Fragment>
-            ))}
-          </div>
+          <h2 className={styles.mainTitle}>
+            How It <span>Works</span>
+          </h2>
+
+          <p className={styles.subTitle}>
+            Our streamlined process ensures a secure and efficient trading experience
+            for buyers and sellers.
+          </p>
+
         </div>
+
+        {/* STEPS */}
+        <div className={styles.stepsWrapper}>
+
+          {steps.map((step, index) => (
+
+            <React.Fragment key={index}>
+
+              <div className={styles.stepCard}>
+
+                <div
+                  className={`${styles.iconBox}
+                  ${
+                    step.theme === "green"
+                      ? styles.greenIcon
+                      : styles.purpleIcon
+                  }`}
+                >
+                  {step.icon}
+                </div>
+
+                <h4>{step.title}</h4>
+
+                <div
+                  className={`${styles.smallLine}
+                  ${
+                    step.theme === "green"
+                      ? styles.greenLine
+                      : styles.purpleLine
+                  }`}
+                ></div>
+
+                <p>{step.desc}</p>
+
+                <div
+                  className={`${styles.bottomLine}
+                  ${
+                    step.theme === "green"
+                      ? styles.greenBg
+                      : styles.purpleBg
+                  }`}
+                ></div>
+
+              </div>
+
+              {/* DASHED ARROW */}
+              {index !== steps.length - 1 && (
+
+                <div className={styles.arrowWrapper}>
+
+                  <div
+                    className={`${styles.dashedLine}
+                    ${
+                      index % 2 === 0
+                        ? styles.purpleDash
+                        : styles.greenDash
+                    }`}
+                  ></div>
+
+                  <MoveRight
+                    size={24}
+                    className={
+                      index % 2 === 0
+                        ? styles.purpleArrow
+                        : styles.greenArrow
+                    }
+                  />
+
+                </div>
+
+              )}
+
+            </React.Fragment>
+
+          ))}
+
+        </div>
+
+        {/* GUIDE CARDS */}
+        <div className={styles.guideWrapper}>
+
+          {/* BUYER */}
+          <div className={styles.guideCard}>
+
+            <div className={styles.guideLeft}>
+
+              <div className={`${styles.guideIcon} ${styles.purpleIcon}`}>
+                <ShoppingBag size={24} />
+              </div>
+
+              <div className={styles.guideText}>
+                <h5>Buyer Guide</h5>
+
+                <p>
+                  Learn how to buy materials
+                  easily and securely.
+                </p>
+              </div>
+
+            </div>
+
+            <button className={styles.guideArrow}>
+              <MoveRight size={18} />
+            </button>
+
+            <div className={styles.guideDotsPurple}></div>
+
+          </div>
+
+          {/* SELLER */}
+          <div className={styles.guideCard}>
+
+            <div className={styles.guideLeft}>
+
+              <div className={`${styles.guideIcon} ${styles.greenIcon}`}>
+                <Store size={24} />
+              </div>
+
+              <div className={styles.guideText}>
+                <h5 className={styles.greenText}>
+                  Seller Guide
+                </h5>
+
+                <p>
+                  Learn how to sell and grow
+                  your business globally.
+                </p>
+              </div>
+
+            </div>
+
+            <button className={`${styles.guideArrow} ${styles.greenGuideArrow}`}>
+              <MoveRight size={18} />
+            </button>
+
+            <div className={styles.guideDotsGreen}></div>
+
+          </div>
+
+        </div>
+
       </div>
+
     </section>
   );
 }

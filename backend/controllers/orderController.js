@@ -7,6 +7,7 @@ import generateInvoicePdf from "../utils/pdf/generateInvoicePdf.js";
 import sendOrderInvoiceEmail from "../utils/sendOrderInvoiceEmail.js";
 import generateShipmentInvoiceId from "../utils/generateShipmentInvoiceId.js";
 import generateShippingInvoicePdf from "../utils/pdf/shipping/generateShippingInvoicePdf.js";
+import generateBuyReportPdf from "../utils/pdf/buyReport/generateBuyReportPdf.js";
 
 export const createOrder = async (req, res) => {
   try {
@@ -976,6 +977,89 @@ export const downloadShippingInvoice = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Failed to download shipping invoice",
+      error: error.message,
+    });
+  }
+};
+
+export const downloadBuyReport = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+
+    /* =========================
+       FETCH COMPLETE ORDER
+    ========================= */
+
+    const order = await Order.findById(orderId)
+      .populate(
+        "buyer",
+        `
+          fullName
+          email
+          businessProfile.companyName
+          businessProfile.phoneNumber
+          businessProfile.email
+          businessProfile.gstNumber
+          businessProfile.billingAddress
+          businessProfile.shippingAddress
+        `
+      )
+      .populate(
+        "seller",
+        `
+          fullName
+          email
+          businessProfile.companyName
+          businessProfile.phoneNumber
+          businessProfile.email
+          businessProfile.gstNumber
+          businessProfile.billingAddress
+          businessProfile.shippingAddress
+        `
+      );
+
+    /* =========================
+       ORDER NOT FOUND
+    ========================= */
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    /* =========================
+       GENERATE BUY REPORT PDF
+    ========================= */
+
+    const pdfBuffer =
+      await generateBuyReportPdf(order);
+
+    /* =========================
+       RESPONSE HEADERS
+    ========================= */
+
+    res.setHeader(
+      "Content-Type",
+      "application/pdf"
+    );
+
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=Buy-Report-${order.orderId}.pdf`
+    );
+
+    return res.send(pdfBuffer);
+  } catch (error) {
+    console.log(
+      "Download Buy Report Error:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to download buy report",
       error: error.message,
     });
   }
