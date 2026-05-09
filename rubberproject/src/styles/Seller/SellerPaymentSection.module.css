@@ -1,66 +1,198 @@
 .section {
   background: #ffffff;
-  padding: 20px;
+  border: 1px solid #ece7f7;
   border-radius: 14px;
+  padding: 18px;
   margin-bottom: 20px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
+/* Heading */
 .heading {
-  font-size: 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
   font-weight: 700;
-  color: #0f172a;
+  color: #111827;
   margin-bottom: 18px;
 }
 
-.summaryGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
+.headingIcon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #f3e8ff;
+  color: #7c3aed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
 }
 
-.summaryCard {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 18px;
+/* Main layout */
+.paymentLayout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+/* Left side */
+.leftPanel {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 14px;
 }
 
-.summaryCard span {
-  font-size: 14px;
-  color: #64748b;
+.amountCard {
+  background: #ffffff;
+  color: #1e293b;
+  padding: 20px;
+  border-radius: 14px;
+  border-left: 4px solid #7c3aed;
+  border: 1px solid #eee7ff;
 }
 
-.summaryCard strong {
-  font-size: 20px;
-  color: #0f172a;
+.amountCard span {
+  font-size: 12px;
+  opacity: 0.9;
 }
 
+.amountCard h3 {
+  font-size: 26px;
+  font-weight: 700;
+  margin-top: 6px;
+}
+
+/* Received + Remaining */
+.dualRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.smallCard {
+  background: #faf8ff;
+  border: 1px solid #eee7ff;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.smallCard span {
+  display: block;
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 6px;
+}
+
+.smallCard strong {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* Right status card */
+.rightPanel {
+  display: flex;
+}
+
+.statusCard {
+  width: 100%;
+  background: #faf7ff;
+  border: 1px solid #eee7ff;
+  border-radius: 14px;
+  padding: 18px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.statusIcon {
+  font-size: 26px;
+  color: #7c3aed;
+  margin: 0 auto 10px;
+}
+
+.statusCard span {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.statusCard h4 {
+  font-size: 18px;
+  color: #7c3aed;
+  font-weight: 700;
+  margin: 8px 0;
+}
+
+.statusCard p {
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+/* Receipts */
 .receiptsSection {
-  margin-top: 30px;
+  margin-top: 6px;
 }
 
 .receiptsHeading {
-  font-size: 18px;
-  font-weight: 600;
-  color: #0f172a;
-  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 14px;
 }
 
 .receiptsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
 }
 
-.noReceipts {
-  background: #f8fafc;
-  border: 1px dashed #cbd5e1;
-  border-radius: 10px;
-  padding: 18px;
+/* Empty receipts */
+.emptyReceiptBox {
+  border: 2px dashed #e9d5ff;
+  border-radius: 14px;
+  background: #faf7ff;
+  padding: 26px 16px;
   text-align: center;
-  color: #64748b;
+}
+
+.emptyIcon {
+  font-size: 26px;
+  color: #7c3aed;
+  margin-bottom: 10px;
+}
+
+.emptyReceiptBox h4 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 6px;
+}
+
+.emptyReceiptBox p {
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .paymentLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .dualRow {
+    grid-template-columns: 1fr;
+  }
+
+  .section {
+    padding: 16px;
+  }
 }

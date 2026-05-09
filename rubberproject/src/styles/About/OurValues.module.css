@@ -1,0 +1,156 @@
+/* src/styles/About/OurValues.module.css */
+
+.valuesSection {
+  width: 100%;
+  padding: 75px 0;
+  background: #ffffff;
+}
+
+.container {
+  width: 96%;
+  max-width: 1450px;
+  margin: 0 auto;
+}
+
+/* HEADING */
+
+.centerHeading {
+  text-align: center;
+  margin-bottom: 55px;
+}
+
+.sectionTag {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 800;
+  color: #7c3aed;
+  letter-spacing: 1.5px;
+  margin-bottom: 14px;
+}
+
+.centerHeading h2 {
+  font-size: 44px;
+  line-height: 1.15;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -1.3px;
+}
+
+/* GRID */
+
+.valuesGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 24px;
+}
+
+/* CARD */
+
+.valueCard {
+  padding: 34px 24px;
+  border-radius: 24px;
+
+  text-align: center;
+
+  border: 1px solid #ececec;
+  background: #ffffff;
+
+  transition: all 0.3s ease;
+}
+
+.valueCard:hover {
+  transform: translateY(-6px);
+  border-color: #e8dcff;
+  box-shadow: 0 18px 40px rgba(124, 58, 237, 0.08);
+}
+
+/* ICON */
+
+.iconBox {
+  width: 72px;
+  height: 72px;
+
+  margin: 0 auto 22px;
+
+  border-radius: 20px;
+  background: #f5efff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #7c3aed;
+}
+
+/* TEXT */
+
+.valueCard h3 {
+  font-size: 20px;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 14px;
+}
+
+.valueCard p {
+  font-size: 15px;
+  line-height: 1.9;
+  color: #5f6778;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1280px) {
+  .valuesGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .centerHeading h2 {
+    font-size: 38px;
+  }
+
+  .valuesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .valuesSection {
+    padding: 60px 0;
+  }
+
+  .centerHeading {
+    margin-bottom: 40px;
+  }
+
+  .centerHeading h2 {
+    font-size: 32px;
+  }
+
+  .valuesGrid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .valueCard {
+    padding: 28px 22px;
+    border-radius: 20px;
+  }
+
+  .iconBox {
+    width: 62px;
+    height: 62px;
+    border-radius: 18px;
+    margin-bottom: 18px;
+  }
+
+  .valueCard h3 {
+    font-size: 18px;
+  }
+
+  .valueCard p {
+    font-size: 14px;
+    line-height: 1.8;
+  }
+}

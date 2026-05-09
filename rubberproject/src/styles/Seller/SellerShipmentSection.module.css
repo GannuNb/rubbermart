@@ -1,29 +1,31 @@
 .section {
   background: #ffffff;
-  padding: 20px;
-  border-radius: 14px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  border: 1px solid #ece7f7;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
 }
 
 .heading {
   font-size: 22px;
   font-weight: 700;
-  color: #0f172a;
-  margin-bottom: 18px;
+  color: #1f1f1f;
+  margin-bottom: 22px;
 }
 
 .shipmentGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 22px;
 }
 
 .empty {
-  background: #f8fafc;
-  border: 1px dashed #cbd5e1;
-  border-radius: 10px;
-  padding: 18px;
+  padding: 30px;
+  border: 1px dashed #d9cfff;
+  border-radius: 14px;
   text-align: center;
-  color: #64748b;
+  color: #7a7a7a;
+  background: #faf8ff;
+  font-size: 14px;
 }

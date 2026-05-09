@@ -1,0 +1,18 @@
+.contactPage {
+  padding: 32px;
+  background: #f8f7fc;
+  min-height: 100vh;
+  font-family: "Inter", sans-serif;
+}
+
+.breadcrumb {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 22px;
+}
+
+@media (max-width: 768px) {
+  .contactPage {
+    padding: 18px;
+  }
+}

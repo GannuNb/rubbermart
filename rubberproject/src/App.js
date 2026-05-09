@@ -6,7 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import CommonHome from "./pages/CommonHome/CommonHome";
 import Signup from "./pages/Signup";
 import BusinessProfile from "./pages/BusinessProfile";
-import About from "./pages/About";
+import About from "./pages/About/About";
 import Login from "./pages/Login";
 
 //components
@@ -50,6 +50,7 @@ import AdminOrderDetails from "./pages/admin/AdminOrderDetails";
 import AdminAllInvoices from "./pages/admin/AdminAllInvoices";
 import AdminSingleShippingInvoice from "./pages/admin/AdminSingleShippingInvoice";
 import Footer from "./components/footer/Footer";
+import Contactus from "./pages/Contactus/Contactus";
 
 function AppContent() {
   const location = useLocation();
@@ -68,6 +69,7 @@ function AppContent() {
         <Route path="/login" element={<Login />} />
         <Route path="/business-profile" element={<BusinessProfile />} />
         <Route path="/about" element={<About />} />
+        <Route path="/contactus" element={<Contactus />} />
 
 
         {/* buyer */}
