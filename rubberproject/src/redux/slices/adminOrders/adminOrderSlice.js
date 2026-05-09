@@ -6,7 +6,6 @@ import { getAdminAllOrders } from "./adminOrderThunk";
 import { getAdminSingleOrderDetails } from "./adminSingleOrderThunk";
 import { approveBuyerPayment } from "./approveBuyerPaymentThunk";
 import { uploadAdminToSellerPayment } from "./uploadAdminToSellerPaymentThunk";
-import { approveShipmentByAdmin } from "./approveShipmentThunk";
 import { markShipmentDeliveredByAdmin } from "./markShipmentDeliveredThunk";
 
 const initialState = {
@@ -56,8 +55,6 @@ const initialState = {
      SHIPMENT ACTIONS
   ========================= */
 
-  approveShipmentLoading: false,
-  approveShipmentError: null,
 
   markDeliveredLoading: false,
   markDeliveredError: null,
@@ -87,12 +84,6 @@ const adminOrderSlice = createSlice({
         null;
     },
 
-    clearApproveShipmentError: (
-      state
-    ) => {
-      state.approveShipmentError =
-        null;
-    },
 
     clearMarkDeliveredError: (
       state
@@ -252,42 +243,6 @@ const adminOrderSlice = createSlice({
         }
       )
 
-      /* =========================
-         APPROVE SHIPMENT
-      ========================= */
-
-      .addCase(
-        approveShipmentByAdmin.pending,
-        (state) => {
-          state.approveShipmentLoading =
-            true;
-
-          state.approveShipmentError =
-            null;
-        }
-      )
-
-      .addCase(
-        approveShipmentByAdmin.fulfilled,
-        (state, action) => {
-          state.approveShipmentLoading =
-            false;
-
-          state.singleOrder =
-            action.payload.order || null;
-        }
-      )
-
-      .addCase(
-        approveShipmentByAdmin.rejected,
-        (state, action) => {
-          state.approveShipmentLoading =
-            false;
-
-          state.approveShipmentError =
-            action.payload;
-        }
-      )
 
       /* =========================
          MARK DELIVERED
@@ -333,7 +288,6 @@ export const {
   clearSingleOrderError,
   clearApprovePaymentError,
   clearUploadSellerPaymentError,
-  clearApproveShipmentError,
   clearMarkDeliveredError,
 } = adminOrderSlice.actions;
 

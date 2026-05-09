@@ -682,7 +682,7 @@ export const addShipmentToOrder = async (req, res) => {
     return res.status(200).json({
       success: true,
       message:
-        "Shipment details uploaded successfully. Waiting for admin approval.",
+        "Shipment details uploaded successfully.",
       shipments:
         updatedOrder.shipments || [],
       orderStatus:
@@ -1295,10 +1295,6 @@ export const getAdminSingleOrderDetails = async (req, res) => {
         "sellerPaymentReceipts.verifiedBy",
         "fullName"
       )
-      .populate(
-        "shipments.approvedBy",
-        "fullName"
-      );
 
     if (!order) {
       return res.status(404).json({
@@ -1447,10 +1443,7 @@ export const approveBuyerPayment = async (req, res) => {
         "sellerPaymentReceipts.verifiedBy",
         "fullName"
       )
-      .populate(
-        "shipments.approvedBy",
-        "fullName"
-      );
+
 
     return res.status(200).json({
       success: true,
@@ -1613,10 +1606,6 @@ export const uploadAdminToSellerPayment = async (req, res) => {
         "sellerPaymentReceipts.verifiedBy",
         "fullName"
       )
-      .populate(
-        "shipments.approvedBy",
-        "fullName"
-      );
 
     return res.status(200).json({
       success: true,
@@ -1639,98 +1628,98 @@ export const uploadAdminToSellerPayment = async (req, res) => {
 
 
 
-export const approveShipmentByAdmin = async (
-  req,
-  res
-) => {
-  try {
-    const { orderId, shipmentId } =
-      req.params;
+// export const approveShipmentByAdmin = async (
+//   req,
+//   res
+// ) => {
+//   try {
+//     const { orderId, shipmentId } =
+//       req.params;
 
-    const adminId = req.user._id;
+//     const adminId = req.user._id;
 
-    const order = await Order.findOne({
-      _id: orderId,
-      isDeleted: false,
-    });
+//     const order = await Order.findOne({
+//       _id: orderId,
+//       isDeleted: false,
+//     });
 
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: "Order not found",
-      });
-    }
+//     if (!order) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Order not found",
+//       });
+//     }
 
-    const shipment =
-      order.shipments.id(shipmentId);
+//     const shipment =
+//       order.shipments.id(shipmentId);
 
-    if (!shipment) {
-      return res.status(404).json({
-        success: false,
-        message: "Shipment not found",
-      });
-    }
+//     if (!shipment) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Shipment not found",
+//       });
+//     }
 
-    if (shipment.approvedByAdmin) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Shipment already approved",
-      });
-    }
+//     if (shipment.approvedByAdmin) {
+//       return res.status(400).json({
+//         success: false,
+//         message:
+//           "Shipment already approved",
+//       });
+//     }
 
-    /* =========================
-       APPROVE SHIPMENT
-    ========================= */
+//     /* =========================
+//        APPROVE SHIPMENT
+//     ========================= */
 
-    shipment.approvedByAdmin = true;
-    shipment.approvedBy = adminId;
-    shipment.approvedAt = new Date();
-    shipment.shipmentStatus =
-      "approved_by_admin";
+//     shipment.approvedByAdmin = true;
+//     shipment.approvedBy = adminId;
+//     shipment.approvedAt = new Date();
+//     shipment.shipmentStatus =
+//       "approved_by_admin";
 
-    /* =========================
-       ORDER STATUS UPDATE
-    ========================= */
+//     /* =========================
+//        ORDER STATUS UPDATE
+//     ========================= */
 
-    const approvedShipments =
-      order.shipments.filter(
-        (item) =>
-          item.approvedByAdmin === true
-      );
+//     const approvedShipments =
+//       order.shipments.filter(
+//         (item) =>
+//           item.approvedByAdmin === true
+//       );
 
-    if (
-      approvedShipments.length > 0 &&
-      order.orderStatus ===
-        "seller_confirmed"
-    ) {
-      order.orderStatus =
-        "partially_shipped";
-    }
+//     if (
+//       approvedShipments.length > 0 &&
+//       order.orderStatus ===
+//         "seller_confirmed"
+//     ) {
+//       order.orderStatus =
+//         "partially_shipped";
+//     }
 
-    await order.save();
+//     await order.save();
 
-    return res.status(200).json({
-      success: true,
-      message:
-        "Shipment approved successfully",
-      order,
-      shipment,
-    });
-  } catch (error) {
-    console.log(
-      "Approve Shipment Error:",
-      error
-    );
+//     return res.status(200).json({
+//       success: true,
+//       message:
+//         "Shipment approved successfully",
+//       order,
+//       shipment,
+//     });
+//   } catch (error) {
+//     console.log(
+//       "Approve Shipment Error:",
+//       error
+//     );
 
-    return res.status(500).json({
-      success: false,
-      message:
-        "Failed to approve shipment",
-      error: error.message,
-    });
-  }
-};
+//     return res.status(500).json({
+//       success: false,
+//       message:
+//         "Failed to approve shipment",
+//       error: error.message,
+//     });
+//   }
+// };
 
 
 export const markShipmentDeliveredByAdmin = async (
@@ -1763,13 +1752,6 @@ export const markShipmentDeliveredByAdmin = async (
       });
     }
 
-    if (!shipment.approvedByAdmin) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Approve shipment before delivery",
-      });
-    }
 
     if (
       shipment.shipmentStatus ===

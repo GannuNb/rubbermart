@@ -1,16 +1,11 @@
 import React from "react";
-import {
-  FaCheck,
-  FaTruck,
-} from "react-icons/fa";
+import {  FaTruck,} from "react-icons/fa";
 import {
   useDispatch,
   useSelector,
 } from "react-redux";
 
-import {
-  approveShipmentByAdmin,
-} from "../../../redux/slices/adminOrders/approveShipmentThunk";
+
 
 import {
   markShipmentDeliveredByAdmin,
@@ -26,7 +21,6 @@ const AdminShipmentActionsCard = ({
 
   const {
     singleOrder,
-    approveShipmentLoading,
     markDeliveredLoading,
   } = useSelector(
     (state) => state.adminOrders
@@ -41,21 +35,13 @@ const AdminShipmentActionsCard = ({
       (item) => item?._id === shipment?._id
     ) || shipment;
 
-  const isApproved =
-    latestShipment?.approvedByAdmin === true;
+
 
   const isDelivered =
     latestShipment?.shipmentStatus ===
     "delivered";
 
-  const handleApproveShipment = () => {
-    dispatch(
-      approveShipmentByAdmin({
-        orderId: order?._id,
-        shipmentId: shipment?._id,
-      })
-    );
-  };
+
 
   const handleMarkDelivered = () => {
     dispatch(
@@ -73,31 +59,13 @@ const AdminShipmentActionsCard = ({
       </h3>
 
       <div className={styles.actionsRow}>
-        {/* Approve Shipment */}
-        <button
-          className={styles.approveBtn}
-          onClick={handleApproveShipment}
-          disabled={
-            isApproved ||
-            isDelivered ||
-            approveShipmentLoading
-          }
-        >
-          <FaCheck />
 
-          {approveShipmentLoading
-            ? "Approving..."
-            : isApproved
-            ? "Shipment Approved"
-            : "Approve Shipment"}
-        </button>
 
         {/* Mark Delivered */}
         <button
           className={styles.deliverBtn}
           onClick={handleMarkDelivered}
           disabled={
-            !isApproved ||
             isDelivered ||
             markDeliveredLoading
           }

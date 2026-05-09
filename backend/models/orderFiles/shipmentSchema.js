@@ -35,26 +35,12 @@ const shipmentSchema = new mongoose.Schema(
       enum: [
         "pending",
         "shipped",
-        "approved_by_admin",
         "delivered",
         "rejected",
       ],
       default: "pending",
     },
 
-    approvedByAdmin: {
-      type: Boolean,
-      default: false,
-    },
-
-    approvedBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-
-    approvedAt: {
-      type: Date,
-    },
 
     shipmentFrom: {
       type: String,
