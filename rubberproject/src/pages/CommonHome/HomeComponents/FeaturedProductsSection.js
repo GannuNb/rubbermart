@@ -17,7 +17,7 @@ import styles from "./FeaturedProductsSection.module.css";
 
 import bgImage from "../../../assests/fp7.png";
 
-import tyreImg from "../../../assests/Tyre.jpeg";
+import tyreImg from "../../../assests/categoryimages/Tyre.jpeg";
 
 function FeaturedProductsSection() {
 

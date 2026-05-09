@@ -1,6 +1,7 @@
 import React from "react";
 import PaymentReceiptCard from "./PaymentReceiptCard";
 import styles from "../../styles/Seller/SellerPaymentSection.module.css";
+
 import {
   FiCreditCard,
   FiCheckCircle,
@@ -8,74 +9,120 @@ import {
   FiFileText,
 } from "react-icons/fi";
 
-const SellerPaymentSection = ({ selectedOrder }) => {
+const SellerPaymentSection = ({
+  selectedOrder,
+}) => {
   return (
     <div className={styles.section}>
       <h2 className={styles.heading}>
         <span className={styles.headingIcon}>
           <FiCreditCard />
         </span>
-        Payment Details
+
+        Seller Payment Details
       </h2>
 
       <div className={styles.paymentLayout}>
-        {/* Left Summary */}
+        {/* LEFT SUMMARY */}
+
         <div className={styles.leftPanel}>
           <div className={styles.amountCard}>
             <span>Total Amount</span>
-            <h3>₹ {selectedOrder.totalAmount || 0}</h3>
+
+            <h3>
+              ₹ {selectedOrder.totalAmount || 0}
+            </h3>
           </div>
 
           <div className={styles.dualRow}>
-            <div className={styles.smallCard}>
-              <span>Received</span>
-              <strong>₹ {selectedOrder.buyerPaidAmount || 0}</strong>
-            </div>
+            {/* RECEIVED */}
 
             <div className={styles.smallCard}>
-              <span>Remaining</span>
-              <strong>₹ {selectedOrder.buyerPendingAmount || 0}</strong>
+              <span>Received From Admin</span>
+
+              <strong>
+                ₹{" "}
+                {selectedOrder.sellerPaidAmount ||
+                  0}
+              </strong>
+            </div>
+
+            {/* REMAINING */}
+
+            <div className={styles.smallCard}>
+              <span>Pending From Admin</span>
+
+              <strong>
+                ₹{" "}
+                {selectedOrder.sellerPendingAmount ||
+                  0}
+              </strong>
             </div>
           </div>
         </div>
 
-        {/* Right Status */}
+        {/* RIGHT STATUS */}
+
         <div className={styles.rightPanel}>
           <div className={styles.statusCard}>
-            <FiCheckCircle className={styles.statusIcon} />
+            <FiCheckCircle
+              className={styles.statusIcon}
+            />
 
             <span>Payment Status</span>
 
-            <h4>{selectedOrder.buyerPaymentStatus || "Pending"}</h4>
+            <h4>
+              {selectedOrder.sellerPaymentStatus ||
+                "Pending"}
+            </h4>
 
-            <p>Track buyer payment progress and receipts.</p>
+            <p>
+              Track payments received from admin.
+            </p>
           </div>
         </div>
       </div>
 
-      {/* Receipts */}
+      {/* RECEIPTS */}
+
       <div className={styles.receiptsSection}>
         <h3 className={styles.receiptsHeading}>
           <FiFileText />
-          Payment Receipts
+
+          Seller Payment Receipts
         </h3>
 
-        {selectedOrder.buyerPaymentReceipts?.length > 0 ? (
+        {selectedOrder
+          .sellerPaymentReceipts?.length >
+        0 ? (
           <div className={styles.receiptsGrid}>
-            {selectedOrder.buyerPaymentReceipts.map((receipt) => (
-              <PaymentReceiptCard
-                key={receipt._id}
-                receipt={receipt}
-              />
-            ))}
+            {selectedOrder.sellerPaymentReceipts.map(
+              (receipt) => (
+                <PaymentReceiptCard
+                  key={receipt._id}
+                  receipt={receipt}
+                />
+              )
+            )}
           </div>
         ) : (
-          <div className={styles.emptyReceiptBox}>
-            <FiClock className={styles.emptyIcon} />
-            <h4>No Payment Receipts Yet</h4>
+          <div
+            className={
+              styles.emptyReceiptBox
+            }
+          >
+            <FiClock
+              className={styles.emptyIcon}
+            />
+
+            <h4>
+              No Seller Payments Yet
+            </h4>
+
             <p>
-              Buyer uploaded payment receipts will appear here
-              once submitted.
+              Admin payment receipts will
+              appear here once payment is
+              sent.
             </p>
           </div>
         )}

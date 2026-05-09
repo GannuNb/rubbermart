@@ -5,7 +5,7 @@ import { protectAdmin, protectUser } from "../middlewares/authMiddleware.js";
 import uploadDocuments from "../middlewares/uploadDocuments.js";
 import { createOrder,getSellerOrders,  getSellerSingleOrder,  confirmSellerOrder,rejectSellerOrder,addShipmentToOrder,getBuyerOrders,
     getBuyerSingleOrder, uploadBuyerPayment ,getAdminAllOrders,getAdminSingleOrderDetails,approveBuyerPayment, uploadAdminToSellerPayment,
-      markShipmentDeliveredByAdmin,downloadProformaInvoice,downloadShippingInvoice,downloadBuyReport, } from "../controllers/orderController.js";
+      markShipmentDeliveredByAdmin,downloadProformaInvoice,downloadShippingInvoice,downloadBuyReport,markShipmentDeliveredBySeller, } from "../controllers/orderController.js";
 
 const router = express.Router();
 
@@ -27,6 +27,7 @@ router.get("/seller-orders/:orderId",  protectUser,  getSellerSingleOrder);
 router.put("/seller-orders/:orderId/confirm",  protectUser,  confirmSellerOrder);
 router.put("/seller-orders/:orderId/reject",  protectUser,  rejectSellerOrder);
 router.post("/seller-orders/:orderId/shipment",  protectUser,  uploadDocuments.single("shipmentFile"),  addShipmentToOrder);
+router.put("/seller-orders/:orderId/shipment/:shipmentId/delivered",  protectUser,  markShipmentDeliveredBySeller);
 
 
 //admin

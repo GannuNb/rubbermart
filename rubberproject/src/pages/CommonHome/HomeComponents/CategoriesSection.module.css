@@ -145,6 +145,8 @@
   justify-content: center;
 
   transition: 0.3s ease;
+
+  cursor: pointer;
 }
 
 .arrowControl:hover {
@@ -179,7 +181,9 @@
 ========================= */
 
 .categoryCard {
+  width: 255px;
   min-width: 255px;
+  max-width: 255px;
 
   background: rgba(255,255,255,0.92);
 
@@ -209,14 +213,18 @@
 
 .imageWrapper {
   padding: 14px 14px 0;
+
+  width: 100%;
+  height: 180px;
+
+  overflow: hidden;
 }
 
 .categoryImage {
   width: 100%;
+  height: 100%;
 
-  height: 150px;
-
-  object-fit: contain;
+  object-fit: cover;
 
   border-radius: 20px;
 
@@ -226,7 +234,15 @@
     #f4ecff 100%
   );
 
-  padding: 14px;
+  padding: 15px;
+
+  display: block;
+
+  transition: 0.35s ease;
+}
+
+.categoryCard:hover .categoryImage {
+  transform: scale(1.03);
 }
 
 /* =========================
@@ -341,7 +357,13 @@
   }
 
   .categoryCard {
+    width: 230px;
     min-width: 230px;
+    max-width: 230px;
+  }
+
+  .imageWrapper {
+    height: 165px;
   }
 }
 
@@ -372,11 +394,13 @@
   }
 
   .categoryCard {
+    width: 200px;
     min-width: 200px;
+    max-width: 200px;
   }
 
-  .categoryImage {
-    height: 120px;
+  .imageWrapper {
+    height: 135px;
   }
 
   .cardContent {

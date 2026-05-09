@@ -5,6 +5,7 @@ import {
   confirmSellerOrderThunk,
   rejectSellerOrderThunk,
   addShipmentToOrderThunk,
+  markShipmentDeliveredBySellerThunk,
 } from "./sellerOrderThunk";
 
 const initialState = {
@@ -28,6 +29,10 @@ const initialState = {
   shipmentLoading: false,
   shipmentError: null,
   shipmentSuccess: null,
+
+  markDeliveredLoading: false,
+  markDeliveredError: null,
+  markDeliveredSuccess: null,
 };
 
 const sellerOrderSlice = createSlice({
@@ -41,6 +46,8 @@ const sellerOrderSlice = createSlice({
       state.rejectOrderSuccess = null;
       state.shipmentError = null;
       state.shipmentSuccess = null;
+      state.markDeliveredError = null;
+      state.markDeliveredSuccess = null;
     },
 
     clearSelectedOrder: (state) => {
@@ -92,7 +99,7 @@ const sellerOrderSlice = createSlice({
         state.selectedOrder = action.payload;
 
         state.sellerOrders = state.sellerOrders.map((order) =>
-          order._id === action.payload._id ? action.payload : order
+          order._id === action.payload._id ? action.payload : order,
         );
       })
       .addCase(confirmSellerOrderThunk.rejected, (state, action) => {
@@ -112,7 +119,7 @@ const sellerOrderSlice = createSlice({
         state.selectedOrder = action.payload;
 
         state.sellerOrders = state.sellerOrders.map((order) =>
-          order._id === action.payload._id ? action.payload : order
+          order._id === action.payload._id ? action.payload : order,
         );
       })
       .addCase(rejectSellerOrderThunk.rejected, (state, action) => {
@@ -137,6 +144,34 @@ const sellerOrderSlice = createSlice({
       .addCase(addShipmentToOrderThunk.rejected, (state, action) => {
         state.shipmentLoading = false;
         state.shipmentError = action.payload;
+      })
+      /* =========================
+            MARK DELIVERED
+         ========================= */
+
+      .addCase(markShipmentDeliveredBySellerThunk.pending, (state) => {
+        state.markDeliveredLoading = true;
+
+        state.markDeliveredError = null;
+
+        state.markDeliveredSuccess = null;
+      })
+
+      .addCase(
+        markShipmentDeliveredBySellerThunk.fulfilled,
+        (state, action) => {
+          state.markDeliveredLoading = false;
+
+          state.markDeliveredSuccess = "Shipment marked as delivered";
+
+          state.selectedOrder = action.payload;
+        },
+      )
+
+      .addCase(markShipmentDeliveredBySellerThunk.rejected, (state, action) => {
+        state.markDeliveredLoading = false;
+
+        state.markDeliveredError = action.payload;
       });
   },
 });

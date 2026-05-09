@@ -19,30 +19,29 @@ const WhoWeAreSection = () => {
   const features = [
     {
       icon: <ShieldCheck size={26} />,
-      title: "Trusted Platform",
-      desc: "Verified sellers and buyers ensuring secure and reliable B2B transactions across the recycled rubber industry.",
+      title: "Trusted Marketplace",
+      desc: "Verified buyers and sellers ensuring secure and reliable B2B transactions across the rubber scrap industry.",
     },
     {
       icon: <Globe size={26} />,
-      title: "Global Reach",
-      desc: "Connecting businesses across 50+ countries with seamless international sourcing and trade opportunities.",
+      title: "Pan India Network",
+      desc: "Connecting rubber businesses, recyclers, traders, and industries across multiple states in India.",
     },
     {
       icon: <Leaf size={26} />,
-      title: "Sustainability Focus",
-      desc: "Promoting eco-friendly recycled rubber solutions that support a greener and more sustainable future.",
+      title: "Sustainability Driven",
+      desc: "Promoting eco-friendly recycled rubber solutions that help reduce waste and support a greener future.",
     },
     {
       icon: <Lock size={26} />,
-      title: "Secure Transactions",
-      desc: "Advanced verification, protected communication, and trusted marketplace support for every business deal.",
+      title: "Secure Business Deals",
+      desc: "Advanced verification, protected communication, and trusted marketplace support for every transaction.",
     },
   ];
 
   return (
     <section className={styles.sectionWrapper}>
 
-      {/* REMOVE px-xl-5 px-lg-4 px-3 */}
       <div className="container-fluid p-0">
 
         <motion.div
@@ -63,9 +62,7 @@ const WhoWeAreSection = () => {
 
           <div className="row align-items-center position-relative g-0">
 
-            {/* =========================
-                LEFT CONTENT
-            ========================= */}
+            {/* LEFT CONTENT */}
             <div className="col-lg-5">
 
               <div className={styles.leftContent}>
@@ -84,18 +81,18 @@ const WhoWeAreSection = () => {
                 {/* SMALL LINE */}
                 <div className={styles.titleLine}></div>
 
-                {/* DESC */}
+                {/* DESCRIPTION */}
                 <p className={styles.mainDescription}>
-                  RubberScrapMart is India's first and most trusted
-                  B2B marketplace for rubber derived products.
-                  We connect buyers and sellers globally,
-                  promoting sustainability through high-quality
-                  recycled rubber solutions.
+                  RubberScrapMart is India’s dedicated B2B marketplace
+                  for rubber derived products and tyre scrap materials.
+                  We connect buyers, sellers, recyclers, and industries
+                  through a secure digital platform focused on transparency,
+                  sustainability, and efficient business growth.
                 </p>
 
                 {/* BUTTON */}
                 <button className={styles.learnMoreBtn}>
-                  Learn More About Us
+                  Explore Our Marketplace
                   <MoveRight size={18} />
                 </button>
 
@@ -103,9 +100,7 @@ const WhoWeAreSection = () => {
 
             </div>
 
-            {/* =========================
-                RIGHT FEATURES
-            ========================= */}
+            {/* RIGHT FEATURES */}
             <div className="col-lg-7">
 
               <div className={styles.featuresGrid}>
@@ -127,7 +122,7 @@ const WhoWeAreSection = () => {
                     {/* TITLE */}
                     <h4>{item.title}</h4>
 
-                    {/* DESC */}
+                    {/* DESCRIPTION */}
                     <p>{item.desc}</p>
 
                     {/* BOTTOM LINE */}

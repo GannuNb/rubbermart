@@ -591,9 +591,6 @@ export const addShipmentToOrder = async (req, res) => {
       shipmentFile,
 
       shipmentStatus: "shipped",
-      approvedByAdmin: false,
-      approvedBy: null,
-      approvedAt: null,
       shippedAt: new Date(),
       deliveredAt: null,
     };
@@ -1628,195 +1625,302 @@ export const uploadAdminToSellerPayment = async (req, res) => {
 
 
 
-// export const approveShipmentByAdmin = async (
-//   req,
-//   res
-// ) => {
-//   try {
-//     const { orderId, shipmentId } =
-//       req.params;
 
-//     const adminId = req.user._id;
+export const markShipmentDeliveredByAdmin =
+  async (req, res) => {
+    try {
+      const {
+        orderId,
+        shipmentId,
+      } = req.params;
 
-//     const order = await Order.findOne({
-//       _id: orderId,
-//       isDeleted: false,
-//     });
+      /* =========================
+         FIND ORDER
+      ========================= */
 
-//     if (!order) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Order not found",
-//       });
-//     }
+      const order =
+        await Order.findOne({
+          _id: orderId,
+          isDeleted: false,
+        });
 
-//     const shipment =
-//       order.shipments.id(shipmentId);
+      if (!order) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Order not found",
+        });
+      }
 
-//     if (!shipment) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Shipment not found",
-//       });
-//     }
+      /* =========================
+         FIND SHIPMENT
+      ========================= */
 
-//     if (shipment.approvedByAdmin) {
-//       return res.status(400).json({
-//         success: false,
-//         message:
-//           "Shipment already approved",
-//       });
-//     }
+      const shipment =
+        order.shipments.id(
+          shipmentId
+        );
 
-//     /* =========================
-//        APPROVE SHIPMENT
-//     ========================= */
+      if (!shipment) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Shipment not found",
+        });
+      }
 
-//     shipment.approvedByAdmin = true;
-//     shipment.approvedBy = adminId;
-//     shipment.approvedAt = new Date();
-//     shipment.shipmentStatus =
-//       "approved_by_admin";
+      /* =========================
+         ALREADY DELIVERED
+      ========================= */
 
-//     /* =========================
-//        ORDER STATUS UPDATE
-//     ========================= */
+      if (
+        shipment.shipmentStatus ===
+        "delivered"
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Shipment already delivered",
+        });
+      }
 
-//     const approvedShipments =
-//       order.shipments.filter(
-//         (item) =>
-//           item.approvedByAdmin === true
-//       );
+      /* =========================
+         MARK SINGLE SHIPMENT
+      ========================= */
 
-//     if (
-//       approvedShipments.length > 0 &&
-//       order.orderStatus ===
-//         "seller_confirmed"
-//     ) {
-//       order.orderStatus =
-//         "partially_shipped";
-//     }
-
-//     await order.save();
-
-//     return res.status(200).json({
-//       success: true,
-//       message:
-//         "Shipment approved successfully",
-//       order,
-//       shipment,
-//     });
-//   } catch (error) {
-//     console.log(
-//       "Approve Shipment Error:",
-//       error
-//     );
-
-//     return res.status(500).json({
-//       success: false,
-//       message:
-//         "Failed to approve shipment",
-//       error: error.message,
-//     });
-//   }
-// };
-
-
-export const markShipmentDeliveredByAdmin = async (
-  req,
-  res
-) => {
-  try {
-    const { orderId, shipmentId } =
-      req.params;
-
-    const order = await Order.findOne({
-      _id: orderId,
-      isDeleted: false,
-    });
-
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: "Order not found",
-      });
-    }
-
-    const shipment =
-      order.shipments.id(shipmentId);
-
-    if (!shipment) {
-      return res.status(404).json({
-        success: false,
-        message: "Shipment not found",
-      });
-    }
-
-
-    if (
-      shipment.shipmentStatus ===
-      "delivered"
-    ) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Shipment already delivered",
-      });
-    }
-
-    /* =========================
-       MARK DELIVERED
-    ========================= */
-
-    shipment.shipmentStatus =
-      "delivered";
-
-    shipment.deliveredAt =
-      new Date();
-
-    /* =========================
-       ORDER STATUS CHECK
-    ========================= */
-
-    const allDelivered =
-      order.shipments.every(
-        (item) =>
-          item.shipmentStatus ===
-          "delivered"
-      );
-
-    if (allDelivered) {
-      order.orderStatus =
+      shipment.shipmentStatus =
         "delivered";
 
-      order.deliveredAt =
+      shipment.deliveredAt =
         new Date();
+
+      /* =========================
+         CHECK FULL DELIVERY
+      ========================= */
+
+      const allItemsDelivered =
+        order.orderItems.every(
+          (orderItem) => {
+            const deliveredQty =
+              order.shipments
+                .filter(
+                  (shipmentItem) =>
+                    shipmentItem.selectedItem
+                      ?.trim()
+                      ?.toLowerCase() ===
+                      orderItem.productName
+                        ?.trim()
+                        ?.toLowerCase() &&
+                    shipmentItem.shipmentStatus ===
+                      "delivered"
+                )
+                .reduce(
+                  (
+                    total,
+                    shipmentItem
+                  ) =>
+                    total +
+                    Number(
+                      shipmentItem.shippedQuantity ||
+                        0
+                    ),
+                  0
+                );
+
+            return (
+              deliveredQty >=
+              Number(
+                orderItem.requiredQuantity
+              )
+            );
+          }
+        );
+
+      /* =========================
+         UPDATE MAIN ORDER STATUS
+      ========================= */
+
+      if (allItemsDelivered) {
+        order.orderStatus =
+          "delivered";
+
+        order.deliveredAt =
+          new Date();
+      }
+
+      await order.save();
+
+      return res.status(200).json({
+        success: true,
+        message:
+          "Shipment marked as delivered",
+        order,
+        shipment,
+      });
+    } catch (error) {
+      console.log(
+        "Mark Delivered Error:",
+        error
+      );
+
+      return res.status(500).json({
+        success: false,
+        message:
+          "Failed to mark shipment delivered",
+        error: error.message,
+      });
     }
+  };
 
-    await order.save();
 
-    return res.status(200).json({
-      success: true,
-      message:
-        "Shipment marked as delivered",
-      order,
-      shipment,
-    });
-  } catch (error) {
-    console.log(
-      "Mark Delivered Error:",
-      error
-    );
+export const markShipmentDeliveredBySeller =
+  async (req, res) => {
+    try {
+      const sellerId = req.user._id;
 
-    return res.status(500).json({
-      success: false,
-      message:
-        "Failed to mark shipment delivered",
-      error: error.message,
-    });
-  }
-};
+      const {
+        orderId,
+        shipmentId,
+      } = req.params;
 
+      /* =========================
+         FIND ORDER
+      ========================= */
+
+      const order =
+        await Order.findOne({
+          _id: orderId,
+          seller: sellerId,
+          isDeleted: false,
+        });
+
+      if (!order) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Order not found",
+        });
+      }
+
+      /* =========================
+         FIND SHIPMENT
+      ========================= */
+
+      const shipment =
+        order.shipments.id(
+          shipmentId
+        );
+
+      if (!shipment) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Shipment not found",
+        });
+      }
+
+      /* =========================
+         ALREADY DELIVERED
+      ========================= */
+
+      if (
+        shipment.shipmentStatus ===
+        "delivered"
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Shipment already delivered",
+        });
+      }
+
+      /* =========================
+         MARK SINGLE SHIPMENT
+      ========================= */
+
+      shipment.shipmentStatus =
+        "delivered";
+
+      shipment.deliveredAt =
+        new Date();
+
+      /* =========================
+         CHECK FULL DELIVERY
+      ========================= */
+
+      const allItemsDelivered =
+        order.orderItems.every(
+          (orderItem) => {
+            const deliveredQty =
+              order.shipments
+                .filter(
+                  (shipmentItem) =>
+                    shipmentItem.selectedItem
+                      ?.trim()
+                      ?.toLowerCase() ===
+                      orderItem.productName
+                        ?.trim()
+                        ?.toLowerCase() &&
+                    shipmentItem.shipmentStatus ===
+                      "delivered"
+                )
+                .reduce(
+                  (
+                    total,
+                    shipmentItem
+                  ) =>
+                    total +
+                    Number(
+                      shipmentItem.shippedQuantity ||
+                        0
+                    ),
+                  0
+                );
+
+            return (
+              deliveredQty >=
+              Number(
+                orderItem.requiredQuantity
+              )
+            );
+          }
+        );
+
+      /* =========================
+         UPDATE MAIN ORDER STATUS
+      ========================= */
+
+      if (allItemsDelivered) {
+        order.orderStatus =
+          "delivered";
+
+        order.deliveredAt =
+          new Date();
+      }
+
+      await order.save();
+
+      return res.status(200).json({
+        success: true,
+        message:
+          "Shipment marked as delivered",
+        order,
+        shipment,
+      });
+    } catch (error) {
+      console.log(
+        "Seller Mark Delivered Error:",
+        error
+      );
+
+      return res.status(500).json({
+        success: false,
+        message:
+          "Failed to mark shipment delivered",
+        error: error.message,
+      });
+    }
+  };
 
 
 export const downloadProformaInvoice = async (req, res) => {

@@ -3,7 +3,7 @@ import { NavLink, Link } from 'react-router-dom'; // Added Link and NavLink
 import styles from '../../styles/Components/Navbar.module.css';
 import { LogOut } from 'lucide-react';
 import { FaInstagram, FaFacebookF } from 'react-icons/fa';
-import Tyre from "../../assests/Tyre.jpeg";
+import Tyre from "../../assests/categoryimages/Tyre.jpeg";
 import Logo from "../../assests/Logo.png";
 
 const Navbar = () => {

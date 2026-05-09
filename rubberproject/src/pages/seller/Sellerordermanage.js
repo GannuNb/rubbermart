@@ -1,11 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import {
-  getSellerSingleOrderThunk,
-  confirmSellerOrderThunk,
-  rejectSellerOrderThunk,
-} from "../../redux/slices/sellerOrderThunk";
+import {  getSellerSingleOrderThunk,  confirmSellerOrderThunk,  rejectSellerOrderThunk,} from "../../redux/slices/sellerOrderThunk";
 import { clearSellerOrderMessages } from "../../redux/slices/sellerOrderSlice";
 import SellerPaymentSection from "../../components/orders/SellerPaymentSection";
 import SellerShipmentSection from "../../components/orders/SellerShipmentSection";
@@ -74,7 +70,7 @@ const Sellerordermanage = () => {
       rejectSellerOrderThunk({
         orderId,
         cancellationReason,
-      })
+      }),
     );
   };
 
@@ -108,9 +104,7 @@ const Sellerordermanage = () => {
             </div>
           </div>
 
-          <div className={styles.orderIdCard}>
-            {selectedOrder.orderId}
-          </div>
+          <div className={styles.orderIdCard}>{selectedOrder.orderId}</div>
         </div>
       </div>
 
@@ -124,9 +118,11 @@ const Sellerordermanage = () => {
           <FiCreditCard /> Payment
         </button>
 
-        <button onClick={() => scrollToSection(shipmentRef)}>
-          <FiTruck /> Shipment
-        </button>
+        {selectedOrder.orderStatus !== "cancelled" && (
+          <button onClick={() => scrollToSection(shipmentRef)}>
+            <FiTruck /> Shipment
+          </button>
+        )}
 
         {selectedOrder.orderStatus === "pending" && (
           <button onClick={() => scrollToSection(actionsRef)}>
@@ -185,6 +181,8 @@ const Sellerordermanage = () => {
       </div>
 
       {/* Products */}
+      {/* Products */}
+
       <div ref={productsRef} className={styles.section}>
         <h2 className={styles.sectionTitle}>
           <FiBox className={styles.sectionIcon} />
@@ -192,20 +190,104 @@ const Sellerordermanage = () => {
         </h2>
 
         <div className={styles.productsGrid}>
-          {selectedOrder.orderItems?.map((item) => (
-            <div key={item._id} className={styles.productCard}>
-              <div>
-                <h3>{item.productName}</h3>
-                <p>Category : {item.category}</p>
-                <p>Quantity : {item.requiredQuantity}</p>
-              </div>
+          {selectedOrder.orderItems?.map((item, index) => {
+            /* =========================
+           IMAGE URL
+        ========================= */
 
-              <div className={styles.productPrice}>
-                <p>Price / MT : ₹ {item.pricePerMT}</p>
-                <strong>Subtotal : ₹ {item.subtotal}</strong>
+            const productImage =
+              item?.productImage?.data?.data && item?.productImage?.contentType
+                ? `data:${item.productImage.contentType};base64,${btoa(
+                    new Uint8Array(item.productImage.data.data).reduce(
+                      (data, byte) => data + String.fromCharCode(byte),
+                      "",
+                    ),
+                  )}`
+                : null;
+
+            return (
+              <div key={index} className={styles.productCard}>
+                {/* IMAGE */}
+
+                <div className={styles.productImageWrapper}>
+                  {productImage ? (
+                    <img
+                      src={productImage}
+                      alt={item.productName}
+                      className={styles.productImage}
+                    />
+                  ) : (
+                    <div className={styles.noImage}>No Image</div>
+                  )}
+                </div>
+
+                {/* DETAILS */}
+
+                <div className={styles.productContent}>
+                  <div className={styles.productTop}>
+                    <div>
+                      <h3 className={styles.productTitle}>
+                        {item.productName}
+                      </h3>
+
+                      <p className={styles.productCategory}>{item.category}</p>
+                    </div>
+
+                    <div className={styles.priceBadge}>
+                      ₹ {item.pricePerMT}
+                      /MT
+                    </div>
+                  </div>
+
+                  {/* INFO GRID */}
+
+                  <div className={styles.productInfoGrid}>
+                    <div className={styles.infoBox}>
+                      <span>Quantity</span>
+
+                      <strong>{item.requiredQuantity} MT</strong>
+                    </div>
+
+                    <div className={styles.infoBox}>
+                      <span>Subtotal</span>
+
+                      <strong>₹ {item.subtotal}</strong>
+                    </div>
+
+                    <div className={styles.infoBox}>
+                      <span>Loading Location</span>
+
+                      <strong>{item.loadingLocation || "N/A"}</strong>
+                    </div>
+
+                    <div className={styles.infoBox}>
+                      <span>HSN Code</span>
+
+                      <strong>{item.hsnCode || "N/A"}</strong>
+                    </div>
+                  </div>
+
+                  {/* SUB PRODUCTS */}
+
+                  {item.subProducts?.length > 0 && (
+                    <div className={styles.subProductsSection}>
+                      <span className={styles.subProductsLabel}>
+                        Sub Products
+                      </span>
+
+                      <div className={styles.subProductsWrap}>
+                        {item.subProducts.map((sub, subIndex) => (
+                          <span key={subIndex} className={styles.subProductTag}>
+                            {sub}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -215,9 +297,12 @@ const Sellerordermanage = () => {
       </div>
 
       {/* Shipment */}
-      <div ref={shipmentRef}>
-        <SellerShipmentSection selectedOrder={selectedOrder} />
-      </div>
+
+      {selectedOrder.orderStatus !== "cancelled" && (
+        <div ref={shipmentRef}>
+          <SellerShipmentSection selectedOrder={selectedOrder} />
+        </div>
+      )}
 
       {/* Messages */}
       {confirmOrderSuccess && (
@@ -253,8 +338,8 @@ const Sellerordermanage = () => {
               </div>
 
               <p>
-                Please confirm the order after reviewing all order details.
-                Once confirmed, the buyer will be notified.
+                Please confirm the order after reviewing all order details. Once
+                confirmed, the buyer will be notified.
               </p>
 
               <button
@@ -274,13 +359,11 @@ const Sellerordermanage = () => {
               </div>
 
               <p>
-                If you want to reject this order, please provide a valid
-                reason. The buyer will be notified after rejection.
+                If you want to reject this order, please provide a valid reason.
+                The buyer will be notified after rejection.
               </p>
 
-              <label className={styles.inputLabel}>
-                Rejection Reason *
-              </label>
+              <label className={styles.inputLabel}>Rejection Reason *</label>
 
               <textarea
                 className={styles.textarea}
@@ -301,8 +384,8 @@ const Sellerordermanage = () => {
           </div>
 
           <div className={styles.warningNote}>
-            ℹ Please review all order details carefully before confirming
-            or rejecting this order.
+            ℹ Please review all order details carefully before confirming or
+            rejecting this order.
           </div>
         </div>
       )}

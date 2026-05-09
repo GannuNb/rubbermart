@@ -16,6 +16,7 @@ const SellerShipmentSection = ({ selectedOrder }) => {
             <ShipmentCard
               key={shipment._id}
               shipment={shipment}
+              orderId={selectedOrder._id}
             />
           ))}
         </div>

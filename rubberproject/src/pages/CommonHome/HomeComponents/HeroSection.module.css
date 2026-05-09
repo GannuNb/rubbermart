@@ -1,3 +1,5 @@
+/* HeroSection.module.css */
+
 .heroSection {
   width: 100%;
   min-height: 82vh;
@@ -28,7 +30,8 @@
   opacity: 1;
 }
 
-/* Light overlay for text readability */
+/* OVERLAY */
+
 .backgroundWrapper::after {
   content: "";
   position: absolute;
@@ -62,7 +65,7 @@
 
 .leftSection {
   width: 100%;
-  max-width: 720px;
+  max-width: 760px;
 
   position: relative;
   top: -20px;
@@ -103,6 +106,7 @@
 
 .heading {
   font-size: clamp(52px, 6vw, 82px);
+
   line-height: 0.95;
 
   font-weight: 900;
@@ -118,6 +122,7 @@
 
 .heading span {
   display: block;
+
   margin-top: 10px;
 
   background: linear-gradient(
@@ -180,11 +185,14 @@
 
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
 
   font-weight: 700;
 
   transition: 0.3s ease;
+
+  cursor: pointer;
 
   box-shadow:
     0 10px 30px rgba(124, 58, 237, 0.25);
@@ -195,7 +203,7 @@
 }
 
 .secondaryBtn {
-  background: rgba(255,255,255,0.75);
+  background: rgba(255, 255, 255, 0.75);
 
   backdrop-filter: blur(10px);
 
@@ -209,15 +217,20 @@
 
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
 
   font-weight: 700;
 
   transition: 0.3s ease;
+
+  cursor: pointer;
 }
 
 .secondaryBtn:hover {
   background: white;
+
+  transform: translateY(-3px);
 }
 
 /* =========================
@@ -227,8 +240,9 @@
 .statsRow {
   display: flex;
   align-items: center;
-  gap: 40px;
-  flex-wrap: wrap;
+  gap: 42px;
+
+  flex-wrap: nowrap;
 }
 
 .statCard {
@@ -246,6 +260,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
+  flex-shrink: 0;
 }
 
 .statCard h4 {
@@ -268,6 +284,8 @@
   font-size: 14px;
 
   font-weight: 600;
+
+  white-space: nowrap;
 }
 
 /* =========================
@@ -275,13 +293,17 @@
 ========================= */
 
 @media (max-width: 1200px) {
-
   .heading {
     font-size: 72px;
   }
 
   .subText {
     font-size: 18px;
+  }
+
+  .statsRow {
+    gap: 28px;
+    flex-wrap: wrap;
   }
 }
 
@@ -290,7 +312,6 @@
 ========================= */
 
 @media (max-width: 991px) {
-
   .heroSection {
     min-height: auto;
     padding: 70px 0 50px;
@@ -303,6 +324,7 @@
 
   .leftSection {
     max-width: 100%;
+
     text-align: center;
   }
 
@@ -312,6 +334,7 @@
 
   .heading {
     font-size: 62px;
+
     max-width: 100%;
   }
 
@@ -321,12 +344,16 @@
 
   .buttonGroup {
     justify-content: center;
+
     flex-wrap: wrap;
   }
 
   .statsRow {
     justify-content: center;
+
     gap: 28px;
+
+    flex-wrap: wrap;
   }
 
   .backgroundWrapper::after {
@@ -344,35 +371,39 @@
 ========================= */
 
 @media (max-width: 576px) {
-
   .heroSection {
     padding: 50px 0 40px;
   }
 
   .heading {
     font-size: 46px;
+
     letter-spacing: -2px;
   }
 
   .subText {
     font-size: 16px;
+
     line-height: 1.7;
   }
 
   .buttonGroup {
     flex-direction: column;
+
     width: 100%;
   }
 
   .primaryBtn,
   .secondaryBtn {
     width: 100%;
-    justify-content: center;
   }
 
   .statsRow {
     gap: 22px;
+
     justify-content: flex-start;
+
+    flex-wrap: wrap;
   }
 
   .statCard {

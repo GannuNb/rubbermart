@@ -127,3 +127,36 @@ export const addShipmentToOrderThunk = createAsyncThunk(
     }
   }
 );
+
+export const markShipmentDeliveredBySellerThunk =
+  createAsyncThunk(
+    "sellerOrders/markShipmentDeliveredBySeller",
+    async (
+      { orderId, shipmentId },
+      thunkAPI
+    ) => {
+      try {
+        const token =
+          thunkAPI.getState().auth.token;
+
+        const response =
+          await axios.put(
+            `${API_URL}/api/orders/seller-orders/${orderId}/shipment/${shipmentId}/delivered`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+        return response.data.order;
+      } catch (error) {
+        return thunkAPI.rejectWithValue(
+          error.response?.data
+            ?.message ||
+            "Failed to mark shipment delivered"
+        );
+      }
+    }
+  );
