@@ -1,111 +1,40 @@
+// src/components/navbar/SellerNavbar.js
+
 import React from "react";
 
-import { Link } from "react-router-dom";
+import styles from "../../styles/Navbar/NavbarDashboard.module.css";
 
 import {
-  FaTachometerAlt,
-  FaBoxOpen,
-  FaClipboardList,
-  FaChartLine,
-  FaUserTie,
-  FaPhoneAlt,
-} from "react-icons/fa";
+  sellerLinks,
+} from "../../config/navbarLinks";
 
-import styles from "../../styles/Navbar/SellerNavbar.module.css";
+import NavLinksRenderer from "./NavLinksRenderer";
 
-function SellerNavbar({ location }) {
+function SellerNavbar({
+  location,
+}) {
+
   return (
-    <div className={styles.navContainer}>
-      {/* DASHBOARD */}
-      <Link
-        to="/seller-dashboard"
-        className={`${styles.navLink} ${
-          location.pathname ===
-          "/seller-dashboard"
-            ? styles.active
-            : ""
-        }`}
-      >
-        <FaTachometerAlt />
 
-        <span>Dashboard</span>
-      </Link>
+    <NavLinksRenderer
 
-      {/* PRODUCTS */}
-      <Link
-        to="/seller-products"
-        className={`${styles.navLink} ${
-          location.pathname ===
-          "/seller-products"
-            ? styles.active
-            : ""
-        }`}
-      >
-        <FaBoxOpen />
+      links={sellerLinks}
 
-        <span>My Products</span>
-      </Link>
+      location={location}
 
-      {/* ORDERS */}
-      <Link
-        to="/seller-orders"
-        className={`${styles.navLink} ${
-          location.pathname ===
-          "/seller-orders"
-            ? styles.active
-            : ""
-        }`}
-      >
-        <FaClipboardList />
+      containerClass={
+        styles.navContainer
+      }
 
-        <span>Orders</span>
-      </Link>
+      linkClass={
+        styles.navLink
+      }
 
-      {/* ANALYTICS */}
-      <Link
-        to="/seller-analytics"
-        className={`${styles.navLink} ${
-          location.pathname ===
-          "/seller-analytics"
-            ? styles.active
-            : ""
-        }`}
-      >
-        <FaChartLine />
+      activeClass={
+        styles.active
+      }
 
-        <span>Analytics</span>
-      </Link>
-
-      {/* PROFILE */}
-      <Link
-        to="/seller-profile"
-        className={`${styles.navLink} ${
-          location.pathname ===
-          "/seller-profile"
-            ? styles.active
-            : ""
-        }`}
-      >
-        <FaUserTie />
-
-        <span>Profile</span>
-      </Link>
-
-      {/* CONTACT */}
-      <Link
-        to="/contact"
-        className={`${styles.navLink} ${
-          location.pathname ===
-          "/contact"
-            ? styles.active
-            : ""
-        }`}
-      >
-        <FaPhoneAlt />
-
-        <span>Support</span>
-      </Link>
-    </div>
+    />
   );
 }
 

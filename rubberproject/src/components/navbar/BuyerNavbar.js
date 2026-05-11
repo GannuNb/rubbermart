@@ -2,93 +2,39 @@
 
 import React from "react";
 
-import { Link } from "react-router-dom";
-
-import {
-  FaHome,
-  FaBoxOpen,
-  FaClipboardList,
-  FaInfoCircle,
-  FaPhoneAlt,
-} from "react-icons/fa";
-
 import styles from "../../styles/Navbar/BuyerNavbar.module.css";
 
-function BuyerNavbar({ location }) {
+import {
+  buyerLinks,
+} from "../../config/navbarLinks";
+
+import NavLinksRenderer from "./NavLinksRenderer";
+
+function BuyerNavbar({
+  location,
+}) {
+
   return (
-    <div className={styles.navContainer}>
-      {/* HOME */}
-      <Link
-        to="/home"
-        className={`${styles.navLink} ${
-          location.pathname === "/home"
-            ? styles.active
-            : ""
-        }`}
-      >
-        <FaHome />
 
-        <span>Home</span>
-      </Link>
+    <NavLinksRenderer
 
-      {/* PRODUCTS */}
-      <Link
-        to="/our-products"
-        className={`${styles.navLink} ${
-          location.pathname ===
-          "/our-products"
-            ? styles.active
-            : ""
-        }`}
-      >
-        <FaBoxOpen />
+      links={buyerLinks}
 
-        <span>Browse Products</span>
-      </Link>
+      location={location}
 
-      {/* ORDERS */}
-      <Link
-        to="/buyer-orders"
-        className={`${styles.navLink} ${
-          location.pathname ===
-          "/buyer-orders"
-            ? styles.active
-            : ""
-        }`}
-      >
-        <FaClipboardList />
+      containerClass={
+        styles.navContainer
+      }
 
-        <span>My Orders</span>
-      </Link>
+      linkClass={
+        styles.navLink
+      }
 
-      {/* ABOUT */}
-      <Link
-        to="/about"
-        className={`${styles.navLink} ${
-          location.pathname === "/about"
-            ? styles.active
-            : ""
-        }`}
-      >
-        <FaInfoCircle />
+      activeClass={
+        styles.active
+      }
 
-        <span>About Us</span>
-      </Link>
-
-      {/* CONTACT */}
-      <Link
-        to="/contact"
-        className={`${styles.navLink} ${
-          location.pathname === "/contact"
-            ? styles.active
-            : ""
-        }`}
-      >
-        <FaPhoneAlt />
-
-        <span>Contact Us</span>
-      </Link>
-    </div>
+    />
   );
 }
 

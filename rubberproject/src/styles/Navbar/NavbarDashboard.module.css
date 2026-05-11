@@ -1,0 +1,134 @@
+/* =========================
+   DASHBOARD SPACER
+========================= */
+
+.dashboardSpacer {
+
+   flex: 1.5;
+}
+
+
+/* =========================
+   DASHBOARD NAVBAR WRAPPER
+========================= */
+
+.dashboardNavbarWrapper {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: flex-end;
+
+  margin-left: auto;
+
+  padding-right: 15px;
+}
+
+/* =========================
+   NAV CONTAINER
+========================= */
+
+.navContainer {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: flex-end;
+
+  gap: 18px;
+}
+
+
+/* =========================
+   NAV LINK
+========================= */
+
+.navLink {
+
+  min-height: 50px;
+
+  padding: 0 18px;
+
+  border-radius: 12px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 10px;
+
+  background: transparent;
+
+  border: 1px solid transparent;
+
+  color: #444;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  transition: all 0.3s ease;
+
+  text-decoration: none !important;
+
+  white-space: nowrap;
+}
+
+
+/* =========================
+   ICON
+========================= */
+
+.navLink svg {
+
+  font-size: 14px;
+
+  flex-shrink: 0;
+}
+
+
+/* =========================
+   HOVER
+========================= */
+
+.navLink:hover {
+
+  background: #f7f1fc;
+
+  border-color: #eadcf6;
+
+  color: #7d3cb5;
+}
+
+
+/* =========================
+   ACTIVE
+========================= */
+
+.active {
+
+  background: linear-gradient(
+    135deg,
+    #7d3cb5,
+    #38b44a
+  );
+
+  color: white;
+
+  box-shadow:
+    0 10px 24px rgba(125, 60, 181, 0.18);
+}
+
+
+/* =========================
+   REMOVE UNDERLINE
+========================= */
+
+.active::after {
+
+  display: none !important;
+}
