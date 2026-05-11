@@ -1,5 +1,3 @@
-// src/components/about/AboutHero.jsx
-
 import styles from "../../styles/About/AboutHero.module.css";
 
 import AboutImage from "../../assests/About.png";
@@ -16,17 +14,21 @@ const AboutHero = () => {
   return (
     <section
       className={styles.aboutHero}
-      style={{
-        backgroundImage: `url(${HeroBg})`,
-      }}
+      style={{ backgroundImage: `url(${HeroBg})` }}
     >
       <div className={styles.overlay}></div>
 
       <div className={styles.container}>
         <div className={styles.heroGrid}>
-          {/* LEFT */}
+          {/* LEFT CONTENT */}
           <div className={styles.heroLeft}>
             <span className={styles.sectionTag}>ABOUT US</span>
+
+            <div className={styles.topInfo}>
+              <span>♻ Sustainable Marketplace</span>
+              <span>•</span>
+              <span>Trusted Rubber Scrap Network</span>
+            </div>
 
             <h1>
               Building a Stronger,
@@ -37,18 +39,16 @@ const AboutHero = () => {
 
             <p>
               RubberScrapMart is a trusted B2B marketplace connecting verified
-              buyers and sellers of rubber scrap materials across industries. We
-              simplify scrap trading through a transparent, efficient, and
+              buyers and sellers of rubber scrap materials across industries.
+              We simplify scrap trading through a transparent, efficient, and
               reliable digital platform.
             </p>
 
-            {/* STATS */}
             <div className={styles.heroStats}>
               <div className={styles.statCard}>
                 <div className={styles.iconBox}>
                   <ShieldCheck size={22} strokeWidth={2.2} />
                 </div>
-
                 <div>
                   <h3>10,000+</h3>
                   <span>Verified Businesses</span>
@@ -59,7 +59,6 @@ const AboutHero = () => {
                 <div className={styles.iconBox}>
                   <ShoppingBag size={22} strokeWidth={2.2} />
                 </div>
-
                 <div>
                   <h3>50,000+</h3>
                   <span>Orders Facilitated</span>
@@ -70,7 +69,6 @@ const AboutHero = () => {
                 <div className={styles.iconBox}>
                   <Users size={22} strokeWidth={2.2} />
                 </div>
-
                 <div>
                   <h3>200+</h3>
                   <span>Cities Covered</span>
@@ -79,7 +77,7 @@ const AboutHero = () => {
             </div>
           </div>
 
-          {/* RIGHT */}
+          {/* RIGHT IMAGE */}
           <div className={styles.heroRight}>
             <img src={AboutImage} alt="Rubber Scrap" />
 

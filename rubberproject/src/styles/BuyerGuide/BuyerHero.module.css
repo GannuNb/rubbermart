@@ -1,0 +1,186 @@
+.heroSection {
+  width: 100%;
+  /* Grid pattern background like the support image */
+  background-color: #ffffff;
+  background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+  background-size: 30px 30px; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 60px;
+  margin: 0;
+  position: relative;
+}
+
+.heroContent {
+  width: 100%;
+  max-width: 1700px; 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  position: relative;
+}
+
+.left { 
+  flex: 1;
+  max-width: 600px; 
+  z-index: 2;
+}
+
+/* Floating Badge Styling */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  padding: 8px 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  border: 1px solid #f3f4f6;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: 52px;
+  color: #111827; /* Darker for better contrast against grid */
+  margin: 0 0 16px 0;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.highlight {
+  color: #6d28d9;
+}
+
+.desc {
+  color: #4b5563;
+  max-width: 480px;
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.startBtn {
+  background: #6d28d9;
+  color: white;
+  padding: 14px 32px;
+  border-radius: 12px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.startBtn:hover {
+  transform: translateY(-2px);
+}
+
+.right {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  position: relative;
+}
+
+.heroImage {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  object-fit: contain;
+  z-index: 1;
+}
+
+/* Floating Support Badge */
+.supportBadge {
+  position: absolute;
+  bottom: -50px;
+  right: 0;
+  background: white;
+  padding: 10px 20px;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* Tabs Styling - Cleaned up to match the "boxed" container */
+.tabsContainer {
+  width: 100%;
+  margin-top: 60px;
+  padding: 0 24px 28px;
+}
+
+.tabs {
+  max-width: 1450px;
+  margin: auto;
+
+  display: flex;
+  gap: 100px;
+  overflow-x: auto;
+
+  padding: 14px;
+  border-radius: 22px;
+
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(14px);
+
+  border: 1px solid rgba(109, 40, 217, 0.08);
+
+  box-shadow: 0 15px 35px rgba(17, 24, 39, 0.06);
+}
+
+/* ... existing tab styles ... */
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  padding: 14px 18px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  border-bottom: none;
+  flex-shrink: 0;
+}
+
+.tab:hover {
+  background: #f5f3ff;
+  color: #6d28d9;
+}
+
+.active {
+  background: linear-gradient(135deg, #6d28d9, #7c3aed);
+  color: white;
+  box-shadow: 0 10px 25px rgba(109, 40, 217, 0.2);
+}
+.tab svg {
+  color: #6d28d9;
+}
+
+
+@media (max-width: 992px) {
+  .heroContent {
+    flex-direction: column;
+    text-align: center;
+  }
+  .left { margin-bottom: 40px; }
+  .title { font-size: 42px; }
+  .tabs { justify-content: flex-start; gap: 30px; }
+}
+
+@media (max-width: 768px) {
+  .title { font-size: 36px; }
+  .desc { margin: 0 auto; font-size: 15px; }
+  .heroImage { max-width: 320px; }
+}

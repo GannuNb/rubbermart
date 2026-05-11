@@ -1,0 +1,15 @@
+.page {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff; /* Sets the base background for the whole page */
+}
+
+.container {
+  width: 100%;
+  max-width: 1600px; /* Aligns the "How to Buy" cards with the Hero text */
+  margin: 0 auto;    /* Centers this box on the screen */
+  padding: 0 24px;   /* Padding so it looks good on mobile */
+}
