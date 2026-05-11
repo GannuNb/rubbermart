@@ -95,12 +95,6 @@ const CommitmentSection = () => {
                 </div>
               </div>
             </div>
-
-            {/* BUTTON */}
-            <button className={styles.learnBtn}>
-              Learn More
-              <ArrowRight size={18} />
-            </button>
           </div>
         </div>
       </div>

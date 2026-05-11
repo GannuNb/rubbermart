@@ -64,9 +64,18 @@ const ContactHero = () => {
 
                 </div>
 
-                <button className={styles.contactBtn}>
-                    Contact Support
-                </button>
+                <div className={styles.contactActions}>
+                    <a href="tel:02246033434" className={styles.contactBtn}>
+                        Call Support
+                    </a>
+
+                    <a
+                        href="mailto:info@rubberscrapmart.com"
+                        className={styles.secondaryBtn}
+                    >
+                        Email Us
+                    </a>
+                </div>
 
             </div>
 

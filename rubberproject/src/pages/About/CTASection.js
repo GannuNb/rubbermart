@@ -1,10 +1,21 @@
-// src/components/about/CTASection.jsx
-
 import styles from "../../styles/About/CTASection.module.css";
 
 import { ArrowRight, ShieldCheck } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const CTASection = () => {
+  const navigate = useNavigate();
+
+  const handleJoinNow = () => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      navigate("/");
+    } else {
+      navigate("/signup");
+    }
+  };
+
   return (
     <section className={styles.ctaSection}>
       <div className={styles.container}>
@@ -30,7 +41,10 @@ const CTASection = () => {
 
           {/* BUTTON */}
           <div className={styles.buttonWrapper}>
-            <button className={styles.ctaButton}>
+            <button
+              className={styles.ctaButton}
+              onClick={handleJoinNow}
+            >
               Join Now
               <ArrowRight size={18} strokeWidth={2.5} />
             </button>
