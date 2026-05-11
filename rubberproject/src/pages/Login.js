@@ -14,8 +14,9 @@ function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { loginLoading, loginError, loginSuccessMessage, user } =
-    useSelector((state) => state.auth);
+  const { loginLoading, loginError, loginSuccessMessage, user } = useSelector(
+    (state) => state.auth,
+  );
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -58,13 +59,17 @@ function Login() {
   // ✅ 🔥 MAIN FIX: Navigate when user is set
   useEffect(() => {
     if (user) {
-      if (user.role === "admin") {
-        navigate("/admin-dashboard");
-      } else if (user.role === "seller") {
-        navigate("/seller-dashboard");
-      } else {
-        navigate("/home"); // buyer
-      }
+      const timer = setTimeout(() => {
+        if (user.role === "admin") {
+          navigate("/admin-dashboard");
+        } else if (user.role === "seller") {
+          navigate("/seller-dashboard");
+        } else {
+          navigate("/home");
+        }
+      }, 3000); // wait for alert
+
+      return () => clearTimeout(timer);
     }
   }, [user, navigate]);
 
@@ -81,7 +86,7 @@ function Login() {
     onSuccess: async (tokenResponse) => {
       try {
         const response = await fetch(
-          `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${tokenResponse.access_token}`
+          `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${tokenResponse.access_token}`,
         );
 
         const userData = await response.json();
@@ -89,7 +94,7 @@ function Login() {
         dispatch(
           googleLoginThunk({
             email: userData.email,
-          })
+          }),
         );
       } catch (error) {
         setAlertData({
@@ -149,10 +154,7 @@ function Login() {
           <h1>Login</h1>
           <p>Login to continue to your account</p>
 
-          <form
-            className={styles.buyerSignupForm}
-            onSubmit={handleSubmit}
-          >
+          <form className={styles.buyerSignupForm} onSubmit={handleSubmit}>
             {/* Email */}
             <div className={styles.inputGroup}>
               <label>Email</label>
@@ -210,9 +212,7 @@ function Login() {
             {/* Signup */}
             <p className={styles.loginText}>
               Don't have an account?{" "}
-              <span onClick={() => navigate("/signup")}>
-                Sign up here
-              </span>
+              <span onClick={() => navigate("/signup")}>Sign up here</span>
             </p>
           </form>
         </div>

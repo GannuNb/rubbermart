@@ -1,64 +1,94 @@
 // src/components/navbar/BuyerNavbar.js
 
 import React from "react";
-import { Link } from "react-router-dom";
-import {
-  FaSignOutAlt,
-  FaHome,
-  FaInfoCircle,
-  FaShoppingBag,
-  FaClipboardList,
-} from "react-icons/fa";
-import styles from "../../styles/Components/RoleNavbar.module.css";
 
-function BuyerNavbar({ handleLogout, location }) {
+import { Link } from "react-router-dom";
+
+import {
+  FaHome,
+  FaBoxOpen,
+  FaClipboardList,
+  FaInfoCircle,
+  FaPhoneAlt,
+} from "react-icons/fa";
+
+import styles from "../../styles/Navbar/BuyerNavbar.module.css";
+
+function BuyerNavbar({ location }) {
   return (
-    <>
+    <div className={styles.navContainer}>
+      {/* HOME */}
       <Link
         to="/home"
-        className={`${styles.normalLink} ${
-          location.pathname === "/home" ? styles.active : ""
+        className={`${styles.navLink} ${
+          location.pathname === "/home"
+            ? styles.active
+            : ""
         }`}
       >
         <FaHome />
+
         <span>Home</span>
       </Link>
 
-      <Link
-        to="/about"
-        className={`${styles.normalLink} ${
-          location.pathname === "/about" ? styles.active : ""
-        }`}
-      >
-        <FaInfoCircle />
-        <span>About</span>
-      </Link>
-
+      {/* PRODUCTS */}
       <Link
         to="/our-products"
-        className={`${styles.normalLink} ${
-          location.pathname === "/our-products" ? styles.active : ""
+        className={`${styles.navLink} ${
+          location.pathname ===
+          "/our-products"
+            ? styles.active
+            : ""
         }`}
       >
-        <FaShoppingBag />
-        <span>Our Products</span>
+        <FaBoxOpen />
+
+        <span>Browse Products</span>
       </Link>
 
+      {/* ORDERS */}
       <Link
         to="/buyer-orders"
-        className={`${styles.normalLink} ${
-          location.pathname === "/buyer-orders" ? styles.active : ""
+        className={`${styles.navLink} ${
+          location.pathname ===
+          "/buyer-orders"
+            ? styles.active
+            : ""
         }`}
       >
         <FaClipboardList />
+
         <span>My Orders</span>
       </Link>
 
-      <button className={styles.logoutBtn} onClick={handleLogout}>
-        <FaSignOutAlt />
-        <span>Logout</span>
-      </button>
-    </>
+      {/* ABOUT */}
+      <Link
+        to="/about"
+        className={`${styles.navLink} ${
+          location.pathname === "/about"
+            ? styles.active
+            : ""
+        }`}
+      >
+        <FaInfoCircle />
+
+        <span>About Us</span>
+      </Link>
+
+      {/* CONTACT */}
+      <Link
+        to="/contact"
+        className={`${styles.navLink} ${
+          location.pathname === "/contact"
+            ? styles.active
+            : ""
+        }`}
+      >
+        <FaPhoneAlt />
+
+        <span>Contact Us</span>
+      </Link>
+    </div>
   );
 }
 

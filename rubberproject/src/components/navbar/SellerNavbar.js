@@ -1,84 +1,111 @@
-// src/components/navbar/SellerNavbar.js
-
 import React from "react";
+
 import { Link } from "react-router-dom";
+
 import {
-  FaSignOutAlt,
   FaTachometerAlt,
   FaBoxOpen,
   FaClipboardList,
-  FaUser,
+  FaChartLine,
+  FaUserTie,
+  FaPhoneAlt,
 } from "react-icons/fa";
-import styles from "../../styles/Components/RoleNavbar.module.css";
 
-function SellerNavbar({ handleLogout, location }) {
+import styles from "../../styles/Navbar/SellerNavbar.module.css";
+
+function SellerNavbar({ location }) {
   return (
-    <>
+    <div className={styles.navContainer}>
+      {/* DASHBOARD */}
       <Link
         to="/seller-dashboard"
-        className={`${styles.normalLink} ${
-          location.pathname === "/seller-dashboard"
+        className={`${styles.navLink} ${
+          location.pathname ===
+          "/seller-dashboard"
             ? styles.active
             : ""
         }`}
       >
         <FaTachometerAlt />
+
         <span>Dashboard</span>
       </Link>
 
-      <Link
-        to="/seller-add-products"
-        className={`${styles.normalLink} ${
-          location.pathname === "/seller-add-products"
-            ? styles.active
-            : ""
-        }`}
-      >
-        <FaBoxOpen />
-        <span>Add Products</span>
-      </Link>
-
+      {/* PRODUCTS */}
       <Link
         to="/seller-products"
-        className={`${styles.normalLink} ${
-          location.pathname === "/seller-products"
+        className={`${styles.navLink} ${
+          location.pathname ===
+          "/seller-products"
             ? styles.active
             : ""
         }`}
       >
         <FaBoxOpen />
-        <span>Manage Products</span>
+
+        <span>My Products</span>
       </Link>
 
+      {/* ORDERS */}
       <Link
-        to="/seller/orders"
-        className={`${styles.normalLink} ${
-          location.pathname === "/seller/orders"
+        to="/seller-orders"
+        className={`${styles.navLink} ${
+          location.pathname ===
+          "/seller-orders"
             ? styles.active
             : ""
         }`}
       >
         <FaClipboardList />
+
         <span>Orders</span>
       </Link>
 
+      {/* ANALYTICS */}
       <Link
-        to="/seller-profile"
-        className={`${styles.normalLink} ${
-          location.pathname === "/seller-profile"
+        to="/seller-analytics"
+        className={`${styles.navLink} ${
+          location.pathname ===
+          "/seller-analytics"
             ? styles.active
             : ""
         }`}
       >
-        <FaUser />
+        <FaChartLine />
+
+        <span>Analytics</span>
+      </Link>
+
+      {/* PROFILE */}
+      <Link
+        to="/seller-profile"
+        className={`${styles.navLink} ${
+          location.pathname ===
+          "/seller-profile"
+            ? styles.active
+            : ""
+        }`}
+      >
+        <FaUserTie />
+
         <span>Profile</span>
       </Link>
 
-      <button className={styles.logoutBtn} onClick={handleLogout}>
-        <FaSignOutAlt />
-        <span>Logout</span>
-      </button>
-    </>
+      {/* CONTACT */}
+      <Link
+        to="/contact"
+        className={`${styles.navLink} ${
+          location.pathname ===
+          "/contact"
+            ? styles.active
+            : ""
+        }`}
+      >
+        <FaPhoneAlt />
+
+        <span>Support</span>
+      </Link>
+    </div>
   );
 }
 
