@@ -1,6 +1,5 @@
 .heroSection {
   width: 100%;
-  /* Grid pattern background like the support image */
   background-color: #ffffff;
   background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
   background-size: 30px 30px; 
@@ -120,19 +119,14 @@
 .tabs {
   max-width: 1450px;
   margin: auto;
-
   display: flex;
   gap: 100px;
   overflow-x: auto;
-
   padding: 14px;
   border-radius: 22px;
-
   background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(14px);
-
   border: 1px solid rgba(109, 40, 217, 0.08);
-
   box-shadow: 0 15px 35px rgba(17, 24, 39, 0.06);
 }
 
@@ -167,7 +161,6 @@
 .tab svg {
   color: #6d28d9;
 }
-
 
 @media (max-width: 992px) {
   .heroContent {

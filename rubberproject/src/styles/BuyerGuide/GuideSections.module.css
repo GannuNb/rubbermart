@@ -50,7 +50,7 @@
 
 .cardIconBox {
   color: #6d28d9;
-      background: linear-gradient(135deg, #f5f3ff, #ede9fe);  width: 58px;
+  background: linear-gradient(135deg, #f5f3ff, #ede9fe);  width: 58px;
   height: 58px;
   border-radius: 16px;
   display: flex;
