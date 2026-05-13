@@ -34,27 +34,27 @@ function BusinessProfile() {
     }
   }, [navigate]);
 
-      useEffect(() => {
-        if (createBusinessProfileSuccessMessage) {
-          setAlertData({
-            show: true,
-            type: "success",
-            title: "Profile Created",
-            message: createBusinessProfileSuccessMessage,
-          });
-        }
-      }, [createBusinessProfileSuccessMessage]);
+  useEffect(() => {
+    if (createBusinessProfileSuccessMessage) {
+      setAlertData({
+        show: true,
+        type: "success",
+        title: "Profile Created",
+        message: createBusinessProfileSuccessMessage,
+      });
+    }
+  }, [createBusinessProfileSuccessMessage]);
 
-      useEffect(() => {
-        if (createBusinessProfileError) {
-          setAlertData({
-            show: true,
-            type: "error",
-            title: "Profile Creation Failed",
-            message: createBusinessProfileError,
-          });
-        }
-      }, [createBusinessProfileError]);
+  useEffect(() => {
+    if (createBusinessProfileError) {
+      setAlertData({
+        show: true,
+        type: "error",
+        title: "Profile Creation Failed",
+        message: createBusinessProfileError,
+      });
+    }
+  }, [createBusinessProfileError]);
 
   const [formData, setFormData] = useState({
     companyName: "",
@@ -147,14 +147,14 @@ function BusinessProfile() {
     e.preventDefault();
 
     if (!formData.agreeTerms) {
-        setAlertData({
-          show: true,
-          type: "warning",
-          title: "Terms Required",
-          message: "Please agree to the Terms and Conditions.",
-        });
-        return;
-      }
+      setAlertData({
+        show: true,
+        type: "warning",
+        title: "Terms Required",
+        message: "Please agree to the Terms and Conditions.",
+      });
+      return;
+    }
 
     const submitData = new FormData();
 
@@ -165,15 +165,12 @@ function BusinessProfile() {
     submitData.append("panNumber", formData.panNumber);
     submitData.append("billingAddress", formData.billingAddress);
     submitData.append("shippingAddress", formData.shippingAddress);
-    submitData.append(
-      "sameAsBillingAddress",
-      formData.sameAsBillingAddress
-    );
+    submitData.append("sameAsBillingAddress", formData.sameAsBillingAddress);
 
     if (user?.role === "buyer") {
       submitData.append(
         "interestedProducts",
-        JSON.stringify(formData.interestedProducts)
+        JSON.stringify(formData.interestedProducts),
       );
     }
 
@@ -189,7 +186,6 @@ function BusinessProfile() {
   };
 
   return (
-    
     <div className={styles.businessProfilePage}>
       {alertData.show && (
         <CustomAlert
@@ -369,18 +365,21 @@ function BusinessProfile() {
               Conditions, including data privacy and business conduct.
             </p>
 
-            <button type="button" className={styles.viewMoreBtn}>
+            <button
+              type="button"
+              className={styles.viewMoreBtn}
+              onClick={() => navigate("/termsandconditions")}
+            >
               View More
             </button>
           </div>
-
 
           <button type="submit" className={styles.submitBtn}>
             {createBusinessProfileLoading
               ? "Creating Profile..."
               : user?.role === "seller"
-              ? "Create Seller Profile"
-              : "Create Buyer Profile"}
+                ? "Create Seller Profile"
+                : "Create Buyer Profile"}
           </button>
         </form>
       </div>

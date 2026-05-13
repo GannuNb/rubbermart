@@ -1,37 +1,20 @@
 import {
-
   FaHome,
-
   FaBoxOpen,
-
   FaClipboardList,
-
   FaUsers,
-
   FaTachometerAlt,
-
   FaStore,
-
   FaBookOpen,
-
   FaLayerGroup,
-
   FaRegAddressBook,
-
   FaChartLine,
-
   FaUserShield,
-
   FaUserCog,
-
   FaUserCircle,
-
   FaShoppingCart,
-
   FaPlusCircle,
-
   FaClock,
-
 } from "react-icons/fa";
 
 
@@ -75,7 +58,7 @@ export const guestLinks = [
 
   {
     label: "Contact",
-    path: "/contact",
+    path: "/contactus",
     icon: FaRegAddressBook,
   },
 ];
@@ -89,7 +72,7 @@ export const buyerLinks = [
 
   {
     label: "Home",
-    path: "/home",
+    path: "/",
     icon: FaHome,
   },
 
@@ -123,12 +106,12 @@ export const buyerLinks = [
 
   {
     label: "Contact",
-    path: "/contact",
+    path: "/contactus",
     icon: FaRegAddressBook,
   },
     {
     label: "My Profile",
-    path: "/buyer-profile",
+    path: "/buyer/profile",
     icon: FaUserCircle,
   },
 ];

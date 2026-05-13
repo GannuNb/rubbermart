@@ -1,0 +1,93 @@
+/* src/components/footer/DashboardFooter.module.css */
+
+.footer {
+  background: #ffffff;
+
+  border-top: 1px solid #ececec;
+
+  margin-top: 50px;
+
+  padding: 22px 30px;
+}
+
+.footerContainer {
+  max-width: 1400px;
+
+  margin: auto;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  flex-wrap: wrap;
+}
+
+/* LEFT */
+
+.left h3 {
+  font-size: 18px;
+
+  font-weight: 700;
+
+  color: #6c2fa4;
+
+  margin-bottom: 4px;
+}
+
+.left p {
+  font-size: 14px;
+
+  color: #666666;
+}
+
+/* CENTER */
+
+.centerLinks {
+  display: flex;
+
+  align-items: center;
+
+  gap: 24px;
+
+  flex-wrap: wrap;
+}
+
+.centerLinks a {
+  text-decoration: none;
+
+  color: #555555;
+
+  font-size: 14px;
+
+  transition: 0.3s ease;
+}
+
+.centerLinks a:hover {
+  color: #6c2fa4;
+}
+
+/* RIGHT */
+
+.right {
+  font-size: 14px;
+
+  color: #777777;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+  .footerContainer {
+    flex-direction: column;
+
+    text-align: center;
+  }
+
+  .centerLinks {
+    justify-content: center;
+  }
+}

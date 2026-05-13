@@ -3,16 +3,21 @@ import { BrowserRouter as Router, Routes, Route, useLocation, } from "react-rout
 import "bootstrap/dist/css/bootstrap.min.css";
 
 //pages
-import CommonHome from "./pages/CommonHome/CommonHome";
+import Homepage from "./pages/Homepage/Homepage";
 import Signup from "./pages/Signup";
 import BusinessProfile from "./pages/BusinessProfile";
 import About from "./pages/About/About";
 import Login from "./pages/Login";
+import Contactus from "./pages/Contactus/Contactus";
+import ResetPassword from "./pages/ResetPassword";
+import ForgotPassword from "./pages/ForgotPassword";
+
 
 //components
 import RoleNavbar from "./components/navbar/RoleNavbar";
-import Navbar from "./components/navbar/Navbar";
 import ProtectedRoute from "./components/protectroute/ProtectedRoute";
+import TermsAndConditions from "./components/Terms&Conditions/TermsAndConditions";
+import RoleFooter from "./components/footer/RoleFooter";
 
 //seller
 import SellerDashboard from "./pages/seller/SellerDashboard";
@@ -22,6 +27,7 @@ import SellerProducts from "./pages/seller/SellerProducts";
 import SellerProfile from "./pages/seller/SellerProfile";
 import SellerOrders from "./pages/seller/SellerOrders";
 import Sellerordermanage from "./pages/seller/Sellerordermanage";
+import SellerGuide from "./components/SellerGuide/SellerGuide";
 
 
 //buyer
@@ -37,6 +43,7 @@ import BuyerOrders from "./pages/Buyer/BuyerOrders";
 import BuyerOrderDetails from "./pages/Buyer/BuyerOrderDetails";
 import BuyerShippingInvoices from "./pages/Buyer/BuyerShippingInvoices";
 import BuyerSingleShippingInvoice from "./pages/Buyer/BuyerSingleShippingInvoice";
+import BuyerGuide from "./components/BuyerGuide/BuyerGuide";
 
 
 
@@ -49,11 +56,10 @@ import AdminAllOrders from "./pages/admin/AdminAllOrders";
 import AdminOrderDetails from "./pages/admin/AdminOrderDetails";
 import AdminAllInvoices from "./pages/admin/AdminAllInvoices";
 import AdminSingleShippingInvoice from "./pages/admin/AdminSingleShippingInvoice";
-import Footer from "./components/footer/Footer";
-import Contactus from "./pages/Contactus/Contactus";
-import BuyerGuide from "./components/BuyerGuide/BuyerGuide";
-import SellerGuide from "./components/SellerGuide/SellerGuide";
-import TermsAndConditions from "./components/Terms&Conditions/TermsAndConditions";
+
+
+
+
 
 function AppContent() {
   const location = useLocation();
@@ -67,18 +73,20 @@ function AppContent() {
       <Routes>
 
         {/* pages */}
-        <Route path="/" element={<CommonHome />} />
+        <Route path="/" element={<Homepage />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/business-profile" element={<BusinessProfile />} />
         <Route path="/about" element={<About />} />
         <Route path="/contactus" element={<Contactus />} />
-        <Route path="/terms&conditions" element={<TermsAndConditions />} />
+        <Route path="/termsandconditions" element={<TermsAndConditions />} />
+        <Route  path="/reset-password/:token"  element={<ResetPassword />}/>
+        <Route  path="/forgot-password"  element={<ForgotPassword />}/>
 
 
 
         {/* buyer */}
-        <Route path="/home" element={<ProtectedRoute allowedRole="buyer"><Home /></ProtectedRoute>} />
+        <Route path="/" element={<Homepage />} />
         <Route path="/buyer/profile" element={<ProtectedRoute allowedRoles={["buyer"]}><BuyerProfile /></ProtectedRoute>} />
         <Route path="/our-products" element={<OurProducts />} />
         <Route path="/product/:productId" element={<ProductDetails />} />
@@ -118,8 +126,9 @@ function AppContent() {
 
 
       </Routes>
+      <RoleFooter />
 
-      {!shouldHideNavbar && <Footer />}
+      {/* {!shouldHideNavbar && <Footer />} */}
     </>
   );
 }

@@ -1,247 +1,313 @@
-import React from "react";
+import React, { useState } from "react";
 
 import {
-    FiMapPin,
-    FiPhone,
-    FiMail,
-    FiClock,
-    FiSend,
-    FiMessageSquare,
-    FiShield,
-    FiZap,
-    FiUsers,
-    FiHelpCircle,
+  FiMapPin,
+  FiPhone,
+  FiMail,
+  FiClock,
+  FiSend,
+  FiMessageSquare,
+  FiShield,
+  FiZap,
+  FiUsers,
+  FiHelpCircle,
 } from "react-icons/fi";
 
 import styles from "../../styles/Contactus/ContactMain.module.css";
 
 const ContactMain = () => {
-    return (
-        <>
-            <div className={styles.mainGrid}>
-                {/* FORM */}
-                <div className={styles.formCard}>
-                    <div className={styles.cardTitle}>
-                        <FiMessageSquare />
-                        <h3>Get In Touch</h3>
-                    </div>
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
 
-                    <p>
-                        Fill out the form below and we’ll get back to you soon.
-                    </p>
+  const [loading, setLoading] = useState(false);
 
-                    <form>
-                        <div className={styles.inputGroup}>
-                            <label>Name</label>
-                            <input type="text" placeholder="Your full name" />
-                        </div>
+  /* =========================
+        HANDLE CHANGE
+    ========================= */
 
-                        <div className={styles.inputGroup}>
-                            <label>Email Address</label>
-                            <input
-                                type="email"
-                                placeholder="example@gmail.com"
-                            />
-                        </div>
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
-                        <div className={styles.inputGroup}>
-                            <label>Subject</label>
+  /* =========================
+        HANDLE SUBMIT
+    ========================= */
 
-                            <select>
-                                <option>Select a subject</option>
-                                <option>Support</option>
-                                <option>Business</option>
-                                <option>General Query</option>
-                            </select>
-                        </div>
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-                        <div className={styles.inputGroup}>
-                            <label>Message</label>
+    try {
+      setLoading(true);
 
-                            <textarea
-                                placeholder="Type your message here..."
-                                rows="5"
-                            />
-                        </div>
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/contact/send-message`,
+        {
+          method: "POST",
 
-                        <div className={styles.checkboxRow}>
-                            <input type="checkbox" />
-                            <span>I agree to the privacy policy</span>
-                        </div>
+          headers: {
+            "Content-Type": "application/json",
+          },
 
-                        <button
-                            type="submit"
-                            className={styles.sendBtn}
-                        >
-                            <FiSend />
-                            Send Message
-                        </button>
-                    </form>
-                </div>
+          body: JSON.stringify(formData),
+        },
+      );
 
-                {/* INFO */}
-                <div className={styles.infoCard}>
-                    <div className={styles.cardTitle}>
-                        <FiPhone />
-                        <h3>Contact Information</h3>
-                    </div>
+      const data = await response.json();
 
-                    <p>
-                        Reach us through any of the following channels.
-                    </p>
+      if (data.success) {
+        alert("Message sent successfully");
 
-                    <div className={styles.infoBox}>
-                        <FiMapPin />
+        setFormData({
+          name: "",
+          email: "",
+          subject: "",
+          message: "",
+        });
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      alert("Failed to send message");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-                        <div>
-                            <h4>Address</h4>
+  return (
+    <>
+      <div className={styles.mainGrid}>
+        {/* FORM */}
+        <div className={styles.formCard}>
+          <div className={styles.cardTitle}>
+            <FiMessageSquare />
+            <h3>Get In Touch</h3>
+          </div>
 
-                            <span>
-                                Ground Floor, Office No-52/ Plot No-44,
-                                sai Chamber CHS, Wing A, Sector 11,
-                                sai Chambers, Nerul, Navi Mumbai - 400706
-                            </span>
-                        </div>
-                    </div>
+          <p>Fill out the form below and we’ll get back to you soon.</p>
 
-                    <div className={styles.infoBox}>
-                        <FiPhone />
+          <form onSubmit={handleSubmit}>
+            <div className={styles.inputGroup}>
+              <label>Name</label>
 
-                        <div>
-                            <h4>Phone</h4>
-                            <span>022-46033434</span>
-                        </div>
-                    </div>
-
-                    <div className={styles.infoBox}>
-                        <FiMail />
-
-                        <div>
-                            <h4>Email</h4>
-                            <span>info@rubberscrapmart.com</span>
-                        </div>
-                    </div>
-
-                    <div className={styles.infoBox}>
-                        <FiClock />
-
-                        <div>
-                            <h4>Business Hours</h4>
-                            <span>
-                                Monday - Saturday: 10:00 AM - 6:00 PM
-                            </span>
-                        </div>
-                    </div>
-
-                    <div className={styles.mapBox}>
-                        <iframe
-                            title="Company Location"
-                            src="https://www.google.com/maps?ll=19.016089,73.039651&z=15&t=m&hl=en&gl=IN&mapclient=embed&cid=6816502611823718719&output=embed"
-                            width="100%"
-                            height="280"
-                            style={{
-                                border: 0,
-                                borderRadius: "16px",
-                            }}
-                            allowFullScreen=""
-                            loading="lazy"
-                        ></iframe>
-                    </div>
-                </div>
+              <input
+                type="text"
+                name="name"
+                placeholder="Your full name"
+                value={formData.name}
+                onChange={handleChange}
+              />
             </div>
 
-            {/* FEATURES */}
-            <div className={styles.featuresSection}>
+            <div className={styles.inputGroup}>
+              <label>Email Address</label>
 
-                <div className={styles.featuresTop}>
-                    <span className={styles.featureTag}>
-                        Why Choose Us
-                    </span>
-
-                    <h2>
-                        Reliable Support Experience
-                    </h2>
-
-                    <p>
-                        We provide fast communication, professional guidance,
-                        and secure assistance for every customer inquiry.
-                    </p>
-                </div>
-
-                <div className={styles.featuresGrid}>
-
-                    <div className={styles.featureCard}>
-                        <div className={styles.featureGlow}></div>
-
-                        <div className={styles.featureIcon}>
-                            <FiZap />
-                        </div>
-
-                        <h4>Fast Response</h4>
-
-                        <p>
-                            Get quick replies and instant assistance from our
-                            responsive support team.
-                        </p>
-
-                        <span>Usually within 24 hours</span>
-                    </div>
-
-                    <div className={styles.featureCard}>
-                        <div className={styles.featureGlow}></div>
-
-                        <div className={styles.featureIcon}>
-                            <FiShield />
-                        </div>
-
-                        <h4>Expert Support</h4>
-
-                        <p>
-                            Our experienced professionals are always ready
-                            to help your business.
-                        </p>
-
-                        <span>Professional assistance</span>
-                    </div>
-
-                    <div className={styles.featureCard}>
-                        <div className={styles.featureGlow}></div>
-
-                        <div className={styles.featureIcon}>
-                            <FiUsers />
-                        </div>
-
-                        <h4>Secure Communication</h4>
-
-                        <p>
-                            Your personal and business information stays
-                            completely protected.
-                        </p>
-
-                        <span>Privacy focused</span>
-                    </div>
-
-                    <div className={styles.featureCard}>
-                        <div className={styles.featureGlow}></div>
-
-                        <div className={styles.featureIcon}>
-                            <FiHelpCircle />
-                        </div>
-
-                        <h4>Always Available</h4>
-
-                        <p>
-                            We’re here to guide and support you whenever
-                            you need assistance.
-                        </p>
-
-                        <span>Dedicated customer care</span>
-                    </div>
-
-                </div>
+              <input
+                type="email"
+                name="email"
+                placeholder="example@gmail.com"
+                value={formData.email}
+                onChange={handleChange}
+              />
             </div>
-        </>
-    );
+
+            <div className={styles.inputGroup}>
+              <label>Subject</label>
+
+              <select
+                name="subject"
+                value={formData.subject}
+                onChange={handleChange}
+              >
+                <option value="">Select a subject</option>
+
+                <option value="Support">Support</option>
+
+                <option value="Business">Business</option>
+
+                <option value="General Query">General Query</option>
+              </select>
+            </div>
+
+            <div className={styles.inputGroup}>
+              <label>Message</label>
+
+              <textarea
+                name="message"
+                placeholder="Type your message here..."
+                rows="5"
+                value={formData.message}
+                onChange={handleChange}
+              />
+            </div>
+
+
+            <button type="submit" className={styles.sendBtn} disabled={loading}>
+              <FiSend />
+
+              {loading ? "Sending..." : "Send Message"}
+            </button>
+          </form>
+        </div>
+
+        {/* INFO */}
+        <div className={styles.infoCard}>
+          <div className={styles.cardTitle}>
+            <FiPhone />
+            <h3>Contact Information</h3>
+          </div>
+
+          <p>Reach us through any of the following channels.</p>
+
+          <div className={styles.infoBox}>
+            <FiMapPin />
+
+            <div>
+              <h4>Address</h4>
+
+              <span>
+                Ground Floor, Office No-52/ Plot No-44, sai Chamber CHS, Wing A,
+                Sector 11, sai Chambers, Nerul, Navi Mumbai - 400706
+              </span>
+            </div>
+          </div>
+
+          <div className={styles.infoBox}>
+            <FiPhone />
+
+            <div>
+              <h4>Phone</h4>
+
+              <span>022-46033434</span>
+            </div>
+          </div>
+
+          <div className={styles.infoBox}>
+            <FiMail />
+
+            <div>
+              <h4>Email</h4>
+
+              <span>info@rubberscrapmart.com</span>
+            </div>
+          </div>
+
+          <div className={styles.infoBox}>
+            <FiClock />
+
+            <div>
+              <h4>Business Hours</h4>
+
+              <span>Monday - Saturday: 10:00 AM - 6:00 PM</span>
+            </div>
+          </div>
+
+          <div className={styles.mapBox}>
+            <iframe
+              title="Company Location"
+              src="https://www.google.com/maps?ll=19.016089,73.039651&z=15&t=m&hl=en&gl=IN&mapclient=embed&cid=6816502611823718719&output=embed"
+              width="100%"
+              height="280"
+              style={{
+                border: 0,
+                borderRadius: "16px",
+              }}
+              allowFullScreen=""
+              loading="lazy"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+
+      {/* FEATURES */}
+      <div className={styles.featuresSection}>
+        <div className={styles.featuresTop}>
+          <span className={styles.featureTag}>Why Choose Us</span>
+
+          <h2>Reliable Support Experience</h2>
+
+          <p>
+            We provide fast communication, professional guidance, and secure
+            assistance for every customer inquiry.
+          </p>
+        </div>
+
+        <div className={styles.featuresGrid}>
+          <div className={styles.featureCard}>
+            <div className={styles.featureGlow}></div>
+
+            <div className={styles.featureIcon}>
+              <FiZap />
+            </div>
+
+            <h4>Fast Response</h4>
+
+            <p>
+              Get quick replies and instant assistance from our responsive
+              support team.
+            </p>
+
+            <span>Usually within 24 hours</span>
+          </div>
+
+          <div className={styles.featureCard}>
+            <div className={styles.featureGlow}></div>
+
+            <div className={styles.featureIcon}>
+              <FiShield />
+            </div>
+
+            <h4>Expert Support</h4>
+
+            <p>
+              Our experienced professionals are always ready to help your
+              business.
+            </p>
+
+            <span>Professional assistance</span>
+          </div>
+
+          <div className={styles.featureCard}>
+            <div className={styles.featureGlow}></div>
+
+            <div className={styles.featureIcon}>
+              <FiUsers />
+            </div>
+
+            <h4>Secure Communication</h4>
+
+            <p>
+              Your personal and business information stays completely protected.
+            </p>
+
+            <span>Privacy focused</span>
+          </div>
+
+          <div className={styles.featureCard}>
+            <div className={styles.featureGlow}></div>
+
+            <div className={styles.featureIcon}>
+              <FiHelpCircle />
+            </div>
+
+            <h4>Always Available</h4>
+
+            <p>
+              We’re here to guide and support you whenever you need assistance.
+            </p>
+
+            <span>Dedicated customer care</span>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default ContactMain;

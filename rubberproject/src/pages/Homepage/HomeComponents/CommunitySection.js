@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 
+import { useNavigate } from "react-router-dom";
+
 import styles from "./CommunitySection.module.css";
 
 import {
@@ -15,6 +17,8 @@ import {
 import { MoveRight } from "lucide-react";
 
 const CommunitySection = () => {
+  const navigate = useNavigate();
+
   const stats = [
     {
       icon: <FaUsers />,
@@ -173,9 +177,19 @@ const CommunitySection = () => {
             </p>
 
             <div className={styles.bannerBtns}>
-              <button className={styles.buyerBtn}>Join as Buyer</button>
+              <button
+                className={styles.buyerBtn}
+                onClick={() => navigate("/signup?role=buyer")}
+              >
+                Join as Buyer
+              </button>
 
-              <button className={styles.sellerBtn}>Join as Seller</button>
+              <button
+                className={styles.sellerBtn}
+                onClick={() => navigate("/signup?role=seller")}
+              >
+                Join as Seller
+              </button>
             </div>
           </div>
 

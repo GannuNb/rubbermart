@@ -12,6 +12,7 @@ import userRoutes from "./routes/userRoutes.js";
 import buyerProductRoutes from "./routes/buyerProductRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import testInvoiceRoute from "./routes/testInvoiceRoute.js";
+import contactRoutes from "./routes/contactRoutes.js";
 
 dotenv.config();
 
@@ -21,7 +22,12 @@ connectDB();
 
 app.use(
   cors({
-    origin: "*",
+    origin: [
+      "http://localhost:3000",
+      "https://rubberscrapmart.com",
+      "https://www.rubberscrapmart.com",
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
@@ -45,6 +51,8 @@ app.use("/api/products", sellerProductRoutes);
 app.use("/api/buyer-products", buyerProductRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/test", testInvoiceRoute);
+app.use("/api/contact", contactRoutes);
+
 
 app.use(uploadDocumentsErrorHandler);
 

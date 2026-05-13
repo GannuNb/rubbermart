@@ -16,10 +16,12 @@ const initialState = {
   adminPendingProductsError: null,
 
   approveProductLoading: false,
+  approveProductLoadingId: null,
   approveProductSuccess: null,
   approveProductError: null,
 
   rejectProductLoading: false,
+  rejectProductLoadingId: null,
   rejectProductSuccess: null,
   rejectProductError: null,
 };
@@ -59,7 +61,8 @@ const sellerProductSlice = createSlice({
     },
 
     setApproveProductLoading: (state, action) => {
-      state.approveProductLoading = action.payload;
+      state.approveProductLoading = action.payload.loading;
+      state.approveProductLoadingId = action.payload.productId;
     },
     setApproveProductSuccess: (state, action) => {
       state.approveProductSuccess = action.payload;
@@ -69,7 +72,8 @@ const sellerProductSlice = createSlice({
     },
 
     setRejectProductLoading: (state, action) => {
-      state.rejectProductLoading = action.payload;
+      state.rejectProductLoading = action.payload.loading;
+      state.rejectProductLoadingId = action.payload.productId;
     },
     setRejectProductSuccess: (state, action) => {
       state.rejectProductSuccess = action.payload;

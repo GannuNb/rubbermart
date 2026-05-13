@@ -1,0 +1,383 @@
+/* src/components/footer/BuyerFooter.module.css */
+
+.footer {
+  background: linear-gradient(
+    135deg,
+    #a447f3,
+    #5a1d91,
+    #6c2fa4
+  );
+
+  color: #ffffff;
+
+  padding-top: 70px;
+
+  margin-top: 80px;
+
+  overflow: hidden;
+
+  position: relative;
+}
+
+.footer::before {
+  content: "";
+
+  position: absolute;
+
+  top: -120px;
+  right: -120px;
+
+  width: 320px;
+  height: 320px;
+
+  background: rgba(255, 255, 255, 0.06);
+
+  border-radius: 50%;
+}
+
+.footerContainer {
+  max-width: 1400px;
+
+  margin: auto;
+
+  padding: 0 40px 50px;
+
+  display: grid;
+
+  grid-template-columns:
+    1.5fr
+    1fr
+    1fr
+    1fr
+    1.3fr;
+
+  gap: 40px;
+
+  position: relative;
+
+  z-index: 2;
+}
+
+/* LEFT */
+
+.leftSection {
+  display: flex;
+
+  flex-direction: column;
+}
+
+.logo {
+  width: 230px;
+
+  margin-bottom: 28px;
+
+  object-fit: contain;
+}
+
+.description {
+  color: #f3e8ff;
+
+  line-height: 1.9;
+
+  font-size: 15px;
+
+  margin-bottom: 30px;
+}
+
+.contactInfo {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 18px;
+
+  margin-bottom: 30px;
+}
+
+.contactItem {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 14px;
+
+  color: #f5ecff;
+
+  font-size: 15px;
+
+  line-height: 1.7;
+}
+
+.contactItem svg {
+  color: #ffe082;
+
+  margin-top: 3px;
+
+  font-size: 15px;
+}
+
+/* SOCIAL */
+
+.socialIcons {
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+}
+
+.socialIcons a {
+  width: 44px;
+  height: 44px;
+
+  border-radius: 50%;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255, 255, 255, 0.12);
+
+  color: #ffffff;
+
+  transition: 0.3s ease;
+
+  text-decoration: none;
+
+  backdrop-filter: blur(10px);
+}
+
+.socialIcons a:hover {
+  background: #ffffff;
+
+  color: #6c2fa4;
+
+  transform: translateY(-4px);
+}
+
+/* LINKS */
+
+.footerLinks h3,
+.rightSection h3 {
+  font-size: 21px;
+
+  margin-bottom: 30px;
+
+  position: relative;
+
+  color: #ffffff;
+}
+
+.footerLinks h3::after,
+.rightSection h3::after {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  bottom: -10px;
+
+  width: 45px;
+  height: 3px;
+
+  border-radius: 20px;
+
+  background: #ffe082;
+}
+
+.footerLinks {
+  display: flex;
+
+  flex-direction: column;
+}
+
+.footerLinks a {
+  color: #f8efff;
+
+  text-decoration: none;
+
+  margin-bottom: 18px;
+
+  transition: 0.3s ease;
+
+  font-size: 15px;
+
+  width: fit-content;
+}
+
+.footerLinks a:hover {
+  color: #ffe082;
+
+  transform: translateX(6px);
+}
+
+/* RIGHT */
+
+.rightSection {
+  display: flex;
+
+  flex-direction: column;
+}
+
+.whyItem {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 16px;
+
+  margin-bottom: 28px;
+}
+
+.whyIcon {
+  min-width: 50px;
+  height: 50px;
+
+  border-radius: 50%;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255, 255, 255, 0.16);
+
+  color: #ffe082;
+
+  font-size: 18px;
+
+  border: 1px solid rgba(255, 255, 255, 0.14);
+
+  backdrop-filter: blur(10px);
+}
+
+.whyItem h4 {
+  font-size: 16px;
+
+  margin-bottom: 8px;
+
+  color: #ffffff;
+
+  font-weight: 600;
+}
+
+.whyItem p {
+  color: #f3e8ff;
+
+  font-size: 14px;
+
+  line-height: 1.7;
+}
+
+/* BOTTOM */
+
+.bottomBar {
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+
+  padding: 24px 40px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  flex-wrap: wrap;
+
+  gap: 20px;
+
+  max-width: 1400px;
+
+  margin: auto;
+
+  position: relative;
+
+  z-index: 2;
+}
+
+.bottomBar p {
+  color: #f3e8ff;
+
+  font-size: 14px;
+}
+
+.bottomLinks {
+  display: flex;
+
+  align-items: center;
+
+  gap: 22px;
+
+  flex-wrap: wrap;
+}
+
+.bottomLinks a {
+  color: #f8efff;
+
+  text-decoration: none;
+
+  font-size: 14px;
+
+  transition: 0.3s ease;
+}
+
+.bottomLinks a:hover {
+  color: #ffe082;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1200px) {
+  .footerContainer {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .footerContainer {
+    grid-template-columns: 1fr;
+
+    padding: 0 20px 40px;
+  }
+
+  .bottomBar {
+    padding: 24px 20px;
+
+    flex-direction: column;
+
+    text-align: center;
+  }
+
+  .bottomLinks {
+    justify-content: center;
+  }
+
+  .logo {
+    width: 190px;
+  }
+}
+
+@media (max-width: 500px) {
+  .footer {
+    padding-top: 55px;
+  }
+
+  .footerLinks h3,
+  .rightSection h3 {
+    font-size: 19px;
+  }
+
+  .description,
+  .contactItem,
+  .footerLinks a,
+  .whyItem p {
+    font-size: 14px;
+  }
+
+  .socialIcons a {
+    width: 40px;
+    height: 40px;
+  }
+}

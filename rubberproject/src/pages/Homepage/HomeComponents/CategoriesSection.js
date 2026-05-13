@@ -2,6 +2,8 @@
 
 import React, { useRef } from "react";
 
+import { useNavigate } from "react-router-dom";
+
 import { MoveRight, Store, ChevronLeft, ChevronRight } from "lucide-react";
 
 import tyreImg from "../../../assests/categoryimages/Tyre.jpeg";
@@ -19,47 +21,63 @@ import styles from "./CategoriesSection.module.css";
 function CategoriesSection() {
   const scrollRef = useRef(null);
 
+  const navigate = useNavigate();
+
   const categories = [
     {
       label: "Baled Tyres PCR",
       desc: "Passenger car radial tyres",
       image: btpcr,
+      category: "Tyre Scrap",
+      application: "Baled Tyres PCR",
     },
 
     {
       label: "Baled Tyres TBR",
       desc: "Truck & bus radial tyres",
       image: bttbr,
+      category: "Tyre Scrap",
+      application: "Baled Tyres TBR",
     },
 
     {
       label: "Three Piece PCR",
       desc: "Processed PCR rubber",
       image: tppcr,
+      category: "Tyre Scrap",
+      application: "Three Piece PCR",
     },
 
     {
       label: "Three Piece TBR",
       desc: "Industrial TBR material",
       image: tptbr,
+      category: "Tyre Scrap",
+      application: "Three Piece TBR",
     },
 
     {
       label: "Shredds",
       desc: "Premium tyre shredds",
       image: shreddsImg,
+      category: "Tyre Scrap",
+      application: "Shredds",
     },
 
     {
       label: "Pyro Oil",
       desc: "Industrial pyrolysis oil",
       image: pyroOilImg,
+      category: "Pyro Oil",
+      application: "Pyro Oil",
     },
 
     {
       label: "Pyro Steel",
       desc: "Recovered industrial steel",
       image: pyroSteelImg,
+      category: "Pyro Oil",
+      application: "Pyro Steel",
     },
   ];
 
@@ -104,7 +122,10 @@ function CategoriesSection() {
                 </p>
               </div>
 
-              <button className={styles.viewAllBtn}>
+              <button
+                className={styles.viewAllBtn}
+                onClick={() => navigate("/our-products")}
+              >
                 View all Categories
                 <MoveRight size={16} />
               </button>
@@ -130,7 +151,17 @@ function CategoriesSection() {
 
         <div className={styles.categoriesSlider} ref={scrollRef}>
           {categories.map((item, index) => (
-            <div className={styles.categoryCard} key={index}>
+            <div
+              className={styles.categoryCard}
+              key={index}
+              onClick={() =>
+                navigate(
+                  `/our-products?category=${encodeURIComponent(
+                    item.category,
+                  )}&application=${encodeURIComponent(item.application)}`,
+                )
+              }
+            >
               {/* IMAGE */}
 
               <div className={styles.imageWrapper}>

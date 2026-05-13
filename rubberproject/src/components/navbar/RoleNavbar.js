@@ -1,41 +1,22 @@
 import React, { useState } from "react";
-
 import { useNavigate, useLocation } from "react-router-dom";
-
 import { useDispatch, useSelector } from "react-redux";
-
 import { FaBars, FaTimes } from "react-icons/fa";
-
 import { logoutUser } from "../../redux/slices/authSlice";
-
 import styles from "../../styles/Navbar/RoleNavbar.module.css";
-
 import dashboardStyles from "../../styles/Navbar/NavbarDashboard.module.css";
-
 import GuestNavbar from "./GuestNavbar";
-
 import BuyerNavbar from "./BuyerNavbar";
-
 import SellerNavbar from "./SellerNavbar";
-
 import AdminNavbar from "./AdminNavbar";
-
 import NavbarSearch from "./NavbarSearch";
-
 import BuyerProfileMenu from "./BuyerProfileMenu";
-
 import GuestActions from "./GuestActions";
-
 import UserProfileCard from "./UserProfileCard";
-
 import LogoutButton from "./LogoutButton";
-
 import NavbarContainer from "./NavbarContainer";
-
 import NavbarLogo from "./NavbarLogo";
-
 import useNavbarRole from "../../hooks/useNavbarRole";
-
 import useAutoLogout from "../../hooks/useAutoLogout";
 
 function RoleNavbar() {

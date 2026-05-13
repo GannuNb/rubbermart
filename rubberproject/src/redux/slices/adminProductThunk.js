@@ -26,7 +26,7 @@ export const fetchAdminPendingProductsThunk = () => async (dispatch) => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
 
     const data = await response.json();
@@ -45,7 +45,12 @@ export const fetchAdminPendingProductsThunk = () => async (dispatch) => {
 
 export const approveProductThunk = (productId) => async (dispatch) => {
   try {
-    dispatch(setApproveProductLoading(true));
+    dispatch(
+      setApproveProductLoading({
+        loading: true,
+        productId,
+      }),
+    );
     dispatch(setApproveProductError(null));
 
     const token = localStorage.getItem("token");
@@ -57,7 +62,7 @@ export const approveProductThunk = (productId) => async (dispatch) => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
 
     const data = await response.json();
@@ -71,13 +76,23 @@ export const approveProductThunk = (productId) => async (dispatch) => {
   } catch (error) {
     dispatch(setApproveProductError("Failed to approve product"));
   } finally {
-    dispatch(setApproveProductLoading(false));
+    dispatch(
+      setApproveProductLoading({
+        loading: false,
+        productId: null,
+      }),
+    );
   }
 };
 
 export const rejectProductThunk = (productId) => async (dispatch) => {
   try {
-    dispatch(setRejectProductLoading(true));
+    dispatch(
+      setRejectProductLoading({
+        loading: true,
+        productId,
+      }),
+    );
     dispatch(setRejectProductError(null));
 
     const token = localStorage.getItem("token");
@@ -89,7 +104,7 @@ export const rejectProductThunk = (productId) => async (dispatch) => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
 
     const data = await response.json();
@@ -103,6 +118,11 @@ export const rejectProductThunk = (productId) => async (dispatch) => {
   } catch (error) {
     dispatch(setRejectProductError("Failed to reject product"));
   } finally {
-    dispatch(setRejectProductLoading(false));
+    dispatch(
+      setRejectProductLoading({
+        loading: false,
+        productId: null,
+      }),
+    );
   }
 };
