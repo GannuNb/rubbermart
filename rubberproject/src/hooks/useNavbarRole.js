@@ -42,7 +42,7 @@ function useNavbarRole(user) {
       return "/seller-dashboard";
     }
 
-    return "/home";
+    return "/";
   };
 
 

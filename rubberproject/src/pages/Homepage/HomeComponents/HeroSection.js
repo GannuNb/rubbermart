@@ -11,6 +11,8 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
+import { useNavigate } from "react-router-dom";
+
 import heroImage from "../../../assests/topfull.png";
 
 import styles from "./HeroSection.module.css";
@@ -75,6 +77,8 @@ const Counter = ({ end, suffix = "+", duration = 2000 }) => {
 };
 
 const HeroSection = () => {
+  const navigate = useNavigate();
+
   const stats = [
     {
       icon: <Package size={20} />,
@@ -135,12 +139,18 @@ const HeroSection = () => {
 
             {/* BUTTONS */}
             <div className={styles.buttonGroup}>
-              <button className={styles.primaryBtn}>
+              <button
+                className={styles.primaryBtn}
+                onClick={() => navigate("/our-products")}
+              >
                 Explore Marketplace
                 <MoveRight size={18} />
               </button>
 
-              <button className={styles.secondaryBtn}>
+              <button
+                className={styles.secondaryBtn}
+                onClick={() => navigate("/about")}
+              >
                 About Us
                 <MoveRight size={18} />
               </button>

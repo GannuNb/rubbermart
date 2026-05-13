@@ -10,9 +10,13 @@ import {
 
 import { motion } from "framer-motion";
 
+import { useNavigate } from "react-router-dom";
+
 import styles from "./MoreForYouSection.module.css";
 
 const MoreForYouSection = () => {
+  const navigate = useNavigate();
+
   const cards = [
     {
       icon: <UserPlus size={26} />,
@@ -20,6 +24,7 @@ const MoreForYouSection = () => {
       desc: "Create your business account and start connecting with verified buyers and suppliers worldwide.",
       btn: "Create Account",
       green: false,
+      action: () => navigate("/signup"),
     },
 
     {
@@ -28,6 +33,7 @@ const MoreForYouSection = () => {
       desc: "Browse premium rubber products, tyre scraps, crumb rubber, pyrolysis materials and more.",
       btn: "Browse Products",
       green: true,
+      action: () => navigate("/our-products"),
     },
 
     {
@@ -36,6 +42,7 @@ const MoreForYouSection = () => {
       desc: "Monitor confirmations, shipments, payments and delivery updates in one secure dashboard.",
       btn: "View Orders",
       green: false,
+      action: () => navigate("/buyer-orders"),
     },
 
     {
@@ -44,24 +51,20 @@ const MoreForYouSection = () => {
       desc: "Need help with orders or suppliers? Our support team is always ready to assist your business.",
       btn: "Contact Us",
       green: true,
+      action: () => navigate("/contactus"),
     },
   ];
 
   return (
     <section className={styles.sectionWrapper}>
-
       {/* BACKGROUND SHAPES */}
       <div className={styles.glowOne}></div>
       <div className={styles.glowTwo}></div>
 
       <div className="container-fluid px-md-5">
-
         {/* HEADER */}
         <div className={styles.header}>
-
-          <div className={styles.badge}>
-            More For You
-          </div>
+          <div className={styles.badge}>More For You</div>
 
           <h2 className={styles.title}>
             Everything You Need <span>In One Place</span>
@@ -71,19 +74,12 @@ const MoreForYouSection = () => {
             Manage your buying, selling and order activities through a secure
             and trusted rubber trading marketplace.
           </p>
-
         </div>
 
         {/* CARDS */}
         <div className="row g-4">
-
           {cards.map((item, index) => (
-
-            <div
-              className="col-xl-3 col-lg-6 col-md-6"
-              key={index}
-            >
-
+            <div className="col-xl-3 col-lg-6 col-md-6" key={index}>
               <motion.div
                 className={`${styles.cardBox} ${
                   item.green ? styles.greenCard : ""
@@ -97,7 +93,6 @@ const MoreForYouSection = () => {
                 }}
                 whileHover={{ y: -8 }}
               >
-
                 {/* ICON */}
                 <div
                   className={`${styles.iconBox} ${
@@ -117,21 +112,16 @@ const MoreForYouSection = () => {
                   className={`${styles.actionBtn} ${
                     item.green ? styles.greenBtn : ""
                   }`}
+                  onClick={item.action}
                 >
                   {item.btn}
                   <ArrowRight size={17} />
                 </button>
-
               </motion.div>
-
             </div>
-
           ))}
-
         </div>
-
       </div>
-
     </section>
   );
 };

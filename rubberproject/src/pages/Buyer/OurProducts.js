@@ -55,9 +55,14 @@ function OurProducts() {
       ) || "";
 
     const search =
-      queryParams.get(
-        "search"
-      ) || "";
+  queryParams.get(
+    "search"
+  ) || "";
+
+const application =
+  queryParams.get(
+    "application"
+  ) || "";
 
 
     /* AUTO CATEGORY */
@@ -100,7 +105,7 @@ function OurProducts() {
         autoCategory,
 
       // IMPORTANT FIX
-      application: "",
+      application: application,
 
       loadingLocation: "",
 

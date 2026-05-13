@@ -1,5 +1,7 @@
 import React from "react";
 
+import { useNavigate } from "react-router-dom";
+
 import {
   UserPlus,
   Search,
@@ -15,7 +17,7 @@ import {
 import styles from "./HowItWorksSection.module.css";
 
 function HowItWorksSection() {
-
+  const navigate = useNavigate();
   const steps = [
     {
       icon: <UserPlus size={22} />,
@@ -55,15 +57,12 @@ function HowItWorksSection() {
 
   return (
     <section className={styles.sectionWrapper}>
-
       <div className={styles.leftDots}></div>
       <div className={styles.rightDots}></div>
 
       <div className="container-fluid px-xl-5 px-lg-4 px-3">
-
         {/* HEADER */}
         <div className={styles.headerSection}>
-
           <div className={styles.topBadge}>
             <Sparkles size={13} />
             <span>SIMPLE, SECURE & TRANSPARENT</span>
@@ -74,21 +73,16 @@ function HowItWorksSection() {
           </h2>
 
           <p className={styles.subTitle}>
-            Our streamlined process ensures a secure and efficient trading experience
-            for buyers and sellers.
+            Our streamlined process ensures a secure and efficient trading
+            experience for buyers and sellers.
           </p>
-
         </div>
 
         {/* STEPS */}
         <div className={styles.stepsWrapper}>
-
           {steps.map((step, index) => (
-
             <React.Fragment key={index}>
-
               <div className={styles.stepCard}>
-
                 <div
                   className={`${styles.iconBox}
                   ${
@@ -115,56 +109,35 @@ function HowItWorksSection() {
 
                 <div
                   className={`${styles.bottomLine}
-                  ${
-                    step.theme === "green"
-                      ? styles.greenBg
-                      : styles.purpleBg
-                  }`}
+                  ${step.theme === "green" ? styles.greenBg : styles.purpleBg}`}
                 ></div>
-
               </div>
 
               {/* DASHED ARROW */}
               {index !== steps.length - 1 && (
-
                 <div className={styles.arrowWrapper}>
-
                   <div
                     className={`${styles.dashedLine}
-                    ${
-                      index % 2 === 0
-                        ? styles.purpleDash
-                        : styles.greenDash
-                    }`}
+                    ${index % 2 === 0 ? styles.purpleDash : styles.greenDash}`}
                   ></div>
 
                   <MoveRight
                     size={24}
                     className={
-                      index % 2 === 0
-                        ? styles.purpleArrow
-                        : styles.greenArrow
+                      index % 2 === 0 ? styles.purpleArrow : styles.greenArrow
                     }
                   />
-
                 </div>
-
               )}
-
             </React.Fragment>
-
           ))}
-
         </div>
 
         {/* GUIDE CARDS */}
         <div className={styles.guideWrapper}>
-
           {/* BUYER */}
           <div className={styles.guideCard}>
-
             <div className={styles.guideLeft}>
-
               <div className={`${styles.guideIcon} ${styles.purpleIcon}`}>
                 <ShoppingBag size={24} />
               </div>
@@ -172,56 +145,45 @@ function HowItWorksSection() {
               <div className={styles.guideText}>
                 <h5>Buyer Guide</h5>
 
-                <p>
-                  Learn how to buy materials
-                  easily and securely.
-                </p>
+                <p>Learn how to buy materials easily and securely.</p>
               </div>
-
             </div>
 
-            <button className={styles.guideArrow}>
+            <button
+              className={styles.guideArrow}
+              onClick={() => navigate("/buyer-guide")}
+            >
               <MoveRight size={18} />
             </button>
 
             <div className={styles.guideDotsPurple}></div>
-
           </div>
 
           {/* SELLER */}
           <div className={styles.guideCard}>
-
             <div className={styles.guideLeft}>
-
               <div className={`${styles.guideIcon} ${styles.greenIcon}`}>
                 <Store size={24} />
               </div>
 
               <div className={styles.guideText}>
-                <h5 className={styles.greenText}>
-                  Seller Guide
-                </h5>
+                <h5 className={styles.greenText}>Seller Guide</h5>
 
-                <p>
-                  Learn how to sell and grow
-                  your business globally.
-                </p>
+                <p>Learn how to sell and grow your business globally.</p>
               </div>
-
             </div>
 
-            <button className={`${styles.guideArrow} ${styles.greenGuideArrow}`}>
+            <button
+              className={`${styles.guideArrow} ${styles.greenGuideArrow}`}
+              onClick={() => navigate("/seller-guide")}
+            >
               <MoveRight size={18} />
             </button>
 
             <div className={styles.guideDotsGreen}></div>
-
           </div>
-
         </div>
-
       </div>
-
     </section>
   );
 }

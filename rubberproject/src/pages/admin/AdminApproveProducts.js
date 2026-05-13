@@ -1,12 +1,13 @@
-// src/pages/admin/AdminApproveProducts.js
-
 import React, { useEffect } from "react";
+
 import { useDispatch, useSelector } from "react-redux";
+
 import {
   fetchAdminPendingProductsThunk,
   approveProductThunk,
   rejectProductThunk,
 } from "../../redux/slices/adminProductThunk";
+
 import styles from "../../styles/Admin/AdminApproveProducts.module.css";
 
 function AdminApproveProducts() {
@@ -16,8 +17,12 @@ function AdminApproveProducts() {
     adminPendingProducts,
     adminPendingProductsLoading,
     adminPendingProductsError,
+
     approveProductLoading,
+    approveProductLoadingId,
+
     rejectProductLoading,
+    rejectProductLoadingId,
   } = useSelector((state) => state.sellerProduct);
 
   useEffect(() => {
@@ -52,12 +57,14 @@ function AdminApproveProducts() {
     <div className={styles.container}>
       <div className={styles.header}>
         <h1>Approve Products</h1>
+
         <p>Review seller submitted products and approve or reject them.</p>
       </div>
 
       {adminPendingProducts.length === 0 ? (
         <div className={styles.emptyState}>
           <h2>No Pending Products</h2>
+
           <p>All seller products have already been reviewed.</p>
         </div>
       ) : (
@@ -79,6 +86,7 @@ function AdminApproveProducts() {
               <div className={styles.content}>
                 <div className={styles.topSection}>
                   <h2>{product.application}</h2>
+
                   <span className={styles.pendingBadge}>Pending</span>
                 </div>
 
@@ -116,9 +124,11 @@ function AdminApproveProducts() {
 
                 <div className={styles.sellerInfo}>
                   <h3>Seller Information</h3>
+
                   <p>
                     <strong>Name:</strong> {product.seller?.fullName}
                   </p>
+
                   <p>
                     <strong>Email:</strong> {product.seller?.email}
                   </p>
@@ -127,6 +137,7 @@ function AdminApproveProducts() {
                 {product.description && (
                   <div className={styles.description}>
                     <h3>Description</h3>
+
                     <p>{product.description}</p>
                   </div>
                 )}
@@ -135,17 +146,29 @@ function AdminApproveProducts() {
                   <button
                     className={styles.approveBtn}
                     onClick={() => handleApprove(product._id)}
-                    disabled={approveProductLoading}
+                    disabled={
+                      approveProductLoading &&
+                      approveProductLoadingId === product._id
+                    }
                   >
-                    {approveProductLoading ? "Approving..." : "Approve"}
+                    {approveProductLoading &&
+                    approveProductLoadingId === product._id
+                      ? "Approving..."
+                      : "Approve"}
                   </button>
 
                   <button
                     className={styles.rejectBtn}
                     onClick={() => handleReject(product._id)}
-                    disabled={rejectProductLoading}
+                    disabled={
+                      rejectProductLoading &&
+                      rejectProductLoadingId === product._id
+                    }
                   >
-                    {rejectProductLoading ? "Rejecting..." : "Reject"}
+                    {rejectProductLoading &&
+                    rejectProductLoadingId === product._id
+                      ? "Rejecting..."
+                      : "Reject"}
                   </button>
                 </div>
               </div>

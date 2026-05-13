@@ -65,7 +65,7 @@ function Login() {
         } else if (user.role === "seller") {
           navigate("/seller-dashboard");
         } else {
-          navigate("/home");
+          navigate("/");
         }
       }, 3000); // wait for alert
 
@@ -187,6 +187,14 @@ function Login() {
                   {showPassword ? <FiEyeOff /> : <FiEye />}
                 </span>
               </div>
+            </div>
+            <div className={styles.forgotPasswordWrapper}>
+              <span
+                className={styles.forgotPasswordText}
+                onClick={() => navigate("/forgot-password")}
+              >
+                Forgot Password?
+              </span>
             </div>
 
             {/* Submit */}

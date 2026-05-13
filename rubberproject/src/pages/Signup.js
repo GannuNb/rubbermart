@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import signupstyles from "../styles/Signup/Buyersignup.module.css";
 import { FcGoogle } from "react-icons/fc";
 import { HiOutlineBuildingStorefront } from "react-icons/hi2";
@@ -10,14 +10,23 @@ import { signupThunk, googleSignupThunk } from "../redux/slices/authThunk";
 import CustomAlert from "../components/alert/CustomAlert";
 
 function Signup() {
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { signupLoading, signupError, signupSuccessMessage } = useSelector(
     (state) => state.auth,
   );
 
-  const [role, setRole] = useState("buyer");
+  const queryParams = new URLSearchParams(location.search);
+
+const roleFromUrl = queryParams.get("role");
+
+const [role, setRole] = useState(
+  roleFromUrl === "seller" ? "seller" : "buyer"
+);
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -35,6 +44,14 @@ function Signup() {
     password: "",
     confirmPassword: "",
   });
+
+  useEffect(() => {
+  if (roleFromUrl === "seller") {
+    setRole("seller");
+  } else {
+    setRole("buyer");
+  }
+}, [roleFromUrl]);
 
   useEffect(() => {
     if (signupSuccessMessage) {

@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
 
-addresses: [
+    addresses: [
       {
         fullName: {
           type: String,
@@ -63,14 +63,21 @@ addresses: [
         },
 
         pincode: {
-          type: String
+          type: String,
         },
-        }
+      },
     ],
 
     password: {
       type: String,
       default: "",
+    },
+    resetPasswordToken: {
+      type: String,
+    },
+
+    resetPasswordExpire: {
+      type: Date,
     },
 
     profileImage: {
@@ -166,7 +173,7 @@ addresses: [
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 const User = mongoose.model("User", userSchema);
