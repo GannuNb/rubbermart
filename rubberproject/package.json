@@ -50,6 +50,7 @@
     "react-router-dom": "^6.26.2",
     "react-scripts": "5.0.1",
     "react-slick": "^0.30.2",
+    "recharts": "^3.8.1",
     "resolve-url-loader": "^3.1.5",
     "sass-loader": "^10.5.2",
     "slick-carousel": "^1.8.1",

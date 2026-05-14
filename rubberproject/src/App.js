@@ -20,7 +20,7 @@ import TermsAndConditions from "./components/Terms&Conditions/TermsAndConditions
 import RoleFooter from "./components/footer/RoleFooter";
 
 //seller
-import SellerDashboard from "./pages/seller/SellerDashboard";
+import SellerDashboard from "./pages/seller/SellerDashboard/SellerDashboard";
 import SellerAddproduct from "./pages/seller/SellerAddproduct";
 import SellerPendingProducts from "./pages/seller/SellerPendingProducts";
 import SellerProducts from "./pages/seller/SellerProducts";
