@@ -1,0 +1,27 @@
+.dashboardContainer {
+  width: 100%;
+
+  padding: 24px;
+
+  background: #f8fafc;
+
+  min-height: 100vh;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 992px) {
+
+  .dashboardContainer {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 576px) {
+
+  .dashboardContainer {
+    padding: 16px;
+  }
+}

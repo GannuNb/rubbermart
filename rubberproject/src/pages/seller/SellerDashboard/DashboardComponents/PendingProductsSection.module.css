@@ -1,0 +1,309 @@
+.wrapper {
+  width: 100%;
+}
+
+/* =========================
+   TOP BAR
+========================= */
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  margin-bottom: 18px;
+}
+
+.topBar h2 {
+  font-size: 26px;
+
+  font-weight: 800;
+
+  color: #111827;
+
+  margin-bottom: 6px;
+}
+
+.topBar p {
+  font-size: 14px;
+
+  color: #64748b;
+
+  margin: 0;
+}
+
+/* =========================
+   VIEW ALL BUTTON
+========================= */
+
+.viewAllBtn {
+  height: 42px;
+
+  padding: 0 18px;
+
+  border-radius: 12px;
+
+  background: #7c3aed;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  text-decoration: none;
+
+  color: white;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  transition: 0.3s ease;
+}
+
+.viewAllBtn:hover {
+  background: #6d28d9;
+
+  color: white;
+
+  text-decoration: none;
+
+  transform: translateY(-2px);
+}
+
+/* =========================
+   CARD
+========================= */
+
+.card {
+  background: white;
+
+  border-radius: 24px;
+
+  padding: 22px;
+
+  border: 1px solid #eef2f7;
+
+  box-shadow:
+    0 10px 30px rgba(15, 23, 42, 0.05);
+
+  min-height: 420px;
+}
+
+/* =========================
+   TABLE
+========================= */
+
+.tableWrapper {
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  min-width: 650px;
+}
+
+.table thead tr {
+  border-bottom: 1px solid #eef2f7;
+}
+
+.table th {
+  text-align: left;
+
+  padding: 14px 10px;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  color: #64748b;
+}
+
+.table td {
+  padding: 16px 10px;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  color: #111827;
+
+  border-bottom: 1px solid #f8fafc;
+
+  vertical-align: middle;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* =========================
+   PRODUCT CELL
+========================= */
+
+.productCell {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+}
+
+/* =========================
+   IMAGE
+========================= */
+
+.imageWrapper {
+  width: 58px;
+  height: 58px;
+
+  min-width: 58px;
+
+  border-radius: 14px;
+
+  overflow: hidden;
+
+  background: #f8fafc;
+}
+
+.imageWrapper img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+/* =========================
+   PRODUCT INFO
+========================= */
+
+.productInfo h4 {
+  font-size: 14px;
+
+  font-weight: 700;
+
+  color: #111827;
+
+  margin-bottom: 4px;
+}
+
+.productInfo p {
+  font-size: 12px;
+
+  color: #64748b;
+
+  margin: 0;
+}
+
+/* =========================
+   BADGE
+========================= */
+
+.pendingBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 6px 12px;
+
+  border-radius: 999px;
+
+  background: rgba(249, 115, 22, 0.12);
+
+  color: #f97316;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* =========================
+   PRICE
+========================= */
+
+.priceBox {
+  color: #7c3aed;
+
+  font-weight: 800;
+
+  white-space: nowrap;
+}
+
+/* =========================
+   LOADING / EMPTY
+========================= */
+
+.loading,
+.empty {
+  height: 300px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 16px;
+  font-weight: 700;
+
+  color: #64748b;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+
+  .topBar {
+    flex-direction: column;
+
+    align-items: flex-start;
+  }
+
+  .viewAllBtn {
+    width: 100%;
+  }
+
+  .card {
+    padding: 18px;
+
+    min-height: auto;
+  }
+}
+
+@media (max-width: 576px) {
+
+  .topBar h2 {
+    font-size: 22px;
+  }
+
+  .card {
+    border-radius: 20px;
+
+    padding: 16px;
+  }
+
+  .imageWrapper {
+    width: 50px;
+    height: 50px;
+
+    min-width: 50px;
+  }
+
+  .productInfo h4 {
+    font-size: 13px;
+  }
+
+  .productInfo p {
+    font-size: 11px;
+  }
+
+  .loading,
+  .empty {
+    height: 220px;
+
+    font-size: 15px;
+  }
+}

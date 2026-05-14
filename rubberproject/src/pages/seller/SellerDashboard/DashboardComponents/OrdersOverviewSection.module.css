@@ -1,0 +1,313 @@
+.wrapper {
+  width: 100%;
+
+  margin-bottom: 30px;
+}
+
+/* =========================
+   TOP BAR
+========================= */
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 18px;
+
+  gap: 16px;
+}
+
+.topBar h2 {
+  font-size: 30px;
+
+  font-weight: 800;
+
+  color: #111827;
+
+  margin-bottom: 6px;
+}
+
+.topBar p {
+  font-size: 14px;
+
+  color: #64748b;
+
+  margin: 0;
+}
+
+/* =========================
+   FILTER
+========================= */
+
+.filterSelect {
+  height: 46px;
+
+  padding: 0 16px;
+
+  border-radius: 14px;
+
+  border: 1px solid #e2e8f0;
+
+  background: white;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #111827;
+
+  cursor: pointer;
+
+  outline: none;
+
+  transition: 0.3s ease;
+}
+
+.filterSelect:focus {
+  border-color: #7c3aed;
+
+  box-shadow:
+    0 0 0 4px rgba(124, 58, 237, 0.10);
+}
+
+/* =========================
+   CHART CARD
+========================= */
+
+.chartCard {
+  background: white;
+
+  border-radius: 24px;
+
+  padding: 26px;
+
+  border: 1px solid #eef2f7;
+
+  box-shadow:
+    0 10px 30px rgba(15, 23, 42, 0.05);
+
+  overflow: hidden;
+}
+
+/* =========================
+   CHART
+========================= */
+
+.chartWrapper {
+  width: 100%;
+
+  margin-bottom: 24px;
+}
+
+/* =========================
+   SUMMARY GRID
+========================= */
+
+.summaryGrid {
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 18px;
+
+  padding-top: 22px;
+
+  border-top: 1px solid #eef2f7;
+}
+
+/* =========================
+   SUMMARY CARD
+========================= */
+
+.summaryCard {
+  text-align: center;
+
+  position: relative;
+}
+
+.summaryCard:not(:last-child)::after {
+  content: "";
+
+  position: absolute;
+
+  top: 50%;
+  right: -9px;
+
+  transform: translateY(-50%);
+
+  width: 1px;
+  height: 46px;
+
+  background: #e2e8f0;
+}
+
+.summaryCard h3 {
+  font-size: 34px;
+
+  font-weight: 800;
+
+  margin-bottom: 6px;
+
+  color: #7c3aed;
+}
+
+.summaryCard p {
+  font-size: 14px;
+
+  font-weight: 600;
+
+  color: #64748b;
+
+  margin: 0;
+}
+
+/* =========================
+   COLORS
+========================= */
+
+.greenText {
+  color: #16a34a !important;
+}
+
+.orangeText {
+  color: #f97316 !important;
+}
+
+.blueText {
+  color: #2563eb !important;
+}
+
+/* =========================
+   LOADING
+========================= */
+
+.loading {
+  height: 450px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 18px;
+  font-weight: 700;
+
+  color: #64748b;
+}
+
+/* =========================
+   RECHARTS CUSTOM
+========================= */
+
+.recharts-default-tooltip {
+  border-radius: 14px !important;
+
+  border: none !important;
+
+  box-shadow:
+    0 10px 30px rgba(15, 23, 42, 0.12) !important;
+}
+
+.recharts-tooltip-label {
+  color: #111827 !important;
+
+  font-weight: 700 !important;
+}
+
+.recharts-cartesian-grid line {
+  stroke: #eef2f7;
+}
+
+.recharts-cartesian-axis-tick-value {
+  fill: #64748b;
+
+  font-size: 13px;
+}
+
+.recharts-legend-item-text {
+  color: #111827 !important;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1200px) {
+
+  .summaryGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .summaryCard:nth-child(2)::after {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .topBar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .filterSelect {
+    width: 100%;
+  }
+
+  .chartCard {
+    padding: 20px;
+  }
+
+  .summaryGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .summaryCard::after {
+    display: none;
+  }
+
+  .summaryCard {
+    padding-bottom: 18px;
+
+    border-bottom: 1px solid #eef2f7;
+  }
+
+  .summaryCard:last-child {
+    border-bottom: none;
+
+    padding-bottom: 0;
+  }
+}
+
+@media (max-width: 576px) {
+
+  .topBar h2 {
+    font-size: 24px;
+  }
+
+  .topBar p {
+    font-size: 13px;
+  }
+
+  .chartCard {
+    border-radius: 20px;
+
+    padding: 16px;
+  }
+
+  .summaryCard h3 {
+    font-size: 28px;
+  }
+
+  .summaryCard p {
+    font-size: 13px;
+  }
+
+  .loading {
+    height: 320px;
+
+    font-size: 16px;
+  }
+}

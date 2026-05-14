@@ -1,0 +1,308 @@
+.wrapper {
+  width: 100%;
+
+  margin-bottom: 30px;
+}
+
+/* =========================
+   HERO SECTION
+========================= */
+
+.heroSection {
+  background: linear-gradient(
+    135deg,
+    #1d2671 0%,
+    #0b3c91 45%,
+    #0c8a43 100%
+  );
+
+  border-radius: 24px;
+
+  padding: 38px;
+
+  position: relative;
+
+  overflow: hidden;
+}
+
+.heroSection::before {
+  content: "";
+
+  position: absolute;
+
+  width: 320px;
+  height: 320px;
+
+  border-radius: 50%;
+
+  background: rgba(255,255,255,0.05);
+
+  top: -140px;
+  right: -120px;
+}
+
+/* =========================
+   HERO CONTENT
+========================= */
+
+.heroContent {
+  position: relative;
+
+  z-index: 2;
+
+  margin-bottom: 30px;
+}
+
+.heroContent h1 {
+  font-size: 46px;
+
+  font-weight: 800;
+
+  color: white;
+
+  margin-bottom: 10px;
+}
+
+.heroContent p {
+  font-size: 18px;
+
+  color: rgba(255,255,255,0.88);
+
+  margin: 0;
+}
+
+/* =========================
+   CARDS GRID
+========================= */
+
+.cardsGrid {
+  position: relative;
+
+  z-index: 2;
+
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 20px;
+}
+
+/* =========================
+   CARD
+========================= */
+
+.card {
+  background: white;
+
+  border-radius: 12px;
+
+  padding: 24px 20px;
+
+  display: flex;
+  align-items: flex-start;
+
+  gap: 16px;
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.08);
+
+  transition: 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+/* =========================
+   ICON BOX
+========================= */
+
+.iconBox {
+  min-width: 70px;
+  height: 70px;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 28px;
+
+  flex-shrink: 0;
+}
+
+/* COLORS */
+
+.purple {
+  background: rgba(124, 58, 237, 0.12);
+
+  color: #7c3aed;
+}
+
+.blue {
+  background: rgba(59, 130, 246, 0.12);
+
+  color: #2563eb;
+}
+
+.orange {
+  background: rgba(249, 115, 22, 0.12);
+
+  color: #f97316;
+}
+
+.green {
+  background: rgba(34, 197, 94, 0.12);
+
+  color: #16a34a;
+}
+
+/* =========================
+   CARD CONTENT
+========================= */
+
+.cardContent {
+  flex: 1;
+}
+
+.cardContent h3 {
+  font-size: 24px;
+
+  font-weight: 700;
+
+  color: #111827;
+
+  margin-bottom: 8px;
+}
+
+.cardContent p {
+  font-size: 14px;
+
+  line-height: 1.6;
+
+  color: #64748b;
+
+  margin-bottom: 18px;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.btnPurple,
+.btnBlue,
+.btnOrange,
+.btnGreen {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 42px;
+
+  padding: 0 18px;
+
+  border-radius: 12px;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  color: white;
+
+  text-decoration: none;
+
+  transition: 0.3s ease;
+}
+
+.btnPurple {
+  background: #7c3aed;
+}
+
+.btnBlue {
+  background: #2563eb;
+}
+
+.btnOrange {
+  background: #f97316;
+}
+
+.btnGreen {
+  background: #16a34a;
+}
+
+.btnPurple:hover,
+.btnBlue:hover,
+.btnOrange:hover,
+.btnGreen:hover {
+  color: white;
+
+  transform: translateY(-2px);
+
+  text-decoration: none;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1400px) {
+
+  .cardsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+
+  .heroSection {
+    padding: 30px;
+  }
+
+  .heroContent h1 {
+    font-size: 38px;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .cardsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .heroContent h1 {
+    font-size: 30px;
+  }
+
+  .heroContent p {
+    font-size: 15px;
+  }
+
+  .card {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 576px) {
+
+  .heroSection {
+    padding: 24px 20px;
+
+    border-radius: 20px;
+  }
+
+  .heroContent {
+    margin-bottom: 24px;
+  }
+
+  .heroContent h1 {
+    font-size: 26px;
+  }
+
+  .card {
+    flex-direction: column;
+  }
+
+  .cardContent h3 {
+    font-size: 20px;
+  }
+}
