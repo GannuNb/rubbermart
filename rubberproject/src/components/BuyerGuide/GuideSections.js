@@ -1,153 +1,236 @@
 import React from "react";
 import styles from "../../styles/BuyerGuide/GuideSections.module.css";
-
-import { 
-  Package, ClipboardCheck, Bell, ShieldCheck, FileText, 
-  Lock, Truck, Search, Scale, MousePointer2, Headphones 
+import {
+  FileText,
+  User,
+  Package,
+  Truck,
+  CheckCircle,
+  Lock,
+  CreditCard,
+  Shield,
+  Send,
+  Bell,
+  Box,
+  Search,
+  Award,
+  ClipboardList,
+  Handshake,
+  Star,
+  Headphones,
 } from "lucide-react";
 
-const sectionsData = {
+const sections = {
   order: {
+    type: "timeline",
     title: "Order Process",
-    variant: "process",
-    columns: 3,
     items: [
-      { 
-        icon: <Package size={26} />, 
-        title: "Order Review", 
-        desc: "The seller reviews your order, quantity, and availability to ensure requirements are met and inventory levels align with your requested scrap materials." 
+      {
+        icon: <FileText size={24} />,
+        title: "Order Placed",
+        desc: "You place an order and proceed with details.",
       },
-      { 
-        icon: <ClipboardCheck size={26} />, 
-        title: "Order Approval", 
-        desc: "Seller verifies your order and approves it for processing; once successful, the order moves into active status for fulfillment." 
+      {
+        icon: <User size={24} />,
+        title: "Seller Confirms",
+        desc: "Seller verifies and confirms your order.",
       },
-      { 
-        icon: <Bell size={26} />, 
-        title: "Updates on Platform", 
-        desc: "All communication stays on the platform for transparency; you will receive notifications regarding every step of the order lifecycle." 
+      {
+        icon: <Package size={24} />,
+        title: "Packing",
+        desc: "Material is packed and prepared for dispatch.",
       },
-    ]
+      {
+        icon: <Truck size={24} />,
+        title: "Shipped",
+        desc: "Your order is shipped with tracking details.",
+      },
+      {
+        icon: <CheckCircle size={24} />,
+        title: "Delivered",
+        desc: "Order delivered successfully to your location.",
+      },
+    ],
   },
+
   payment: {
-    title: "Payment & safety",
-    variant: "safety",
-    columns: 3,
+    type: "gradientCards",
+    title: "Payment & Safety",
     items: [
-      { 
-        icon: <ShieldCheck size={24} />, 
-        title: "Secure Transactions", 
+      {
+        icon: <Lock size={22} />,
+        title: "Secure Transactions",
         bullets: [
-          "Only use official bank details provided by the system during checkout.",
-          "Do not make payments to personal accounts or unverified off-platform links."
-        ] 
+          "Safe and verified transactions for buyers and sellers.",
+          "All payments are protected and processed securely.",
+        ],
       },
-      { 
-        icon: <FileText size={24} />, 
-        title: "How to Pay", 
+      {
+        icon: <CreditCard size={22} />,
+        title: "How to Pay",
         bullets: [
-          "Make payment only after the seller confirms your order and it moves to the approved stage.",
-          "Upload your payment receipt on the Order page to alert the system of the completed transaction.",
-          "Admin will verify and approve your payment before dispatch is authorized."
-        ] 
+          "Pay securely online or via bank transfer.",
+          "Payments are released after order confirmation.",
+        ],
       },
-      { 
-        icon: <Lock size={24} />, 
-        title: "Your Safety Matters", 
+      {
+        icon: <Shield size={22} />,
+        title: "Your Safety Matters",
         bullets: [
-          "All order updates happen inside the platform to ensure buyer protection.",
-          "Report any suspicious behaviour or requests for off-platform payment to support immediately."
-        ] 
+          "Our team monitors all transactions for your safety.",
+          "Report suspicious activity immediately.",
+        ],
       },
-    ]
+    ],
   },
+
   shipping: {
+    type: "whiteCards",
     title: "Shipping & Delivery",
-    variant: "process",
-    columns: 3,
     items: [
-      { 
-        icon: <Truck size={26} />, 
-        title: "Dispatch Updates", 
-        desc: "Track shipment once the seller dispatches the material; you will be provided with logistical details to monitor the transit." 
+      {
+        icon: <Send size={24} />,
+        color: "blue",
+        title: "Dispatch Updates",
+        desc: "Track shipment updates in real-time via email or platform.",
       },
-      { 
-        icon: <FileText size={26} />, 
-        title: "Platform Updates", 
-        desc: "Get updates on your shipment status through the platform to stay informed on the estimated arrival time." 
+      {
+        icon: <Bell size={24} />,
+        color: "purple",
+        title: "Platform Updates",
+        desc: "Regular order updates from packing to delivery.",
       },
-      { 
-        icon: <Lock size={26} />, 
-        title: "Delivery Confirmation", 
-        desc: "Check the scrap material upon arrival and confirm delivery completion on the platform to finalize the transaction." 
+      {
+        icon: <CheckCircle size={24} />,
+        color: "green",
+        title: "Delivery Confirmation",
+        desc: "Check and confirm delivery once order is received.",
       },
-    ]
+      {
+        icon: <Box size={24} />,
+        color: "orange",
+        title: "Timely Delivery",
+        desc: "Trusted logistics for safe and on-time delivery.",
+      },
+    ],
   },
+
   tips: {
+    type: "miniCards",
     title: "Tips & Best Practices",
-    variant: "tips",
-    columns: 5,
     items: [
-      { 
-        icon: <FileText size={20} />, 
-        title: "Check Product Details", 
-        desc: "Read specifications, description and other details to ensure it meets your industry needs." 
+      {
+        icon: <Search size={20} />,
+        color: "purple",
+        title: "Check Product Details",
+        desc: "Review product specs, images & descriptions carefully.",
       },
-      { 
-        icon: <Search size={20} />, 
-        title: "Verify Material Grade", 
-        desc: "See images and documents shared by the seller for quality clarity and grade confirmation." 
+      {
+        icon: <Award size={20} />,
+        color: "yellow",
+        title: "Verify Material Grade",
+        desc: "Ensure material grade matches requirements.",
       },
-      { 
-        icon: <Scale size={20} />, 
-        title: "Order the Right quantity", 
-        desc: "Avoid delays by confirming your required quantity beforehand against the seller's availability." 
+      {
+        icon: <ClipboardList size={20} />,
+        color: "blue",
+        title: "Order Right Quantity",
+        desc: "Plan quantity based on needs and availability.",
       },
-      { 
-        icon: <MousePointer2 size={20} />, 
-        title: "Inspect on Delivery", 
-        desc: "Check moisture %, contamination, count / weight and other factors on arrival." 
+      {
+        icon: <Box size={20} />,
+        color: "orange",
+        title: "Inspect on Delivery",
+        desc: "Check material quality before acceptance.",
       },
-      { 
-        icon: <Headphones size={20} />, 
-        title: "Need Help?", 
-        desc: "Our support team is always available to assist you with any questions during the process." 
+      {
+        icon: <Handshake size={20} />,
+        color: "pink",
+        title: "Negotiate Smartly",
+        desc: "Communicate clearly for best pricing.",
       },
-    ]
-  }
+      {
+        icon: <Star size={20} />,
+        color: "yellow",
+        title: "Review Ratings",
+        desc: "Check seller ratings before ordering.",
+      },
+      {
+        icon: <Headphones size={20} />,
+        color: "purple",
+        title: "Raise a Query",
+        desc: "Contact support for doubts or assistance.",
+      },
+    ],
+  },
 };
 
 const GuideSections = ({ sectionId }) => {
-  const section = sectionsData[sectionId];
-
+  const section = sections[sectionId];
   if (!section) return null;
 
   return (
-    <div className={`${styles.sectionBlock} ${styles[section.variant]}`}>
-      <div className={styles.headerArea}>
-        <h2 className={styles.sectionHeading}>{section.title}</h2>
-        <div className={styles.headingLine}></div>
-      </div>
-      
-      <div className={styles.grid} style={{ gridTemplateColumns: `repeat(${section.columns}, 1fr)` }}>
-        {section.items.map((item, i) => (
-          <div key={i} className={styles.detailCard}>
-            <div className={styles.cardIconBox}>{item.icon}</div>
-            <div className={styles.cardContent}>
-              <h4 className={styles.cardTitle}>{item.title}</h4>
-              {item.desc && <p className={styles.cardDesc}>{item.desc}</p>}
-              {item.bullets && (
-                <ul className={styles.cardList}>
-                  {item.bullets.map((bullet, bIdx) => (
-                    <li key={bIdx}>{bullet}</li>
-                  ))}
-                </ul>
-              )}
+    <section className={styles.section}>
+      <h2 className={styles.heading}>
+        <span>•••</span> {section.title} <span>•••</span>
+      </h2>
+
+      {section.type === "timeline" && (
+        <div className={styles.timeline}>
+          {section.items.map((item, i) => (
+            <div className={styles.timelineItem} key={i}>
+              <div className={styles.timelineIcon}>{item.icon}</div>
+              <h4>{item.title}</h4>
+              <p>{item.desc}</p>
             </div>
-          </div>
-        ))}
-      </div>
-    </div>
+          ))}
+        </div>
+      )}
+
+      {section.type === "gradientCards" && (
+        <div className={styles.gradientGrid}>
+          {section.items.map((item, i) => (
+            <div className={styles.gradientCard} key={i}>
+              <div className={styles.gradientIcon}>{item.icon}</div>
+              <h4>{item.title}</h4>
+              <ul>
+                {item.bullets.map((bullet, idx) => (
+                  <li key={idx}>{bullet}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {section.type === "whiteCards" && (
+        <div className={styles.whiteGrid}>
+          {section.items.map((item, i) => (
+            <div className={styles.whiteCard} key={i}>
+              <div className={`${styles.whiteIcon} ${styles[item.color]}`}>
+                {item.icon}
+              </div>
+              <h4>{item.title}</h4>
+              <p>{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {section.type === "miniCards" && (
+        <div className={styles.miniGrid}>
+          {section.items.map((item, i) => (
+            <div className={styles.miniCard} key={i}>
+              <div className={`${styles.miniIcon} ${styles[item.color]}`}>
+                {item.icon}
+              </div>
+              <h5>{item.title}</h5>
+              <p>{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
   );
 };
 

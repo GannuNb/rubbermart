@@ -1,85 +1,116 @@
 import React, { useState } from "react";
 import styles from "../../styles/BuyerGuide/FAQSupport.module.css";
-import { ChevronDown, Headphones, ShieldCheck, MessageCircle } from "lucide-react";
+import { Plus, Headphones, MessageSquare, HelpCircle, Minus } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const faqData = [
   { 
     question: "How do I ensure the quality of the scrap material?", 
-    answer: "Every listing includes detailed specifications (grade, moisture, contamination). You can also request a sample or check the seller's past ratings and verification badges before placing an order." 
+    answer: "You can review seller ratings, request detailed photos, and check for quality certifications or third-party inspection reports provided in the listing." 
   },
   { 
     question: "Is my payment secure on this platform?", 
-    answer: "Yes. We use an Escrow-style payment system. Your funds are held securely and only released to the seller after you confirm that the material has been received and meets the described quality." 
+    answer: "Yes, we use an escrow-style payment system. Funds are only released to the seller once you confirm the receipt and quality of the material." 
   },
   { 
     question: "Can I cancel an order after placing it?", 
-    answer: "Orders can be cancelled before the seller approves the request. Once approved and payment is initiated, please contact support for mediation regarding cancellations." 
+    answer: "Orders can be cancelled before the seller starts the shipping process. Once shipped, cancellations are subject to our dispute resolution policy." 
   },
   { 
     question: "How is the shipping cost calculated?", 
-    answer: "Shipping costs depend on the weight, distance, and the logistics partner selected. You will see a transparent breakdown of all costs before you finalize the payment." 
+    answer: "Shipping costs are calculated based on the weight of the material, the distance between the buyer and seller, and the current freight market rates." 
   },
   { 
     question: "What should I do if the material is not as described?", 
-    answer: "Do not click 'Confirm Receipt'. Use the 'Report Issue' button on your order dashboard and upload photos of the material. Our dispute team will step in to resolve the matter within 24 hours." 
+    answer: "Immediately raise a dispute through your dashboard. Keep all documentation and photos ready; our support team will mediate the issue within 24-48 hours." 
   },
   { 
     question: "How do I get an invoice for my purchase?", 
-    answer: "Invoices are automatically generated and available for download in the 'My Orders' section immediately after the payment is verified by our admin." 
+    answer: "Invoices are automatically generated and available for download in the 'My Orders' section of your account immediately after payment confirmation." 
   }
 ];
 
 const FAQSupport = () => {
   const [activeIndex, setActiveIndex] = useState(null);
 
-  const toggleFAQ = (index) => {
+  const toggleAccordion = (index) => {
     setActiveIndex(activeIndex === index ? null : index);
   };
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.header}>
-        <div className={styles.topBadge}><ShieldCheck size={14} /> Verified Buyers Only</div>
-        <h2 className={styles.heading}>Frequently Asked Questions</h2>
-        <p className={styles.subHeading}>Everything you need to know about purchasing and logistics.</p>
-      </div>
+    <div className={styles.pageWrapper}>
+      <div className={styles.mainCard}>
+        <div className={styles.gridOverlay}></div>
+        
+        <div className={styles.layout}>
+          {/* Illustration Side shifted further left */}
+          <div className={styles.illustrationSide}>
+            <div className={styles.bgGlow}></div>
+            <div className={styles.particle} style={{ top: '10%', left: '5%' }}></div>
+            <div className={styles.particle} style={{ bottom: '15%', left: '10%' }}></div>
 
-      <div className={styles.faqContainer}>
-        {faqData.map((item, index) => (
-          <div key={index} className={styles.faqItemWrapper}>
-            <button 
-              className={`${styles.faqItem} ${activeIndex === index ? styles.active : ""}`} 
-              onClick={() => toggleFAQ(index)}
-              aria-expanded={activeIndex === index}
-            >
-              <span className={styles.faqText}>{item.question}</span>
-              <div className={styles.iconCircle}>
-                <ChevronDown size={18} className={`${styles.faqIcon} ${activeIndex === index ? styles.rotate : ""}`} />
+            <div className={styles.purpleBubble}>
+              <span className={styles.questionMark}>?</span>
+              <div className={styles.bubbleTail}></div>
+            </div>
+
+            <div className={styles.yellowBubble}>
+              <div className={styles.dots}>
+                <span></span><span></span><span></span>
               </div>
-            </button>
-            <div className={`${styles.faqAnswer} ${activeIndex === index ? styles.show : ""}`}>
-              <div className={styles.answerContent}>
-                <p>{item.answer}</p>
-              </div>
+              <div className={styles.yellowTail}></div>
             </div>
           </div>
-        ))}
-      </div>
 
-      <div className={styles.supportBox}>
-        <div className={styles.supportLeft}>
-          <div className={styles.headphoneCircle}>
-            <Headphones size={28} />
-          </div>
-          <div className={styles.supportText}>
-            <h3 className={styles.supportTitle}>Still need assistance?</h3>
-            <p className={styles.supportDesc}>Our buyer support team is available 24/7 to help you with orders, tracking, and disputes.</p>
+          {/* Content Side expanded to the left */}
+          <div className={styles.contentSide}>
+            <div className={styles.header}>
+              <div className={styles.topBadge}>
+                <HelpCircle size={12} /> <span>We're Here to Help</span>
+              </div>
+              <h2 className={styles.heading}>Frequently Asked Questions</h2>
+              <p className={styles.subHeading}>Everything you need to know about purchasing and logistics.</p>
+            </div>
+
+            <div className={styles.faqList}>
+              {faqData.map((item, index) => (
+                <div key={index} className={styles.faqItemWrapper}>
+                  <div 
+                    className={styles.faqItem} 
+                    onClick={() => toggleAccordion(index)}
+                  >
+                    <span className={styles.faqText}>{item.question}</span>
+                    <div className={`${styles.plusCircle} ${activeIndex === index ? styles.active : ""}`}>
+                      {activeIndex === index ? <Minus size={12} /> : <Plus size={12} />}
+                    </div>
+                  </div>
+                  
+                  <div className={`${styles.answerWrapper} ${activeIndex === index ? styles.open : ""}`}>
+                    <div className={styles.answerText}>
+                      {item.answer}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-        <button className={styles.contactBtn}>
-          <MessageCircle size={18} />
-          <span>Chat with Support</span>
-        </button>
+      </div>
+
+      <div className={styles.supportBar}>
+        <div className={styles.supportLeft}>
+          <div className={styles.headphoneBox}>
+            <Headphones size={24} color="white" />
+          </div>
+          <div className={styles.supportText}>
+            <h3>Still need assistance?</h3>
+            <p>Our buyer support team is available 24/7 to help you with orders, tracking, and disputes.</p>
+          </div>
+        </div>
+        <Link to="/contactus" className={styles.chatBtn} style={{ textDecoration: 'none' }}>
+  <MessageSquare size={18} fill="#6d28d9" color="#6d28d9" />
+  Chat with Support
+</Link>
       </div>
     </div>
   );

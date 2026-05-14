@@ -9,7 +9,7 @@
 
 .container {
   width: 100%;
-  max-width: 1600px; /* Aligns the "How to Buy" cards with the Hero text */
+  max-width: 1800px; /* Aligns the "How to Buy" cards with the Hero text */
   margin: 0 auto;    /* Centers this box on the screen */
   padding: 0 24px;   /* Padding so it looks good on mobile */
 }

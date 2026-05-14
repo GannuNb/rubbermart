@@ -56,6 +56,10 @@ import AdminAllOrders from "./pages/admin/AdminAllOrders";
 import AdminOrderDetails from "./pages/admin/AdminOrderDetails";
 import AdminAllInvoices from "./pages/admin/AdminAllInvoices";
 import AdminSingleShippingInvoice from "./pages/admin/AdminSingleShippingInvoice";
+import AllProducts from "./components/AllProducts/AllProducts";
+import TyreScrap from "./components/AllProducts/TyreScrap";
+import PyroOil from "./components/AllProducts/PyroOil";
+import TyreSteelScrap from "./components/AllProducts/TyreSteelScrap";
 
 
 
@@ -124,6 +128,11 @@ function AppContent() {
         <Route path="/admin/order/:orderId/invoices/:itemName" element={<AdminAllInvoices />} />
         <Route path="/admin/order/:orderId/shipping-invoice/:shipmentId" element={<AdminSingleShippingInvoice />} />
 
+      {/* All Products */}
+        <Route path="/all-products" element={<AllProducts />} />
+        <Route path="/tyre-scrap" element={<TyreScrap />} />
+        <Route path="/pyro-oil" element={<PyroOil />} />
+        <Route path="/tyresteel-scrap" element={<TyreSteelScrap />} />
 
       </Routes>
       <RoleFooter />

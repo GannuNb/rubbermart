@@ -1,179 +1,243 @@
 .heroSection {
-  width: 100%;
-  background-color: #ffffff;
-  background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
-  background-size: 30px 30px; 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 60px;
-  margin: 0;
   position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, #faf8ff 0%, #f7f3ff 100%);
+  padding-top: 35px;
+}
+
+/* Purple blob top right */
+.heroSection::before {
+  content: "";
+  position: absolute;
+  top: -140px;
+  right: -120px;
+  width: 620px;
+  height: 620px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(139, 92, 246, 0.15),
+    rgba(139, 92, 246, 0.04)
+  );
+}
+
+/* Purple curved bottom */
+.heroSection::after {
+  content: "";
+  position: absolute;
+  bottom: 55px;
+  left: 0;
+  width: 100%;
+  height: 145px;
+  background: linear-gradient(90deg, #5b21b6, #7c3aed);
+  border-radius: 100% 100% 0 0;
+  transform: scaleX(1.15);
+  z-index: 1;
+  border-top: 4px solid #fbbf24;
 }
 
 .heroContent {
-  width: 100%;
-  max-width: 1700px; 
+  max-width: 1450px;
+  margin: auto;
+  padding: 30px 28px 120px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 0 24px;
+  justify-content: space-between;
+  gap: 60px;
   position: relative;
+  z-index: 3;
 }
 
-.left { 
+.left {
   flex: 1;
-  max-width: 600px; 
-  z-index: 2;
+  max-width: 620px;
 }
 
-/* Floating Badge Styling */
 .badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   background: white;
-  padding: 8px 16px;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-  border: 1px solid #f3f4f6;
-  font-size: 14px;
+  border: 1px solid #ede9fe;
+  padding: 9px 16px;
+  border-radius: 40px;
+  font-size: 13px;
   font-weight: 600;
-  color: #1f2937;
-  margin-bottom: 20px;
+  color: #4338ca;
+  margin-bottom: 24px;
+  box-shadow: 0 6px 20px rgba(109, 40, 217, 0.08);
 }
 
 .title {
-  font-size: 52px;
-  color: #111827; /* Darker for better contrast against grid */
-  margin: 0 0 16px 0;
+  font-size: 66px;
   font-weight: 800;
-  line-height: 1.1;
+  line-height: 1.05;
+  color: #111827;
+  margin-bottom: 22px;
 }
 
-.highlight {
+.title span {
   color: #6d28d9;
 }
 
 .desc {
-  color: #4b5563;
-  max-width: 480px;
   font-size: 18px;
-  line-height: 1.6;
-  margin-bottom: 30px;
+  line-height: 1.8;
+  color: #4b5563;
+  max-width: 500px;
+  margin-bottom: 34px;
 }
 
-.startBtn {
-  background: #6d28d9;
+.buttonGroup {
+  display: flex;
+  gap: 18px;
+}
+
+.primaryBtn {
+  background: linear-gradient(135deg, #6d28d9, #7c3aed);
   color: white;
-  padding: 14px 32px;
-  border-radius: 12px;
-  font-weight: 700;
   border: none;
+  border-radius: 14px;
+  padding: 15px 28px;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   cursor: pointer;
-  transition: transform 0.2s;
+  box-shadow: 0 14px 30px rgba(109, 40, 217, 0.2);
 }
 
-.startBtn:hover {
-  transform: translateY(-2px);
+.secondaryBtn {
+  background: white;
+  border: 1px solid #e9d5ff;
+  color: #4338ca;
+  border-radius: 14px;
+  padding: 15px 24px;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  box-shadow: 0 8px 25px rgba(109, 40, 217, 0.08);
 }
 
 .right {
   flex: 1;
-  display: flex;
-  justify-content: flex-end;
   position: relative;
+  display: flex;
+  justify-content: center;
 }
 
 .heroImage {
   width: 100%;
-  max-width: 500px;
-  height: auto;
+  max-width: 620px;
   object-fit: contain;
-  z-index: 1;
 }
 
-/* Floating Support Badge */
-.supportBadge {
+.secureBadge {
   position: absolute;
-  bottom: -50px;
-  right: 0;
+  top: 25px;
+  left: 40px;
   background: white;
-  padding: 10px 20px;
-  border-radius: 50px;
+  padding: 11px 18px;
+  border-radius: 40px;
   display: flex;
+  gap: 8px;
   align-items: center;
-  gap: 10px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4338ca;
+  box-shadow: 0 8px 25px rgba(109, 40, 217, 0.08);
 }
 
-/* Tabs Styling - Cleaned up to match the "boxed" container */
-.tabsContainer {
-  width: 100%;
-  margin-top: 60px;
+/* Tabs */
+.tabsWrapper {
+  position: relative;
+  z-index: 5;
+  margin-top: -38px;
   padding: 0 24px 28px;
 }
 
 .tabs {
-  max-width: 1450px;
+  max-width: 1600px;
   margin: auto;
-  display: flex;
-  gap: 100px;
-  overflow-x: auto;
+  background: linear-gradient(135deg, #6d28d9, #7c3aed);
+  border-radius: 24px;
   padding: 14px;
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(14px);
-  border: 1px solid rgba(109, 40, 217, 0.08);
-  box-shadow: 0 15px 35px rgba(17, 24, 39, 0.06);
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  overflow-x: auto;
+  box-shadow: 0 20px 40px rgba(76, 29, 149, 0.22);
 }
 
-/* ... existing tab styles ... */
 .tabs::-webkit-scrollbar {
   display: none;
 }
 
 .tab {
-  padding: 14px 18px;
-  border-radius: 14px;
+  min-width: 170px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  color: rgba(255, 255, 255, 0.9);
   font-size: 14px;
   font-weight: 600;
-  color: #6b7280;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
   cursor: pointer;
-  transition: all 0.3s ease;
-  border: none;
-  border-bottom: none;
+  transition: 0.3s ease;
   flex-shrink: 0;
 }
 
 .tab:hover {
-  background: #f5f3ff;
-  color: #6d28d9;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .active {
-  background: linear-gradient(135deg, #6d28d9, #7c3aed);
-  color: white;
-  box-shadow: 0 10px 25px rgba(109, 40, 217, 0.2);
-}
-.tab svg {
-  color: #6d28d9;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 -3px 0 white;
 }
 
+/* Responsive */
 @media (max-width: 992px) {
   .heroContent {
     flex-direction: column;
     text-align: center;
+    padding-bottom: 110px;
   }
-  .left { margin-bottom: 40px; }
-  .title { font-size: 42px; }
-  .tabs { justify-content: flex-start; gap: 30px; }
+
+  .title {
+    font-size: 48px;
+  }
+
+  .desc {
+    margin: 0 auto 30px;
+  }
+
+  .secureBadge {
+    display: none;
+  }
 }
 
 @media (max-width: 768px) {
-  .title { font-size: 36px; }
-  .desc { margin: 0 auto; font-size: 15px; }
-  .heroImage { max-width: 320px; }
+  .title {
+    font-size: 38px;
+  }
+
+  .desc {
+    font-size: 15px;
+  }
+
+  .buttonGroup {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .heroImage {
+    max-width: 360px;
+  }
 }

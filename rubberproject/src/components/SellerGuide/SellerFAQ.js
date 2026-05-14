@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styles from "../../styles/SellerGuide/FAQSupport.module.css";
-import { ChevronDown, Headphones, MessageCircle } from "lucide-react";
+import { Plus, Headphones, MessageSquare, HelpCircle, Minus } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const faqData = [
   { 
@@ -32,53 +33,82 @@ const faqData = [
 const SellerFAQ = () => {
   const [activeIndex, setActiveIndex] = useState(null);
 
-  const toggleFAQ = (index) => {
+  const toggleAccordion = (index) => {
     setActiveIndex(activeIndex === index ? null : index);
   };
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.header}>
-        <h2 className={styles.heading}>Frequently Asked Questions</h2>
-        <p className={styles.subHeading}>Everything you need to know about selling on our platform.</p>
-      </div>
+    <div className={styles.pageWrapper}>
+      <div className={styles.mainCard}>
+        <div className={styles.gridOverlay}></div>
+        
+        <div className={styles.layout}>
+          {/* Visual Illustration Side */}
+          <div className={styles.illustrationSide}>
+            <div className={styles.bgGlow}></div>
+            <div className={styles.purpleBubble}>
+              <span className={styles.questionMark}>?</span>
+              <div className={styles.bubbleTail}></div>
+            </div>
 
-      <div className={styles.faqContainer}>
-        {faqData.map((item, index) => (
-          <div key={index} className={styles.faqItemWrapper}>
-            <button 
-              className={`${styles.faqItem} ${activeIndex === index ? styles.active : ""}`} 
-              onClick={() => toggleFAQ(index)}
-              aria-expanded={activeIndex === index}
-            >
-              <span className={styles.faqText}>{item.question}</span>
-              <div className={styles.iconCircle}>
-                <ChevronDown size={18} className={`${styles.faqIcon} ${activeIndex === index ? styles.rotate : ""}`} />
+            <div className={styles.yellowBubble}>
+              <div className={styles.dots}>
+                <span></span><span></span><span></span>
               </div>
-            </button>
-            <div className={`${styles.faqAnswer} ${activeIndex === index ? styles.show : ""}`}>
-              <div className={styles.answerContent}>
-                <p>{item.answer}</p>
-              </div>
+              <div className={styles.yellowTail}></div>
             </div>
           </div>
-        ))}
-      </div>
 
-      <div className={styles.supportBox}>
-        <div className={styles.supportLeft}>
-          <div className={styles.headphoneCircle}>
-            <Headphones size={28} />
-          </div>
-          <div className={styles.supportText}>
-            <h3 className={styles.supportTitle}>Still have questions?</h3>
-            <p className={styles.supportDesc}>Our dedicated seller support team is available 24/7 to help you scale your business.</p>
+          {/* Content Side */}
+          <div className={styles.contentSide}>
+            <div className={styles.header}>
+              <div className={styles.topBadge}>
+                <HelpCircle size={12} /> <span>Seller Assistance</span>
+              </div>
+              <h2 className={styles.heading}>Frequently Asked Questions</h2>
+              <p className={styles.subHeading}>Everything you need to know about scaling your scrap business.</p>
+            </div>
+
+            <div className={styles.faqList}>
+              {faqData.map((item, index) => (
+                <div key={index} className={styles.faqItemWrapper}>
+                  <div 
+                    className={styles.faqItem} 
+                    onClick={() => toggleAccordion(index)}
+                  >
+                    <span className={styles.faqText}>{item.question}</span>
+                    <div className={`${styles.plusCircle} ${activeIndex === index ? styles.active : ""}`}>
+                      {activeIndex === index ? <Minus size={12} /> : <Plus size={12} />}
+                    </div>
+                  </div>
+                  
+                  <div className={`${styles.answerWrapper} ${activeIndex === index ? styles.open : ""}`}>
+                    <div className={styles.answerText}>
+                      {item.answer}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-        <button className={styles.contactBtn}>
-          <MessageCircle size={18} />
-          <span>Contact Support</span>
-        </button>
+      </div>
+
+      {/* Support Bar */}
+      <div className={styles.supportBar}>
+        <div className={styles.supportLeft}>
+          <div className={styles.headphoneBox}>
+            <Headphones size={24} color="white" />
+          </div>
+          <div className={styles.supportText}>
+            <h3>Still need assistance?</h3>
+            <p>Our dedicated seller support team is available 24/7 to help you with listings and payments.</p>
+          </div>
+        </div>
+        <Link to="/contactus" className={styles.chatBtn} style={{ textDecoration: 'none' }}>
+          <MessageSquare size={18} fill="#6d28d9" color="#6d28d9" />
+          Chat with Support
+        </Link>
       </div>
     </div>
   );
