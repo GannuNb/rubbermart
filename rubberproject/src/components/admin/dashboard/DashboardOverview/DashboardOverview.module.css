@@ -1,0 +1,204 @@
+.dashboardOverviewSection {
+  background: linear-gradient(
+    135deg,
+    #f8fafc,
+    #eef2ff
+  );
+
+  padding: 24px;
+
+  border-radius: 24px;
+
+  margin-bottom: 26px;
+}
+
+
+
+/* GRID */
+
+.dashboardOverviewGrid {
+  display: grid;
+
+  grid-template-columns: repeat(5, 1fr);
+
+  gap: 20px;
+}
+
+
+
+/* CARD */
+
+.dashboardCard {
+  background: white;
+
+  border-radius: 20px;
+
+  padding: 22px;
+
+  box-shadow: 0 4px 16px
+    rgba(0, 0, 0, 0.05);
+
+  transition: 0.3s ease;
+
+  border: 1px solid #f1f5f9;
+}
+
+.dashboardCard:hover {
+  transform: translateY(-4px);
+
+  box-shadow: 0 10px 24px
+    rgba(0, 0, 0, 0.08);
+}
+
+
+
+/* TOP */
+
+.dashboardCardTop {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-bottom: 18px;
+}
+
+
+
+/* ICON */
+
+.dashboardIcon {
+  width: 56px;
+
+  height: 56px;
+
+  border-radius: 16px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-size: 22px;
+
+  color: white;
+}
+
+
+
+/* TEXT */
+
+.dashboardCard h3 {
+  font-size: 14px;
+
+  color: #64748b;
+
+  margin-bottom: 10px;
+
+  font-weight: 500;
+}
+
+.dashboardCard h2 {
+  font-size: 34px;
+
+  font-weight: 700;
+
+  color: #111827;
+}
+
+
+
+/* CARD COLORS */
+
+.blueCard .dashboardIcon {
+  background: linear-gradient(
+    135deg,
+    #2563eb,
+    #1d4ed8
+  );
+}
+
+.greenCard .dashboardIcon {
+  background: linear-gradient(
+    135deg,
+    #16a34a,
+    #15803d
+  );
+}
+
+.orangeCard .dashboardIcon {
+  background: linear-gradient(
+    135deg,
+    #f97316,
+    #ea580c
+  );
+}
+
+.purpleCard .dashboardIcon {
+  background: linear-gradient(
+    135deg,
+    #8b5cf6,
+    #7c3aed
+  );
+}
+
+.darkCard .dashboardIcon {
+  background: linear-gradient(
+    135deg,
+    #1e293b,
+    #0f172a
+  );
+}
+
+
+
+/* RESPONSIVE */
+
+@media (max-width: 1400px) {
+
+  .dashboardOverviewGrid {
+    grid-template-columns:
+      repeat(5, 1fr);
+  }
+
+}
+
+@media (max-width: 1100px) {
+
+  .dashboardOverviewGrid {
+    grid-template-columns:
+      repeat(3, 1fr);
+  }
+
+}
+
+@media (max-width: 768px) {
+
+  .dashboardOverviewSection {
+    padding: 18px;
+  }
+
+  .dashboardOverviewGrid {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+}
+
+@media (max-width: 550px) {
+
+  .dashboardOverviewGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboardCard {
+    padding: 18px;
+  }
+
+  .dashboardCard h2 {
+    font-size: 28px;
+  }
+
+}

@@ -1,148 +1,45 @@
-/* src/styles/AdminDashboard.module.css */
-
-.adminDashboardWrapper {
+.adminDashboard {
+  padding: 30px;
+  background: #f2edf8;
   min-height: 100vh;
-  padding: 40px;
-  background: linear-gradient(to bottom right, #f4f7fb, #eef2f7);
 }
 
 .adminDashboardHeader {
-  margin-bottom: 35px;
+  margin-bottom: 28px;
 }
 
-.adminDashboardTitle {
-  font-size: 36px;
+.adminDashboardHeader h1 {
+  font-size: 34px;
   font-weight: 700;
-  color: #1d2939;
-  margin-bottom: 10px;
+  color: #111827;
+  margin-bottom: 8px;
 }
 
-.adminDashboardSubtitle {
-  font-size: 16px;
-  color: #667085;
-  margin: 0;
+.adminDashboardHeader p {
+  font-size: 15px;
+  color: #6b7280;
 }
 
-.adminDashboardGrid {
+.adminDashboardMiddle {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 25px;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 24px;
+  margin-top: 24px;
+  margin-bottom: 24px;
 }
 
-.adminDashboardCard {
-  background: #ffffff;
-  border-radius: 24px;
-  padding: 28px;
-  box-shadow: 0 10px 35px rgba(15, 23, 42, 0.08);
-  transition: all 0.3s ease;
-  border: 1px solid #eaecf0;
-  position: relative;
-  overflow: hidden;
-}
-
-.adminDashboardCard::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 5px;
-  width: 100%;
-  background: linear-gradient(to right, #2563eb, #38bdf8);
-}
-
-.adminDashboardCard:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
-}
-
-.adminDashboardCardTop {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 25px;
-}
-
-.adminDashboardIconBox {
-  width: 62px;
-  height: 62px;
-  border-radius: 18px;
-  background: rgba(37, 99, 235, 0.12);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.adminApprovedIconBox {
-  background: rgba(16, 185, 129, 0.12);
-}
-
-.adminPendingIconBox {
-  background: rgba(245, 158, 11, 0.12);
-}
-
-.adminDashboardIcon {
-  font-size: 28px;
-  color: #2563eb;
-}
-
-.adminApprovedIconBox .adminDashboardIcon {
-  color: #10b981;
-}
-
-.adminPendingIconBox .adminDashboardIcon {
-  color: #f59e0b;
-}
-
-.adminDashboardGrowth {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: #eff6ff;
-  color: #2563eb;
-  padding: 8px 14px;
-  border-radius: 30px;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.adminApprovedGrowth {
-  background: #ecfdf3;
-  color: #10b981;
-}
-
-.adminPendingGrowth {
-  background: #fff7ed;
-  color: #f59e0b;
-}
-
-.adminDashboardCardTitle {
-  font-size: 17px;
-  font-weight: 600;
-  color: #475467;
-  margin-bottom: 14px;
-}
-
-.adminDashboardCardValue {
-  font-size: 38px;
-  font-weight: 700;
-  color: #101828;
-  margin: 0;
+@media (max-width: 1100px) {
+  .adminDashboardMiddle {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 768px) {
-  .adminDashboardWrapper {
-    padding: 20px;
+  .adminDashboard {
+    padding: 18px;
   }
 
-  .adminDashboardTitle {
+  .adminDashboardHeader h1 {
     font-size: 28px;
-  }
-
-  .adminDashboardCard {
-    padding: 22px;
-  }
-
-  .adminDashboardCardValue {
-    font-size: 30px;
   }
 }
