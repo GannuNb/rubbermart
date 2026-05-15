@@ -1,15 +1,15 @@
 // src/components/about/CommitmentSection.jsx
-
 import styles from "../../styles/About/CommitmentSection.module.css";
-
 import AboutGreen from "../../assests/Aboutgreen.png";
+
+// Import the background image
+import CommitmentBg from "../../assests/bg1.png"; 
 
 import {
   CheckCircle2,
   Leaf,
   Recycle,
   Factory,
-  ArrowRight,
 } from "lucide-react";
 
 const commitments = [
@@ -21,7 +21,13 @@ const commitments = [
 
 const CommitmentSection = () => {
   return (
-    <section className={styles.commitmentSection}>
+    <section 
+      className={styles.commitmentSection}
+      style={{ backgroundImage: `url(${CommitmentBg})` }}
+    >
+      {/* Overlay to control background transparency */}
+      <div className={styles.overlay}></div>
+
       <div className={styles.container}>
         <div className={styles.commitmentGrid}>
           {/* IMAGE SIDE */}
@@ -65,7 +71,6 @@ const CommitmentSection = () => {
                   <div className={styles.featureIcon}>
                     <CheckCircle2 size={18} strokeWidth={2.5} />
                   </div>
-
                   <p>{item}</p>
                 </div>
               ))}
@@ -77,7 +82,6 @@ const CommitmentSection = () => {
                 <div className={styles.cardIcon}>
                   <Recycle size={24} strokeWidth={2.2} />
                 </div>
-
                 <div>
                   <h3>Eco-Friendly</h3>
                   <span>Supporting responsible recycling</span>
@@ -88,7 +92,6 @@ const CommitmentSection = () => {
                 <div className={styles.cardIcon}>
                   <Factory size={24} strokeWidth={2.2} />
                 </div>
-
                 <div>
                   <h3>Industry Growth</h3>
                   <span>Helping businesses grow sustainably</span>

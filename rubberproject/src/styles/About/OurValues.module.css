@@ -1,19 +1,37 @@
 /* src/styles/About/OurValues.module.css */
 
 .valuesSection {
+  position: relative;
   width: 100%;
-  padding: 75px 0;
-  background: #cfbcf0;
+  padding: 85px 0;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-attachment: absolute;
+  overflow: hidden;
+}
+
+/* 
+   THE FIX: 
+   Lowering 0.85 to 0.25 makes the overlay 
+   much more transparent so the image "pops".
+*/
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.25); 
+  z-index: 1;
 }
 
 .container {
+  position: relative;
+  z-index: 2;
   width: 96%;
   max-width: 1450px;
   margin: 0 auto;
 }
 
 /* HEADING */
-
 .centerHeading {
   text-align: center;
   margin-bottom: 55px;
@@ -26,6 +44,7 @@
   color: #7c3aed;
   letter-spacing: 1.5px;
   margin-bottom: 14px;
+  text-transform: uppercase;
 }
 
 .centerHeading h2 {
@@ -37,7 +56,6 @@
 }
 
 /* GRID */
-
 .valuesGrid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -45,45 +63,37 @@
 }
 
 /* CARD */
-
 .valueCard {
   padding: 34px 24px;
   border-radius: 24px;
-
   text-align: center;
-
-  border: 1px solid #ececec;
-  background: #ffffff;
-
+  /* Added a bit more contrast for the cards since the bg is now darker/visible */
+  border: 1px solid rgba(124, 58, 237, 0.15);
+  background: rgba(255, 255, 255, 0.98); 
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
 }
 
 .valueCard:hover {
-  transform: translateY(-6px);
-  border-color: #e8dcff;
-  box-shadow: 0 18px 40px rgba(124, 58, 237, 0.08);
+  transform: translateY(-8px);
+  border-color: #7c3aed;
+  box-shadow: 0 20px 40px rgba(124, 58, 237, 0.15);
 }
 
 /* ICON */
-
 .iconBox {
   width: 72px;
   height: 72px;
-
   margin: 0 auto 22px;
-
   border-radius: 20px;
   background: #f5efff;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   color: #7c3aed;
 }
 
 /* TEXT */
-
 .valueCard h3 {
   font-size: 20px;
   font-weight: 800;
@@ -94,22 +104,17 @@
 .valueCard p {
   font-size: 15px;
   line-height: 1.9;
-  color: #5f6778;
+  color: #4b5563;
 }
 
 /* RESPONSIVE */
-
-@media (max-width: 1280px) {
+@media (max-width: 1400px) {
   .valuesGrid {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @media (max-width: 992px) {
-  .centerHeading h2 {
-    font-size: 38px;
-  }
-
   .valuesGrid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -118,39 +123,9 @@
 @media (max-width: 768px) {
   .valuesSection {
     padding: 60px 0;
+    background-attachment: scroll;
   }
-
-  .centerHeading {
-    margin-bottom: 40px;
-  }
-
-  .centerHeading h2 {
-    font-size: 32px;
-  }
-
   .valuesGrid {
     grid-template-columns: 1fr;
-    gap: 20px;
-  }
-
-  .valueCard {
-    padding: 28px 22px;
-    border-radius: 20px;
-  }
-
-  .iconBox {
-    width: 62px;
-    height: 62px;
-    border-radius: 18px;
-    margin-bottom: 18px;
-  }
-
-  .valueCard h3 {
-    font-size: 18px;
-  }
-
-  .valueCard p {
-    font-size: 14px;
-    line-height: 1.8;
   }
 }
