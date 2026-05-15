@@ -1,0 +1,146 @@
+/* =========================
+   WRAPPER & BACKGROUND
+========================= */
+.navWrapper {
+    width: 100%;
+    position: relative;
+    z-index: 1000;
+}
+
+.fullWidthDarkStep {
+    width: 100%;
+    height: 140px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    padding: 0 40px;
+}
+
+/* Background Overlay for readability */
+.fullWidthDarkStep::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.5); /* Darkens the tyre image */
+}
+
+/* =========================
+   LOGO UNIT (Corner Scoop)
+========================= */
+.logoOverlay {
+    position: absolute;
+    top: 0;
+    left: 40px;
+    background: white;
+    padding: 15px 25px;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    z-index: 10;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.logoImg {
+    height: 45px;
+    width: auto;
+}
+
+/* =========================
+   NAVIGATION PILL
+========================= */
+.menuContainer {
+    width: 100%;
+    position: relative;
+    z-index: 5;
+    margin-bottom: 20px;
+}
+
+.navPill {
+    background: white;
+    border-radius: 50px;
+    padding: 8px 12px 8px 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.navLinks {
+    display: flex;
+    list-style: none;
+    gap: 5px;
+    margin: 0;
+    padding: 0;
+}
+
+.navLink {
+    padding: 10px 18px;
+    border-radius: 25px;
+    text-decoration: none !important; /* No underlines per instruction */
+    color: #555;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.navLink:hover {
+    color: #7d3cb5;
+    background: #f7f1fc;
+}
+
+.active {
+    background: #7d3cb5;
+    color: white !important;
+}
+
+/* =========================
+   RIGHT SECTION (Logout & Social)
+========================= */
+.rightSection {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.logoutBtn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff1f1;
+    color: #d90429;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.logoutBtn:hover {
+    background: #ffe3e3;
+}
+
+.socialIcons {
+    display: flex;
+    gap: 12px;
+}
+
+.icon {
+    color: #7d3cb5;
+    font-size: 18px;
+    transition: transform 0.3s;
+}
+
+.icon:hover {
+    transform: translateY(-3px);
+}
+
+/* =========================
+   RESPONSIVENESS
+========================= */
+@media (max-width: 1024px) {
+    .navLinks {
+        display: none; /* Usually trigger a hamburger here */
+    }
+}

@@ -1,0 +1,111 @@
+/* =========================
+   GUEST ACTIONS WRAPPER
+========================= */
+.guestWrapper {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* =========================
+   BASE BUTTON STYLES
+========================= */
+.sellerBtn,
+.loginBtn,
+.signupBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px; /* Space between icon and text */
+  min-height: 54px;
+  padding: 0 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none !important;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+
+.sellerBtn svg,
+.loginBtn svg,
+.signupBtn svg {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+/* =========================
+   SPECIFIC VARIANTS
+========================= */
+
+/* SELLER BUTTON - Light Purple Theme */
+.sellerBtn {
+  background: #f5eefb;
+  color: #7d3cb5;
+}
+
+.sellerBtn:hover {
+  background: #efe4f9;
+  transform: translateY(-2px);
+}
+
+/* LOGIN BUTTON - Simple Outline */
+.loginBtn {
+  color: #111;
+  border-color: #ececec;
+  background: white;
+}
+
+.loginBtn:hover {
+  border-color: #7d3cb5;
+  color: #7d3cb5;
+  transform: translateY(-2px);
+}
+
+/* SIGNUP BUTTON - Solid Primary */
+.signupBtn {
+  background: #7d3cb5;
+  color: white;
+  box-shadow: 0 4px 12px rgba(125, 60, 181, 0.2);
+}
+
+.signupBtn:hover {
+  background: #6c2fa4;
+  transform: translateY(-2px);
+}
+
+/* =========================
+   RESPONSIVENESS
+========================= */
+
+/* Tablet Adjustments */
+@media (max-width: 1200px) {
+  .guestWrapper {
+    gap: 10px;
+  }
+  
+  .sellerBtn, .loginBtn, .signupBtn {
+    padding: 0 14px;
+    font-size: 13px;
+  }
+}
+
+/* Mobile Drawer Mode */
+@media (max-width: 768px) {
+  .guestWrapper {
+    flex-direction: column;
+    width: 100%;
+    gap: 12px;
+    padding: 10px 0;
+  }
+
+  .sellerBtn,
+  .loginBtn,
+  .signupBtn {
+    width: 100%; /* Full width for easy tapping */
+    min-height: 58px;
+    justify-content: flex-start; /* Align to left in drawer */
+    padding: 0 20px;
+  }
+}

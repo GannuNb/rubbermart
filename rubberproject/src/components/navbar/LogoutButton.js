@@ -1,28 +1,13 @@
+// src/components/navbar/LogoutButton.js
 import React from "react";
+import { FaSignOutAlt } from "react-icons/fa";
+import styles from "../../styles/Navbar/LogoutButton.module.css";
 
-import {
-  FaSignOutAlt,
-} from "react-icons/fa";
-
-import styles from "../../styles/Navbar/RoleNavbar.module.css";
-
-function LogoutButton({
-  onLogout,
-}) {
-
+function LogoutButton({ onLogout }) {
   return (
-
-    <button
-      className={
-        styles.topLogoutBtn
-      }
-      onClick={onLogout}
-    >
-
+    <button className={styles.topLogoutBtn} onClick={onLogout}>
       <FaSignOutAlt />
-
-      Logout
-
+      <span>Logout</span>
     </button>
   );
 }

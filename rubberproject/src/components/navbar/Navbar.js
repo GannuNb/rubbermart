@@ -1,10 +1,13 @@
+// src/components/navbar/Navbar.js
 import React from 'react';
-import { NavLink, Link } from 'react-router-dom'; // Added Link and NavLink
-import styles from '../../styles/Components/Navbar.module.css';
+import { NavLink, Link } from 'react-router-dom';
 import { LogOut } from 'lucide-react';
 import { FaInstagram, FaFacebookF } from 'react-icons/fa';
-import Tyre from "../../assests/categoryimages/Tyre.jpeg";
-import Logo from "../../assests/Logo.png";
+import styles from '../../styles/Components/Navbar.module.css';
+
+// Assets
+import Tyre from "../../assets/categoryimages/Tyre.jpeg";
+import Logo from "../../assets/Logo.png";
 
 const Navbar = () => {
     return (
@@ -15,8 +18,7 @@ const Navbar = () => {
             >
                 {/* LOGO UNIT */}
                 <div className={styles.logoOverlay}>
-                    {/* Wrap the logo in a Link to return to home/dashboard */}
-                    <Link to="/" className={styles.logoText}>
+                    <Link to="/" className={styles.logoLink}>
                         <img src={Logo} alt="Rubber Scrap Mart Logo" className={styles.logoImg} />
                     </Link>
                     <div className={styles.stepUnderLogo}></div>

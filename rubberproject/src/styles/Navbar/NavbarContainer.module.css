@@ -1,0 +1,47 @@
+/* src/styles/Navbar/NavbarContainer.module.css */
+.topNavbar {
+  width: 100%;
+  background-color: #ffffff;
+  border-bottom: 1px solid #ececec;
+  height: 96px;
+  display: flex;
+  align-items: center;
+}
+
+.navInner {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 34px;
+  display: grid;
+  /* Columns: Logo (auto) | Center Content (1fr) | Right Actions (auto) */
+  grid-template-columns: auto 1fr auto; 
+  align-items: center;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .topNavbar {
+    height: 72px;
+  }
+  .navInner {
+    padding: 0 16px;
+    display: flex; /* Switch to flex for mobile to handle the toggle/logo/icons */
+    justify-content: space-between;
+  }
+}
+
+/* =========================
+   RESPONSIVENESS
+========================= */
+
+/* Tablet & Smaller Desktop */
+@media (max-width: 1024px) {
+  .topNavbar {
+    height: 70px; /* Slightly shorter on smaller screens */
+  }
+  
+  .navInner {
+    padding: 0 20px;
+  }
+}

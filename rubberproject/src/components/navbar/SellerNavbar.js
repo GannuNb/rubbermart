@@ -1,39 +1,16 @@
-// src/components/navbar/SellerNavbar.js
-
 import React from "react";
-
 import styles from "../../styles/Navbar/NavbarDashboard.module.css";
-
-import {
-  sellerLinks,
-} from "../../config/navbarLinks";
-
+import { sellerLinks } from "../../config/navbarLinks";
 import NavLinksRenderer from "./NavLinksRenderer";
 
-function SellerNavbar({
-  location,
-}) {
-
+function SellerNavbar({ location }) {
   return (
-
     <NavLinksRenderer
-
       links={sellerLinks}
-
       location={location}
-
-      containerClass={
-        styles.navContainer
-      }
-
-      linkClass={
-        styles.navLink
-      }
-
-      activeClass={
-        styles.active
-      }
-
+      containerClass={styles.navContainer}
+      linkClass={styles.navLink}
+      activeClass={styles.active}
     />
   );
 }

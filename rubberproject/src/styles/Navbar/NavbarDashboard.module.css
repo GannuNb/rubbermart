@@ -1,134 +1,63 @@
 /* =========================
-   DASHBOARD SPACER
+   SELLER/ADMIN NAV CONTAINER
 ========================= */
-
-.dashboardSpacer {
-
-   flex: 1.5;
-}
-
-
-/* =========================
-   DASHBOARD NAVBAR WRAPPER
-========================= */
-
-.dashboardNavbarWrapper {
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: flex-end;
-
-  margin-left: auto;
-
-  padding-right: 15px;
-}
-
-/* =========================
-   NAV CONTAINER
-========================= */
-
 .navContainer {
-
   display: flex;
-
   align-items: center;
-
-  justify-content: flex-end;
-
-  gap: 18px;
+  gap: 8px;
+  background-color: #ffffff;
+  padding: 5px;
+  border-radius: 12px;
 }
 
-
 /* =========================
-   NAV LINK
+   INDIVIDUAL NAV LINK
 ========================= */
-
 .navLink {
-
-  min-height: 50px;
-
-  padding: 0 18px;
-
-  border-radius: 12px;
-
   display: flex;
-
   align-items: center;
-
-  justify-content: center;
-
-  gap: 10px;
-
-  background: transparent;
-
-  border: 1px solid transparent;
-
-  color: #444;
-
+  gap: 10px; /* 10px gap between icon and text */
+  padding: 10px 20px;
+  color: #6b7280;
   font-size: 14px;
-
   font-weight: 600;
-
-  transition: all 0.3s ease;
-
   text-decoration: none !important;
-
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   white-space: nowrap;
 }
 
-
-/* =========================
-   ICON
-========================= */
-
-.navLink svg {
-
-  font-size: 14px;
-
-  flex-shrink: 0;
-}
-
-
-/* =========================
-   HOVER
-========================= */
-
 .navLink:hover {
-
-  background: #f7f1fc;
-
-  border-color: #eadcf6;
-
+  background-color: #f7f1fc;
   color: #7d3cb5;
 }
 
-
 /* =========================
-   ACTIVE
+   ACTIVE STATE
 ========================= */
-
 .active {
-
-  background: linear-gradient(
-    135deg,
-    #7d3cb5,
-    #38b44a
-  );
-
-  color: white;
-
-  box-shadow:
-    0 10px 24px rgba(125, 60, 181, 0.18);
+  background-color: #7d3cb5;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(125, 60, 181, 0.15);
 }
 
-
 /* =========================
-   REMOVE UNDERLINE
+   MOBILE FIX (Corrected)
 ========================= */
-
-.active::after {
-
-  display: none !important;
+@media (max-width: 1024px) {
+  .navContainer {
+    /* Change from horizontal row to vertical column for the toggle menu */
+    flex-direction: column; 
+    align-items: flex-start; /* Aligns links to the left */
+    width: 100%;
+    gap: 12px;
+    background-color: transparent; /* Blends into the mobile overlay */
+    padding: 0;
+  }
+  
+  .navLink {
+    width: 100%; /* Makes the link background span the width of the menu */
+    padding: 12px 15px;
+    font-size: 16px; /* Slightly larger for touch targets */
+  }
 }

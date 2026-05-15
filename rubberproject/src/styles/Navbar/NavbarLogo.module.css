@@ -1,0 +1,51 @@
+/* =========================
+   LOGO SECTION WRAPPER
+========================= */
+.logoSection {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0; /* Prevents the logo from squishing when nav items are many */
+}
+
+.logoLink {
+  display: flex;
+  align-items: center;
+  text-decoration: none !important; /* Strictly no underlines */
+  transition: opacity 0.3s ease;
+}
+
+.logoLink:hover {
+  opacity: 0.85;
+}
+
+/* =========================
+   LOGO IMAGE SIZING
+========================= */
+.logoImage {
+  height: 48px; /* Standard height for visibility without bloating the navbar */
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* =========================
+   RESPONSIVENESS
+========================= */
+
+/* Tablet & Smaller Laptops */
+@media (max-width: 1024px) {
+  .logoImage {
+    height: 42px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .logoSection {
+    margin-left: 0;
+  }
+
+  .logoImage {
+    height: 36px; /* Compact size for mobile nav bars */
+  }
+}

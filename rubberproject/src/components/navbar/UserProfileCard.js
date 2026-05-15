@@ -1,60 +1,28 @@
+// src/components/navbar/UserProfileCard.js
 import React from "react";
+import { FaUserCircle } from "react-icons/fa";
+import styles from "../../styles/Navbar/UserProfileCard.module.css";
 
-import {
-  FaUserCircle,
-} from "react-icons/fa";
-
-import styles from "../../styles/Navbar/RoleNavbar.module.css";
-
-function UserProfileCard({
-  user,
-}) {
+function UserProfileCard({ user }) {
+  // Safety check to ensure name exists before splitting
+  const firstName = user?.name ? user.name.split(" ")[0] : "User";
 
   return (
-
-    <div
-      className={
-        styles.profileWrapper
-      }
-    >
-
-      <button
-        className={
-          styles.profileBtn
-        }
-      >
-
-        <div
-          className={
-            styles.userAvatar
-          }
-        >
-          <FaUserCircle />
+    <div className={styles.profileWrapper}>
+      <button className={styles.profileBtn}>
+        <div className={styles.userAvatar}>
+          <FaUserCircle size={32} />
         </div>
 
-        <div
-          className={
-            styles.userInfo
-          }
-        >
-
-          <h4>
-            Hi,{" "}
-            {
-              user?.name?.split(
-                " "
-              )[0]
-            }
+        <div className={styles.userInfo}>
+          <h4 className={styles.userName}>
+            Hi, {firstName}
           </h4>
-
-          <span>
-            {user.role}
+          <span className={styles.userRole}>
+            {user?.role || "Member"}
           </span>
-
         </div>
-
       </button>
-
     </div>
   );
 }

@@ -1,40 +1,18 @@
+// src/components/navbar/NavbarLogo.js
 import React from "react";
+import { Link } from "react-router-dom";
+import styles from "../../styles/Navbar/NavbarLogo.module.css";
 
-import {
-  Link,
-} from "react-router-dom";
-
-import styles from "../../styles/Navbar/RoleNavbar.module.css";
-
-function NavbarLogo({
-  logoPath,
-}) {
-
+function NavbarLogo({ logoPath = "/" }) {
   return (
-
-    <div
-      className={
-        styles.logoSection
-      }
-    >
-
-      <Link
-        to={logoPath}
-        className={
-          styles.logoLink
-        }
-      >
-
+    <div className={styles.logoSection}>
+      <Link to={logoPath} className={styles.logoLink}>
         <img
           src="/rsm_logo.png"
           alt="Rubber Scrap Mart"
-          className={
-            styles.logoImage
-          }
+          className={styles.logoImage}
         />
-
       </Link>
-
     </div>
   );
 }

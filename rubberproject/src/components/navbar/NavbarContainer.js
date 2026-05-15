@@ -1,21 +1,13 @@
+// src/components/navbar/NavbarContainer.js
 import React from "react";
+import styles from "../../styles/Navbar/NavbarContainer.module.css";
 
-import styles from "../../styles/Navbar/RoleNavbar.module.css";
-
-function NavbarContainer({
-  children,
-}) {
-
+function NavbarContainer({ children }) {
   return (
-
-    <div
-      className={
-        styles.topNavbar
-      }
-    >
-
-      {children}
-
+    <div className={styles.topNavbar}>
+      <div className={styles.navInner}>
+        {children}
+      </div>
     </div>
   );
 }

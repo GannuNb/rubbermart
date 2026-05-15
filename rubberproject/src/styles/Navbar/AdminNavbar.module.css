@@ -1,159 +1,102 @@
-/* src/styles/Navbar/AdminNavbar.module.css */
+/* =========================
+   ADMIN NAVBAR LAYOUT
+========================= */
+
+.adminNavWrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
 
 .navContainer {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-
-  gap: 14px;
-
-  width: auto;
-
-  position: relative;
+  gap: 18px;
+  width: 100%;
 }
-
-
-/* REMOVE OLD LINE */
-
-.navContainer::after {
-  display: none !important;
-}
-
 
 /* =========================
-   NAV LINKS
+   NAV LINK BASE
 ========================= */
 
 .navLink {
   min-height: 50px;
-
   padding: 0 18px;
-
   border-radius: 12px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
-  gap: 10px;
-
+  gap: 10px; /* Space between icon and description */
   background: transparent;
-
   border: 1px solid transparent;
-
   color: #444;
-
   font-size: 14px;
   font-weight: 600;
-
   transition: all 0.3s ease;
-
   text-decoration: none !important;
-
   white-space: nowrap;
-
-  position: relative;
 }
-
-
-/* REMOVE UNDERLINES */
-
-.navLink:hover,
-.navLink:focus,
-.navLink:active,
-.navLink:visited {
-  text-decoration: none !important;
-}
-
-
-/* ICON */
 
 .navLink svg {
-  font-size: 14px;
-
+  font-size: 16px; /* Optimized size */
   flex-shrink: 0;
 }
 
-
-/* HOVER */
+/* =========================
+   STATES (Hover & Active)
+========================= */
 
 .navLink:hover {
   background: #f7f1fc;
-
   border-color: #eadcf6;
-
   color: #7d3cb5;
+  text-decoration: none !important;
 }
-
-
-/* ACTIVE */
 
 .active {
-  background: linear-gradient(
-    135deg,
-    #7d3cb5,
-    #38b44a
-  );
-
-  color: white;
-
-  border-color: transparent;
-
-  box-shadow:
-    0 10px 24px rgba(125, 60, 181, 0.18);
+  background: linear-gradient(135deg, #7d3cb5, #38b44a);
+  color: white !important;
+  box-shadow: 0 10px 24px rgba(125, 60, 181, 0.18);
 }
-
-
-/* REMOVE OLD UNDERLINE */
 
 .active::after {
-  display: none !important;
+  display: none !important; /* Removes default link underlines */
 }
 
-
 /* =========================
-   RESPONSIVE
+   RESPONSIVENESS
 ========================= */
 
-@media (max-width: 1200px) {
-
+/* Tablet / Small Laptop */
+@media (max-width: 1100px) {
   .navContainer {
     gap: 10px;
   }
-
+  
   .navLink {
-    padding: 0 14px;
-
+    padding: 0 12px;
     font-size: 13px;
   }
 }
 
-
-@media (max-width: 992px) {
-
-  .navContainer {
-    width: 100%;
-
-    justify-content: flex-start;
-
-    flex-wrap: wrap;
-
-    gap: 12px;
-  }
-}
-
-
+/* Mobile (Drawer Mode) */
 @media (max-width: 768px) {
+  .adminNavWrapper {
+    width: 100%;
+    padding: 10px 0;
+  }
 
   .navContainer {
-    flex-direction: column;
-
-    align-items: flex-start;
+    flex-direction: column; /* Stack links vertically */
+    align-items: stretch; /* Make links full width */
+    gap: 8px;
   }
 
   .navLink {
+    justify-content: flex-start; /* Align text to left in mobile drawer */
+    padding: 12px 20px;
     width: 100%;
-
-    justify-content: flex-start;
+    min-height: 55px;
   }
 }

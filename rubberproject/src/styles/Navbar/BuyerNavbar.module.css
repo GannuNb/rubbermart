@@ -1,174 +1,109 @@
-/* src/styles/Navbar/BuyerNavbar.module.css */
-
-.navContainer {
-  width: 100%;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  position: relative;
-
-  padding: 0 20px;
-}
-
-
 /* =========================
-   GRADIENT LINE
+   BUYER NAVBAR LAYOUT
 ========================= */
 
-.navContainer::after {
-  content: "";
-
-  position: absolute;
-
-  bottom: 0;
-  left: 0;
-
+.buyerNavWrapper {
+  display: flex;
+  align-items: center;
   width: 100%;
-  height: 3px;
-
-  background: #d8b9ef;
-
-  border-radius: 50px;
 }
 
+.navContainer {
+  display: flex;
+  align-items: center;
+  /* Buyer links often sit on the bottom navbar, 
+     so we use a standard flex-start/center approach */
+  justify-content: flex-start; 
+  gap: 100px;
+  width: 100%;
+}
 
 /* =========================
-   NAV LINKS
+   NAV LINK BASE
 ========================= */
 
 .navLink {
-  flex: 1;
-
+  min-height: 50px;
+  padding: 0 18px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  gap: 12px;
-
-  min-height: 72px;
-
-  position: relative;
-
-  color: #222;
-
-  font-size: 16px;
-  font-weight: 500;
-
-  transition: 0.3s ease;
-
+  gap: 10px; /* Space between icon and description */
+  background: transparent;
+  border: 1px solid transparent;
+  color: #444;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
   text-decoration: none !important;
-
   white-space: nowrap;
 }
 
-
-/* REMOVE UNDERLINE */
-
-.navLink:hover,
-.navLink:focus,
-.navLink:active,
-.navLink:visited {
-  text-decoration: none !important;
-}
-
-
-/* ICON */
-
 .navLink svg {
-  font-size: 15px;
-
+  font-size: 16px;
   flex-shrink: 0;
 }
 
-
-/* HOVER */
-
-.navLink:hover {
-  color: #7d3cb5;
-}
-
-
-/* ACTIVE */
-
-.active {
-  color: #7d3cb5;
-
-  font-weight: 600;
-}
-
-
-/* ACTIVE UNDERLINE */
-
-.active::after {
-  content: "";
-
-  position: absolute;
-
-  bottom: 0;
-  left: 50%;
-
-  transform: translateX(-50%);
-
-  width: 78px;
-  height: 4px;
-
-  background: #7d3cb5;
-
-  border-radius: 50px;
-
-  z-index: 2;
-}
-
-
 /* =========================
-   RESPONSIVE
+   HOVER & ACTIVE STATES
 ========================= */
 
-@media (max-width: 992px) {
+.navLink:hover {
+  background: #f7f1fc;
+  border-color: #eadcf6;
+  color: #7d3cb5;
+  text-decoration: none !important;
+}
 
+.active {
+  /* Using your green-to-purple brand gradient */
+  background: linear-gradient(135deg, #7d3cb5, #38b44a);
+  color: white !important;
+  box-shadow: 0 10px 24px rgba(125, 60, 181, 0.18);
+}
+
+/* Ensure no underlines appear on hover or active */
+.active::after {
+  display: none !important;
+}
+
+/* =========================
+   RESPONSIVENESS
+========================= */
+
+/* Desktop Narrowing */
+@media (max-width: 1200px) {
   .navContainer {
-    flex-wrap: wrap;
-
-    gap: 18px;
-
-    padding-bottom: 10px;
+    gap: 12px;
   }
-
   .navLink {
-    flex: unset;
-
-    min-width: 180px;
-
-    justify-content: flex-start;
+    padding: 0 14px;
   }
 }
 
-
-@media (max-width: 768px) {
+/* Mobile / Tablet (Drawer View) */
+@media (max-width: 992px) {
+  .buyerNavWrapper {
+    width: 100%;
+  }
 
   .navContainer {
-    flex-direction: column;
-
-    align-items: flex-start;
+    flex-direction: column; /* Vertical stack for mobile drawer */
+    align-items: stretch;
+    gap: 8px;
   }
 
   .navLink {
+    justify-content: flex-start; /* Left-align icons and text in drawer */
+    padding: 14px 20px;
     width: 100%;
-
-    justify-content: flex-start;
-
-    min-height: auto;
-
-    padding: 10px 0;
+    min-height: 55px;
   }
-
-  .active::after {
-    display: none;
-  }
-
-  .navContainer::after {
-    display: none;
+  
+  /* Remove backgrounds on mobile links unless active 
+     to keep the drawer looking "neat and simple" */
+  .navLink:not(.active) {
+    border: none;
   }
 }

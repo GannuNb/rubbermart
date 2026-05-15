@@ -1,165 +1,108 @@
-/* src/styles/Navbar/GuestNavbar.module.css */
+/* =========================
+   GUEST NAVBAR LAYOUT
+========================= */
 
-.navContainer {
-  width: 100%;
+.guestNavWrapper {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  position: relative;
-  min-height: 68px;
-}
-
-
-/* BOTTOM GRADIENT LINE */
-
-/* BOTTOM LINE */
-
-.navContainer::after {
-  content: "";
-
-  position: absolute;
-
-  bottom: 0;
-  left: 0;
-
   width: 100%;
-  height: 3px;
-
-  background: #d8b9ef;
-
-  border-radius: 50px;
 }
 
+.navContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 100px; /* Slightly wider gap for guest visibility */
+  width: 100%;
+}
 
-/* NAV LINK */
+/* =========================
+   NAV LINK BASE
+========================= */
 
 .navLink {
-  flex: 1;
-
+  min-height: 50px;
+  padding: 0 18px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  gap: 10px;
-
-  min-height: 68px;
-
-  position: relative;
-
-  color: #222;
-
-  font-size: 15px;
-  font-weight: 500;
-
-  transition: 0.3s ease;
-
+  gap: 10px; /* Space between icon and text per your correction */
+  background: transparent;
+  border: 1px solid transparent;
+  color: #444;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
   text-decoration: none !important;
+  white-space: nowrap;
 }
-
-
-/* REMOVE UNDERLINES */
-
-.navLink:hover,
-.navLink:focus,
-.navLink:active,
-.navLink:visited {
-  text-decoration: none !important;
-}
-
-
-/* ICON */
 
 .navLink svg {
-  font-size: 15px;
+  font-size: 16px;
+  flex-shrink: 0;
 }
 
-
-/* HOVER */
+/* =========================
+   HOVER & ACTIVE STATES
+========================= */
 
 .navLink:hover {
+  background: #f7f1fc;
+  border-color: #eadcf6;
   color: #7d3cb5;
+  text-decoration: none !important;
 }
-
-
-/* ACTIVE */
 
 .active {
-  color: #7d3cb5;
-
-  font-weight: 600;
+  background: linear-gradient(135deg, #7d3cb5, #38b44a);
+  color: white !important;
+  box-shadow: 0 10px 24px rgba(125, 60, 181, 0.18);
 }
 
-
-/* ACTIVE UNDERLINE */
-
+/* Ensure no underlines appear anywhere */
 .active::after {
-  content: "";
-
-  position: absolute;
-
-  bottom: 0;
-  left: 50%;
-
-  transform: translateX(-50%);
-
-  width: 72px;
-  height: 4px;
-
-  background: #7d3cb5;
-
-  border-radius: 50px;
-
-  z-index: 2;
+  display: none !important;
 }
 
+/* =========================
+   RESPONSIVENESS
+========================= */
 
-/* RESPONSIVE */
-
-@media (max-width: 992px) {
-
+/* Desktop Refinement */
+@media (max-width: 1100px) {
   .navContainer {
-    flex-wrap: wrap;
-
-    gap: 10px;
-
-    padding-bottom: 10px;
+    gap: 12px;
   }
-
   .navLink {
-    flex: unset;
-
-    min-width: 180px;
-
-    justify-content: flex-start;
+    padding: 0 14px;
+    font-size: 13.5px;
   }
 }
 
-
+/* Mobile (Inside Drawer) */
 @media (max-width: 768px) {
+  .guestNavWrapper {
+    width: 100%;
+    padding: 5px 0;
+  }
 
   .navContainer {
     flex-direction: column;
-
-    align-items: flex-start;
-
-    width: 100%;
+    align-items: stretch;
+    gap: 10px;
   }
 
   .navLink {
+    justify-content: flex-start; /* Left-aligned for mobile menu */
+    padding: 15px 20px;
     width: 100%;
-
-    justify-content: flex-start;
-
-    min-height: auto;
-
-    padding: 10px 0;
+    min-height: 55px;
   }
 
-  .active::after {
-    display: none;
-  }
-
-  .navContainer::after {
-    display: none;
+  /* Make non-active links look simpler in the drawer */
+  .navLink:not(.active) {
+    border: none;
+    background: transparent;
   }
 }

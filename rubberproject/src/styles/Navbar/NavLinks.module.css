@@ -1,0 +1,50 @@
+/* =========================
+   NAVIGATION LINK BASE
+========================= */
+.navLink {
+  display: flex;
+  align-items: center;
+  /* Matches spacing between numeric indicators and icons */
+  gap: 10px; 
+  padding: 10px 16px;
+  color: #4b5563;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none !important; /* Strictly no underlines */
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+/* Ensure icons are centered and sized correctly */
+.navLink svg {
+  flex-shrink: 0;
+}
+
+/* =========================
+   HOVER & ACTIVE STATES
+========================= */
+.navLink:hover {
+  color: #7d3cb5;
+  background-color: #f3ebfa;
+  text-decoration: none !important; /* Secondary guard against hover underlines */
+}
+
+.activeLink {
+  color: #ffffff !important;
+  background-color: #7d3cb5;
+  box-shadow: 0 4px 12px rgba(125, 60, 181, 0.2);
+}
+
+/* =========================
+   MOBILE ADJUSTMENTS
+========================= */
+@media (max-width: 768px) {
+  .navLink {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 15px;
+    border-radius: 0; /* Full width mobile links feel better squared or slightly rounded */
+    border-bottom: 1px solid #f3f4f6;
+  }
+}

@@ -1,29 +1,27 @@
+// src/components/navbar/GuestActions.js
 import React from "react";
-
 import { Link } from "react-router-dom";
-
 import { FaUserPlus, FaSignInAlt } from "react-icons/fa";
-
-import styles from "../../styles/Navbar/RoleNavbar.module.css";
+import styles from "../../styles/Navbar/GuestActions.module.css";
 
 function GuestActions() {
   return (
-    <>
+    <div className={styles.guestWrapper}>
       <Link to="/signup?role=seller" className={styles.sellerBtn}>
         <FaUserPlus />
-        Become a Seller
+        <span>Become a Seller</span>
       </Link>
 
       <Link to="/login" className={styles.loginBtn}>
         <FaSignInAlt />
-        Login
+        <span>Login</span>
       </Link>
 
       <Link to="/signup" className={styles.signupBtn}>
         <FaUserPlus />
-        Sign Up
+        <span>Sign Up</span>
       </Link>
-    </>
+    </div>
   );
 }
 
