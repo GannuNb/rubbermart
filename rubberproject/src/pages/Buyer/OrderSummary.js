@@ -1,7 +1,12 @@
 // src/pages/Buyer/OrderSummary.js
 
 import React, { useMemo, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+
+import { useNavigate } from "react-router-dom";
+
+import { useDispatch, useSelector } from "react-redux";
+
+import { updateOrderItems } from "../../redux/slices/orderSummarySlice";
 
 import {
   FaClipboardList,
@@ -22,19 +27,33 @@ import {
 import styles from "../../styles/Buyer/OrderSummary.module.css";
 
 function OrderSummary() {
-  const location = useLocation();
   const navigate = useNavigate();
 
-  const sellerId = location.state?.sellerId || "";
-  const sellerName = location.state?.sellerName || "";
-  const shippingAddress = location.state?.shippingAddress || {};
-  const buyerGstNumber = location.state?.buyerGstNumber || "";
+  const dispatch = useDispatch();
 
-  const isMaharashtraGST = buyerGstNumber.startsWith("27");
+  /*
+  =========================================
+  REDUX DATA
+  =========================================
+  */
 
-  const [orderItems, setOrderItems] = useState(
-    location.state?.orderItems || [],
-  );
+  const {
+    sellerId,
+    sellerName,
+    shippingAddress,
+    buyerGstNumber,
+    orderItems: reduxOrderItems,
+  } = useSelector((state) => state.orderSummary);
+
+  const isMaharashtraGST = buyerGstNumber?.startsWith("27");
+
+  const [orderItems, setOrderItems] = useState(reduxOrderItems || []);
+
+  /*
+  =========================================
+  TOTALS
+  =========================================
+  */
 
   const taxableAmount = useMemo(() => {
     return orderItems.reduce((total, item) => {
@@ -62,6 +81,12 @@ function OrderSummary() {
     return taxableAmount + gstAmount;
   }, [taxableAmount, gstAmount]);
 
+  /*
+  =========================================
+  QUANTITY CHANGE
+  =========================================
+  */
+
   const handleQuantityChange = (index, value) => {
     const quantity = Number(value);
 
@@ -73,52 +98,74 @@ function OrderSummary() {
 
     if (quantity > maxQuantity) {
       alert(`Quantity cannot exceed ${maxQuantity} MT`);
+
       return;
     }
 
     updatedItems[index] = {
       ...updatedItems[index],
+
       requiredQuantity: quantity,
+
       subtotal: quantity * Number(updatedItems[index].pricePerMT),
     };
 
     setOrderItems(updatedItems);
+
+    /*
+    -------------------------------------
+    UPDATE REDUX
+    -------------------------------------
+    */
+
+    dispatch(updateOrderItems(updatedItems));
   };
+
+  /*
+  =========================================
+  REMOVE ITEM
+  =========================================
+  */
 
   const handleRemoveItem = (index) => {
     const updatedItems = orderItems.filter((_, i) => i !== index);
+
     setOrderItems(updatedItems);
+
+    /*
+    -------------------------------------
+    UPDATE REDUX
+    -------------------------------------
+    */
+
+    dispatch(updateOrderItems(updatedItems));
   };
+
+  /*
+  =========================================
+  ADD MORE PRODUCTS
+  =========================================
+  */
 
   const handleAddMoreProducts = () => {
-    navigate(`/seller-products/${sellerId}`, {
-      state: {
-        sellerId,
-        sellerName,
-        shippingAddress,
-        buyerGstNumber,
-        orderItems,
-      },
-    });
+    navigate(`/seller-products/${sellerId}`);
   };
 
+  /*
+  =========================================
+  PLACE ORDER
+  =========================================
+  */
+
   const handlePlaceOrder = () => {
-    navigate("/place-order", {
-      state: {
-        sellerId,
-        sellerName,
-        shippingAddress,
-        buyerGstNumber,
-        orderItems,
-        taxableAmount,
-        cgstAmount,
-        sgstAmount,
-        igstAmount,
-        gstAmount,
-        totalAmount,
-      },
-    });
+    navigate("/place-order");
   };
+
+  /*
+  =========================================
+  EMPTY STATE
+  =========================================
+  */
 
   if (!orderItems || orderItems.length === 0) {
     return (
@@ -141,9 +188,7 @@ function OrderSummary() {
 
   return (
     <div className={styles.pageWrapper}>
-      {/* =========================================
-      HEADER
-      ========================================= */}
+      {/* HEADER */}
 
       <div className={styles.headerSection}>
         <div className={styles.headerTop}>
@@ -159,9 +204,7 @@ function OrderSummary() {
         </div>
       </div>
 
-      {/* =========================================
-      TOP GRID
-      ========================================= */}
+      {/* TOP GRID */}
 
       <div className={styles.topGrid}>
         {/* SELLER INFO */}
@@ -271,9 +314,7 @@ function OrderSummary() {
         </div>
       </div>
 
-      {/* =========================================
-      BOTTOM SECTION
-      ========================================= */}
+      {/* BOTTOM SECTION */}
 
       <div className={styles.bottomSection}>
         {/* PRODUCTS */}
@@ -294,11 +335,8 @@ function OrderSummary() {
               <div className={styles.productImageWrapper}>
                 <img
                   src={
-                    item.productImagePreview
-                      ? item.productImagePreview
-                      : item.productImage
-                        ? item.productImage
-                        : "https://via.placeholder.com/150x150?text=No+Image"
+                    item.productImage ||
+                    "https://via.placeholder.com/150x150?text=No+Image"
                   }
                   alt={item.application || "Product"}
                   className={styles.productImage}

@@ -6,9 +6,13 @@ import { FaBuilding, FaBarcode } from "react-icons/fa";
 import styles from "../../styles/Buyer/ProductOrderPanel.module.css";
 import AddressPopup from "./AddressPopup";
 import AddressDropdown from "./AddressDropdown";
+import { useDispatch } from "react-redux";
+
+import { setOrderSummary } from "../../redux/slices/orderSummarySlice";
 
 function ProductOrderPanel({ singleProduct }) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [buyerAddresses, setBuyerAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState("");
@@ -189,23 +193,28 @@ function ProductOrderPanel({ singleProduct }) {
 
     if (!selectedAddress) {
       alert("Please select delivery address");
+
       return;
     }
 
     if (!quantity || quantity <= 0) {
       alert("Please enter valid quantity");
+
       return;
     }
 
     if (quantity > Number(singleProduct.quantity)) {
       alert("Required quantity cannot exceed available stock");
+
       return;
     }
+
     if (
       singleProduct.stockStatus !== "available" ||
       Number(singleProduct.quantity) <= 0
     ) {
       alert("This product is currently out of stock");
+
       return;
     }
 
@@ -216,37 +225,69 @@ function ProductOrderPanel({ singleProduct }) {
 
     if (!selectedAddressObject) {
       alert("Selected address not found");
+
       return;
     }
 
     const orderData = {
       sellerId: singleProduct.seller?._id || "",
+
       sellerName: singleProduct.seller?.businessProfile?.companyName || "",
+
       shippingAddress: selectedAddressObject,
+
       buyerGstNumber: buyerProfile?.businessProfile?.gstNumber || "",
+
       businessProfile: buyerProfile?.businessProfile || {},
+
       orderItems: [
         {
           product: singleProduct._id || "",
+
           seller: singleProduct.seller?._id || "",
+
           category: singleProduct.category || "",
+
           application: singleProduct.application || "",
+
           requiredQuantity: quantity,
+
           pricePerMT: Number(singleProduct.pricePerMT || 0),
+
           subtotal: quantity * Number(singleProduct.pricePerMT || 0),
+
           loadingLocation: singleProduct.loadingLocation || "",
+
           hsnCode: singleProduct.hsnCode || "",
+
+          /*
+        ---------------------------------------
+        KEEP IMAGE
+        ---------------------------------------
+        */
+
           productImage: singleProduct.images?.[0]?.image || "",
+
           availableQuantity: Number(singleProduct.quantity || 0),
         },
       ],
     };
 
-    console.log("Order Data Sent:", orderData);
+    /*
+  ---------------------------------------
+  SAVE TO REDUX
+  ---------------------------------------
+  */
 
-    navigate("/order-summary", {
-      state: orderData,
-    });
+    dispatch(setOrderSummary(orderData));
+
+    /*
+  ---------------------------------------
+  NAVIGATE WITHOUT STATE
+  ---------------------------------------
+  */
+
+    navigate("/order-summary");
   };
 
   return (
@@ -322,23 +363,23 @@ function ProductOrderPanel({ singleProduct }) {
             )}
           </div>
 
-                <button
-                  className={styles.buyButton}
-                  onClick={handleContinueToOrder}
-                  disabled={
-                    singleProduct.stockStatus !== "available" ||
-                    Number(singleProduct.quantity) <= 0 ||
-                    !selectedAddress ||
-                    !requiredQuantity ||
-                    Number(requiredQuantity) <= 0 ||
-                    Number(requiredQuantity) > Number(singleProduct.quantity)
-                  }
-                >
-                  {singleProduct.stockStatus !== "available" ||
-                  Number(singleProduct.quantity) <= 0
-                    ? "Currently Unavailable"
-                    : "Continue To Order"}
-                </button>
+          <button
+            className={styles.buyButton}
+            onClick={handleContinueToOrder}
+            disabled={
+              singleProduct.stockStatus !== "available" ||
+              Number(singleProduct.quantity) <= 0 ||
+              !selectedAddress ||
+              !requiredQuantity ||
+              Number(requiredQuantity) <= 0 ||
+              Number(requiredQuantity) > Number(singleProduct.quantity)
+            }
+          >
+            {singleProduct.stockStatus !== "available" ||
+            Number(singleProduct.quantity) <= 0
+              ? "Currently Unavailable"
+              : "Continue To Order"}
+          </button>
         </div>
       </div>
 

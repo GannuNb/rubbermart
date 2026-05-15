@@ -1,27 +1,52 @@
-// src/pages/OrderSuccess.js
+// src/pages/Buyer/OrderSuccess.js
 
 import React from "react";
+
 import { useLocation, useNavigate } from "react-router-dom";
+
+import {
+  FaCheckCircle,
+  FaBoxOpen,
+  FaClipboardList,
+  FaRupeeSign,
+} from "react-icons/fa";
+
 import styles from "../../styles/Buyer/OrderSuccess.module.css";
 
 function OrderSuccess() {
   const location = useLocation();
+
   const navigate = useNavigate();
 
+  /*
+  =========================================
+  ORDER DATA
+  =========================================
+  */
+
   const order = location.state?.order;
+
+  /*
+  =========================================
+  EMPTY STATE
+  =========================================
+  */
 
   if (!order) {
     return (
       <div className={styles.emptyState}>
-        <h2>No Order Found</h2>
-        <p>Please place an order again.</p>
+        <div className={styles.emptyCard}>
+          <h2>No Order Found</h2>
 
-        <button
-          className={styles.primaryButton}
-          onClick={() => navigate("/our-products")}
-        >
-          Go To Products
-        </button>
+          <p>Please place an order again.</p>
+
+          <button
+            className={styles.primaryButton}
+            onClick={() => navigate("/our-products")}
+          >
+            Go To Products
+          </button>
+        </div>
       </div>
     );
   }
@@ -29,7 +54,13 @@ function OrderSuccess() {
   return (
     <div className={styles.pageWrapper}>
       <div className={styles.successCard}>
-        <div className={styles.iconWrapper}>✓</div>
+        {/* SUCCESS ICON */}
+
+        <div className={styles.iconWrapper}>
+          <FaCheckCircle />
+        </div>
+
+        {/* TITLE */}
 
         <h1>Order Placed Successfully</h1>
 
@@ -38,40 +69,72 @@ function OrderSuccess() {
           confirmation.
         </p>
 
+        {/* ORDER DETAILS */}
+
         <div className={styles.orderInfoBox}>
+          {/* ORDER ID */}
+
           <div className={styles.infoRow}>
-            <span>Order ID</span>
+            <div className={styles.infoLeft}>
+              <FaClipboardList className={styles.rowIcon} />
+
+              <span>Order ID</span>
+            </div>
+
             <strong>{order.orderId}</strong>
           </div>
 
+          {/* STATUS */}
+
           <div className={styles.infoRow}>
-            <span>Order Status</span>
+            <div className={styles.infoLeft}>
+              <FaCheckCircle className={styles.rowIcon} />
+
+              <span>Order Status</span>
+            </div>
+
             <strong className={styles.statusBadge}>
-              {order.orderStatus}
+              {order.orderStatus?.replace("_", " ")}
             </strong>
           </div>
 
-          <div className={styles.infoRow}>
-            <span>Total Amount</span>
-            <strong>₹{Number(order.totalAmount).toLocaleString()}</strong>
-          </div>
+          {/* TOTAL */}
 
           <div className={styles.infoRow}>
-            <span>Products</span>
+            <div className={styles.infoLeft}>
+              <FaRupeeSign className={styles.rowIcon} />
+
+              <span>Total Amount</span>
+            </div>
+
+            <strong>₹{Number(order.totalAmount || 0).toLocaleString()}</strong>
+          </div>
+
+          {/* PRODUCTS */}
+
+          <div className={styles.infoRow}>
+            <div className={styles.infoLeft}>
+              <FaBoxOpen className={styles.rowIcon} />
+
+              <span>Products</span>
+            </div>
+
             <strong>{order.orderItems?.length || 0}</strong>
           </div>
         </div>
 
+        {/* NOTICE */}
+
         <div className={styles.noticeBox}>
-          <p>
-            Invoice PDF has been sent to your registered email address.
-          </p>
+          <p>Invoice PDF has been sent to your registered email address.</p>
 
           <p>
-            You can upload payment receipt only after seller confirms this
+            Payment receipt upload will be enabled after seller confirms this
             order.
           </p>
         </div>
+
+        {/* BUTTONS */}
 
         <div className={styles.buttonRow}>
           <button

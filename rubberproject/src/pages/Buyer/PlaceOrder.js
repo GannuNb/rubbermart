@@ -1,7 +1,12 @@
 // src/pages/Buyer/PlaceOrder.js
 
 import React, { useMemo, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+
+import { useNavigate } from "react-router-dom";
+
+import { useDispatch, useSelector } from "react-redux";
+
+import { clearOrderSummary } from "../../redux/slices/orderSummarySlice";
 
 import {
   FaClipboardList,
@@ -23,43 +28,74 @@ import {
 import styles from "../../styles/Buyer/PlaceOrder.module.css";
 
 function PlaceOrder() {
-  const location = useLocation();
   const navigate = useNavigate();
 
+  const dispatch = useDispatch();
+
+  /*
+  =========================================
+  REDUX DATA
+  =========================================
+  */
+
+  const { sellerId, sellerName, shippingAddress, orderItems, buyerGstNumber } =
+    useSelector((state) => state.orderSummary);
+
+  /*
+  =========================================
+  STATES
+  =========================================
+  */
+
   const [agreeTerms, setAgreeTerms] = useState(false);
+
   const [loading, setLoading] = useState(false);
 
-  const sellerId = location.state?.sellerId || "";
-  const sellerName = location.state?.sellerName || "";
-  const shippingAddress = location.state?.shippingAddress || {};
-  const orderItems = location.state?.orderItems || [];
-  const buyerGstNumber = location.state?.buyerGstNumber || "";
+  /*
+  =========================================
+  GST TYPE
+  =========================================
+  */
+
+  const isMaharashtraGST = buyerGstNumber?.startsWith("27");
+
+  /*
+  =========================================
+  TOTALS
+  =========================================
+  */
 
   const taxableAmount = useMemo(() => {
-    return Number(location.state?.taxableAmount || 0);
-  }, [location.state]);
+    return orderItems.reduce((total, item) => {
+      return total + Number(item.subtotal || 0);
+    }, 0);
+  }, [orderItems]);
 
   const cgstAmount = useMemo(() => {
-    return Number(location.state?.cgstAmount || 0);
-  }, [location.state]);
+    return isMaharashtraGST ? (taxableAmount * 9) / 100 : 0;
+  }, [taxableAmount, isMaharashtraGST]);
 
   const sgstAmount = useMemo(() => {
-    return Number(location.state?.sgstAmount || 0);
-  }, [location.state]);
+    return isMaharashtraGST ? (taxableAmount * 9) / 100 : 0;
+  }, [taxableAmount, isMaharashtraGST]);
 
   const igstAmount = useMemo(() => {
-    return Number(location.state?.igstAmount || 0);
-  }, [location.state]);
+    return !isMaharashtraGST ? (taxableAmount * 18) / 100 : 0;
+  }, [taxableAmount, isMaharashtraGST]);
 
   const gstAmount = useMemo(() => {
-    return Number(location.state?.gstAmount || 0);
-  }, [location.state]);
+    return cgstAmount + sgstAmount + igstAmount;
+  }, [cgstAmount, sgstAmount, igstAmount]);
 
   const totalAmount = useMemo(() => {
-    return Number(location.state?.totalAmount || 0);
-  }, [location.state]);
+    return taxableAmount + gstAmount;
+  }, [taxableAmount, gstAmount]);
 
-  const isMaharashtraGST = buyerGstNumber.startsWith("27");
+  /*
+  =========================================
+  CONFIRM ORDER
+  =========================================
+  */
 
   const handleConfirmOrder = async () => {
     try {
@@ -67,60 +103,119 @@ function PlaceOrder() {
 
       const token = localStorage.getItem("token");
 
+      /*
+        -------------------------------------
+        BACKEND ORDER ITEMS
+        -------------------------------------
+        */
+
       const backendOrderItems = orderItems.map((item) => ({
         product: item.product,
+
         seller: item.seller,
+
         category: item.category,
+
         application: item.application,
+
         requiredQuantity: Number(item.requiredQuantity),
+
         pricePerMT: Number(item.pricePerMT),
+
         subtotal: Number(item.subtotal),
+
         loadingLocation: item.loadingLocation,
+
         hsnCode: item.hsnCode,
       }));
+
+      /*
+        -------------------------------------
+        API CALL
+        -------------------------------------
+        */
 
       const response = await fetch(
         `${process.env.REACT_APP_API_URL}/api/orders/create`,
         {
           method: "POST",
+
           headers: {
             "Content-Type": "application/json",
+
             Authorization: `Bearer ${token}`,
           },
+
           body: JSON.stringify({
             seller: sellerId,
+
             shippingAddress,
+
             orderItems: backendOrderItems,
+
             taxableAmount: Number(taxableAmount),
+
             cgstAmount: Number(cgstAmount),
+
             sgstAmount: Number(sgstAmount),
+
             igstAmount: Number(igstAmount),
+
             gstAmount: Number(gstAmount),
+
             totalAmount: Number(totalAmount),
+
             buyerGstNumber,
+
             gstType: isMaharashtraGST ? "cgst_sgst" : "igst",
           }),
-        }
+        },
       );
 
       const data = await response.json();
 
+      /*
+        -------------------------------------
+        SUCCESS
+        -------------------------------------
+        */
+
       if (response.ok) {
+        /*
+          CLEAR REDUX ORDER
+          AFTER SUCCESS
+          */
+
+        dispatch(clearOrderSummary());
+
         navigate("/order-success", {
           state: {
             order: data.order,
           },
         });
       } else {
+
+      /*
+        -------------------------------------
+        ERROR
+        -------------------------------------
+        */
         alert(data.message || "Failed to place order");
       }
     } catch (error) {
       console.log("Place Order Error:", error);
+
       alert("Failed to place order");
     } finally {
       setLoading(false);
     }
   };
+
+  /*
+  =========================================
+  EMPTY STATE
+  =========================================
+  */
 
   if (!orderItems || orderItems.length === 0) {
     return (
@@ -143,9 +238,9 @@ function PlaceOrder() {
 
   return (
     <>
-      {/* =========================================
+      {/* =====================================
       PAGE HEADER
-      ========================================= */}
+      ===================================== */}
 
       <div className={styles.pageHeader}>
         <div className={styles.pageHeaderLeft}>
@@ -156,26 +251,20 @@ function PlaceOrder() {
           <div>
             <h1>Place Order</h1>
 
-            <p>
-              Review Your Order Details before confirming
-            </p>
+            <p>Review Your Order Details before confirming</p>
           </div>
         </div>
       </div>
 
-      {/* =========================================
+      {/* =====================================
       MAIN WRAPPER
-      ========================================= */}
+      ===================================== */}
 
       <div className={styles.pageWrapper}>
-        {/* =========================================
-        LEFT SECTION
-        ========================================= */}
+        {/* LEFT SECTION */}
 
         <div className={styles.leftSection}>
-          {/* =========================================
-          INFORMATION
-          ========================================= */}
+          {/* INFORMATION */}
 
           <div className={styles.card}>
             <div className={styles.cardHeader}>
@@ -190,9 +279,7 @@ function PlaceOrder() {
               <div className={styles.infoLeft}>
                 <FaStore className={styles.rowIcon} />
 
-                <span className={styles.infoLabel}>
-                  Seller Name
-                </span>
+                <span className={styles.infoLabel}>Seller Name</span>
               </div>
 
               <span>:</span>
@@ -206,9 +293,7 @@ function PlaceOrder() {
               <div className={styles.infoLeft}>
                 <FaIdCard className={styles.rowIcon} />
 
-                <span className={styles.infoLabel}>
-                  Buyer GST Number
-                </span>
+                <span className={styles.infoLabel}>Buyer GST Number</span>
               </div>
 
               <span>:</span>
@@ -222,24 +307,18 @@ function PlaceOrder() {
               <div className={styles.infoLeft}>
                 <FaPercent className={styles.rowIcon} />
 
-                <span className={styles.infoLabel}>
-                  GST Type
-                </span>
+                <span className={styles.infoLabel}>GST Type</span>
               </div>
 
               <span>:</span>
 
               <span className={styles.infoValue}>
-                {isMaharashtraGST
-                  ? "CGST + SGST"
-                  : "IGST"}
+                {isMaharashtraGST ? "CGST + SGST" : "IGST"}
               </span>
             </div>
           </div>
 
-          {/* =========================================
-          DELIVERY ADDRESS
-          ========================================= */}
+          {/* ADDRESS */}
 
           <div className={styles.card}>
             <div className={styles.cardHeader}>
@@ -255,35 +334,27 @@ function PlaceOrder() {
                 <div className={styles.infoLeft}>
                   <FaUser className={styles.rowIcon} />
 
-                  <span className={styles.infoLabel}>
-                    Full Name
-                  </span>
+                  <span className={styles.infoLabel}>Full Name</span>
                 </div>
 
                 <span>:</span>
 
                 <span className={styles.infoValue}>
-                  {shippingAddress?.fullName ||
-                    "Not Available"}
+                  {shippingAddress?.fullName || "Not Available"}
                 </span>
               </div>
 
               <div className={styles.infoRow}>
                 <div className={styles.infoLeft}>
-                  <FaPhoneAlt
-                    className={styles.rowIcon}
-                  />
+                  <FaPhoneAlt className={styles.rowIcon} />
 
-                  <span className={styles.infoLabel}>
-                    Mobile Number
-                  </span>
+                  <span className={styles.infoLabel}>Mobile Number</span>
                 </div>
 
                 <span>:</span>
 
                 <span className={styles.infoValue}>
-                  {shippingAddress?.mobileNumber ||
-                    "Not Available"}
+                  {shippingAddress?.mobileNumber || "Not Available"}
                 </span>
               </div>
 
@@ -291,24 +362,19 @@ function PlaceOrder() {
                 <div className={styles.infoLeft}>
                   <FaHome className={styles.rowIcon} />
 
-                  <span className={styles.infoLabel}>
-                    Address
-                  </span>
+                  <span className={styles.infoLabel}>Address</span>
                 </div>
 
                 <span>:</span>
 
                 <span className={styles.infoValue}>
-                  {shippingAddress?.fullAddress ||
-                    "Not Available"}
+                  {shippingAddress?.fullAddress || "Not Available"}
                 </span>
               </div>
             </div>
           </div>
 
-          {/* =========================================
-          PRODUCTS
-          ========================================= */}
+          {/* PRODUCTS */}
 
           <div className={styles.card}>
             <div className={styles.cardHeader}>
@@ -321,20 +387,14 @@ function PlaceOrder() {
 
             <div className={styles.productList}>
               {orderItems.map((item, index) => (
-                <div
-                  key={index}
-                  className={styles.productItem}
-                >
+                <div key={index} className={styles.productItem}>
                   {/* IMAGE */}
 
                   <div className={styles.imageWrapper}>
                     <img
                       src={
-                        item.productImagePreview
-                          ? item.productImagePreview
-                          : item.productImage
-                          ? item.productImage
-                          : "https://via.placeholder.com/120x120?text=No+Image"
+                        item.productImage ||
+                        "https://via.placeholder.com/120x120?text=No+Image"
                       }
                       alt={item.application || "Product"}
                       className={styles.productImage}
@@ -348,28 +408,18 @@ function PlaceOrder() {
                   {/* INFO */}
 
                   <div className={styles.productInfo}>
-                    <h3>
-                      {item.application ||
-                        "Product Name"}
-                    </h3>
+                    <h3>{item.application}</h3>
 
                     <div className={styles.badgeWrapper}>
-                      <span
-                        className={styles.productBadge}
-                      >
-                        {item.category || "Category"}
+                      <span className={styles.productBadge}>
+                        {item.category}
                       </span>
 
-                      <span
-                        className={styles.productBadge}
-                      >
-                        {item.loadingLocation ||
-                          "Location"}
+                      <span className={styles.productBadge}>
+                        {item.loadingLocation}
                       </span>
 
-                      <span
-                        className={styles.productBadge}
-                      >
+                      <span className={styles.productBadge}>
                         HSN: {item.hsnCode || "N/A"}
                       </span>
                     </div>
@@ -378,19 +428,14 @@ function PlaceOrder() {
                       <div className={styles.metaRow}>
                         <span>Quantity</span>
 
-                        <strong>
-                          {item.requiredQuantity} MT
-                        </strong>
+                        <strong>{item.requiredQuantity} MT</strong>
                       </div>
 
                       <div className={styles.metaRow}>
                         <span>Price Per MT</span>
 
                         <strong>
-                          ₹
-                          {Number(
-                            item.pricePerMT || 0
-                          ).toLocaleString()}
+                          ₹{Number(item.pricePerMT || 0).toLocaleString()}
                         </strong>
                       </div>
                     </div>
@@ -402,10 +447,7 @@ function PlaceOrder() {
                     <span>Subtotal</span>
 
                     <strong>
-                      ₹
-                      {Number(
-                        item.subtotal || 0
-                      ).toLocaleString()}
+                      ₹{Number(item.subtotal || 0).toLocaleString()}
                     </strong>
                   </div>
                 </div>
@@ -414,9 +456,7 @@ function PlaceOrder() {
           </div>
         </div>
 
-        {/* =========================================
-        RIGHT SECTION
-        ========================================= */}
+        {/* RIGHT SECTION */}
 
         <div className={styles.rightSection}>
           <div className={styles.summaryCard}>
@@ -435,12 +475,7 @@ function PlaceOrder() {
             <div className={styles.summaryRow}>
               <span>Taxable Amount</span>
 
-              <span>
-                ₹
-                {Number(
-                  taxableAmount
-                ).toLocaleString()}
-              </span>
+              <span>₹{Number(taxableAmount).toLocaleString()}</span>
             </div>
 
             {isMaharashtraGST ? (
@@ -448,35 +483,20 @@ function PlaceOrder() {
                 <div className={styles.summaryRow}>
                   <span>CGST (9%)</span>
 
-                  <span>
-                    ₹
-                    {Number(
-                      cgstAmount
-                    ).toLocaleString()}
-                  </span>
+                  <span>₹{Number(cgstAmount).toLocaleString()}</span>
                 </div>
 
                 <div className={styles.summaryRow}>
                   <span>SGST (9%)</span>
 
-                  <span>
-                    ₹
-                    {Number(
-                      sgstAmount
-                    ).toLocaleString()}
-                  </span>
+                  <span>₹{Number(sgstAmount).toLocaleString()}</span>
                 </div>
               </>
             ) : (
               <div className={styles.summaryRow}>
                 <span>IGST (18%)</span>
 
-                <span>
-                  ₹
-                  {Number(
-                    igstAmount
-                  ).toLocaleString()}
-                </span>
+                <span>₹{Number(igstAmount).toLocaleString()}</span>
               </div>
             )}
 
@@ -485,9 +505,7 @@ function PlaceOrder() {
             <div className={styles.totalRow}>
               <span>Total Amount</span>
 
-              <span>
-                ₹{Number(totalAmount).toLocaleString()}
-              </span>
+              <span>₹{Number(totalAmount).toLocaleString()}</span>
             </div>
 
             {/* NOTICE */}
@@ -496,18 +514,14 @@ function PlaceOrder() {
               <div className={styles.noticeItem}>
                 <FaInfoCircle />
 
-                <p>
-                  Seller will review this order before
-                  payment is requested
-                </p>
+                <p>Seller will review this order before payment is requested</p>
               </div>
 
               <div className={styles.noticeItem}>
                 <FaFileAlt />
 
                 <p>
-                  Invoice PDF with order ID will be sent
-                  to your registered email after order
+                  Invoice PDF with order ID will be sent after order
                   confirmation.
                 </p>
               </div>
@@ -516,8 +530,7 @@ function PlaceOrder() {
                 <FaReceipt />
 
                 <p>
-                  You can upload payment receipt only
-                  after seller confirms the order.
+                  Payment receipt upload will be enabled after seller approval.
                 </p>
               </div>
             </div>
@@ -528,15 +541,10 @@ function PlaceOrder() {
               <input
                 type="checkbox"
                 checked={agreeTerms}
-                onChange={(e) =>
-                  setAgreeTerms(e.target.checked)
-                }
+                onChange={(e) => setAgreeTerms(e.target.checked)}
               />
 
-              <span>
-                I confirm that all order details are
-                correct.
-              </span>
+              <span>I confirm that all order details are correct.</span>
             </label>
 
             {/* BUTTON */}
@@ -548,9 +556,7 @@ function PlaceOrder() {
             >
               <FaShieldAlt />
 
-              {loading
-                ? "Placing Order..."
-                : "Confirm Order"}
+              {loading ? "Placing Order..." : "Confirm Order"}
             </button>
           </div>
         </div>

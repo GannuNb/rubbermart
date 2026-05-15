@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import AdminOrderSummaryCard from "../../components/admin/AdminOrderDetails/AdminOrderSummaryCard";
 import AdminBuyerDetailsCard from "../../components/admin/AdminOrderDetails/AdminBuyerDetailsCard";
@@ -17,6 +17,7 @@ import styles from "../../styles/Admin/AdminOrderDetails.module.css";
 
 const AdminOrderDetails = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { orderId } = useParams();
 
   const { singleOrder, singleOrderLoading, singleOrderError } = useSelector(
@@ -60,9 +61,20 @@ const AdminOrderDetails = () => {
 
       {/* BACK */}
       <div className={styles.backSection}>
-        <button className={styles.backBtn}>
-          <FaArrowLeft />
-        </button>
+        <button
+  className={styles.backBtn}
+  onClick={() => {
+
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate("/admin/all-orders");
+    }
+
+  }}
+>
+  <FaArrowLeft />
+</button>
 
         <h2 className={styles.sectionTitle}>Order Details</h2>
       </div>
