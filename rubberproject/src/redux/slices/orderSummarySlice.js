@@ -15,43 +15,25 @@ const orderSummarySlice = createSlice({
   initialState,
 
   reducers: {
-
     setOrderSummary: (state, action) => {
+      state.sellerId = action.payload.sellerId || "";
 
-      state.sellerId =
-        action.payload.sellerId || "";
+      state.sellerName = action.payload.sellerName || "";
 
-      state.sellerName =
-        action.payload.sellerName || "";
+      state.shippingAddress = action.payload.shippingAddress || {};
 
-      state.shippingAddress =
-        action.payload.shippingAddress || {};
+      state.buyerGstNumber = action.payload.buyerGstNumber || "";
 
-      state.buyerGstNumber =
-        action.payload.buyerGstNumber || "";
+      state.businessProfile = action.payload.businessProfile || {};
 
-      state.businessProfile =
-        action.payload.businessProfile || {};
-
-      state.orderItems =
-        action.payload.orderItems || [];
+      state.orderItems = action.payload.orderItems || [];
     },
 
-
-
-    updateOrderItems: (
-      state,
-      action
-    ) => {
-
-      state.orderItems =
-        action.payload;
+    updateOrderItems: (state, action) => {
+      state.orderItems = action.payload;
     },
-
-
 
     clearOrderSummary: (state) => {
-
       state.sellerId = "";
 
       state.sellerName = "";
@@ -64,14 +46,10 @@ const orderSummarySlice = createSlice({
 
       state.orderItems = [];
     },
-
   },
 });
 
-export const {
-  setOrderSummary,
-  updateOrderItems,
-  clearOrderSummary,
-} = orderSummarySlice.actions;
+export const { setOrderSummary, updateOrderItems, clearOrderSummary } =
+  orderSummarySlice.actions;
 
 export default orderSummarySlice.reducer;
