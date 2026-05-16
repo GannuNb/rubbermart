@@ -62,19 +62,11 @@ const AdminOrderDetails = () => {
       {/* BACK */}
       <div className={styles.backSection}>
         <button
-  className={styles.backBtn}
-  onClick={() => {
-
-    if (window.history.length > 1) {
-      navigate(-1);
-    } else {
-      navigate("/admin/all-orders");
-    }
-
-  }}
->
-  <FaArrowLeft />
-</button>
+          className={styles.backBtn}
+          onClick={() => navigate("/admin/orders")}
+        >
+          <FaArrowLeft />
+        </button>
 
         <h2 className={styles.sectionTitle}>Order Details</h2>
       </div>

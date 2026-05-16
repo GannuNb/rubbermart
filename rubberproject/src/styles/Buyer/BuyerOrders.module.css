@@ -66,6 +66,22 @@
   object-fit: cover;
 }
 
+.profileFallback {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: linear-gradient(135deg, #7b2ff7, #5f19dd);
+
+  color: white;
+
+  font-size: 18px;
+  font-weight: 700;
+}
 /* =========================
    CONTENT
 ========================= */

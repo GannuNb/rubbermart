@@ -177,7 +177,7 @@ function OrderSummary() {
 
           <button
             className={styles.backButton}
-            onClick={() => navigate("/ourproducts")}
+            onClick={() => navigate("/our-products")}
           >
             Go Back To Products
           </button>
