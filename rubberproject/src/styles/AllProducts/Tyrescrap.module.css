@@ -1,53 +1,63 @@
 /* 
    FILE: Tyrescrap.module.css
-   THEME: Professional Industrial (Purple #6332ad & White)
+   THEME: Premium Industrial Tech (Deep Indigo & Soft Slate)
 */
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 .pageWrapper { 
-    background: #fff; 
-    color: #1a1a1a; 
-    overflow-x: hidden; 
-    font-family: 'Inter', sans-serif;
+    /* Lowering 0.4 and 0.6 to 0.1 and 0.2 makes the image pop significantly more */
+    background: linear-gradient(
+        rgba(255, 255, 255, 0.1), 
+        rgba(255, 255, 255, 0.2)
+    ), 
+    url('../../assests/bg2.png'); 
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
 }
 
 .container { 
-    max-width: 1800px; 
+    max-width: 1600px; /* Reduced from 1800px for a cleaner, tighter layout */
     margin: 0 auto; 
-    padding: 0 24px; 
+    padding: 0 32px; 
 }
 
 /* --- 1. HERO SECTION --- */
 .heroSection { 
-        padding: 10px 0 60px; 
-
-    background: linear-gradient(135deg, #f3f0ff 0%, #ffffff 100%); 
+    padding: 80px 0 100px; 
+    background: transparent; /* Only this is needed to see pageWrapper bg */
+    /* REMOVE all background-image, size, and attachment properties here */
 }
-
 .heroGrid { 
     display: grid; 
-    grid-template-columns: 1fr 1.1fr; 
-    gap: 80px; 
+    grid-template-columns: 1.1fr 0.9fr; 
+    gap: 60px; 
     align-items: center; 
 }
 
 .tag { 
-    color: #6332ad; 
-    font-weight: 700; 
+    color: #5b21b6; 
+    font-weight: 600; 
     text-transform: uppercase; 
-    letter-spacing: 2px; 
-    font-size: 0.85rem; 
-    background: rgba(99, 50, 173, 0.1); 
-    padding: 8px 16px; 
-    border-radius: 50px; 
+    letter-spacing: 1.5px; 
+    font-size: 0.75rem; 
+    background: #f3e8ff; 
+    padding: 6px 14px; 
+    border-radius: 100px; 
     display: inline-block; 
-    margin-bottom: 20px; 
+    margin-bottom: 24px; 
 }
 
 .heroContent h1 { 
-    font-size: 4.5rem; 
-    font-weight: 900; 
-    line-height: 1.1; 
-    margin-bottom: 24px; 
+    font-size: 3.25rem; /* Tamed from 4.5rem */
+    font-weight: 800; 
+    line-height: 1.2; 
+    color: #0f172a;
+    margin-bottom: 20px; 
+    letter-spacing: -0.02em;
 }
 
 .heroContent h1 span { 
@@ -55,72 +65,123 @@
 }
 
 .heroContent p { 
-    font-size: 1.25rem; 
-    color: #555; 
-    line-height: 1.7; 
-    margin-bottom: 40px; 
+    font-size: 1.05rem; /* Tamed from 1.25rem */
+    color: #475569; 
+    line-height: 1.65; 
+    margin-bottom: 32px; 
+    max-width: 580px;
+}
+
+.valueList {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 40px 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+.valueList li {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #334155;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .primaryBtn { 
     background: #6332ad; 
     color: white; 
     border: none; 
-    padding: 18px 40px; 
-    border-radius: 14px; 
-    font-weight: 700; 
+    padding: 14px 32px; 
+    border-radius: 10px; 
+    font-weight: 600; 
+    font-size: 0.95rem;
     cursor: pointer; 
     text-decoration: none; 
     display: inline-flex; 
     align-items: center;
-    transition: 0.3s; 
-    text-decoration: none;
+    transition: all 0.2s ease; 
 }
 
 .primaryBtn:hover { 
     background: #4b2291; 
-    transform: translateY(-3px); 
-    text-decoration: none;
+    transform: translateY(-2px); 
+    box-shadow: 0 8px 20px rgba(99, 50, 173, 0.25);
 }
 
 .heroImageWrapper { 
     position: relative; 
+    display: flex;
+    justify-content: center;
 }
 
 .heroImg { 
     width: 100%; 
-    border-radius: 40px; 
-    box-shadow: 0 30px 60px rgba(0,0,0,0.1); 
+    max-height: 450px;
+    object-fit: cover;
+    border-radius: 24px; 
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08); 
 }
 
 .experienceBadge { 
     position: absolute; 
-    bottom: -20px; 
-    left: -20px; 
-    background: #6332ad; 
+    bottom: 20px; 
+    left: 20px; 
+    background: #0f172a; /* Sophisticated dark contrast badge */
     color: white; 
-    padding: 25px; 
-    border-radius: 20px; 
-    text-align: center; 
-    box-shadow: 0 10px 20px rgba(99,50,173,0.3); 
+    padding: 16px 24px; 
+    border-radius: 14px; 
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
 }
 
-/* --- 2. TECHNICAL BENTO GRID --- */
+.experienceBadge strong {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #a78bfa;
+}
+
+.experienceBadge span {
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    line-height: 1.2;
+    text-align: left;
+}
+
+
+/* --- 2. TECHNICAL SPECIFICATIONS --- */
 .specSection { 
-    padding: 80px 0; 
+    padding: 80px 0;
+    background: transparent; /* Ensure this is transparent */
+    border-bottom: 1px solid rgba(241, 245, 249, 0.2); /* Soften the border */
 }
 
 .sectionHeader { 
     text-align: center; 
-    margin-bottom: 50px; 
+    margin-bottom: 60px; 
 }
 
 .sectionHeader h2 { 
-    font-size: 2.8rem; 
+    font-size: 2.25rem; 
     font-weight: 800; 
+    color: #0f172a;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
 }
 
 .sectionHeader h2 span { 
     color: #6332ad; 
+}
+
+.sectionHeader p {
+    color: #64748b;
+    font-size: 1rem;
 }
 
 .bentoGrid { 
@@ -130,130 +191,120 @@
 }
 
 .specCard {
-  position: relative;
-  background: #ffffff;
-  padding: 40px 30px;
-  border-radius: 24px;
-  /* Soft, barely-there border */
-  border: 1px solid rgba(125, 60, 181, 0.1); 
-  text-align: center;
-  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-  overflow: hidden;
-  /* Very soft shadow to give it "lift" */
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+    background: rgba(255, 255, 255, 0.3); /* Very thin white tint */
+    backdrop-filter: none; /* Removed blur */
+    padding: 32px 24px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.4); 
+    text-align: center;
 }
-
 .specCard:hover {
-  transform: translateY(-8px);
-  background: #ffffff;
-  border-color: #7d3cb5;
-  /* Stronger shadow on hover for depth */
-  box-shadow: 0 20px 40px rgba(125, 60, 181, 0.12);
+    transform: translateY(-4px);
+    background: #ffffff;
+    border-color: #6332ad;
+    box-shadow: 0 12px 30px rgba(99, 50, 173, 0.08);
 }
 
-/* Optional: Add a subtle color accent at the top that grows on hover */
-.specCard::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background: linear-gradient(90deg, #7d3cb5, #22c55e);
-  opacity: 0.5;
-  transition: height 0.3s ease;
-}
-
-.specCard:hover::before {
-  height: 6px;
-  opacity: 1;
-}
-
-/* Styling for content inside the card */
-.specCard strong {
-  display: block;
-  font-size: 1.2rem;
-  color: #0f172a;
-  margin-bottom: 8px;
-  font-weight: 800;
-}
-
-.specCard span {
-  font-size: 0.95rem;
-  color: #64748b;
-  line-height: 1.5;
-}
 .specIcon { 
-    font-size: 2.5rem; 
+    font-size: 1.75rem; 
     color: #6332ad; 
-    margin-bottom: 15px; 
+    margin-bottom: 16px; 
     display: flex; 
     justify-content: center; 
 }
 
-/* --- 3. MARKETPLACE TOP BAR (STICKY) --- */
+.specCard h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 6px;
+}
+
+.specCard span {
+    font-size: 0.85rem;
+    color: #64748b;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* --- 3. MARKETPLACE CONTROL BAR (STICKY) --- */
 .topBar { 
-    background: #e5d6f2; 
-    padding: 25px 0; 
-    border-top: 1px solid #eee; 
-    border-bottom: 1px solid #eee; 
+    padding: 20px 0; 
     position: sticky; 
     top: 0; 
     z-index: 100; 
+    backdrop-filter: none; /* Removed blur */
+    background: rgba(255, 255, 255, 0.1); /* Minimal overlay */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.specSection, .marketplaceWrapper, .featureSection { 
+    background: transparent !important; /* Forces background visibility */
 }
 
 .searchNav { 
     display: flex; 
     justify-content: space-between; 
     align-items: center; 
-    gap: 30px; 
+    gap: 24px; 
 }
 
 .searchBox { 
     position: relative; 
     flex: 1; 
-    max-width: 500px; 
+    max-width: 420px; 
 }
 
 .searchIcon { 
     position: absolute; 
-    left: 15px; 
+    left: 16px; 
     top: 50%; 
     transform: translateY(-50%); 
-    color: #6332ad; 
+    color: #94a3b8; 
+    font-size: 1.1rem;
 }
 
 .searchBox input { 
     width: 100%; 
-    padding: 12px 12px 12px 45px; 
-    border-radius: 10px; 
-    border: 1px solid #ddd; 
+    padding: 10px 16px 10px 44px; 
+    border-radius: 8px; 
+    border: 1px solid #cbd5e1; 
+    background: #f8fafc;
     outline: none; 
-    transition: 0.3s; 
+    font-size: 0.9rem;
+    transition: all 0.2s ease; 
 }
 
 .searchBox input:focus { 
     border-color: #6332ad; 
-    box-shadow: 0 0 0 3px rgba(99,50,173,0.1); 
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(99,50,173,0.15); 
 }
 
 .filterGroup { 
     display: flex; 
-    gap: 10px; 
+    gap: 8px; 
 }
 
 .tab, .activeTab { 
-    padding: 10px 20px; 
-    border-radius: 8px; 
+    padding: 8px 16px; 
+    border-radius: 6px; 
+    font-size: 0.85rem;
     font-weight: 600; 
     cursor: pointer; 
-    border: none; 
-    transition: 0.3s; 
+    border: 1px solid transparent; 
+    transition: all 0.2s ease; 
 }
 
 .tab { 
-    background: #f8f8f8; 
-    color: #666; 
+    background: transparent; 
+    color: #64748b; 
+}
+
+.tab:hover {
+    background: #f1f5f9;
+    color: #0f172a;
 }
 
 .activeTab { 
@@ -261,44 +312,58 @@
     color: white; 
 }
 
-/* --- 4. MARKETPLACE GRID --- */
+/* --- 4. MARKETPLACE INVENTORY GRID --- */
 .marketplaceWrapper { 
-    background: #e5d6f2; 
-    padding: 40px 0 80px; 
+    background: transparent; /* Remove any #f8fafc or solid colors */
+    padding: 60px 0 100px; 
 }
 
-.gridHeader { 
-    margin-bottom: 30px; 
+.gridHeader h2 { 
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 24px;
 }
 
-/* Update this specific class in your Tyrescrap.module.css */
+.gridHeader h2 span {
+    color: #64748b;
+    font-weight: 400;
+}
+
 .marketplaceGrid { 
     display: grid; 
-    grid-template-columns: repeat(auto-fit, minmax(320px, 400px)); /* Limits max width */
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Adaptive card sizes instead of strict sizing */
     gap: 30px; 
-    justify-content: center; /* Centering the items */
 }
 
+
 .productCard { 
-    background: #fff; 
-    border-radius: 25px; 
+    background: rgba(255, 255, 255, 0.4); /* Thin tint for readability */
+    backdrop-filter: none; /* Removed blur */
+    border-radius: 16px; 
     overflow: hidden; 
-    border: 1px solid #eee; 
-    transition: 0.4s; 
+    border: 1px solid rgba(255, 255, 255, 0.3); 
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .productCard:hover { 
-    transform: translateY(-10px); 
-    box-shadow: 0 20px 40px rgba(0,0,0,0.1); 
+    transform: translateY(-6px); 
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 .featured { 
-    border: 2px solid #6332ad; 
+    border: 1.5px solid #a78bfa; 
+    box-shadow: 0 4px 15px rgba(99, 50, 173, 0.05);
 }
 
 .imageContainer { 
-    height: 200px; 
+    height: 200px; /* Force a fixed height so it doesn't collapse to 0 */
+    width: 100%;
     position: relative; 
+    background: #f1f5f9;
+    flex-shrink: 0; /* Prevents text from squishing the image */
 }
 
 .imageContainer img { 
@@ -309,168 +374,210 @@
 
 .premiumBadge { 
     position: absolute; 
-    top: 15px; 
-    right: 15px; 
+    top: 12px; 
+    right: 12px; 
     background: #6332ad; 
     color: #fff; 
-    padding: 5px 12px; 
-    border-radius: 20px; 
-    font-size: 0.75rem; 
+    padding: 4px 10px; 
+    border-radius: 6px; 
+    font-size: 0.7rem; 
     font-weight: 700; 
     display: flex; 
     align-items: center; 
-    gap: 5px; 
+    gap: 4px; 
+    text-transform: uppercase;
 }
 
 .cardContent { 
-    padding: 20px; 
+    padding: 24px; 
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
 }
 
 .categoryTag { 
     color: #6332ad; 
     font-size: 0.7rem; 
-    font-weight: 800; 
+    font-weight: 700; 
     text-transform: uppercase; 
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    display: block;
 }
 
 .cardContent h3 { 
-    margin: 10px 0; 
-    font-size: 1.2rem; 
+    margin: 0 0 8px 0; 
+    font-size: 1.15rem; 
     font-weight: 700; 
+    color: #0f172a;
 }
 
 .cardContent p { 
-    color: #666; 
-    font-size: 0.9rem; 
-    line-height: 1.4; 
-    margin-bottom: 20px; 
-    height: 40px; 
-    overflow: hidden; 
+    color: #64748b; 
+    font-size: 0.875rem; 
+    line-height: 1.5; 
+    margin-bottom: 24px; 
+    flex-grow: 1;
 }
 
 .cardFooter { 
     display: flex; 
-    justify-content: space-between; 
+    justify-content: flex-end; 
     align-items: center; 
-    border-top: 1px solid #eee; 
-    padding-top: 15px; 
+    border-top: 1px solid #f1f5f9; 
+    padding-top: 16px; 
+    margin-top: auto;
 }
 
 .quoteBtn { 
     text-decoration: none; 
-    background: #f3f0ff; 
-    color: #6332ad; 
-    padding: 10px 18px; 
-    border-radius: 8px; 
-    font-weight: 700; 
+    background: #f8fafc; 
+    color: #0f172a; 
+    border: 1px solid #e2e8f0;
+    padding: 8px 16px; 
+    border-radius: 6px; 
+    font-size: 0.85rem;
+    font-weight: 600; 
     display: flex; 
     align-items: center; 
-    gap: 8px; 
-    transition: 0.3s; 
+    gap: 6px; 
+    transition: all 0.2s ease; 
 }
 
 .quoteBtn:hover { 
     background: #6332ad; 
     color: #fff; 
+    border-color: #6332ad;
 }
 
-/* --- 5. FEATURES & CONSULT BOX --- */
+/* --- 5. FEATURES & FOOTER CTA --- */
 .featureSection { 
-    padding: 40px 0; 
-    background: #fff; 
+    padding: 60px 0px 20px;
+    background: transparent; 
 }
 
 .contentSplit { 
     display: grid; 
-    grid-template-columns: 1.4fr 1fr; 
-    gap: 60px; 
+    grid-template-columns: 1.2fr 0.8fr; 
+    gap: 80px; 
     align-items: center; 
 }
 
 .featureItem { 
     display: flex; 
     gap: 20px; 
-    margin-bottom: 30px; 
+    margin-bottom: 32px; 
+}
+
+.featureItem:last-child {
+    margin-bottom: 0;
 }
 
 .featureIcon { 
-    font-size: 3rem; 
+    font-size: 2rem; /* Shrunk icon scale */
     color: #6332ad; 
     flex-shrink: 0;
+    background: #f3f0ff;
+    padding: 12px;
+    border-radius: 12px;
+    box-sizing: content-box;
 }
 
 .featureItem h4 {
-    font-size: 1.25rem;
+    font-size: 1.15rem;
     font-weight: 700;
-    margin-bottom: 5px;
+    color: #0f172a;
+    margin-bottom: 6px;
 }
 
-.ctaBox { 
-    background: #411d80; 
-    color: #fff; 
-    padding: 50px; 
-    border-radius: 40px; 
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* CRITICAL: Prevents button from stretching */
-}
-
-.ctaBox h3 {
-    font-size: 2rem;
-    font-weight: 800;
-    margin-bottom: 15px;
-}
-
-.ctaBox p {
-    margin-bottom: 30px;
-    opacity: 0.9;
+.featureItem p {
+    color: #64748b;
+    font-size: 0.95rem;
     line-height: 1.5;
 }
 
-/* Neat specific styling for the Expert Contact Us button */
+.ctaBox { 
+    background: #0f172a; /* Sophisticated clean dark banner */
+    color: #fff; 
+    padding: 40px; 
+    border-radius: 20px; 
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; 
+}
+
+.ctaBox h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+}
+
+.ctaBox p {
+    margin-bottom: 24px;
+    color: #94a3b8;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
 .ctaBtn { 
-    background: #fff; 
-    color: #411d80; 
+    background: #6332ad; 
+    color: white; 
     text-decoration: none;
-    padding: 16px 30px; 
-    border-radius: 12px; 
-    font-weight: 800; 
+    padding: 12px 24px; 
+    border-radius: 8px; 
+    font-weight: 600; 
+    font-size: 0.9rem;
     display: inline-flex; 
     align-items: center; 
-    gap: 10px; 
-    transition: 0.3s; 
+    gap: 8px; 
+    transition: all 0.2s ease; 
 }
 
 .ctaBtn:hover { 
-    transform: translateX(10px); 
-    background: #f3f0ff;
+    background: #7c3aed;
+    transform: translateX(4px); 
 }
 
-/* --- 6. RESPONSIVE DESIGN --- */
-@media (max-width: 1024px) {
+/* --- 6. RESPONSIVE DESIGN BREAKPOINTS --- */
+@media (max-width: 1100px) {
+    .bentoGrid { 
+        grid-template-columns: repeat(2, 1fr); 
+    }
+}
+
+@media (max-width: 968px) {
     .heroGrid, .contentSplit { 
         grid-template-columns: 1fr; 
         text-align: center; 
+        gap: 48px;
     }
     
-    .heroContent h1 { font-size: 3.5rem; }
+    .heroContent h1 { font-size: 2.5rem; }
+    .heroContent p { margin-left: auto; margin-right: auto; }
+    .valueList { justify-content: center; }
     
     .ctaBox {
         align-items: center;
         text-align: center;
     }
 
-    .bentoGrid { 
-        grid-template-columns: repeat(2, 1fr); 
+    .featureItem {
+        text-align: left;
     }
     
     .searchNav { 
         flex-direction: column; 
+        align-items: stretch;
     }
+    .searchBox { max-width: 100%; }
+    .filterGroup { justify-content: center; }
 }
 
 @media (max-width: 600px) {
-    .heroContent h1 { font-size: 2.5rem; }
+    .container { padding: 0 20px; }
+    .heroSection { padding: 40px 0 60px; }
+    .heroContent h1 { font-size: 2rem; }
     
     .bentoGrid { 
         grid-template-columns: 1fr; 
@@ -478,11 +585,15 @@
     
     .filterGroup { 
         flex-wrap: wrap; 
-        justify-content: center; 
+    }
+
+    .tab, .activeTab {
+        flex: 1 1 calc(50% - 8px);
+        text-align: center;
     }
     
     .ctaBtn {
-        width: 100%; /* Only stretches on very small mobile */
+        width: 100%; 
         justify-content: center;
     }
 }

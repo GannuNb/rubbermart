@@ -3,7 +3,10 @@ import { FiArrowRight, FiStar, FiCheckCircle, FiShield, FiTruck, FiActivity } fr
 import { GiAnvilImpact, GiRecycle } from 'react-icons/gi';
 import { Link } from 'react-router-dom';
 import styles from "../../styles/AllProducts/Tyrescrap.module.css";
-import SteelHero from '../../assests/Tyrescrap.png';
+
+// Asset Imports
+import SteelHero from '../../assests/categoryimages/pyrosteel.jpg';
+import RubberCrumSteel from '../../assests/categoryimages/RubberCrumSteel1.jpg';
 
 const TyreSteelScrap = () => {
     useEffect(() => {
@@ -21,14 +24,18 @@ const TyreSteelScrap = () => {
         {
             id: 1,
             name: "Pyro Steel",
-            desc: "High-carbon steel wire recovered from pyrolysis reactors, cleaned of carbon black residue.",
-            featured: true
+            image: SteelHero, // Uses pyrosteel.jpg
+            desc: "High-carbon steel wire recovered from pyrolysis reactors, cleaned of carbon black residue and industrial impurities.",
+            featured: true,
+            badge: "High Carbon"
         },
         {
             id: 2,
             name: "Rubber Crum Steel",
-            desc: "Thin gauge high-tensile wire extracted during mechanical shredding and magnetic separation.",
-            featured: false
+            image: RubberCrumSteel, // Uses RubberCrumSteel1.jpg
+            desc: "Thin gauge high-tensile wire extracted during mechanical shredding and secondary magnetic separation processes.",
+            featured: false,
+            badge: "98% Pure"
         }
     ];
 
@@ -55,11 +62,11 @@ const TyreSteelScrap = () => {
                             </ul>
 
                             <div className={styles.heroBtns}>
-                                <a href="/" className={styles.primaryBtn}>Explore Marketplace</a>
+                                <a href="#marketplace" className={styles.primaryBtn}>Explore Inventory</a>
                             </div>
                         </div>
                         <div className={styles.heroImageWrapper}>
-                            <img src={SteelHero} alt="Tyre Steel" className={styles.heroImg} />
+                            <img src={SteelHero} alt="Tyre Steel Scrap" className={styles.heroImg} />
                             <div className={styles.experienceBadge}>
                                 <strong>Clean</strong>
                                 <span> Recovery</span>
@@ -98,8 +105,10 @@ const TyreSteelScrap = () => {
                         {products.map((product) => (
                             <div key={product.id} className={`${styles.productCard} ${product.featured ? styles.featured : ''}`}>
                                 <div className={styles.imageContainer}>
-                                    <img src={SteelHero} alt={product.name} />
-                                    {product.featured && <span className={styles.premiumBadge}><FiStar /> High Carbon</span>}
+                                    <img src={product.image} alt={product.name} />
+                                    <span className={styles.premiumBadge}>
+                                        <FiStar /> {product.badge}
+                                    </span>
                                 </div>
                                 <div className={styles.cardContent}>
                                     <span className={styles.categoryTag}>Secondary Metal</span>
