@@ -3,7 +3,9 @@ import { FiArrowRight, FiCheckCircle, FiShield, FiTruck, FiActivity } from 'reac
 import { GiOilDrum, GiFactory } from 'react-icons/gi';
 import { Link } from 'react-router-dom';
 import styles from "../../styles/AllProducts/Tyrescrap.module.css";
-import OilHero from '../../assests/Tyrescrap.png';
+
+// Asset Imports
+import OilHero from '../../assests/categoryimages/pyrooil.png'; // Updated to specific pyro oil image
 
 const PyroOil = () => {
   useEffect(() => {
@@ -40,11 +42,12 @@ const PyroOil = () => {
               </ul>
 
               <div className={styles.heroBtns}>
-                <a href="/" className={styles.primaryBtn}>Explore Marketplace</a>
+                <a href="#inventory" className={styles.primaryBtn}>Explore Inventory</a>
               </div>
             </div>
             <div className={styles.heroImageWrapper}>
-              <img src={OilHero} alt="Pyrolysis Oil" className={styles.heroImg} />
+              {/* Using the actual pyro oil drum/liquid image from assets */}
+              <img src={OilHero} alt="Pyrolysis Oil Production" className={styles.heroImg} />
               <div className={styles.experienceBadge}>
                 <strong>High</strong>
                 <span> Calorific</span>
@@ -82,12 +85,13 @@ const PyroOil = () => {
           <div className={styles.marketplaceGrid}>
             <div className={`${styles.productCard} ${styles.featured}`}>
               <div className={styles.imageContainer}>
-                <img src={OilHero} alt="Pyrolysis Oil" />
+                {/* Displaying the oil asset here as well */}
+                <img src={OilHero} alt="Industrial Pyrolysis Oil" />
               </div>
               <div className={styles.cardContent}>
                 <span className={styles.categoryTag}>Liquid Fuel</span>
-                <h3>Standard Pyrolysis Oil</h3>
-                <p>Filtered and de-watered TPO optimized for industrial heating and energy recovery systems.</p>
+                <h3>Standard Pyrolysis Oil (TPO)</h3>
+                <p>Triple-filtered and de-watered TPO optimized for industrial heating, cement kilns, and energy recovery systems.</p>
                 <div className={styles.cardFooter}>
                   <Link to="/contactus" className={styles.quoteBtn}>
                     Request Pricing <FiArrowRight />
