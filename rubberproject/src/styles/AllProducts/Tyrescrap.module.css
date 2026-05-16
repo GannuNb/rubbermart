@@ -1,12 +1,10 @@
-/* 
-   FILE: Tyrescrap.module.css
+/* FILE: Tyrescrap.module.css
    THEME: Premium Industrial Tech (Deep Indigo & Soft Slate)
 */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 .pageWrapper { 
-    /* Lowering 0.4 and 0.6 to 0.1 and 0.2 makes the image pop significantly more */
     background: linear-gradient(
         rgba(255, 255, 255, 0.1), 
         rgba(255, 255, 255, 0.2)
@@ -20,7 +18,7 @@
 }
 
 .container { 
-    max-width: 1600px; /* Reduced from 1800px for a cleaner, tighter layout */
+    max-width: 1600px; 
     margin: 0 auto; 
     padding: 0 32px; 
 }
@@ -28,9 +26,9 @@
 /* --- 1. HERO SECTION --- */
 .heroSection { 
     padding: 80px 0 100px; 
-    background: transparent; /* Only this is needed to see pageWrapper bg */
-    /* REMOVE all background-image, size, and attachment properties here */
+    background: transparent; 
 }
+
 .heroGrid { 
     display: grid; 
     grid-template-columns: 1.1fr 0.9fr; 
@@ -52,7 +50,7 @@
 }
 
 .heroContent h1 { 
-    font-size: 3.25rem; /* Tamed from 4.5rem */
+    font-size: 3.25rem; 
     font-weight: 800; 
     line-height: 1.2; 
     color: #0f172a;
@@ -65,7 +63,7 @@
 }
 
 .heroContent p { 
-    font-size: 1.05rem; /* Tamed from 1.25rem */
+    font-size: 1.05rem; 
     color: #475569; 
     line-height: 1.65; 
     margin-bottom: 32px; 
@@ -129,7 +127,7 @@
     position: absolute; 
     bottom: 20px; 
     left: 20px; 
-    background: #0f172a; /* Sophisticated dark contrast badge */
+    background: #0f172a; 
     color: white; 
     padding: 16px 24px; 
     border-radius: 14px; 
@@ -158,8 +156,8 @@
 /* --- 2. TECHNICAL SPECIFICATIONS --- */
 .specSection { 
     padding: 80px 0;
-    background: transparent; /* Ensure this is transparent */
-    border-bottom: 1px solid rgba(241, 245, 249, 0.2); /* Soften the border */
+    background: transparent !important; 
+    border-bottom: 1px solid rgba(241, 245, 249, 0.2); 
 }
 
 .sectionHeader { 
@@ -191,8 +189,7 @@
 }
 
 .specCard {
-    background: rgba(255, 255, 255, 0.3); /* Very thin white tint */
-    backdrop-filter: none; /* Removed blur */
+    background: rgba(255, 255, 255, 0.3); 
     padding: 32px 24px;
     border-radius: 16px;
     border: 1px solid rgba(255, 255, 255, 0.4); 
@@ -234,13 +231,12 @@
     position: sticky; 
     top: 0; 
     z-index: 100; 
-    backdrop-filter: none; /* Removed blur */
-    background: rgba(255, 255, 255, 0.1); /* Minimal overlay */
+    background: rgba(255, 255, 255, 0.1); 
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.specSection, .marketplaceWrapper, .featureSection { 
-    background: transparent !important; /* Forces background visibility */
+.marketplaceWrapper, .featureSection { 
+    background: transparent !important; 
 }
 
 .searchNav { 
@@ -249,6 +245,7 @@
     align-items: center; 
     gap: 24px; 
 }
+
 
 .searchBox { 
     position: relative; 
@@ -314,15 +311,19 @@
 
 /* --- 4. MARKETPLACE INVENTORY GRID --- */
 .marketplaceWrapper { 
-    background: transparent; /* Remove any #f8fafc or solid colors */
     padding: 60px 0 100px; 
+}
+
+.gridHeader {
+    width: 100%;
+    margin-bottom: 24px;
 }
 
 .gridHeader h2 { 
     font-size: 1.5rem;
     font-weight: 700;
     color: #1e293b;
-    margin-bottom: 24px;
+    margin: 0;
 }
 
 .gridHeader h2 span {
@@ -332,20 +333,22 @@
 
 .marketplaceGrid { 
     display: grid; 
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Adaptive card sizes instead of strict sizing */
+    /* Tracks row flow correctly for 7 cards, but centers perfectly for 1 or 2 products */
+    grid-template-columns: repeat(auto-fill, minmax(300px, 380px));  
     gap: 30px; 
+    justify-content: center; 
+    width: 100%;
 }
 
-
 .productCard { 
-    background: rgba(255, 255, 255, 0.4); /* Thin tint for readability */
-    backdrop-filter: none; /* Removed blur */
+    background: rgba(255, 255, 255, 0.4); 
     border-radius: 16px; 
     overflow: hidden; 
     border: 1px solid rgba(255, 255, 255, 0.3); 
     display: flex;
     flex-direction: column;
     height: 100%;
+    width: 100%;
 }
 
 .productCard:hover { 
@@ -359,11 +362,11 @@
 }
 
 .imageContainer { 
-    height: 200px; /* Force a fixed height so it doesn't collapse to 0 */
+    height: 200px; 
     width: 100%;
     position: relative; 
     background: #f1f5f9;
-    flex-shrink: 0; /* Prevents text from squishing the image */
+    flex-shrink: 0; 
 }
 
 .imageContainer img { 
@@ -448,6 +451,7 @@
     background: #6332ad; 
     color: #fff; 
     border-color: #6332ad;
+    text-decoration: none;
 }
 
 /* --- 5. FEATURES & FOOTER CTA --- */
@@ -463,6 +467,11 @@
     align-items: center; 
 }
 
+.featureList {
+    display: flex;
+    flex-direction: column;
+}
+
 .featureItem { 
     display: flex; 
     gap: 20px; 
@@ -474,7 +483,7 @@
 }
 
 .featureIcon { 
-    font-size: 2rem; /* Shrunk icon scale */
+    font-size: 2rem; 
     color: #6332ad; 
     flex-shrink: 0;
     background: #f3f0ff;
@@ -497,7 +506,7 @@
 }
 
 .ctaBox { 
-    background: #0f172a; /* Sophisticated clean dark banner */
+    background: #0f172a; 
     color: #fff; 
     padding: 40px; 
     border-radius: 20px; 

@@ -195,8 +195,8 @@ const TyreScrap = () => {
                                     <h3>{product.name}</h3>
                                     <p>{product.desc}</p>
                                     <div className={styles.cardFooter}>
-                                        <Link to="/contactus" className={styles.quoteBtn}>
-                                            Get Quote <FiArrowRight />
+                                        <Link to="/our-products" className={styles.quoteBtn}>
+                                             View More <FiArrowRight />
                                         </Link>
                                     </div>
                                 </div>

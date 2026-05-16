@@ -14,7 +14,7 @@
   /* Buyer links often sit on the bottom navbar, 
      so we use a standard flex-start/center approach */
   justify-content: flex-start; 
-  gap: 100px;
+  gap: 60px;
   width: 100%;
 }
 

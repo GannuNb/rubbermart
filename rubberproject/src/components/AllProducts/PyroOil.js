@@ -93,8 +93,8 @@ const PyroOil = () => {
                 <h3>Standard Pyrolysis Oil (TPO)</h3>
                 <p>Triple-filtered and de-watered TPO optimized for industrial heating, cement kilns, and energy recovery systems.</p>
                 <div className={styles.cardFooter}>
-                  <Link to="/contactus" className={styles.quoteBtn}>
-                    Request Pricing <FiArrowRight />
+                  <Link to="/our-products" className={styles.quoteBtn}>
+                    View More <FiArrowRight />
                   </Link>
                 </div>
               </div>

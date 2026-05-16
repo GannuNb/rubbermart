@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation, } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 //pages
@@ -11,7 +11,6 @@ import Login from "./pages/Login";
 import Contactus from "./pages/Contactus/Contactus";
 import ResetPassword from "./pages/ResetPassword";
 import ForgotPassword from "./pages/ForgotPassword";
-
 
 //components
 import RoleNavbar from "./components/navbar/RoleNavbar";
@@ -29,7 +28,6 @@ import SellerOrders from "./pages/seller/SellerOrders";
 import Sellerordermanage from "./pages/seller/Sellerordermanage";
 import SellerGuide from "./components/SellerGuide/SellerGuide";
 
-
 //buyer
 import Home from "./pages/Buyer/Home";
 import OurProducts from "./pages/Buyer/OurProducts";
@@ -45,8 +43,6 @@ import BuyerShippingInvoices from "./pages/Buyer/BuyerShippingInvoices";
 import BuyerSingleShippingInvoice from "./pages/Buyer/BuyerSingleShippingInvoice";
 import BuyerGuide from "./components/BuyerGuide/BuyerGuide";
 
-
-
 //Admin
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminApproveProducts from "./pages/admin/AdminApproveProducts";
@@ -61,9 +57,8 @@ import TyreScrap from "./components/AllProducts/TyreScrap";
 import PyroOil from "./components/AllProducts/PyroOil";
 import TyreSteelScrap from "./components/AllProducts/TyreSteelScrap";
 
-
-
-
+// Scroll to top
+import ScrollToTop from "./components/ScrollToTop"; 
 
 function AppContent() {
   const location = useLocation();
@@ -72,10 +67,12 @@ function AppContent() {
 
   return (
     <>
+      {/* 🚀 FIXED: Placed safely outside <Routes> so it acts on all path transitions smoothly */}
+      <ScrollToTop />
+
       {!shouldHideNavbar && <RoleNavbar />}
 
       <Routes>
-
         {/* pages */}
         <Route path="/" element={<Homepage />} />
         <Route path="/signup" element={<Signup />} />
@@ -84,13 +81,10 @@ function AppContent() {
         <Route path="/about" element={<About />} />
         <Route path="/contactus" element={<Contactus />} />
         <Route path="/termsandconditions" element={<TermsAndConditions />} />
-        <Route  path="/reset-password/:token"  element={<ResetPassword />}/>
-        <Route  path="/forgot-password"  element={<ForgotPassword />}/>
-
-
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
 
         {/* buyer */}
-        <Route path="/" element={<Homepage />} />
         <Route path="/buyer/profile" element={<ProtectedRoute allowedRoles={["buyer"]}><BuyerProfile /></ProtectedRoute>} />
         <Route path="/our-products" element={<OurProducts />} />
         <Route path="/product/:productId" element={<ProductDetails />} />
@@ -104,8 +98,6 @@ function AppContent() {
         <Route path="/buyer/order/:orderId/shipping-invoice/:shipmentId" element={<BuyerSingleShippingInvoice />} />
         <Route path="/buyer-guide" element={<BuyerGuide />} />
 
-
-
         {/* seller */}
         <Route path="/seller-dashboard" element={<ProtectedRoute allowedRole="seller"><SellerDashboard /></ProtectedRoute>} />
         <Route path="/seller-add-products" element={<ProtectedRoute allowedRole="seller"><SellerAddproduct /></ProtectedRoute>} />
@@ -115,8 +107,6 @@ function AppContent() {
         <Route path="/seller/orders" element={<ProtectedRoute><SellerOrders /> </ProtectedRoute>} />
         <Route path="/seller/order-manage/:orderId" element={<ProtectedRoute> <Sellerordermanage /> </ProtectedRoute>} />
         <Route path="/seller-guide" element={<SellerGuide />} />
-
-
 
         {/* admin */}
         <Route path="/admin-dashboard" element={<ProtectedRoute allowedRoles={["admin"]}><AdminDashboard /> </ProtectedRoute>} />
@@ -128,16 +118,14 @@ function AppContent() {
         <Route path="/admin/order/:orderId/invoices/:itemName" element={<AdminAllInvoices />} />
         <Route path="/admin/order/:orderId/shipping-invoice/:shipmentId" element={<AdminSingleShippingInvoice />} />
 
-      {/* All Products */}
+        {/* All Products */}
         <Route path="/all-products" element={<AllProducts />} />
         <Route path="/tyre-scrap" element={<TyreScrap />} />
         <Route path="/pyro-oil" element={<PyroOil />} />
         <Route path="/tyresteel-scrap" element={<TyreSteelScrap />} />
-
       </Routes>
+      
       <RoleFooter />
-
-      {/* {!shouldHideNavbar && <Footer />} */}
     </>
   );
 }

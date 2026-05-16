@@ -77,7 +77,7 @@ function BuyerFooter() {
           <Link to="/tyre-scrap">Tyre Scrap</Link>
           <Link to="/pyro-oil">Pyro Oil</Link>
           <Link to="/tyresteel-scrap">Tyre Steel Scrap</Link>
-          <Link to="/all-products">All Products</Link>
+          <Link to="/our-products">All Products</Link>
         </div>
 
         {/* COMPANY */}

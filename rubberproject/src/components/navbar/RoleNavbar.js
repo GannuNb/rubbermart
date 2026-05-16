@@ -43,6 +43,18 @@ function RoleNavbar() {
     navigate("/");
   };
 
+  // --- FAILSALFE GREETING LOGIC ---
+  const getUserGreetingName = () => {
+    // 1. Check all common profile name fields from Redux state
+    const rawName = user?.username || user?.name || user?.fullName || user?.companyName || user?.role || "User";
+    
+    // 2. Clean it up, grab the first name/word
+    const firstName = rawName.trim().split(" ")[0];
+
+    // 3. Force proper capitalization (e.g., "buyer" -> "Buyer", "john" -> "John")
+    return firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
+  };
+
   return (
     <header className={styles.navbarWrapper}>
       {/* --- TOP BAR (Logo, Search, Profile) --- */}
@@ -82,12 +94,7 @@ function RoleNavbar() {
                   <div className={styles.userGreetingPill}>
                     <FaUserCircle className={styles.userIcon} />
                     <span className={styles.greetingText}>
-                      Hi, {
-                        user?.role === 'admin' ? 'Admin' : 
-                        user?.role === 'seller' ? 'Seller' : 
-                        user?.role === 'buyer' ? 'Buyer' : 
-                        user?.name?.split(' ')[0]
-                      }
+                      Hi, {getUserGreetingName()}
                     </span>
                   </div>
                   {/* Separate Logout Button for Laptops */}

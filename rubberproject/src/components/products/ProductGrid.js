@@ -1,32 +1,30 @@
 // src/components/products/ProductGrid.js
 
 import React, { useEffect } from "react";
-
 import {
   FaMapMarkerAlt,
   FaBoxes,
   FaArrowRight,
   FaSpinner,
 } from "react-icons/fa";
-
 import { useDispatch, useSelector } from "react-redux";
-
 import { useNavigate } from "react-router-dom";
-
 import { fetchApprovedProducts } from "../../redux/slices/buyerProductThunk";
-
 import styles from "../../styles/Buyer/ProductGrid.module.css";
 
 function ProductGrid({ filters }) {
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
 
+  // Get buyer products state
   const {
     approvedProducts = [],
     approvedProductsLoading = false,
     approvedProductsError = null,
   } = useSelector((state) => state.buyerProducts || {});
+
+  // Fetch authentication state to check if user is logged in
+  const { token } = useSelector((state) => state.auth || {});
 
   /* =========================
       FETCH PRODUCTS
@@ -96,6 +94,20 @@ function ProductGrid({ filters }) {
       matchesMaxPrice
     );
   });
+
+  /* =========================
+      NAVIGATION GUARD HANDLER
+  ========================== */
+
+  const handleDetailsClick = (productId) => {
+    if (token) {
+      // User is logged in, allow navigation to details page
+      navigate(`/product/${productId}`);
+    } else {
+      // User is not logged in, route them to the login screen
+      navigate("/login");
+    }
+  };
 
   /* =========================
       LOADING
@@ -219,7 +231,7 @@ function ProductGrid({ filters }) {
 
                   <button
                     className={styles.detailsBtn}
-                    onClick={() => navigate(`/product/${product._id}`)}
+                    onClick={() => handleDetailsClick(product._id)}
                   >
                     More Details
                     <FaArrowRight />
