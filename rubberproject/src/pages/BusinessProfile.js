@@ -26,6 +26,9 @@ function BusinessProfile() {
     message: "",
   });
 
+  // Track field-specific inline validation errors
+  const [errors, setErrors] = useState({});
+
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -87,6 +90,11 @@ function BusinessProfile() {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
+    // Clear field-specific error as user starts modifying it
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+
     if (type === "checkbox") {
       if (name === "sameAsBillingAddress") {
         setFormData((prev) => ({
@@ -94,6 +102,10 @@ function BusinessProfile() {
           sameAsBillingAddress: checked,
           shippingAddress: checked ? prev.billingAddress : "",
         }));
+        // If syncing addresses, clear shippingAddress error if it exists
+        if (checked && errors.shippingAddress) {
+          setErrors((prev) => ({ ...prev, shippingAddress: "" }));
+        }
       } else {
         setFormData((prev) => ({
           ...prev,
@@ -122,7 +134,6 @@ function BusinessProfile() {
 
   const handleFileChange = (e) => {
     const { name, files } = e.target;
-
     const file = files[0];
 
     if (!file) return;
@@ -134,9 +145,15 @@ function BusinessProfile() {
         title: "File Too Large",
         message: "Please select files less than 1 MB.",
       });
+
+      e.target.value = null; // Reset html file slot
+      setFormData((prev) => ({ ...prev, [name]: null }));
+      setErrors((prev) => ({ ...prev, [name]: "File must be less than 1 MB" }));
       return;
     }
 
+    // Clear file errors on valid selection
+    setErrors((prev) => ({ ...prev, [name]: "" }));
     setFormData((prev) => ({
       ...prev,
       [name]: file,
@@ -146,12 +163,36 @@ function BusinessProfile() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!formData.agreeTerms) {
+    const validationErrors = {};
+
+    // Validate textual fields
+    if (!formData.companyName.trim()) validationErrors.companyName = "Company name is required";
+    if (!formData.phoneNumber.trim()) validationErrors.phoneNumber = "Phone number is required";
+    if (!formData.email.trim()) validationErrors.email = "Email is required";
+    if (!formData.gstNumber.trim()) validationErrors.gstNumber = "GST number is required";
+    if (!formData.panNumber.trim()) validationErrors.panNumber = "PAN number is required";
+    if (!formData.billingAddress.trim()) validationErrors.billingAddress = "Billing address is required";
+    if (!formData.sameAsBillingAddress && !formData.shippingAddress.trim()) {
+      validationErrors.shippingAddress = "Shipping address is required";
+    }
+
+    // Validate files
+    if (!formData.gstCertificate) validationErrors.gstCertificate = "GST certificate is required (Max 1 MB)";
+    if (!formData.panCertificate) validationErrors.panCertificate = "PAN certificate is required (Max 1 MB)";
+
+    // Validate Terms checkbox
+    if (!formData.agreeTerms) validationErrors.agreeTerms = "You must agree to the Terms and Conditions";
+
+    // If any error exists, update error state and halt submission
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      
+      // Also trigger a general alert warning so user notices instantly
       setAlertData({
         show: true,
         type: "warning",
-        title: "Terms Required",
-        message: "Please agree to the Terms and Conditions.",
+        title: "Action Required",
+        message: "Some mandatory fields are missing or invalid. Please check your details and try again.",
       });
       return;
     }
@@ -174,15 +215,19 @@ function BusinessProfile() {
       );
     }
 
-    if (formData.gstCertificate) {
-      submitData.append("gstCertificate", formData.gstCertificate);
-    }
-
-    if (formData.panCertificate) {
-      submitData.append("panCertificate", formData.panCertificate);
-    }
+    submitData.append("gstCertificate", formData.gstCertificate);
+    submitData.append("panCertificate", formData.panCertificate);
 
     dispatch(createBusinessProfileThunk(submitData));
+  };
+
+  // Helper styling object for standard red error texts
+  const errorTextStyles = {
+    color: "#dc3545",
+    fontSize: "12px",
+    marginTop: "4px",
+    display: "block",
+    fontWeight: "500"
   };
 
   return (
@@ -217,7 +262,8 @@ function BusinessProfile() {
           Complete your business details to continue using Rubber Scrap Mart.
         </p>
 
-        <form onSubmit={handleSubmit} className={styles.businessProfileForm}>
+        {/* Removed 'novalidate' implicitly so dual check functions safely */}
+        <form onSubmit={handleSubmit} className={styles.businessProfileForm} noValidate>
           <div className={styles.formGroup}>
             <label>Company Name</label>
             <input
@@ -227,6 +273,7 @@ function BusinessProfile() {
               onChange={handleChange}
               placeholder="Enter company name"
             />
+            {errors.companyName && <span style={errorTextStyles}>{errors.companyName}</span>}
           </div>
 
           <div className={styles.formGrid}>
@@ -239,6 +286,7 @@ function BusinessProfile() {
                 onChange={handleChange}
                 placeholder="Enter phone number"
               />
+              {errors.phoneNumber && <span style={errorTextStyles}>{errors.phoneNumber}</span>}
             </div>
 
             <div className={styles.formGroup}>
@@ -250,6 +298,7 @@ function BusinessProfile() {
                 onChange={handleChange}
                 placeholder="Enter email"
               />
+              {errors.email && <span style={errorTextStyles}>{errors.email}</span>}
             </div>
           </div>
 
@@ -263,6 +312,7 @@ function BusinessProfile() {
                 onChange={handleChange}
                 placeholder="Enter GST number"
               />
+              {errors.gstNumber && <span style={errorTextStyles}>{errors.gstNumber}</span>}
             </div>
 
             <div className={styles.formGroup}>
@@ -274,6 +324,7 @@ function BusinessProfile() {
                 onChange={handleChange}
                 placeholder="Enter PAN number"
               />
+              {errors.panNumber && <span style={errorTextStyles}>{errors.panNumber}</span>}
             </div>
           </div>
 
@@ -285,6 +336,7 @@ function BusinessProfile() {
               onChange={handleChange}
               placeholder="Enter billing address"
             />
+            {errors.billingAddress && <span style={errorTextStyles}>{errors.billingAddress}</span>}
           </div>
 
           <div className={styles.checkboxRow}>
@@ -306,6 +358,7 @@ function BusinessProfile() {
               placeholder="Enter shipping address"
               disabled={formData.sameAsBillingAddress}
             />
+            {errors.shippingAddress && <span style={errorTextStyles}>{errors.shippingAddress}</span>}
           </div>
 
           <div className={styles.formGrid}>
@@ -317,6 +370,7 @@ function BusinessProfile() {
                 accept=".jpg,.jpeg,.png,.pdf"
                 onChange={handleFileChange}
               />
+              {errors.gstCertificate && <span style={errorTextStyles}>{errors.gstCertificate}</span>}
             </div>
 
             <div className={styles.formGroup}>
@@ -327,13 +381,13 @@ function BusinessProfile() {
                 accept=".jpg,.jpeg,.png,.pdf"
                 onChange={handleFileChange}
               />
+              {errors.panCertificate && <span style={errorTextStyles}>{errors.panCertificate}</span>}
             </div>
           </div>
 
           {user?.role === "buyer" && (
             <div className={styles.formGroup}>
               <label>Interested Products</label>
-
               <div className={styles.productsGrid}>
                 {interestedProductsList.map((product) => (
                   <div key={product} className={styles.productCheckbox}>
@@ -359,6 +413,7 @@ function BusinessProfile() {
               />
               <label>I agree to the Terms and Conditions</label>
             </div>
+            {errors.agreeTerms && <span style={errorTextStyles}>{errors.agreeTerms}</span>}
 
             <p>
               By Creating Business Profile, you agree to our Terms and
