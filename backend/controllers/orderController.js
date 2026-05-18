@@ -133,6 +133,42 @@ export const createOrder = async (req, res) => {
 
       orderStatus: "pending",
     });
+/*
+=========================================
+REDUCE PRODUCT STOCK
+=========================================
+*/
+
+for (const item of validatedOrderItems) {
+  const product = await Product.findById(item.product);
+
+  if (!product) continue;
+
+  /*
+  -----------------------------------------
+  REDUCE AVAILABLE QUANTITY
+  -----------------------------------------
+  */
+
+  product.quantity = Math.max(
+    0,
+    Number(product.quantity) - Number(item.requiredQuantity)
+  );
+
+  /*
+  -----------------------------------------
+  AUTO UPDATE STOCK STATUS
+  -----------------------------------------
+  */
+
+  if (product.quantity <= 0) {
+    product.stockStatus = "soldout";
+  } else {
+    product.stockStatus = "available";
+  }
+
+  await product.save();
+}
 
     const populatedOrder = await Order.findById(order._id).populate(
       "buyer",
