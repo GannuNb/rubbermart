@@ -421,12 +421,12 @@ function BusinessProfile() {
             </p>
 
             <button
-              type="button"
-              className={styles.viewMoreBtn}
-              onClick={() => navigate("/termsandconditions")}
-            >
-              View More
-            </button>
+  type="button"
+  className={styles.viewMoreBtn}
+  onClick={() => window.open("/termsandconditions", "_blank", "noopener,noreferrer")}
+>
+  View More
+</button>
           </div>
 
           <button type="submit" className={styles.submitBtn}>
