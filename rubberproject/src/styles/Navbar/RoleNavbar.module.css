@@ -84,7 +84,7 @@
 
 /* LAPTOP BOTTOM NAV BAR */
 .bottomNavbarDesktop {
-  height: 54px; /* Slightly compact for better screen economy */
+  height: 65px; /* Slightly compact for better screen economy */
   background: rgba(235, 227, 252, 0.75); /* Cleaner layered feel */
   display: flex;
   justify-content: center;
