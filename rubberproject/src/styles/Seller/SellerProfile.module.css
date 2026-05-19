@@ -172,3 +172,38 @@
   }
 }
 
+
+/* =========================
+   DOCUMENT BUTTON
+========================= */
+
+.documentButton {
+  border: none;
+
+  outline: none;
+
+  background: #692ca0;
+
+  color: white;
+
+  padding: 10px 16px;
+
+  border-radius: 10px;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.documentButton:hover {
+  background: #5a2490;
+}
+
+.documentButton:active {
+  transform: scale(0.98);
+}
+

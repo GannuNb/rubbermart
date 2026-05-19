@@ -42,6 +42,38 @@ function BuyerProfile() {
     return user.profileImage;
   };
 
+  const openDocument = (base64File, fileName = "document") => {
+    try {
+      const byteCharacters = atob(base64File.split(",")[1]);
+
+      const mimeType = base64File.split(",")[0].split(":")[1].split(";")[0];
+
+      const byteNumbers = new Array(byteCharacters.length);
+
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+
+      const byteArray = new Uint8Array(byteNumbers);
+
+      const blob = new Blob([byteArray], {
+        type: mimeType,
+      });
+
+      const blobUrl = URL.createObjectURL(blob);
+
+      window.open(blobUrl, "_blank");
+
+      setTimeout(() => {
+        URL.revokeObjectURL(blobUrl);
+      }, 1000);
+    } catch (error) {
+      console.log("Document Open Error:", error);
+
+      alert("Failed to open document");
+    }
+  };
+
   return (
     <div className={styles.profilePage}>
       <div className={styles.profileContainer}>
@@ -301,13 +333,18 @@ function BuyerProfile() {
                     <p>Uploaded Document</p>
                   </div>
 
-                  <a
-                    href={businessProfile.gstCertificate.file}
-                    target="_blank"
-                    rel="noreferrer"
+                  <button
+                    type="button"
+                    className={styles.viewDocumentBtn}
+                    onClick={() =>
+                      openDocument(
+                        businessProfile.gstCertificate.file,
+                        "gst-certificate",
+                      )
+                    }
                   >
                     View
-                  </a>
+                  </button>
                 </div>
               )}
 
@@ -319,13 +356,18 @@ function BuyerProfile() {
                     <p>Uploaded Document</p>
                   </div>
 
-                  <a
-                    href={businessProfile.panCertificate.file}
-                    target="_blank"
-                    rel="noreferrer"
+                  <button
+                    type="button"
+                    className={styles.viewDocumentBtn}
+                    onClick={() =>
+                      openDocument(
+                        businessProfile.panCertificate.file,
+                        "pan-certificate",
+                      )
+                    }
                   >
                     View
-                  </a>
+                  </button>
                 </div>
               )}
             </div>

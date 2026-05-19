@@ -378,6 +378,45 @@
 }
 
 /* =========================
+   DOCUMENT VIEW BUTTON
+========================= */
+
+.viewDocumentBtn {
+  border: none;
+
+  outline: none;
+
+  background: #692ca0;
+
+  color: white;
+
+  padding: 10px 18px;
+
+  border-radius: 10px;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+}
+
+.viewDocumentBtn:hover {
+  background: #5b2490;
+}
+
+.viewDocumentBtn:active {
+  transform: scale(0.98);
+}
+/* =========================
     RESPONSIVE
 ========================= */
 

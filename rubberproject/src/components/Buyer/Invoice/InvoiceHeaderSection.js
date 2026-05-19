@@ -14,7 +14,8 @@ const InvoiceHeaderSection = ({ shipment, order }) => {
 
   const dispatch = useDispatch();
   
-  const handleViewWeightTicket = () => {
+const handleViewWeightTicket = () => {
+  try {
     if (!shipment?.shipmentFile?.data) {
       return alert("Weight ticket not available");
     }
@@ -32,12 +33,53 @@ const InvoiceHeaderSection = ({ shipment, order }) => {
       );
     }
 
-    const fileUrl = `data:${
-      shipment.shipmentFile.contentType || "application/pdf"
-    };base64,${base64}`;
+    /*
+    =========================================
+    CONVERT BASE64 TO BLOB
+    =========================================
+    */
 
-    window.open(fileUrl, "_blank");
-  };
+    const byteCharacters = atob(base64);
+
+    const byteNumbers = new Array(byteCharacters.length);
+
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] =
+        byteCharacters.charCodeAt(i);
+    }
+
+    const byteArray = new Uint8Array(byteNumbers);
+
+    const blob = new Blob([byteArray], {
+      type:
+        shipment.shipmentFile.contentType ||
+        "application/pdf",
+    });
+
+    /*
+    =========================================
+    OPEN BLOB URL
+    =========================================
+    */
+
+    const blobUrl =
+      URL.createObjectURL(blob);
+
+    window.open(blobUrl, "_blank");
+
+    setTimeout(() => {
+      URL.revokeObjectURL(blobUrl);
+    }, 1000);
+
+  } catch (error) {
+    console.log(
+      "Weight Ticket Open Error:",
+      error
+    );
+
+    alert("Failed to open document");
+  }
+};
 
 const handleInvoiceDownload = () => {
   dispatch(

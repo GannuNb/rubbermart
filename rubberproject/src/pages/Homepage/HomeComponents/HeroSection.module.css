@@ -39,7 +39,7 @@
 
   background: linear-gradient(
     90deg,
-    rgb(229, 218, 248) 0%,
+    rgb(231, 221, 247) 0%,
     rgba(223, 212, 245, 0.82) 28%,
     rgba(182, 114, 241, 0.1) 55%,
     rgba(125, 60, 181, 0.03) 75%,
@@ -125,11 +125,7 @@
 
   margin-top: 10px;
 
-  background: linear-gradient(
-    90deg,
-    #4f46e5,
-    #7c3aed
-  );
+  background: linear-gradient( 90deg, #5b54e7, #8751e4 );
 
   background-clip: text;
   -webkit-background-clip: text;
@@ -173,8 +169,8 @@
 
   background: linear-gradient(
     135deg,
-    #4f46e5,
-    #7c3aed
+    #5149e6,
+    #7f3fec
   );
 
   color: white;

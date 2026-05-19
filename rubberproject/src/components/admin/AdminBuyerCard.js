@@ -6,6 +6,73 @@ import styles from "../../styles/Admin/AdminUsers.module.css";
 function AdminBuyerCard({ user }) {
   const [showMore, setShowMore] = useState(false);
 
+const openDocument = (fileUrl) => {
+  try {
+    if (!fileUrl) {
+      alert("Document not available");
+      return;
+    }
+
+    /*
+    =========================================
+    FETCH DATA URL
+    =========================================
+    */
+
+    fetch(fileUrl)
+      .then((response) => response.blob())
+      .then((blob) => {
+
+        /*
+        =========================================
+        CREATE BLOB URL
+        =========================================
+        */
+
+        const blobUrl = window.URL.createObjectURL(blob);
+
+        /*
+        =========================================
+        CREATE TEMP LINK
+        =========================================
+        */
+
+        const link = document.createElement("a");
+
+        link.href = blobUrl;
+
+        link.target = "_blank";
+
+        link.rel = "noopener noreferrer";
+
+        document.body.appendChild(link);
+
+        link.click();
+
+        document.body.removeChild(link);
+
+        /*
+        =========================================
+        CLEANUP
+        =========================================
+        */
+
+        setTimeout(() => {
+          window.URL.revokeObjectURL(blobUrl);
+        }, 1000);
+      })
+      .catch((error) => {
+        console.log("Blob Error:", error);
+
+        alert("Failed to open document");
+      });
+
+  } catch (error) {
+    console.log("Document Open Error:", error);
+
+    alert("Failed to open document");
+  }
+};
   return (
     <div className={styles.adminUserCard}>
       <div className={styles.adminUserTopSection}>
@@ -20,10 +87,9 @@ function AdminBuyerCard({ user }) {
                 onError={(e) => {
                   e.target.style.display = "none";
 
-                  const placeholder =
-                    e.target.parentElement.querySelector(
-                      `.${styles.adminUserImagePlaceholder}`
-                    );
+                  const placeholder = e.target.parentElement.querySelector(
+                    `.${styles.adminUserImagePlaceholder}`,
+                  );
 
                   if (placeholder) {
                     placeholder.style.display = "flex";
@@ -115,18 +181,13 @@ function AdminBuyerCard({ user }) {
             <div className={styles.adminUserInfoCard}>
               <span>Interested Products</span>
               <p>
-                {user.businessProfile?.interestedProducts?.join(", ") ||
-                  "N/A"}
+                {user.businessProfile?.interestedProducts?.join(", ") || "N/A"}
               </p>
             </div>
 
             <div className={styles.adminUserInfoCard}>
               <span>Profile Status</span>
-              <p>
-                {user.businessProfileCompleted
-                  ? "Completed"
-                  : "Pending"}
-              </p>
+              <p>{user.businessProfileCompleted ? "Completed" : "Pending"}</p>
             </div>
           </div>
 
@@ -139,25 +200,27 @@ function AdminBuyerCard({ user }) {
 
               <div className={styles.adminUserDocumentsGrid}>
                 {user.businessProfile?.gstCertificate?.file && (
-                  <a
-                    href={user.businessProfile.gstCertificate.file}
-                    target="_blank"
-                    rel="noreferrer"
+                  <button
+                    type="button"
                     className={styles.adminUserDocumentCard}
+                    onClick={() =>
+                      openDocument(user.businessProfile.gstCertificate.file)
+                    }
                   >
                     View GST Certificate
-                  </a>
+                  </button>
                 )}
 
                 {user.businessProfile?.panCertificate?.file && (
-                  <a
-                    href={user.businessProfile.panCertificate.file}
-                    target="_blank"
-                    rel="noreferrer"
+                  <button
+                    type="button"
                     className={styles.adminUserDocumentCard}
+                    onClick={() =>
+                      openDocument(user.businessProfile.panCertificate.file)
+                    }
                   >
                     View PAN Certificate
-                  </a>
+                  </button>
                 )}
               </div>
             </div>

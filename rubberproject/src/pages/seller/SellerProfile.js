@@ -16,6 +16,48 @@ function SellerProfile() {
 
   const businessProfile = user?.businessProfile || {};
 
+  const openDocument = (fileUrl) => {
+    try {
+      if (!fileUrl) {
+        alert("Document not available");
+        return;
+      }
+
+      fetch(fileUrl)
+        .then((response) => response.blob())
+        .then((blob) => {
+          const blobUrl = window.URL.createObjectURL(blob);
+
+          const link = document.createElement("a");
+
+          link.href = blobUrl;
+
+          link.target = "_blank";
+
+          link.rel = "noopener noreferrer";
+
+          document.body.appendChild(link);
+
+          link.click();
+
+          document.body.removeChild(link);
+
+          setTimeout(() => {
+            window.URL.revokeObjectURL(blobUrl);
+          }, 1000);
+        })
+        .catch((error) => {
+          console.log("Blob Error:", error);
+
+          alert("Failed to open document");
+        });
+    } catch (error) {
+      console.log("Document Open Error:", error);
+
+      alert("Failed to open document");
+    }
+  };
+
   return (
     <div className={styles.profilePage}>
       <div className={styles.profileContainer}>
@@ -32,10 +74,9 @@ function SellerProfile() {
                   onError={(e) => {
                     e.target.style.display = "none";
 
-                    const initials =
-                      e.target.parentElement.querySelector(
-                        `.${styles.profileInitials}`
-                      );
+                    const initials = e.target.parentElement.querySelector(
+                      `.${styles.profileInitials}`,
+                    );
 
                     if (initials) {
                       initials.style.display = "flex";
@@ -62,9 +103,7 @@ function SellerProfile() {
             <p>{user?.email || "-"}</p>
 
             <div className={styles.badges}>
-              <span className={styles.roleBadge}>
-                {user?.role || "User"}
-              </span>
+              <span className={styles.roleBadge}>{user?.role || "User"}</span>
 
               {user?.isVerified && (
                 <span className={styles.verifiedBadge}>Verified</span>
@@ -99,9 +138,7 @@ function SellerProfile() {
 
             <div className={styles.card}>
               <label>Business Profile Completed</label>
-              <p>
-                {user?.businessProfileCompleted ? "Completed" : "Pending"}
-              </p>
+              <p>{user?.businessProfileCompleted ? "Completed" : "Pending"}</p>
             </div>
 
             <div className={styles.card}>
@@ -167,9 +204,7 @@ function SellerProfile() {
 
             <div className={styles.card}>
               <label>Same As Billing Address</label>
-              <p>
-                {businessProfile.sameAsBillingAddress ? "Yes" : "No"}
-              </p>
+              <p>{businessProfile.sameAsBillingAddress ? "Yes" : "No"}</p>
             </div>
           </div>
         </div>
@@ -186,9 +221,7 @@ function SellerProfile() {
                   </span>
                 ))
               ) : (
-                <p className={styles.emptyText}>
-                  No interested products added
-                </p>
+                <p className={styles.emptyText}>No interested products added</p>
               )}
             </div>
           </div>
@@ -203,26 +236,30 @@ function SellerProfile() {
               {businessProfile.gstCertificate?.file && (
                 <div className={styles.card}>
                   <label>GST Certificate</label>
-                  <a
-                    href={businessProfile.gstCertificate.file}
-                    target="_blank"
-                    rel="noreferrer"
+                  <button
+                    type="button"
+                    className={styles.documentButton}
+                    onClick={() =>
+                      openDocument(businessProfile.gstCertificate.file)
+                    }
                   >
                     View GST Certificate
-                  </a>
+                  </button>
                 </div>
               )}
 
               {businessProfile.panCertificate?.file && (
                 <div className={styles.card}>
                   <label>PAN Certificate</label>
-                  <a
-                    href={businessProfile.panCertificate.file}
-                    target="_blank"
-                    rel="noreferrer"
+                  <button
+                    type="button"
+                    className={styles.documentButton}
+                    onClick={() =>
+                      openDocument(businessProfile.panCertificate.file)
+                    }
                   >
                     View PAN Certificate
-                  </a>
+                  </button>
                 </div>
               )}
             </div>

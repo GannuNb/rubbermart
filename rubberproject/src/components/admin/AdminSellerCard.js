@@ -6,6 +6,74 @@ import styles from "../../styles/Admin/AdminUsers.module.css";
 function AdminSellerCard({ user }) {
   const [showMore, setShowMore] = useState(false);
 
+const openDocument = (fileUrl) => {
+  try {
+    if (!fileUrl) {
+      alert("Document not available");
+      return;
+    }
+
+    /*
+    =========================================
+    FETCH DATA URL
+    =========================================
+    */
+
+    fetch(fileUrl)
+      .then((response) => response.blob())
+      .then((blob) => {
+
+        /*
+        =========================================
+        CREATE BLOB URL
+        =========================================
+        */
+
+        const blobUrl = window.URL.createObjectURL(blob);
+
+        /*
+        =========================================
+        CREATE TEMP LINK
+        =========================================
+        */
+
+        const link = document.createElement("a");
+
+        link.href = blobUrl;
+
+        link.target = "_blank";
+
+        link.rel = "noopener noreferrer";
+
+        document.body.appendChild(link);
+
+        link.click();
+
+        document.body.removeChild(link);
+
+        /*
+        =========================================
+        CLEANUP
+        =========================================
+        */
+
+        setTimeout(() => {
+          window.URL.revokeObjectURL(blobUrl);
+        }, 1000);
+      })
+      .catch((error) => {
+        console.log("Blob Error:", error);
+
+        alert("Failed to open document");
+      });
+
+  } catch (error) {
+    console.log("Document Open Error:", error);
+
+    alert("Failed to open document");
+  }
+};
+
   return (
     <div className={styles.adminUserCard}>
       <div className={styles.adminUserTopSection}>
@@ -136,25 +204,31 @@ function AdminSellerCard({ user }) {
 
               <div className={styles.adminUserDocumentsGrid}>
                 {user.businessProfile?.gstCertificate?.file && (
-                  <a
-                    href={user.businessProfile.gstCertificate.file}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={styles.adminUserDocumentCard}
-                  >
-                    View GST Certificate
-                  </a>
+                  <button
+  type="button"
+  className={styles.adminUserDocumentCard}
+  onClick={() =>
+    openDocument(
+      user.businessProfile.gstCertificate.file
+    )
+  }
+>
+  View GST Certificate
+</button>
                 )}
 
                 {user.businessProfile?.panCertificate?.file && (
-                  <a
-                    href={user.businessProfile.panCertificate.file}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={styles.adminUserDocumentCard}
-                  >
-                    View PAN Certificate
-                  </a>
+                  <button
+  type="button"
+  className={styles.adminUserDocumentCard}
+  onClick={() =>
+    openDocument(
+      user.businessProfile.panCertificate.file
+    )
+  }
+>
+  View PAN Certificate
+</button>
                 )}
               </div>
             </div>
