@@ -57,7 +57,6 @@ function OrderSummaryHeader({ order }) {
       </div>
 
       {/* REPORTS */}
-      {/* REPORTS */}
 
       <div
         className={styles.summaryItem}

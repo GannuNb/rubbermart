@@ -34,7 +34,7 @@ const generateBuyReportPdf = async (order) => {
 
       const logoPath = path.join(
         process.cwd(),
-        "../rubberproject/public/rsm_logo.png"
+        "../rubberproject/public/rsm_logo.png",
       );
 
       /* =========================
@@ -53,13 +53,13 @@ const generateBuyReportPdf = async (order) => {
          SHIPMENTS
       ========================= */
 
-      addShipmentSection(doc, order);
+      const finalY = addShipmentSection(doc, order);
 
       /* =========================
          FOOTER
       ========================= */
 
-      addFooterSection(doc);
+      addFooterSection(doc, finalY);
 
       /* =========================
          END PDF

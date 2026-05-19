@@ -5,6 +5,7 @@ const initialState = {
   sellerName: "",
   shippingAddress: {},
   buyerGstNumber: "",
+  buyerEmail: "",
   businessProfile: {},
   orderItems: [],
 };
@@ -23,6 +24,7 @@ const orderSummarySlice = createSlice({
       state.shippingAddress = action.payload.shippingAddress || {};
 
       state.buyerGstNumber = action.payload.buyerGstNumber || "";
+      state.buyerEmail = action.payload.buyerEmail || "";
 
       state.businessProfile = action.payload.businessProfile || {};
 
@@ -41,6 +43,7 @@ const orderSummarySlice = createSlice({
       state.shippingAddress = {};
 
       state.buyerGstNumber = "";
+      state.buyerEmail = "";
 
       state.businessProfile = {};
 

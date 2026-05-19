@@ -239,6 +239,8 @@ function ProductOrderPanel({ singleProduct }) {
       buyerGstNumber: buyerProfile?.businessProfile?.gstNumber || "",
 
       businessProfile: buyerProfile?.businessProfile || {},
+      buyerEmail:
+        buyerProfile?.email || buyerProfile?.businessProfile?.email || "",
 
       orderItems: [
         {
@@ -294,9 +296,9 @@ function ProductOrderPanel({ singleProduct }) {
     <>
       <div className={styles.sidePanelWrapper}>
         <div className={styles.businessCard}>
-          <h3>Seller Business Profile</h3>
+          <h3>Seller Information</h3>
 
-          <div className={styles.businessBox}>
+          {/* <div className={styles.businessBox}>
             <FaBuilding className={styles.cardIcon} />
             <div>
               <span>Company Name</span>
@@ -305,7 +307,7 @@ function ProductOrderPanel({ singleProduct }) {
                   "Not Available"}
               </h4>
             </div>
-          </div>
+          </div> */}
 
           <div className={styles.businessBox}>
             <FaBarcode className={styles.cardIcon} />

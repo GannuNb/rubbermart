@@ -38,8 +38,14 @@ function PlaceOrder() {
   =========================================
   */
 
-  const { sellerId, sellerName, shippingAddress, orderItems, buyerGstNumber } =
-    useSelector((state) => state.orderSummary);
+  const {
+    sellerId,
+    shippingAddress,
+    orderItems,
+    buyerGstNumber,
+    businessProfile,
+    buyerEmail,
+  } = useSelector((state) => state.orderSummary);
 
   /*
   =========================================
@@ -194,8 +200,7 @@ function PlaceOrder() {
           },
         });
       } else {
-
-      /*
+        /*
         -------------------------------------
         ERROR
         -------------------------------------
@@ -279,13 +284,27 @@ function PlaceOrder() {
               <div className={styles.infoLeft}>
                 <FaStore className={styles.rowIcon} />
 
-                <span className={styles.infoLabel}>Seller Name</span>
+                <span className={styles.infoLabel}>Company Name</span>
               </div>
 
               <span>:</span>
 
               <span className={styles.infoValue}>
-                {sellerName || "Not Available"}
+                {businessProfile?.companyName || "Not Available"}
+              </span>
+            </div>
+
+            <div className={styles.infoRow}>
+              <div className={styles.infoLeft}>
+                <FaUser className={styles.rowIcon} />
+
+                <span className={styles.infoLabel}>Email</span>
+              </div>
+
+              <span>:</span>
+
+              <span className={styles.infoValue}>
+                {buyerEmail || "Not Available"}
               </span>
             </div>
 
@@ -293,7 +312,7 @@ function PlaceOrder() {
               <div className={styles.infoLeft}>
                 <FaIdCard className={styles.rowIcon} />
 
-                <span className={styles.infoLabel}>Buyer GST Number</span>
+                <span className={styles.infoLabel}> GST Number</span>
               </div>
 
               <span>:</span>

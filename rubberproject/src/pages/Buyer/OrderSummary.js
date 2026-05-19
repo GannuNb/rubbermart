@@ -22,6 +22,7 @@ import {
   FaHome,
   FaIdCard,
   FaPercent,
+  FaBuilding,
 } from "react-icons/fa";
 
 import styles from "../../styles/Buyer/OrderSummary.module.css";
@@ -39,9 +40,10 @@ function OrderSummary() {
 
   const {
     sellerId,
-    sellerName,
     shippingAddress,
     buyerGstNumber,
+    businessProfile,
+    buyerEmail,
     orderItems: reduxOrderItems,
   } = useSelector((state) => state.orderSummary);
 
@@ -220,21 +222,36 @@ function OrderSummary() {
 
           <div className={styles.infoRow}>
             <div className={styles.infoLeft}>
-              <FaStore className={styles.rowIcon} />
+              <FaBuilding className={styles.rowIcon} />
 
-              <span className={styles.infoLabel}>Seller Name</span>
+              <span className={styles.infoLabel}>Company Name</span>
             </div>
 
             <span>:</span>
 
-            <span className={styles.infoValue}>{sellerName}</span>
+            <span className={styles.infoValue}>
+              {businessProfile?.companyName || "Not Available"}
+            </span>
+          </div>
+          <div className={styles.infoRow}>
+            <div className={styles.infoLeft}>
+              <FaUser className={styles.rowIcon} />
+
+              <span className={styles.infoLabel}>Email</span>
+            </div>
+
+            <span>:</span>
+
+            <span className={styles.infoValue}>
+              {buyerEmail || "Not Available"}
+            </span>
           </div>
 
           <div className={styles.infoRow}>
             <div className={styles.infoLeft}>
               <FaIdCard className={styles.rowIcon} />
 
-              <span className={styles.infoLabel}>Buyer GST Number</span>
+              <span className={styles.infoLabel}> GST Number</span>
             </div>
 
             <span>:</span>
