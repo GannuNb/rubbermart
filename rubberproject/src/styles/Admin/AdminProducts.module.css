@@ -100,12 +100,15 @@
 }
 
 .adminProductApprovedBadge {
-  background: #ecfdf3;
-  color: #12b76a;
+  background: #12b76a; /* Vibrant solid green */
+  color: #ffffff;      /* Pure crisp white text */
   padding: 8px 14px;
   border-radius: 30px;
   font-size: 12px;
   font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .adminShortInfo {

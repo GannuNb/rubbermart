@@ -64,7 +64,15 @@
 .adminUsersGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
+  justify-content: center;
   gap: 28px;
+}
+
+.centerGridItems {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 30px;
 }
 
 .adminUserCard {
