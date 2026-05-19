@@ -61,6 +61,9 @@ import TyreSteelScrap from "./components/AllProducts/TyreSteelScrap";
 import ScrollToTop from "./components/ScrollToTop";
 import FAQPage from "./components/FAQPage/FAQPage";
 
+// scrollto top arrow
+import ScrollToTopArrow from "./components/ScrollToTop/ScrollToTopArrow";
+
 function AppContent() {
   const location = useLocation();
   const hideNavbarRoutes = ["/business-profile"];
@@ -130,7 +133,7 @@ function AppContent() {
 
 
       </Routes>
-
+      <ScrollToTopArrow />
       <RoleFooter />
     </>
   );

@@ -140,6 +140,12 @@ const BuyerShippingInvoices = () => {
             <div
               key={shipment?._id}
               className={styles.invoiceCard}
+              onClick={() =>
+                navigate(
+                  `/buyer/order/${order?._id}/shipping-invoice/${shipment?._id}`
+                )
+              }
+              style={{ cursor: "pointer" }}
             >
               <div className={styles.cardLeft}>
                 <div className={styles.infoBlock}>
@@ -169,8 +175,8 @@ const BuyerShippingInvoices = () => {
                     <h4>
                       {shipment?.shippedAt
                         ? new Date(
-                            shipment.shippedAt
-                          ).toLocaleDateString()
+                          shipment.shippedAt
+                        ).toLocaleDateString()
                         : "-"}
                     </h4>
                   </div>
@@ -206,13 +212,13 @@ const BuyerShippingInvoices = () => {
                     <h4
                       className={
                         shipment?.shipmentStatus ===
-                        "delivered"
+                          "delivered"
                           ? styles.deliveredStatus
                           : styles.inTransitStatus
                       }
                     >
                       {shipment?.shipmentStatus ===
-                      "delivered"
+                        "delivered"
                         ? "Delivered"
                         : "In Transit"}
                     </h4>
@@ -220,17 +226,10 @@ const BuyerShippingInvoices = () => {
                 </div>
               </div>
 
-              <button
-                className={styles.viewButton}
-                onClick={() =>
-                  navigate(
-                    `/buyer/order/${order?._id}/shipping-invoice/${shipment?._id}`
-                  )
-                }
-              >
-                View More
+              <div className={styles.viewButton}>
+                View Details
                 <FaArrowRight />
-              </button>
+              </div>
             </div>
           ))}
         </div>

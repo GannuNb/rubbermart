@@ -157,8 +157,13 @@ const AdminOrdersTable = ({ orders }) => {
               const imageSrc = getImageSrc(firstImage);
               const formattedDate = formatDate(order.createdAt);
 
-              return (
-                <tr key={order._id} className={styles.tableRow}>
+             return (
+  <tr 
+    key={order._id} 
+    className={styles.tableRow}
+    onClick={() => navigate(`/admin/order-details/${order._id}`)}
+    style={{ cursor: "pointer" }}
+  >
                   
                   {/* ORDER */}
                   <td data-label="Order">

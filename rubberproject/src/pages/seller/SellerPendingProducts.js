@@ -142,7 +142,7 @@ function SellerPendingProducts() {
                   className={styles.viewMoreBtn}
                   onClick={() => handleToggle(product._id)}
                 >
-                  {expandedCard === product._id ? "View Less" : "View More"}
+                  {expandedCard === product._id ? "View Less" : "View Details"}
                 </button>
               </div>
             </div>

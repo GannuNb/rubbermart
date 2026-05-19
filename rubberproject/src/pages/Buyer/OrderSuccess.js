@@ -141,7 +141,7 @@ function OrderSuccess() {
             className={styles.secondaryButton}
             onClick={() => navigate("/our-products")}
           >
-            Continue Shopping
+            Continue Browsing
           </button>
 
           <button

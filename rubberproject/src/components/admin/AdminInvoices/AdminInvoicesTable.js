@@ -43,6 +43,12 @@ const AdminInvoicesTable = ({ order, itemName }) => {
         <div
           key={item?._id || index}
           className={styles.tableRow}
+          onClick={() =>
+            navigate(
+              `/admin/order/${order?._id}/shipping-invoice/${item?._id}`
+            )
+          }
+          style={{ cursor: "pointer" }}
         >
           <div data-label="Shipment ID">
             {item?.shipmentInvoiceId || "-"}
@@ -71,17 +77,10 @@ const AdminInvoicesTable = ({ order, itemName }) => {
           </div>
 
           <div data-label="Action">
-            <button
-              className={styles.viewBtn}
-              onClick={() =>
-                navigate(
-                  `/admin/order/${order?._id}/shipping-invoice/${item?._id}`
-                )
-              }
-            >
+            <div className={styles.viewBtn}>
               <FaEye />
               View Shipping
-            </button>
+            </div>
           </div>
         </div>
       ))}
