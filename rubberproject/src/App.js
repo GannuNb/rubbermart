@@ -45,7 +45,7 @@ import BuyerGuide from "./components/BuyerGuide/BuyerGuide";
 
 //Admin
 import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminApproveProducts from "./pages/admin/AdminApproveProducts";
+import AdminApproveProducts from "./pages/admin/AdminPendingProducts";
 import AdminProducts from "./pages/admin/AdminProducts";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminAllOrders from "./pages/admin/AdminAllOrders";
@@ -63,6 +63,8 @@ import FAQPage from "./components/FAQPage/FAQPage";
 
 // scrollto top arrow
 import ScrollToTopArrow from "./components/ScrollToTop/ScrollToTopArrow";
+import AdminApprovedProducts from "./pages/admin/AdminApprovedProducts";
+import AdminPendingProducts from "./pages/admin/AdminPendingProducts";
 
 function AppContent() {
   const location = useLocation();
@@ -114,7 +116,8 @@ function AppContent() {
 
         {/* admin */}
         <Route path="/admin-dashboard" element={<ProtectedRoute allowedRoles={["admin"]}><AdminDashboard /> </ProtectedRoute>} />
-        <Route path="/admin-approve-products" element={<ProtectedRoute allowedRole="admin"><AdminApproveProducts /></ProtectedRoute>} />
+        <Route path="/admin-approved-products" element={<ProtectedRoute allowedRole="admin"><AdminApprovedProducts /></ProtectedRoute>} />
+        <Route path="/admin-pending-products" element={<ProtectedRoute allowedRole="admin"><AdminPendingProducts /></ProtectedRoute>} />
         <Route path="/admin-products" element={<ProtectedRoute allowedRole="admin"><AdminProducts /></ProtectedRoute>} />
         <Route path="/admin-users" element={<ProtectedRoute allowedRole="admin"><AdminUsers /></ProtectedRoute>} />
         <Route path="/admin/orders" element={<ProtectedRoute allowedRoles={["admin"]}> <AdminAllOrders /> </ProtectedRoute>} />

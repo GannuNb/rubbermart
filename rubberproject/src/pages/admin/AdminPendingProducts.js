@@ -8,9 +8,9 @@ import {
   rejectProductThunk,
 } from "../../redux/slices/adminProductThunk";
 
-import styles from "../../styles/Admin/AdminApproveProducts.module.css";
+import styles from "../../styles/Admin/AdminPendingProducts.module.css";
 
-function AdminApproveProducts() {
+function AdminPendingProducts() {
   const dispatch = useDispatch();
 
   const {
@@ -180,4 +180,4 @@ function AdminApproveProducts() {
   );
 }
 
-export default AdminApproveProducts;
+export default AdminPendingProducts;

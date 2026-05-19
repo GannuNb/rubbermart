@@ -14,6 +14,7 @@ import {
   FaUserCircle,
   FaShoppingCart,
   FaPlusCircle,
+  FaCheckCircle,
   FaClock,
 } from "react-icons/fa";
 
@@ -159,31 +160,31 @@ export const sellerLinks = [
 ========================= */
 
 export const adminLinks = [
-
   {
     label: "Dashboard",
     path: "/admin-dashboard",
     icon: FaTachometerAlt,
   },
-
   {
-    label: "Approve Products",
-    path: "/admin-approve-products",
-    icon: FaUserShield,
+    label: "Total Products",
+    path: "/admin-products",
+    icon: FaBoxOpen,
   },
-
+  {
+    label: "Approved Products",
+    path: "/admin-approved-products",
+    icon: FaCheckCircle,
+  },
+  {
+    label: "Pending Products",
+    path: "/admin-pending-products",
+    icon: FaClock,
+  },
   {
     label: "Orders",
     path: "/admin/orders",
     icon: FaClipboardList,
   },
-
-  {
-    label: "Products",
-    path: "/admin-products",
-    icon: FaBoxOpen,
-  },
-
   {
     label: "Users",
     path: "/admin-users",

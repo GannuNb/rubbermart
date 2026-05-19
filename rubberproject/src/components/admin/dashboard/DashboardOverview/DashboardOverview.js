@@ -56,18 +56,18 @@ function DashboardOverview() {
       path: "/admin-products",
     },
     {
-      title: "Approve Products",
+      title: "Approved Products",
       value: overview.approvedProducts,
       icon: <FaCheckCircle />,
       className: styles.greenCard,
-      path: "/admin-approve-products",
+      path: "/admin-approved-products", // Updated path to match new route structure
     },
     {
       title: "Pending Products",
       value: overview.pendingProducts,
       icon: <FaClock />,
       className: styles.orangeCard,
-      path: "/admin-products",
+      path: "/admin-pending-products", // Updated path to route specifically to pending view
     },
     {
       title: "Total Orders",
