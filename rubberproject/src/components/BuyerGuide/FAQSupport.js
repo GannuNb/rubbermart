@@ -4,29 +4,29 @@ import { Plus, Headphones, MessageSquare, HelpCircle, Minus } from "lucide-react
 import { Link } from "react-router-dom";
 
 const faqData = [
-  { 
-    question: "How do I ensure the quality of the scrap material?", 
-    answer: "You can review seller ratings, request detailed photos, and check for quality certifications or third-party inspection reports provided in the listing." 
+  {
+    question: "How do I ensure the quality of the scrap material?",
+    answer: "You can review seller ratings, request detailed photos, and check for quality certifications or third-party inspection reports provided in the listing."
   },
-  { 
-    question: "Is my payment secure on this platform?", 
-    answer: "Yes, we use an escrow-style payment system. Funds are only released to the seller once you confirm the receipt and quality of the material." 
+  {
+    question: "Do I need an account to buy?",
+    answer: "Yes, you need a free account to browse and place orders."
   },
-  { 
-    question: "Can I cancel an order after placing it?", 
-    answer: "Orders can be cancelled before the seller starts the shipping process. Once shipped, cancellations are subject to our dispute resolution policy." 
+  {
+    question: "Can I cancel an order after placing it?",
+    answer: "Orders can be cancelled before the seller starts the shipping process. Once shipped, cancellations are subject to our dispute resolution policy."
   },
-  { 
-    question: "How is the shipping cost calculated?", 
-    answer: "Shipping costs are calculated based on the weight of the material, the distance between the buyer and seller, and the current freight market rates." 
+  {
+    question: "How is the shipping cost calculated?",
+    answer: "Shipping costs are calculated based on the weight of the material, the distance between the buyer and seller, and the current freight market rates."
   },
-  { 
-    question: "What should I do if the material is not as described?", 
-    answer: "Immediately raise a dispute through your dashboard. Keep all documentation and photos ready; our support team will mediate the issue within 24-48 hours." 
+  {
+    question: "What should I do if the material is not as described?",
+    answer: "Immediately raise a dispute through your dashboard. Keep all documentation and photos ready; our support team will mediate the issue within 24-48 hours."
   },
-  { 
-    question: "How do I get an invoice for my purchase?", 
-    answer: "Invoices are automatically generated and available for download in the 'My Orders' section of your account immediately after payment confirmation." 
+  {
+    question: "How do I get an invoice for my purchase?",
+    answer: "Invoices are automatically generated and available for download in the 'My Orders' section of your account immediately after payment confirmation."
   }
 ];
 
@@ -41,7 +41,7 @@ const FAQSupport = () => {
     <div className={styles.pageWrapper}>
       <div className={styles.mainCard}>
         <div className={styles.gridOverlay}></div>
-        
+
         <div className={styles.layout}>
           {/* Illustration Side shifted further left */}
           <div className={styles.illustrationSide}>
@@ -75,8 +75,8 @@ const FAQSupport = () => {
             <div className={styles.faqList}>
               {faqData.map((item, index) => (
                 <div key={index} className={styles.faqItemWrapper}>
-                  <div 
-                    className={styles.faqItem} 
+                  <div
+                    className={styles.faqItem}
                     onClick={() => toggleAccordion(index)}
                   >
                     <span className={styles.faqText}>{item.question}</span>
@@ -84,7 +84,7 @@ const FAQSupport = () => {
                       {activeIndex === index ? <Minus size={12} /> : <Plus size={12} />}
                     </div>
                   </div>
-                  
+
                   <div className={`${styles.answerWrapper} ${activeIndex === index ? styles.open : ""}`}>
                     <div className={styles.answerText}>
                       {item.answer}
@@ -108,9 +108,9 @@ const FAQSupport = () => {
           </div>
         </div>
         <Link to="/contactus" className={styles.chatBtn} style={{ textDecoration: 'none' }}>
-  <MessageSquare size={18} fill="#6d28d9" color="#6d28d9" />
-  Chat with Support
-</Link>
+          <MessageSquare size={18} fill="#6d28d9" color="#6d28d9" />
+          Chat with Support
+        </Link>
       </div>
     </div>
   );

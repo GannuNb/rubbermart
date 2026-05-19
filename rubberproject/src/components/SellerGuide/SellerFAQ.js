@@ -16,18 +16,19 @@ const faqData = [
     question: "How do I handle shipping and logistics?", 
     answer: "Sellers can choose to manage their own logistics or opt for RubberScrapMart's verified logistics partners. Once an order is confirmed, you can generate shipping labels directly from the portal." 
   },
-  { 
-    question: "How and when do I get paid?", 
-    answer: "Payments are secured via our Escrow system. Once the buyer confirms receipt and quality of the material, funds are released to your registered bank account within 24-48 hours." 
-  },
+  {
+  question: "How do I list my scrap?",
+  answer: "Just create an account, upload product details, and submit. Your listing goes live instantly."
+},
+{
+  question: "Is using the platform free?",
+  answer: "Yes, creating an account and listing your products is completely free."
+},
   { 
     question: "What happens if a buyer disputes the quality?", 
     answer: "Our dispute resolution team mediates based on the original listing details and the loading photos you provide. We recommend taking clear photos during the loading process for protection." 
   },
-  { 
-    question: "Can I sell international scrap materials?", 
-    answer: "Yes, our platform supports international trade. However, you must ensure all export documentation and compliance certificates are uploaded with your listing." 
-  }
+
 ];
 
 const SellerFAQ = () => {

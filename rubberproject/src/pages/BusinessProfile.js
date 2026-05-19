@@ -186,7 +186,7 @@ function BusinessProfile() {
     // If any error exists, update error state and halt submission
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
-      
+
       // Also trigger a general alert warning so user notices instantly
       setAlertData({
         show: true,
@@ -339,18 +339,21 @@ function BusinessProfile() {
             {errors.billingAddress && <span style={errorTextStyles}>{errors.billingAddress}</span>}
           </div>
 
-          <div className={styles.checkboxRow}>
-            <input
-              type="checkbox"
-              name="sameAsBillingAddress"
-              checked={formData.sameAsBillingAddress}
-              onChange={handleChange}
-            />
-            <label>Same as Billing Address</label>
-          </div>
-
           <div className={styles.formGroup}>
             <label>Shipping Details</label>
+            <div className={styles.checkboxRow}>
+              <input
+                type="checkbox"
+                id="sameAsBillingAddress" /* Added ID for accessible label clicking */
+                name="sameAsBillingAddress"
+                checked={formData.sameAsBillingAddress}
+                onChange={handleChange}
+                className={styles.checkboxInput}
+              />
+              <label htmlFor="sameAsBillingAddress" className={styles.checkboxLabel}>
+                Same as Billing Address
+              </label>
+            </div>
             <textarea
               name="shippingAddress"
               value={formData.shippingAddress}
@@ -421,12 +424,12 @@ function BusinessProfile() {
             </p>
 
             <button
-  type="button"
-  className={styles.viewMoreBtn}
-  onClick={() => window.open("/termsandconditions", "_blank", "noopener,noreferrer")}
->
-  View More
-</button>
+              type="button"
+              className={styles.viewMoreBtn}
+              onClick={() => window.open("/termsandconditions", "_blank", "noopener,noreferrer")}
+            >
+              View More
+            </button>
           </div>
 
           <button type="submit" className={styles.submitBtn}>

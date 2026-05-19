@@ -61,14 +61,14 @@ const MoreForYouSection = () => {
   };
 
   // Replaces Track Orders when user is logged out (As shown in your Image 1)
-  const marketInsightsCard = {
-    icon: <ArrowRight size={26} />, // Change icon here if desired
-    title: "Market Insights",
-    desc: "Stay updated with the latest trends, pricing indices, and global rubber industry updates.",
-    btn: "View Trends",
-    green: false,
-    action: () => navigate("/market-trends"),
-  };
+const aboutUsCard = {
+  icon: <ArrowRight size={26} />,
+  title: "About Us",
+  desc: "Discover our vision, mission, and commitment to creating a reliable scrap trading marketplace.",
+  btn: "Learn More",
+  green: false,
+  action: () => navigate("/about"),
+};
 
   // Card 4 (Always shows)
   const contactCard = {
@@ -84,7 +84,7 @@ const MoreForYouSection = () => {
   const cards = [
     isLoggedIn ? myProfileCard : registerCard,       // Slot 1: Changes on login
     exploreCard,                                     // Slot 2: Always same
-    isLoggedIn ? trackOrdersCard : marketInsightsCard, // Slot 3: Changes on login
+    isLoggedIn ? trackOrdersCard : aboutUsCard, // Slot 3: Changes on login
     contactCard,                                     // Slot 4: Always same
   ];
 

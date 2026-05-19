@@ -127,19 +127,55 @@
 
 .checkboxRow {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  align-items: center;    /* Keeps checkbox box and label text perfectly level */
+  gap: 12px;              /* Clean gap between box and text string */
+  margin: 18px 0;         /* Proper vertical spacing separating it from input neighbors */
   padding: 14px 16px;
   background: #f8fbff;
   border-radius: 16px;
   border: 1px solid #dbeafe;
+  cursor: pointer;
+  transition: all 0.25s ease;
 }
 
+.checkboxRow:hover {
+  background: #f1f7ff;
+  border-color: #bfdbfe;
+}
+
+/* Enhancing default browser checkboxes cleanly */
 .checkboxRow input {
+  appearance: none;       /* Drops un-stylable native platform presets */
+  -webkit-appearance: none;
   width: 18px;
   height: 18px;
-  accent-color: #2563eb;
+  border: 2px solid #b9d5f0;
+  border-radius: 5px;
+  background: #ffffff;
   cursor: pointer;
+  display: grid;
+  place-content: center;
+  transition: all 0.2s ease;
+}
+
+.checkboxRow input:hover {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+.checkboxRow input:checked {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  border-color: #2563eb;
+}
+
+/* Custom mini checkmark hook icon generation */
+.checkboxRow input:checked::before {
+  content: "";
+  width: 9px;
+  height: 5px;
+  border-left: 2px solid white;
+  border-bottom: 2px solid white;
+  transform: rotate(-45deg) translate(0.5px, -0.5px);
 }
 
 .checkboxRow label {
@@ -147,8 +183,8 @@
   font-weight: 600;
   color: #334155;
   cursor: pointer;
+  user-select: none;
 }
-
 .productsGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

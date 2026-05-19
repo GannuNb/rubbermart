@@ -49,8 +49,8 @@ function BuyerFooter() {
             <div className={styles.contactItem}>
               <FaMapMarkerAlt />
               <span>
-                Ground Floor, Office No-52, Plot No-44, Sai Chamber CHS, Wing A,
-                Sector 11, Nerul, Navi Mumbai - 400706
+                Office No. 217 Skylark Premises Co-operative Society Ltd.
+                Plot No. 63, Sector 11 CBD Belapur Navi Mumbai – 400614
               </span>
             </div>
           </div>

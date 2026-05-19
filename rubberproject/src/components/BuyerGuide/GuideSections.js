@@ -21,37 +21,42 @@ import {
 } from "lucide-react";
 
 const sections = {
-  order: {
-    type: "timeline",
-    title: "Order Process",
-    items: [
-      {
-        icon: <FileText size={24} />,
-        title: "Order Placed",
-        desc: "You place an order and proceed with details.",
-      },
-      {
-        icon: <User size={24} />,
-        title: "Seller Confirms",
-        desc: "Seller verifies and confirms your order.",
-      },
-      {
-        icon: <Package size={24} />,
-        title: "Packing",
-        desc: "Material is packed and prepared for dispatch.",
-      },
-      {
-        icon: <Truck size={24} />,
-        title: "Shipped",
-        desc: "Your order is shipped with tracking details.",
-      },
-      {
-        icon: <CheckCircle size={24} />,
-        title: "Delivered",
-        desc: "Order delivered successfully to your location.",
-      },
-    ],
-  },
+ order: {
+  type: "timeline",
+  title: "Order Process",
+  items: [
+    {
+      icon: <FileText size={24} />,
+      title: "Order Placed",
+      desc: "You place an order and provide required details.",
+    },
+    {
+      icon: <User size={24} />,
+      title: "Seller Confirms",
+      desc: "Seller verifies your order and accepts it.",
+    },
+        {
+      icon: <CreditCard size={24} />,
+      title: "Payment Initiated",
+      desc: "Secure payment is made through our platform.",
+    },
+    {
+      icon: <Package size={24} />,
+      title: "Packing",
+      desc: "Material is packed and prepared for dispatch.",
+    },
+    {
+      icon: <Truck size={24} />,
+      title: "Shipped",
+      desc: "Your order is shipped with live tracking details.",
+    },
+    {
+      icon: <CheckCircle size={24} />,
+      title: "Delivered",
+      desc: "Order delivered successfully to your location.",
+    }
+  ],
+},
 
   payment: {
     type: "gradientCards",
@@ -144,10 +149,10 @@ const sections = {
         desc: "Check material quality before acceptance.",
       },
       {
-        icon: <Handshake size={20} />,
-        color: "pink",
-        title: "Negotiate Smartly",
-        desc: "Communicate clearly for best pricing.",
+        icon: <Headphones size={20} />,
+        color: "purple",
+        title: "24/7 Support",
+        desc: "Get help anytime during your buying journey.",
       },
       {
         icon: <Star size={20} />,
