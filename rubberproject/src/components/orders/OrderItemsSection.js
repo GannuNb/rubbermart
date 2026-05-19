@@ -20,9 +20,8 @@ function OrderItemsSection({ order }) {
         );
       }
 
-      return `data:${
-        item.productImage.contentType || "image/jpeg"
-      };base64,${base64}`;
+      return `data:${item.productImage.contentType || "image/jpeg"
+        };base64,${base64}`;
     }
 
     return "/logo192.png";
@@ -110,7 +109,18 @@ function OrderItemsSection({ order }) {
         const progress = getItemProgress(item);
 
         return (
-          <div key={index} className={styles.itemCard}>
+          <div
+            key={index}
+            className={styles.itemCard}
+            onClick={() =>
+              navigate(
+                `/buyer/order/${order._id}/shipping/${encodeURIComponent(
+                  item.productName
+                )}`
+              )
+            }
+            style={{ cursor: "pointer" }}
+          >
             <div className={styles.statusRow}>
               <span className={styles.statusBadge}>
                 {progress.label}
@@ -147,18 +157,9 @@ function OrderItemsSection({ order }) {
                 </p>
               </div>
 
-              <button
-                className={styles.shippingBtn}
-                onClick={() =>
-                  navigate(
-                    `/buyer/order/${order._id}/shipping/${encodeURIComponent(
-                      item.productName
-                    )}`
-                  )
-                }
-              >
+              <div className={styles.shippingBtn}>
                 View Shipping
-              </button>
+              </div>
             </div>
 
             <div className={styles.progressSection}>

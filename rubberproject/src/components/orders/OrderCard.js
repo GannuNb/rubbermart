@@ -1,6 +1,6 @@
 import React from "react";
 import { FaTruck, FaArrowRight } from "react-icons/fa";
-import {  getDisplayStatus,  getProgressClass,  getProgressLabels,} from "../../utils/orderStatusHelpers";
+import { getDisplayStatus, getProgressClass, getProgressLabels, } from "../../utils/orderStatusHelpers";
 import styles from "../../styles/Buyer/BuyerOrders.module.css";
 
 function OrderCard({ order, navigate }) {
@@ -21,9 +21,8 @@ function OrderCard({ order, navigate }) {
         );
       }
 
-      return `data:${
-        firstItem.productImage.contentType || "image/jpeg"
-      };base64,${base64String}`;
+      return `data:${firstItem.productImage.contentType || "image/jpeg"
+        };base64,${base64String}`;
     }
 
     return "/logo192.png";
@@ -33,7 +32,11 @@ function OrderCard({ order, navigate }) {
   const progressLabels = getProgressLabels(order);
 
   return (
-    <div className={styles.orderCard}>
+    <div
+      className={styles.orderCard}
+      onClick={() => navigate(`/buyer-orders/${order._id}`)}
+      style={{ cursor: "pointer" }}
+    >
       {/* Header */}
       <div className={styles.cardHeader}>
         <div className={styles.statusPill}>{displayStatus}</div>
@@ -66,14 +69,9 @@ function OrderCard({ order, navigate }) {
           </h2>
         </div>
 
-        <button
-          className={styles.arrowButton}
-          onClick={() =>
-            navigate(`/buyer-orders/${order._id}`)
-          }
-        >
+        <div className={styles.arrowButton}>
           <FaArrowRight />
-        </button>
+        </div>
       </div>
 
       {/* Progress Bar */}
@@ -103,15 +101,10 @@ function OrderCard({ order, navigate }) {
 
       {/* Bottom */}
       <div className={styles.bottomRow}>
-        <button
-          className={styles.trackButton}
-          onClick={() =>
-            navigate(`/buyer-orders/${order._id}`)
-          }
-        >
+        <div className={styles.trackButton}>
           <FaTruck />
           Track Item
-        </button>
+        </div>
       </div>
     </div>
   );

@@ -160,8 +160,12 @@ function ProductGrid({ filters }) {
       ) : (
         <div className={styles.grid}>
           {filteredProducts.map((product) => (
-            <div key={product._id} className={styles.card}>
-              {/* IMAGE */}
+            <div
+              key={product._id}
+              className={styles.card}
+              onClick={() => handleDetailsClick(product._id)}
+              style={{ cursor: "pointer" }}
+            >              {/* IMAGE */}
 
               <div className={styles.imageWrapper}>
                 <img
@@ -173,11 +177,10 @@ function ProductGrid({ filters }) {
                 />
 
                 <span
-                  className={`${styles.stockBadge} ${
-                    product.stockStatus === "available"
-                      ? styles.available
-                      : styles.soldout
-                  }`}
+                  className={`${styles.stockBadge} ${product.stockStatus === "available"
+                    ? styles.available
+                    : styles.soldout
+                    }`}
                 >
                   {product.stockStatus}
                 </span>
@@ -229,13 +232,10 @@ function ProductGrid({ filters }) {
 
                   {/* DETAILS */}
 
-                  <button
-                    className={styles.detailsBtn}
-                    onClick={() => handleDetailsClick(product._id)}
-                  >
+                  <div className={styles.detailsBtn}>
                     More Details
                     <FaArrowRight />
-                  </button>
+                  </div>
                 </div>
               </div>
             </div>

@@ -229,7 +229,7 @@ const handleUpdateProduct = async (productId) => {
                   className={styles.viewMoreBtn}
                   onClick={() => handleToggle(product._id)}
                 >
-                  {expandedCard === product._id ? "View Less" : "View More"}
+                  {expandedCard === product._id ? "View Less" : "View Details"}
                 </button>
 
                 <button

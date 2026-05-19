@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import {
   FaBoxOpen,
   FaCheckCircle,
@@ -11,6 +11,7 @@ import {
 import styles from "./DashboardOverview.module.css";
 
 function DashboardOverview() {
+  const navigate = useNavigate(); // Initialize hook
   const [overview, setOverview] = useState({
     totalProducts: 0,
     approvedProducts: 0,
@@ -52,34 +53,35 @@ function DashboardOverview() {
       value: overview.totalProducts,
       icon: <FaBoxOpen />,
       className: styles.blueCard,
+      path: "/admin-products",
     },
-
     {
-      title: "Approved Products",
+      title: "Approve Products",
       value: overview.approvedProducts,
       icon: <FaCheckCircle />,
       className: styles.greenCard,
+      path: "/admin-approve-products",
     },
-
     {
       title: "Pending Products",
       value: overview.pendingProducts,
       icon: <FaClock />,
       className: styles.orangeCard,
+      path: "/admin-products",
     },
-
     {
       title: "Total Orders",
       value: overview.totalOrders,
       icon: <FaShoppingCart />,
       className: styles.purpleCard,
+      path: "/admin/orders",
     },
-
     {
       title: "Total Users",
       value: overview.totalUsers,
       icon: <FaUsers />,
       className: styles.darkCard,
+      path: "/admin-users",
     },
   ];
 
@@ -93,13 +95,14 @@ function DashboardOverview() {
               ${styles.dashboardCard}
               ${card.className}
             `}
+            onClick={() => navigate(card.path)} // Trigger routing action
+            style={{ cursor: "pointer" }} // Change cursor type to pointer
           >
             <div className={styles.dashboardCardTop}>
               <div className={styles.dashboardIcon}>{card.icon}</div>
             </div>
 
             <h3>{card.title}</h3>
-
             <h2>{card.value}</h2>
           </div>
         ))}

@@ -93,7 +93,7 @@ function BuyerFooter() {
           <h3>Support</h3>
           <Link to="/buyer-guide">Buyer Guide</Link>
           <Link to="/seller-guide">Seller Guide</Link>
-          <Link to="/contact">FAQs</Link>
+          <Link to="/faq">FAQs</Link>
           <Link to="/privacy-policy">Privacy Policy</Link>
         </div>
 

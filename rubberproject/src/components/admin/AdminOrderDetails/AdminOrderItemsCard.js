@@ -52,7 +52,18 @@ const AdminOrderItemsCard = ({ order }) => {
         const imageSrc = getImageSrc(item?.productImage);
 
         return (
-          <div key={index} className={styles.itemRow}>
+          <div
+            key={index}
+            className={styles.itemRow}
+            onClick={() =>
+              navigate(
+                `/admin/order/${order?._id}/invoices/${encodeURIComponent(
+                  item?.productName || "",
+                )}`
+              )
+            }
+            style={{ cursor: "pointer" }}
+          >
             {/* Product */}
             <div className={styles.productBox}>
               {imageSrc ? (
@@ -81,19 +92,11 @@ const AdminOrderItemsCard = ({ order }) => {
             <div>₹ {item?.subtotal || 0}</div>
 
             {/* Invoice */}
+            {/* Invoice */}
             <div>
-              <button
-                className={styles.invoiceBtn}
-                onClick={() =>
-                  navigate(
-                    `/admin/order/${order?._id}/invoices/${encodeURIComponent(
-                      item?.productName || "",
-                    )}`,
-                  )
-                }
-              >
-                View Shipings
-              </button>
+              <div className={styles.invoiceBtn}>
+                View Shippings
+              </div>
             </div>
           </div>
         );
