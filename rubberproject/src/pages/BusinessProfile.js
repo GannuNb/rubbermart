@@ -70,7 +70,7 @@ function BusinessProfile() {
     sameAsBillingAddress: false,
     interestedProducts: [],
     gstCertificate: null,
-    panCertificate: null,
+    panCertificate: null, // Optional
     agreeTerms: false,
   });
 
@@ -165,7 +165,7 @@ function BusinessProfile() {
 
     const validationErrors = {};
 
-    // Validate textual fields
+    // Validate mandatory textual fields
     if (!formData.companyName.trim()) validationErrors.companyName = "Company name is required";
     if (!formData.phoneNumber.trim()) validationErrors.phoneNumber = "Phone number is required";
     if (!formData.email.trim()) validationErrors.email = "Email is required";
@@ -176,18 +176,16 @@ function BusinessProfile() {
       validationErrors.shippingAddress = "Shipping address is required";
     }
 
-    // Validate files
+    // Validate mandatory file fields (PAN certificate validation removed here)
     if (!formData.gstCertificate) validationErrors.gstCertificate = "GST certificate is required (Max 1 MB)";
-    if (!formData.panCertificate) validationErrors.panCertificate = "PAN certificate is required (Max 1 MB)";
 
     // Validate Terms checkbox
     if (!formData.agreeTerms) validationErrors.agreeTerms = "You must agree to the Terms and Conditions";
 
-    // If any error exists, update error state and halt submission
+    // If any mandatory error exists, update error state and halt submission
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
 
-      // Also trigger a general alert warning so user notices instantly
       setAlertData({
         show: true,
         type: "warning",
@@ -216,7 +214,11 @@ function BusinessProfile() {
     }
 
     submitData.append("gstCertificate", formData.gstCertificate);
-    submitData.append("panCertificate", formData.panCertificate);
+    
+    // Append PAN certificate if it exists, otherwise send empty/null value smoothly
+    if (formData.panCertificate) {
+      submitData.append("panCertificate", formData.panCertificate);
+    }
 
     dispatch(createBusinessProfileThunk(submitData));
   };
@@ -262,7 +264,6 @@ function BusinessProfile() {
           Complete your business details to continue using Rubber Scrap Mart.
         </p>
 
-        {/* Removed 'novalidate' implicitly so dual check functions safely */}
         <form onSubmit={handleSubmit} className={styles.businessProfileForm} noValidate>
           <div className={styles.formGroup}>
             <label>Company Name</label>
@@ -344,7 +345,7 @@ function BusinessProfile() {
             <div className={styles.checkboxRow}>
               <input
                 type="checkbox"
-                id="sameAsBillingAddress" /* Added ID for accessible label clicking */
+                id="sameAsBillingAddress"
                 name="sameAsBillingAddress"
                 checked={formData.sameAsBillingAddress}
                 onChange={handleChange}
@@ -377,7 +378,7 @@ function BusinessProfile() {
             </div>
 
             <div className={styles.formGroup}>
-              <label>Upload PAN Certificate</label>
+              <label>Upload PAN Certificate <span style={{ color: "#64748b", fontSize: "12px", fontWeight: "normal" }}>(Optional)</span></label>
               <input
                 type="file"
                 name="panCertificate"
@@ -390,7 +391,7 @@ function BusinessProfile() {
 
           {user?.role === "buyer" && (
             <div className={styles.formGroup}>
-              <label>Interested Products</label>
+              <label>Interested Products <span style={{ color: "#64748b", fontSize: "12px", fontWeight: "normal" }}>(Optional)</span></label>
               <div className={styles.productsGrid}>
                 {interestedProductsList.map((product) => (
                   <div key={product} className={styles.productCheckbox}>

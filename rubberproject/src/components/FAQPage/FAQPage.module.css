@@ -1,0 +1,607 @@
+/* ==========================================================================
+   GLOBAL APP SCOPE CONTEXT
+   ========================================================================== */
+
+.faqPageContext {
+  min-height: 100vh;
+  background-color: #fafbfe;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* ==========================================================================
+   1. HERO BANNER SECTION (WITH IMAGE ASSET INCORPORATION)
+   ========================================================================== */
+
+.heroBanner {
+  background: linear-gradient(135deg, #7b20cf 0%, #3b165c 100%);
+  padding: 61px 250px 75px 200px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.heroContent {
+  max-width: 800px;
+  position: relative;
+  z-index: 5;
+}
+
+.topSubline {
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  display: inline-block;
+  margin-bottom: 14px;
+}
+
+.heroContent h1 {
+  color: #ffffff;
+  font-size: 42px;
+  font-weight: 800;
+  line-height: 1.25;
+  margin: 0 0 16px 0;
+  letter-spacing: -0.5px;
+}
+
+.greenText {
+  color: #22c55e;
+}
+
+.heroContent p {
+  color: #cbd5e1;
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0 0 35px 0;
+}
+
+/* Figma Search Input Infrastructure */
+.searchContainer {
+  position: relative;
+  max-width: 520px;
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 20px;
+  color: #94a3b8;
+  font-size: 18px;
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  background: #ffffff;
+  border: none;
+  outline: none;
+  padding: 16px 75px 16px 54px;
+  border-radius: 14px;
+  font-size: 15px;
+  color: #1e293b;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.searchInput::placeholder {
+  color: #94a3b8;
+}
+
+.searchBtn {
+  position: absolute;
+  right: 8px;
+  background: #4c1d95;
+  border: none;
+  color: #ffffff;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.2s ease;
+}
+
+.searchBtn:hover {
+  background: #5b21b6;
+}
+
+/* Layout Layering for your src/images/faq.png asset */
+.heroGraphicsWrap {
+  position: relative;
+  width: 385px;
+  height: 240px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.faqDecorationImg {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.25)); 
+}
+
+/* ==========================================================================
+   2. CATEGORIES HORIZONTAL GRID TAB SYSTEM
+   ========================================================================== */
+
+.categoriesOuterWrap {
+  max-width: 1500px;
+  margin: -30px auto 40px auto;
+  padding: 0 40px;
+  position: relative;
+  z-index: 10;
+}
+
+.categoriesGridGrid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+}
+
+.categoryTabBox {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+}
+
+.categoryTabBox:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 25px rgba(49, 21, 126, 0.06);
+  border-color: #a855f7;
+}
+
+.selectedTabBox {
+  border: 2px solid #6c2fa4 !important;
+  box-shadow: 0 10px 25px rgba(49, 21, 126, 0.08);
+}
+
+.tabIconContext {
+  font-size: 24px;
+  color: #22c55e;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.selectedTabBox .tabIconContext {
+  color: #6c2fa4;
+}
+
+.tabNameText {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+
+.tabCountText {
+  font-size: 12px;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+/* ==========================================================================
+   3. SPLIT LAYOUT BODY SYSTEM
+   ========================================================================== */
+
+.mainBodyLayout {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.sideBarPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.sideNavBox {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 24px;
+}
+
+.sideTitle {
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 0.5px;
+  display: block;
+  margin-bottom: 16px;
+}
+
+.sideNavLinksStack {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sideNavLinkBtn {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.linkIconLeft {
+  font-size: 16px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+}
+
+.linkNameMiddle {
+  font-size: 14px;
+  font-weight: 700;
+  color: #475569;
+}
+
+.sideNavLinkBtn:hover {
+  background: #f1f5f9;
+}
+
+.activeSideLink {
+  background: #6c2fa4 !important;
+}
+
+.activeSideLink .linkIconLeft,
+.activeSideLink .linkNameMiddle {
+  color: #ffffff !important;
+}
+
+.supportPromoCard {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 30px 24px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.01);
+}
+
+.headsetCircleIcon {
+  width: 54px;
+  height: 54px;
+  background: #f0fdf4;
+  border-radius: 50%;
+  color: #22c55e;
+  font-size: 22px;
+  display: grid;
+  place-content: center;
+  margin: 0 auto 16px auto;
+}
+
+.supportPromoCard h3 {
+  font-size: 16px;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+}
+
+.supportPromoCard p {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0 0 20px 0;
+}
+
+.promoContactBtn {
+  width: 100%;
+  border: 2px solid #22c55e;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 11px;
+  color: #22c55e;
+  font-size: 13.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.promoContactBtn:hover {
+  background: #22c55e;
+  color: #ffffff;
+}
+
+/* Accordion Component Layouts */
+.accordionStreamContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.accordionBlockRow {
+  background: #ffffff;
+  border: 1px solid #f1f5f9;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.25s ease;
+}
+
+.accordionBlockRow:hover {
+  border-color: #cbd5e1;
+}
+
+.rowBlockExpanded {
+  border-color: #22c55e;
+  box-shadow: 0 8px 25px rgba(34, 197, 94, 0.04);
+}
+
+.accordionHeaderTrigger {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  text-align: left;
+}
+
+.triggerLeftContent {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.itemNumBadge {
+  font-size: 13px;
+  font-weight: 800;
+  color: #94a3b8;
+  background: #f8fafc;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-content: center;
+}
+
+.activeNumBadge {
+  background: #22c55e;
+  color: #ffffff;
+}
+
+.questionTextTitle {
+  margin: 0;
+  font-size: 15.5px;
+  font-weight: 700;
+  color: #6c2fa4;
+}
+
+.plusMinusCircle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #f8fafc;
+  color: #64748b;
+  display: grid;
+  place-content: center;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.activeCircleToggle {
+  background: #f0fdf4;
+  color: #22c55e;
+}
+
+/* Expand Collapse Transitions Drawer */
+.drawerSliderWrapper {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.drawerOpenState {
+  max-height: 200px;
+}
+
+.drawerInnerTextPadding {
+  padding: 0 24px 24px 70px;
+  margin-left: 38px;
+  position: relative; /* Crucial: Establishes context for the custom indicator */
+}
+
+.drawerInnerTextPadding::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3px;
+  background-color: #22c55e;
+  
+  /* Controls the distance! Adjust these values to change the gap sizes */
+  bottom: 20px;       /* Keeps a healthy distance from the bottom divider line */
+  border-radius: 2px; /* Smoothly rounds the edges of the green indicator line */
+}
+
+.drawerInnerTextPadding p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.65;
+  color: #475569;
+}
+
+.noDataStateBox {
+  text-align: center;
+  padding: 40px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+}
+
+/* ==========================================================================
+   4. BOTTOM TRUST MARKS VALUE FOOTER
+   ========================================================================== */
+
+.trustBannerFooter {
+  max-width: 1600px;
+  margin: 60px auto 0 auto;
+  background: linear-gradient(135deg, #8b42ce 0%, #3b0c66 100%);
+  border-radius: 24px;
+  padding: 35px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.trustLeftWrapper {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  max-width: 480px;
+}
+
+.shieldIconWrapper {
+  width: 56px;
+  height: 56px;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 16px;
+  color: #22c55e;
+  font-size: 24px;
+  display: grid;
+  place-content: center;
+  flex-shrink: 0;
+}
+
+.trustHeadingText h2 {
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 800;
+  margin: 0 0 6px 0;
+}
+
+.trustHeadingText p {
+  color: #94a3b8;
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.trustBadgesRowGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.badgeFeatureItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.badgeTickIcon {
+  color: #22c55e;
+  font-size: 16px;
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
+.badgeMetaContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.badgeMetaContent strong {
+  color: #ffffff;
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.badgeMetaContent span {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+/* ==========================================================================
+   BREAKPOINT RESPONSIVENESS ADAPTATIONS
+   ========================================================================== */
+
+@media (max-width: 1200px) {
+  .categoriesGridGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .trustBannerFooter {
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 40px 20px 0 20px;
+  }
+  .trustBadgesRowGrid {
+    width: 100%;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 992px) {
+  .mainBodyLayout {
+    grid-template-columns: 1fr;
+    padding: 0 20px;
+  }
+  .sideBarPanel {
+    display: none;
+  }
+  .heroBanner {
+    padding: 40px 30px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .heroGraphicsWrap {
+    display: none;
+  }
+  .categoriesOuterWrap {
+    padding: 0 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .categoriesGridGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .heroContent h1 {
+    font-size: 30px;
+  }
+  .trustBadgesRowGrid {
+    grid-template-columns: 1fr;
+  }
+  .drawerInnerTextPadding {
+    padding-left: 20px;
+    margin-left: 14px;
+  }
+}

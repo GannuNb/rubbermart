@@ -58,7 +58,8 @@ import PyroOil from "./components/AllProducts/PyroOil";
 import TyreSteelScrap from "./components/AllProducts/TyreSteelScrap";
 
 // Scroll to top
-import ScrollToTop from "./components/ScrollToTop"; 
+import ScrollToTop from "./components/ScrollToTop";
+import FAQPage from "./components/FAQPage/FAQPage";
 
 function AppContent() {
   const location = useLocation();
@@ -123,8 +124,13 @@ function AppContent() {
         <Route path="/tyre-scrap" element={<TyreScrap />} />
         <Route path="/pyro-oil" element={<PyroOil />} />
         <Route path="/tyresteel-scrap" element={<TyreSteelScrap />} />
+
+        {/* faq */}
+        <Route path="/faq" element={<FAQPage />} />
+
+
       </Routes>
-      
+
       <RoleFooter />
     </>
   );

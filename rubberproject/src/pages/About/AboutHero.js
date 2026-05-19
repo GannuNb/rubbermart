@@ -25,9 +25,7 @@ const AboutHero = () => {
             <span className={styles.sectionTag}>ABOUT US</span>
 
             <div className={styles.topInfo}>
-              <span>♻ Sustainable Marketplace</span>
-              <span>•</span>
-              <span>Trusted Rubber Scrap Network</span>
+              <span>♻ Sustainable Marketplace  •  Trusted Rubber Scrap Network</span>
             </div>
 
             <h1>

@@ -387,12 +387,12 @@
   }
 
   .sliderTop {
-    justify-content: flex-start;
-
-    margin-top: -4px;
-    margin-bottom: 8px;
+    display: none;
   }
 
+  .categoriesSlider{
+    margin-top: 5%;
+  }
   .categoryCard {
     width: 200px;
     min-width: 200px;
