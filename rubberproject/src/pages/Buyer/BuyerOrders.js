@@ -1,3 +1,5 @@
+// src/pages/buyer/BuyerOrders.js
+
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,7 +11,6 @@ import OrderFilters from "../../components/orders/OrderFilters";
 import OrderHeader from "../../components/orders/OrderHeader";
 
 import { getBuyerOrdersThunk } from "../../redux/slices/getBuyerOrdersThunk";
-
 import { getDisplayStatus } from "../../utils/orderStatusHelpers";
 
 function BuyerOrders() {
@@ -17,6 +18,10 @@ function BuyerOrders() {
   const dispatch = useDispatch();
 
   const [activeFilter, setActiveFilter] = useState("all");
+
+  // PAGINATION CONTROLLER STATE
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3;
 
   const { orders, ordersLoading, ordersError } = useSelector(
     (state) => state.buyerOrders,
@@ -29,6 +34,11 @@ function BuyerOrders() {
   useEffect(() => {
     dispatch(getBuyerOrdersThunk());
   }, [dispatch]);
+
+  // Reset pagination position to page 1 whenever filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeFilter]);
 
   /* =========================
      FILTER LOGIC
@@ -65,6 +75,19 @@ function BuyerOrders() {
   }, [orders, activeFilter]);
 
   /* =========================
+     CORE CHUNKING ENGINE METRICS
+  ========================= */
+  const totalPages = Math.ceil(filteredOrders.length / itemsPerPage) || 1;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentOrders = filteredOrders.slice(indexOfFirstItem, indexOfLastItem);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  /* =========================
      LOADING
   ========================= */
 
@@ -91,34 +114,63 @@ function BuyerOrders() {
   return (
     <div className={styles.pageWrapper}>
       {/* HEADER */}
-
       <OrderHeader />
 
       {/* CONTENT */}
-
       <div className={styles.contentCard}>
         {/* FILTERS */}
-
         <OrderFilters
           activeFilter={activeFilter}
           setActiveFilter={setActiveFilter}
         />
 
         {/* LIST */}
-
         {filteredOrders.length === 0 ? (
           <div className={styles.emptyState}>
             <h2>No Orders Found</h2>
-
             <p>No orders available for this filter.</p>
           </div>
         ) : (
           <div className={styles.ordersList}>
-            {filteredOrders.map((order) => (
+            {currentOrders.map((order) => (
               <OrderCard key={order._id} order={order} navigate={navigate} />
             ))}
           </div>
         )}
+
+        {/* PERSISTENT PAGINATION FOOTER */}
+        <div className={styles.paginationWrapper}>
+          <button 
+            className={styles.pageArrowButton}
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            &laquo; Previous
+          </button>
+          
+          <div className={styles.pageNumbersGrid}>
+            {Array.from({ length: totalPages }, (_, index) => {
+              const pageNum = index + 1;
+              return (
+                <button
+                  key={pageNum}
+                  className={`${styles.pageNumberPill} ${currentPage === pageNum ? styles.activePageNumberPill : ""}`}
+                  onClick={() => handlePageChange(pageNum)}
+                >
+                  {pageNum}
+                </button>
+              );
+            })}
+          </div>
+
+          <button 
+            className={styles.pageArrowButton}
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            Next &raquo;
+          </button>
+        </div>
       </div>
     </div>
   );

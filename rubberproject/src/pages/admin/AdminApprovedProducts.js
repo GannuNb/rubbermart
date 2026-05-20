@@ -100,8 +100,8 @@ function AdminApprovedProducts() {
             ))}
           </div>
 
-          {/* PAGINATION CONTROL FOOTER UI INTERFACE */}
-          {totalPages > 1 && (
+          {/* PAGINATION CONTROL FOOTER UI INTERFACE - PERMANENTLY VISIBLE WHEN RECORDS EXIST */}
+          {products.length > 0 && (
             <div className={styles.paginationWrapper}>
               <button 
                 className={styles.pageArrowButton}
@@ -112,7 +112,7 @@ function AdminApprovedProducts() {
               </button>
               
               <div className={styles.pageNumbersGrid}>
-                {Array.from({ length: totalPages }, (_, index) => {
+                {Array.from({ length: totalPages || 1 }, (_, index) => {
                   const pageNum = index + 1;
                   return (
                     <button
@@ -129,7 +129,7 @@ function AdminApprovedProducts() {
               <button 
                 className={styles.pageArrowButton}
                 onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
+                disabled={currentPage === totalPages || totalPages <= 1}
               >
                 Next &raquo;
               </button>

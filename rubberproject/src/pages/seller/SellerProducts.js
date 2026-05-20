@@ -13,6 +13,10 @@ function SellerProducts() {
   const [expandedCard, setExpandedCard] = useState(null);
   const [editingProductId, setEditingProductId] = useState(null);
 
+  // PAGINATION STATES
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3;
+
   const [alert, setAlert] = useState({
     show: false,
     type: "",
@@ -43,6 +47,17 @@ function SellerProducts() {
     (product) => product.status === "approved"
   );
 
+  // CORE PAGINATION CALCULATIONS
+  const totalPages = Math.ceil(approvedProducts.length / itemsPerPage) || 1;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentApprovedProducts = approvedProducts.slice(indexOfFirstItem, indexOfLastItem);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const handleToggle = (id) => {
     setExpandedCard(expandedCard === id ? null : id);
   };
@@ -70,30 +85,28 @@ function SellerProducts() {
     }));
   };
 
-// Replace only handleUpdateProduct function with this
+  const handleUpdateProduct = async (productId) => {
+    try {
+      await dispatch(updateSellerProductThunk(productId, editForm));
 
-const handleUpdateProduct = async (productId) => {
-  try {
-    await dispatch(updateSellerProductThunk(productId, editForm));
+      setAlert({
+        show: true,
+        type: "success",
+        title: "Product Updated",
+        message: "Your product has been updated successfully.",
+      });
 
-    setAlert({
-      show: true,
-      type: "success",
-      title: "Product Updated",
-      message: "Your product has been updated successfully.",
-    });
-
-    dispatch(fetchPendingProductsThunk());
-    setEditingProductId(null);
-  } catch (error) {
-    setAlert({
-      show: true,
-      type: "error",
-      title: "Update Failed",
-      message: "Failed to update product.",
-    });
-  }
-};
+      dispatch(fetchPendingProductsThunk());
+      setEditingProductId(null);
+    } catch (error) {
+      setAlert({
+        show: true,
+        type: "error",
+        title: "Update Failed",
+        message: "Failed to update product.",
+      });
+    }
+  };
 
   if (pendingProductsLoading) {
     return (
@@ -137,7 +150,7 @@ const handleUpdateProduct = async (productId) => {
         </div>
       ) : (
         <div className={styles.grid}>
-          {approvedProducts.map((product) => (
+          {currentApprovedProducts.map((product) => (
             <div className={styles.card} key={product._id}>
               <div className={styles.imageWrapper}>
                 <div
@@ -306,6 +319,40 @@ const handleUpdateProduct = async (productId) => {
           ))}
         </div>
       )}
+
+      {/* PERSISTENT PAGINATION WRAPPER FOOTER */}
+      <div className={styles.paginationWrapper}>
+        <button 
+          className={styles.pageArrowButton}
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          &laquo; Previous
+        </button>
+        
+        <div className={styles.pageNumbersGrid}>
+          {Array.from({ length: totalPages }, (_, index) => {
+            const pageNum = index + 1;
+            return (
+              <button
+                key={pageNum}
+                className={`${styles.pageNumberPill} ${currentPage === pageNum ? styles.activePageNumberPill : ""}`}
+                onClick={() => handlePageChange(pageNum)}
+              >
+                {pageNum}
+              </button>
+            );
+          })}
+        </div>
+
+        <button 
+          className={styles.pageArrowButton}
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          Next &raquo;
+        </button>
+      </div>
     </div>
   );
 }

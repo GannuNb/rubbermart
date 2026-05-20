@@ -337,3 +337,89 @@
 .adminExpandedSection {
   margin-top: 20px;
 }
+
+/* Add to the bottom of src/styles/Admin/AdminUsers.module.css */
+
+.paginationWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 3.5rem;
+  padding: 1rem 0;
+  width: 100%;
+}
+
+.pageArrowButton {
+  background: #ffffff;
+  border: 1px solid #eaecf0;
+  color: #374151;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
+}
+
+.pageArrowButton:hover:not(:disabled) {
+  background: #f8fafc;
+  border-color: #d1d5db;
+  color: #111827;
+  transform: translateY(-1px);
+}
+
+.pageArrowButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #f3f4f6;
+  box-shadow: none;
+}
+
+.pageNumbersGrid {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pageNumberPill {
+  background: #ffffff;
+  border: 1px solid #eaecf0;
+  color: #374151;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
+}
+
+.pageNumberPill:hover {
+  background: #f8fafc;
+  border-color: #d1d5db;
+  color: #111827;
+}
+
+.activePageNumberPill {
+  background: linear-gradient(to right, #2563eb, #4f46e5) !important;
+  border-color: transparent !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25) !important;
+}
+
+@media (max-width: 640px) {
+  .paginationWrapper {
+    gap: 8px;
+    margin-top: 2rem;
+  }
+  .pageArrowButton {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+}

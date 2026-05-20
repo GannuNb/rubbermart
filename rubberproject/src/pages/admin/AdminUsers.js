@@ -4,25 +4,33 @@ import React, { useEffect, useState } from "react";
 import styles from "../../styles/Admin/AdminUsers.module.css";
 import AdminBuyerCard from "../../components/admin/AdminBuyerCard";
 import AdminSellerCard from "../../components/admin/AdminSellerCard";
-import AdminAdminCard from "../../components/admin/AdminAdminCard"; // Importing your new component
+import AdminAdminCard from "../../components/admin/AdminAdminCard"; 
 
 function AdminUsers() {
   const [activeTab, setActiveTab] = useState("buyers");
   const [buyers, setBuyers] = useState([]);
   const [sellers, setSellers] = useState([]);
-  const [admins, setAdmins] = useState([]); // State array to manage current admin accounts
+  const [admins, setAdmins] = useState([]); 
   const [loading, setLoading] = useState(true);
+
+  // PAGINATION ENGINE STATE
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 4;
 
   useEffect(() => {
     fetchUsersAndAdminProfile();
   }, []);
+
+  // Reset pagination sequence to page 1 whenever user switches views
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeTab]);
 
   const fetchUsersAndAdminProfile = async () => {
     try {
       const token = localStorage.getItem("token");
       const headers = { Authorization: `Bearer ${token}` };
 
-      // Fetch both user directories and your admin profile simultaneously in parallel execution
       const [usersRes, profileRes] = await Promise.all([
         fetch(`${process.env.REACT_APP_API_URL}/api/user/admin/all-users`, { headers }),
         fetch(`${process.env.REACT_APP_API_URL}/api/user/my-profile`, { headers })
@@ -31,23 +39,41 @@ function AdminUsers() {
       const usersData = await usersRes.json();
       const profileData = await profileRes.json();
 
-      // Hydrate Buyers and Sellers
       if (usersData.success) {
         setBuyers(usersData.buyers || []);
         setSellers(usersData.sellers || []);
       }
 
-      // Hydrate Admin panel dataset safely using the target personal profile item
       if (profileData.success && profileData.user) {
         setAdmins([profileData.user]); 
       } else if (profileData.success && profileData.profile) {
-        setAdmins([profileData.profile]); // Fallback check depending on your target getMyProfile schema key name
+        setAdmins([profileData.profile]); 
       }
     } catch (error) {
       console.log("Fetch Complete Users compilation package Error:", error);
     } finally {
       setLoading(false);
     }
+  };
+
+  // PAGINATION CONTROLLERS ENGINE Math
+  const getCurrentDataset = () => {
+    if (activeTab === "admins") return admins;
+    if (activeTab === "buyers") return buyers;
+    return sellers;
+  };
+
+  const currentDataset = getCurrentDataset();
+  // Ensure totalPages is at least 1 so page 1 button displays even if the array is empty
+  const totalPages = Math.ceil(currentDataset.length / itemsPerPage) || 1;
+  
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = currentDataset.slice(indexOfFirstItem, indexOfLastItem);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -91,43 +117,75 @@ function AdminUsers() {
       {loading ? (
         <div className={styles.adminUsersEmptyState}>Loading users directory entries...</div>
       ) : (
-        /* CRITICAL FIX: Completely separate styles.adminUsersGrid out when activeTab is "admins".
-          This stops the CSS Grid grid-template-columns rule from forcing an empty space on the right side.
-        */
-        <div 
-          className={
-            activeTab === "admins" 
-              ? styles.centerGridItems 
-              : styles.adminUsersGrid
-          }
-        >
-          {activeTab === "admins" ? (
-            admins.length > 0 ? (
-              admins.map((admin) => (
-                /* Max width wrapper applied to prevent stretching across full flex view width */
-                <div key={admin._id || "admin-root"} style={{ width: "100%", maxWidth: "560px" }}>
-                  <AdminAdminCard user={admin} />
-                </div>
+        <>
+          <div 
+            className={
+              activeTab === "admins" 
+                ? styles.centerGridItems 
+                : styles.adminUsersGrid
+            }
+          >
+            {activeTab === "admins" ? (
+              currentItems.length > 0 ? (
+                currentItems.map((admin) => (
+                  <div key={admin._id || "admin-root"} style={{ width: "100%", maxWidth: "560px" }}>
+                    <AdminAdminCard user={admin} />
+                  </div>
+                ))
+              ) : (
+                <div className={styles.adminUsersEmptyState}>No administrator profiles resolved</div>
+              )
+            ) : activeTab === "buyers" ? (
+              currentItems.length > 0 ? (
+                currentItems.map((buyer) => (
+                  <AdminBuyerCard key={buyer._id} user={buyer} />
+                ))
+              ) : (
+                <div className={styles.adminUsersEmptyState}>No buyers found inside database documentation</div>
+              )
+            ) : currentItems.length > 0 ? (
+              currentItems.map((seller) => (
+                <AdminSellerCard key={seller._id} user={seller} />
               ))
             ) : (
-              <div className={styles.adminUsersEmptyState}>No administrator profiles resolved</div>
-            )
-          ) : activeTab === "buyers" ? (
-            buyers.length > 0 ? (
-              buyers.map((buyer) => (
-                <AdminBuyerCard key={buyer._id} user={buyer} />
-              ))
-            ) : (
-              <div className={styles.adminUsersEmptyState}>No buyers found inside database documentation</div>
-            )
-          ) : sellers.length > 0 ? (
-            sellers.map((seller) => (
-              <AdminSellerCard key={seller._id} user={seller} />
-            ))
-          ) : (
-            <div className={styles.adminUsersEmptyState}>No platform sellers found inside database documentation</div>
-          )}
-        </div>
+              <div className={styles.adminUsersEmptyState}>No platform sellers found inside database documentation</div>
+            )}
+          </div>
+
+          {/* ALWAYS VISIBLE PAGINATION CONTROL FOOTER */}
+          <div className={styles.paginationWrapper}>
+            <button 
+              className={styles.pageArrowButton}
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              &laquo; Previous
+            </button>
+            
+            <div className={styles.pageNumbersGrid}>
+              {Array.from({ length: totalPages }, (_, index) => {
+                const pageNum = index + 1;
+                return (
+                  <button
+                    key={pageNum}
+                    className={`${styles.pageNumberPill} ${currentPage === pageNum ? styles.activePageNumberPill : ""}`}
+                    onClick={() => handlePageChange(pageNum)}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
+            </div>
+
+            <button 
+              className={styles.pageArrowButton}
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Next &raquo;
+            </button>
+          </div>
+        </>
       )}
     </div>
   );

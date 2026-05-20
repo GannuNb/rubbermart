@@ -9,6 +9,10 @@ function SellerPendingProducts() {
   const dispatch = useDispatch();
   const [expandedCard, setExpandedCard] = useState(null);
 
+  // ADD THIS: Pagination parameters state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3;
+
   const {
     pendingProducts,
     pendingProductsLoading,
@@ -57,7 +61,18 @@ function SellerPendingProducts() {
     );
   }
 
-  return (
+  // ADD THIS: Core chunking engine metrics
+  const totalPages = Math.ceil(pendingProducts.length / itemsPerPage) || 1;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentProducts = pendingProducts.slice(indexOfFirstItem, indexOfLastItem);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+return (
     <div className={styles.container}>
       <h1 className={styles.heading}>Your Products</h1>
 
@@ -67,7 +82,7 @@ function SellerPendingProducts() {
         </div>
       ) : (
         <div className={styles.grid}>
-          {pendingProducts.map((product) => (
+          {currentProducts.map((product) => (
             <div className={styles.card} key={product._id}>
               <div className={styles.imageWrapper}>
                 <div
@@ -107,8 +122,8 @@ function SellerPendingProducts() {
                     {product.status === "approved"
                       ? "Approved"
                       : product.status === "rejected"
-                      ? "Rejected"
-                      : "Pending Approval"}
+                        ? "Rejected"
+                        : "Pending Approval"}
                   </span>
                 </p>
 
@@ -149,7 +164,42 @@ function SellerPendingProducts() {
           ))}
         </div>
       )}
-    </div>
+
+      {/* FIXED: This is now safely inside the main parent container div */}
+      <div className={styles.paginationWrapper}>
+        <button 
+          className={styles.pageArrowButton}
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          &laquo; Previous
+        </button>
+        
+        <div className={styles.pageNumbersGrid}>
+          {Array.from({ length: totalPages }, (_, index) => {
+            const pageNum = index + 1;
+            return (
+              <button
+                key={pageNum}
+                className={`${styles.pageNumberPill} ${currentPage === pageNum ? styles.activePageNumberPill : ""}`}
+                onClick={() => handlePageChange(pageNum)}
+              >
+                {pageNum}
+              </button>
+            );
+          })}
+        </div>
+
+        <button 
+          className={styles.pageArrowButton}
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          Next &raquo;
+        </button>
+      </div>
+
+    </div> // <-- This is the absolute end of your container div wrapper
   );
 }
 
