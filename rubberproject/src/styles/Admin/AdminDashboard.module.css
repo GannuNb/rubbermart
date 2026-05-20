@@ -1,7 +1,13 @@
+* {
+  box-sizing: border-box;
+}
+
 .adminDashboard {
-  padding: 30px;
-  background: #f2edf8;
+  padding: 28px;
+  background: #f4f0fa;
   min-height: 100vh;
+
+  overflow-x: hidden;
 }
 
 .adminDashboardHeader {
@@ -9,7 +15,7 @@
 }
 
 .adminDashboardHeader h1 {
-  font-size: 34px;
+  font-size: 36px;
   font-weight: 700;
   color: #111827;
   margin-bottom: 8px;
@@ -22,24 +28,81 @@
 
 .adminDashboardMiddle {
   display: grid;
-  grid-template-columns: 1.5fr 1fr;
+  grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr);
+
   gap: 24px;
+
   margin-top: 24px;
   margin-bottom: 24px;
+
+  align-items: start;
+
+  width: 100%;
 }
 
-@media (max-width: 1100px) {
+/* LARGE LAPTOP */
+
+@media (max-width: 1400px) {
   .adminDashboardMiddle {
     grid-template-columns: 1fr;
   }
 }
 
+/* TABLET */
+
+@media (max-width: 992px) {
+  .adminDashboard {
+    padding: 20px;
+  }
+
+  .adminDashboardMiddle {
+    gap: 20px;
+  }
+
+  .adminDashboardHeader h1 {
+    font-size: 32px;
+  }
+}
+
+/* MOBILE */
+
 @media (max-width: 768px) {
   .adminDashboard {
-    padding: 18px;
+    padding: 16px;
+  }
+
+  .adminDashboardHeader {
+    margin-bottom: 20px;
   }
 
   .adminDashboardHeader h1 {
     font-size: 28px;
+  }
+
+  .adminDashboardHeader p {
+    font-size: 14px;
+  }
+
+  .adminDashboardMiddle {
+    gap: 18px;
+
+    margin-top: 18px;
+    margin-bottom: 18px;
+  }
+}
+
+/* SMALL MOBILE */
+
+@media (max-width: 480px) {
+  .adminDashboard {
+    padding: 12px;
+  }
+
+  .adminDashboardHeader h1 {
+    font-size: 24px;
+  }
+
+  .adminDashboardHeader p {
+    font-size: 13px;
   }
 }

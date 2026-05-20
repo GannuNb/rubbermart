@@ -1,6 +1,5 @@
 .wrapper {
   width: 100%;
-
   margin-bottom: 30px;
 }
 
@@ -10,29 +9,24 @@
 
 .topBar {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
 
-  margin-bottom: 18px;
+  gap: 18px;
 
-  gap: 16px;
+  margin-bottom: 20px;
 }
 
 .topBar h2 {
   font-size: 30px;
-
   font-weight: 800;
-
   color: #111827;
-
   margin-bottom: 6px;
 }
 
 .topBar p {
   font-size: 14px;
-
   color: #64748b;
-
   margin: 0;
 }
 
@@ -61,6 +55,8 @@
   outline: none;
 
   transition: 0.3s ease;
+
+  min-width: 170px;
 }
 
 .filterSelect:focus {
@@ -79,7 +75,7 @@
 
   border-radius: 24px;
 
-  padding: 26px;
+  padding: 24px;
 
   border: 1px solid #eef2f7;
 
@@ -87,6 +83,8 @@
     0 10px 30px rgba(15, 23, 42, 0.05);
 
   overflow: hidden;
+
+  width: 100%;
 }
 
 /* =========================
@@ -95,8 +93,9 @@
 
 .chartWrapper {
   width: 100%;
+  height: auto;
 
-  margin-bottom: 24px;
+  margin-bottom: 26px;
 }
 
 /* =========================
@@ -106,59 +105,65 @@
 .summaryGrid {
   display: grid;
 
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
 
-  gap: 18px;
+  gap: 14px;
 
-  padding-top: 22px;
+  padding-top: 20px;
 
   border-top: 1px solid #eef2f7;
 }
 
 /* =========================
-   SUMMARY CARD
+   SUMMARY ITEM
 ========================= */
 
 .summaryCard {
+  background: #faf7ff;
+
+  border: 1px solid #eee7ff;
+
+  border-radius: 16px;
+
+  padding: 16px 12px;
+
   text-align: center;
 
-  position: relative;
+  min-width: 0;
+
+  transition: 0.25s ease;
 }
 
-.summaryCard:not(:last-child)::after {
-  content: "";
+.summaryCard:hover {
+  transform: translateY(-2px);
 
-  position: absolute;
-
-  top: 50%;
-  right: -9px;
-
-  transform: translateY(-50%);
-
-  width: 1px;
-  height: 46px;
-
-  background: #e2e8f0;
+  border-color: #d8c7ff;
 }
 
 .summaryCard h3 {
-  font-size: 34px;
+  font-size: 28px;
 
   font-weight: 800;
 
   margin-bottom: 6px;
 
   color: #7c3aed;
+
+  line-height: 1;
 }
 
 .summaryCard p {
-  font-size: 14px;
+  font-size: 13px;
 
   font-weight: 600;
 
   color: #64748b;
 
   margin: 0;
+
+  line-height: 1.4;
+
+  word-break: break-word;
 }
 
 /* =========================
@@ -177,12 +182,20 @@
   color: #2563eb !important;
 }
 
+.redText {
+  color: #dc2626 !important;
+}
+
+.purpleText {
+  color: #7c3aed !important;
+}
+
 /* =========================
    LOADING
 ========================= */
 
 .loading {
-  height: 450px;
+  height: 420px;
 
   display: flex;
   align-items: center;
@@ -195,7 +208,7 @@
 }
 
 /* =========================
-   RECHARTS CUSTOM
+   RECHARTS
 ========================= */
 
 .recharts-default-tooltip {
@@ -231,24 +244,37 @@
 }
 
 /* =========================
-   RESPONSIVE
+   LAPTOP
 ========================= */
 
-@media (max-width: 1200px) {
+@media (max-width: 1400px) {
+  .summaryGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
 
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 992px) {
   .summaryGrid {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .summaryCard:nth-child(2)::after {
-    display: none;
+  .chartCard {
+    padding: 22px;
   }
 }
 
-@media (max-width: 768px) {
+/* =========================
+   MOBILE
+========================= */
 
+@media (max-width: 768px) {
   .topBar {
     flex-direction: column;
+
     align-items: flex-start;
   }
 
@@ -257,32 +283,51 @@
   }
 
   .chartCard {
-    padding: 20px;
+    padding: 18px;
+
+    border-radius: 20px;
   }
 
   .summaryGrid {
     grid-template-columns: 1fr;
-  }
 
-  .summaryCard::after {
-    display: none;
+    gap: 12px;
   }
 
   .summaryCard {
-    padding-bottom: 18px;
+    text-align: left;
 
-    border-bottom: 1px solid #eef2f7;
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 16px;
   }
 
-  .summaryCard:last-child {
-    border-bottom: none;
+  .summaryCard h3 {
+    font-size: 26px;
 
-    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+
+  .summaryCard p {
+    max-width: 180px;
+  }
+
+  .loading {
+    height: 300px;
+
+    font-size: 16px;
   }
 }
 
-@media (max-width: 576px) {
+/* =========================
+   SMALL MOBILE
+========================= */
 
+@media (max-width: 576px) {
   .topBar h2 {
     font-size: 24px;
   }
@@ -292,22 +337,18 @@
   }
 
   .chartCard {
-    border-radius: 20px;
-
     padding: 16px;
   }
 
+  .summaryCard {
+    border-radius: 14px;
+  }
+
   .summaryCard h3 {
-    font-size: 28px;
+    font-size: 24px;
   }
 
   .summaryCard p {
-    font-size: 13px;
-  }
-
-  .loading {
-    height: 320px;
-
-    font-size: 16px;
+    font-size: 12px;
   }
 }

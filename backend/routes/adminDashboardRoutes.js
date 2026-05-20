@@ -7,14 +7,9 @@ import {
   getPendingProducts,
 } from "../controllers/adminDashboardController.js";
 
-import {
-  protectUser,
-  protectAdmin,
-} from "../middlewares/authMiddleware.js";
+import { protectUser, protectAdmin } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
-
-
 
 /*
 |--------------------------------------------------------------------------
@@ -22,14 +17,7 @@ const router = express.Router();
 |--------------------------------------------------------------------------
 */
 
-router.get(
-  "/overview",
-  protectUser,
-  protectAdmin,
-  getDashboardOverview
-);
-
-
+router.get("/overview", protectUser, protectAdmin, getDashboardOverview);
 
 /*
 |--------------------------------------------------------------------------
@@ -37,14 +25,7 @@ router.get(
 |--------------------------------------------------------------------------
 */
 
-router.get(
-  "/orders-overview",
-  protectUser,
-  protectAdmin,
-  getOrdersOverview
-);
-
-
+router.get("/orders-overview", protectUser, protectAdmin, getOrdersOverview);
 
 /*
 |--------------------------------------------------------------------------
@@ -52,14 +33,7 @@ router.get(
 |--------------------------------------------------------------------------
 */
 
-router.get(
-  "/recent-orders",
-  protectUser,
-  protectAdmin,
-  getRecentOrders
-);
-
-
+router.get("/recent-orders", protectUser, protectAdmin, getRecentOrders);
 
 /*
 |--------------------------------------------------------------------------
@@ -67,11 +41,6 @@ router.get(
 |--------------------------------------------------------------------------
 */
 
-router.get(
-  "/pending-products",
-  protectUser,
-  protectAdmin,
-  getPendingProducts
-);
+router.get("/pending-products", protectUser, protectAdmin, getPendingProducts);
 
 export default router;

@@ -1,95 +1,84 @@
 .recentOrders {
   background: white;
-
   border-radius: 20px;
-
   padding: 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 
-  box-shadow: 0 2px 12px
-    rgba(0, 0, 0, 0.06);
-
-  height: 100%;
+  width: 100%;
+  overflow: hidden;
 }
-
-
 
 /* TOP */
 
 .recentOrdersTop {
   display: flex;
-
   justify-content: space-between;
-
-  align-items: center;
-
+  align-items: flex-start;
   gap: 16px;
-
   margin-bottom: 24px;
 }
 
 .recentOrdersTop h2 {
   font-size: 24px;
-
   font-weight: 700;
-
   color: #111827;
-
   margin-bottom: 6px;
 }
 
 .recentOrdersTop p {
   font-size: 14px;
-
   color: #6b7280;
 }
 
-
-
-/* VIEW ALL BUTTON */
+/* VIEW BUTTON */
 
 .viewAllButton {
   border: none;
-
   background: #ede9fe;
-
   color: #6d28d9;
-
   padding: 10px 18px;
-
   border-radius: 10px;
-
   font-size: 14px;
-
   font-weight: 600;
-
   cursor: pointer;
-
   transition: 0.3s ease;
+
+  flex-shrink: 0;
 }
 
 .viewAllButton:hover {
   background: #ddd6fe;
 }
 
-
-
 /* TABLE */
 
 .tableWrapper {
   width: 100%;
-
   overflow-x: auto;
+  overflow-y: hidden;
+
+  -webkit-overflow-scrolling: touch;
+
+  border-radius: 14px;
+}
+
+/* CUSTOM SCROLLBAR */
+
+.tableWrapper::-webkit-scrollbar {
+  height: 6px;
+}
+
+.tableWrapper::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 999px;
 }
 
 .ordersTable {
   width: 100%;
-
   border-collapse: collapse;
 
-  min-width: 650px;
+  min-width: 720px;
 }
-
-
 
 /* HEAD */
 
@@ -99,112 +88,141 @@
 
 .ordersTable th {
   padding: 15px 16px;
-
   text-align: left;
-
   font-size: 13px;
-
   font-weight: 600;
-
   color: #94a3b8;
-
   white-space: nowrap;
 }
-
-
 
 /* BODY */
 
 .ordersTable td {
   padding: 18px 16px;
-
   border-bottom: 1px solid #f1f5f9;
-
   font-size: 14px;
-
   font-weight: 500;
-
   color: #111827;
-
   white-space: nowrap;
 }
 
 .ordersTable tbody tr {
-  transition: 0.3s ease;
+  transition: 0.25s ease;
 }
 
 .ordersTable tbody tr:hover {
   background: #fafafa;
 }
 
-
-
 /* STATUS */
 
 .statusBadge {
   padding: 8px 12px;
-
   border-radius: 999px;
-
   font-size: 12px;
-
   font-weight: 600;
-
   text-transform: capitalize;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .completed {
   background: #dcfce7;
-
   color: #166534;
 }
 
 .partial {
   background: #fef3c7;
-
   color: #92400e;
 }
 
 .pending {
   background: #dbeafe;
-
   color: #1d4ed8;
 }
 
 .cancelled {
   background: #fee2e2;
-
   color: #991b1b;
 }
 
 .defaultStatus {
   background: #e5e7eb;
-
   color: #374151;
 }
 
+/* TABLET */
 
+@media (max-width: 992px) {
+  .recentOrders {
+    padding: 20px;
+  }
 
-/* RESPONSIVE */
+  .ordersTable {
+    min-width: 680px;
+  }
+}
+
+/* MOBILE */
 
 @media (max-width: 768px) {
-
   .recentOrders {
-    padding: 18px;
+    padding: 16px;
+    border-radius: 18px;
   }
 
   .recentOrdersTop {
     flex-direction: column;
-
     align-items: flex-start;
+    margin-bottom: 18px;
+  }
+
+  .recentOrdersTop h2 {
+    font-size: 22px;
+  }
+
+  .recentOrdersTop p {
+    font-size: 13px;
   }
 
   .viewAllButton {
     width: 100%;
   }
 
+  .tableWrapper {
+    margin-left: -4px;
+    margin-right: -4px;
+  }
+
+  .ordersTable {
+    min-width: 640px;
+  }
+
+  .ordersTable th {
+    padding: 14px 14px;
+    font-size: 12px;
+  }
+
+  .ordersTable td {
+    padding: 16px 14px;
+    font-size: 13px;
+  }
+}
+
+/* SMALL MOBILE */
+
+@media (max-width: 480px) {
+  .recentOrders {
+    padding: 14px;
+  }
+
   .ordersTable {
     min-width: 600px;
   }
 
+  .statusBadge {
+    font-size: 11px;
+    padding: 7px 10px;
+  }
 }

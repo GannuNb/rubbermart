@@ -13,13 +13,10 @@ import styles from "../../styles/Admin/AdminDashboard.module.css";
 function AdminDashboard() {
   return (
     <div className={styles.adminDashboard}>
-
       <div className={styles.adminDashboardHeader}>
         <h1>Admin Dashboard</h1>
 
-        <p>
-          Monitor products, orders and platform activity
-        </p>
+        <p>Monitor products, orders and platform activity</p>
       </div>
 
       <DashboardOverview />
@@ -31,7 +28,6 @@ function AdminDashboard() {
       </div>
 
       <PendingProducts />
-
     </div>
   );
 }

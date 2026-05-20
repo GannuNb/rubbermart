@@ -1,6 +1,5 @@
 .wrapper {
   width: 100%;
-
   margin-bottom: 30px;
 }
 
@@ -10,12 +9,12 @@
 
 .topBar {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
 
   gap: 16px;
 
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 }
 
 .topBar h2 {
@@ -37,7 +36,7 @@
 }
 
 /* =========================
-   VIEW ALL BUTTON
+   VIEW BUTTON
 ========================= */
 
 .viewAllBtn {
@@ -61,6 +60,8 @@
   font-weight: 700;
 
   transition: 0.3s ease;
+
+  flex-shrink: 0;
 }
 
 .viewAllBtn:hover {
@@ -82,7 +83,7 @@
 
   border-radius: 24px;
 
-  padding: 24px;
+  padding: 22px;
 
   border: 1px solid #eef2f7;
 
@@ -90,6 +91,8 @@
     0 10px 30px rgba(15, 23, 42, 0.05);
 
   overflow: hidden;
+
+  width: 100%;
 }
 
 /* =========================
@@ -100,6 +103,24 @@
   width: 100%;
 
   overflow-x: auto;
+
+  overflow-y: hidden;
+
+  -webkit-overflow-scrolling: touch;
+
+  border-radius: 14px;
+}
+
+/* CUSTOM SCROLLBAR */
+
+.tableWrapper::-webkit-scrollbar {
+  height: 6px;
+}
+
+.tableWrapper::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+
+  border-radius: 999px;
 }
 
 /* =========================
@@ -111,7 +132,7 @@
 
   border-collapse: collapse;
 
-  min-width: 760px;
+  min-width: 720px;
 }
 
 .table thead tr {
@@ -121,9 +142,9 @@
 .table th {
   text-align: left;
 
-  padding: 16px 12px;
+  padding: 15px 12px;
 
-  font-size: 14px;
+  font-size: 13px;
 
   font-weight: 700;
 
@@ -133,9 +154,9 @@
 }
 
 .table td {
-  padding: 18px 12px;
+  padding: 16px 12px;
 
-  font-size: 15px;
+  font-size: 14px;
 
   font-weight: 600;
 
@@ -144,6 +165,8 @@
   border-bottom: 1px solid #f8fafc;
 
   vertical-align: middle;
+
+  white-space: nowrap;
 }
 
 .table tbody tr:last-child td {
@@ -159,7 +182,7 @@
 ========================= */
 
 .buyerInfo h4 {
-  font-size: 15px;
+  font-size: 14px;
 
   font-weight: 700;
 
@@ -169,7 +192,7 @@
 }
 
 .buyerInfo p {
-  font-size: 13px;
+  font-size: 12px;
 
   color: #64748b;
 
@@ -189,7 +212,7 @@
 
   border-radius: 999px;
 
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
 
   text-transform: capitalize;
@@ -246,11 +269,10 @@
 }
 
 /* =========================
-   RESPONSIVE
+   TABLET
 ========================= */
 
 @media (max-width: 992px) {
-
   .topBar h2 {
     font-size: 26px;
   }
@@ -258,22 +280,68 @@
   .tableCard {
     padding: 20px;
   }
+
+  .table {
+    min-width: 680px;
+  }
 }
 
-@media (max-width: 768px) {
+/* =========================
+   MOBILE
+========================= */
 
+@media (max-width: 768px) {
   .topBar {
     flex-direction: column;
+
     align-items: flex-start;
   }
 
   .viewAllBtn {
     width: 100%;
   }
+
+  .tableCard {
+    padding: 16px;
+
+    border-radius: 20px;
+  }
+
+  .table {
+    min-width: 640px;
+  }
+
+  .table th {
+    font-size: 12px;
+
+    padding: 14px 10px;
+  }
+
+  .table td {
+    font-size: 13px;
+
+    padding: 15px 10px;
+  }
+
+  .status {
+    padding: 7px 12px;
+
+    font-size: 11px;
+  }
+
+  .loading,
+  .empty {
+    height: 180px;
+
+    font-size: 16px;
+  }
 }
 
-@media (max-width: 576px) {
+/* =========================
+   SMALL MOBILE
+========================= */
 
+@media (max-width: 576px) {
   .topBar h2 {
     font-size: 24px;
   }
@@ -283,41 +351,22 @@
   }
 
   .tableCard {
-    padding: 16px;
-
-    border-radius: 20px;
+    padding: 14px;
   }
 
-  .table th {
-    font-size: 13px;
-
-    padding: 14px 10px;
-  }
-
-  .table td {
-    font-size: 14px;
-
-    padding: 16px 10px;
+  .table {
+    min-width: 600px;
   }
 
   .buyerInfo h4 {
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .buyerInfo p {
-    font-size: 12px;
+    font-size: 11px;
   }
 
   .status {
-    padding: 7px 12px;
-
-    font-size: 12px;
-  }
-
-  .loading,
-  .empty {
-    height: 180px;
-
-    font-size: 16px;
+    font-size: 10px;
   }
 }

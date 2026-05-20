@@ -1,7 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-} from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   ResponsiveContainer,
@@ -14,36 +11,23 @@ import {
   Legend,
 } from "recharts";
 
-import {
-  useDispatch,
-  useSelector,
-} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import {
-  getSellerOrdersOverviewThunk,
-} from "../../../../redux/slices/sellerDashboardThunk";
+import { getSellerOrdersOverviewThunk } from "../../../../redux/slices/sellerDashboardThunk";
 
 import styles from "./OrdersOverviewSection.module.css";
 
 function OrdersOverviewSection() {
   const dispatch = useDispatch();
 
-  const [filter, setFilter] =
-    useState("7days");
+  const [filter, setFilter] = useState("7days");
 
-  const {
-    ordersOverview,
-    ordersOverviewLoading,
-  } = useSelector(
-    (state) => state.sellerDashboard
+  const { ordersOverview, ordersOverviewLoading } = useSelector(
+    (state) => state.sellerDashboard,
   );
 
   useEffect(() => {
-    dispatch(
-      getSellerOrdersOverviewThunk(
-        filter
-      )
-    );
+    dispatch(getSellerOrdersOverviewThunk(filter));
   }, [dispatch, filter]);
 
   return (
@@ -56,28 +40,19 @@ function OrdersOverviewSection() {
         <div>
           <h2>Orders Overview</h2>
 
-          <p>
-            Monitor your order
-            analytics
-          </p>
+          <p>Monitor your order analytics</p>
         </div>
 
         {/* FILTER */}
 
         <select
           value={filter}
-          onChange={(e) =>
-            setFilter(e.target.value)
-          }
+          onChange={(e) => setFilter(e.target.value)}
           className={styles.filterSelect}
         >
-          <option value="7days">
-            Last 7 Days
-          </option>
+          <option value="7days">Last 7 Days</option>
 
-          <option value="30days">
-            Last 30 Days
-          </option>
+          <option value="30days">Last 30 Days</option>
         </select>
       </div>
 
@@ -87,25 +62,14 @@ function OrdersOverviewSection() {
 
       <div className={styles.chartCard}>
         {ordersOverviewLoading ? (
-          <div className={styles.loading}>
-            Loading analytics...
-          </div>
+          <div className={styles.loading}>Loading analytics...</div>
         ) : (
           <>
             {/* GRAPH */}
 
-            <div
-              className={styles.chartWrapper}
-            >
-              <ResponsiveContainer
-                width="100%"
-                height={350}
-              >
-                <AreaChart
-                  data={
-                    ordersOverview.graphData
-                  }
-                >
+            <div className={styles.chartWrapper}>
+              <ResponsiveContainer width="100%" height={350}>
+                <AreaChart data={ordersOverview.graphData}>
                   <defs>
                     {/* PURPLE */}
 
@@ -122,11 +86,7 @@ function OrdersOverviewSection() {
                         stopOpacity={0.35}
                       />
 
-                      <stop
-                        offset="95%"
-                        stopColor="#7c3aed"
-                        stopOpacity={0}
-                      />
+                      <stop offset="95%" stopColor="#7c3aed" stopOpacity={0} />
                     </linearGradient>
 
                     {/* GREEN */}
@@ -138,28 +98,15 @@ function OrdersOverviewSection() {
                       x2="0"
                       y2="1"
                     >
-                      <stop
-                        offset="5%"
-                        stopColor="#16a34a"
-                        stopOpacity={0.30}
-                      />
+                      <stop offset="5%" stopColor="#16a34a" stopOpacity={0.3} />
 
-                      <stop
-                        offset="95%"
-                        stopColor="#16a34a"
-                        stopOpacity={0}
-                      />
+                      <stop offset="95%" stopColor="#16a34a" stopOpacity={0} />
                     </linearGradient>
                   </defs>
 
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                    vertical={false}
-                  />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
 
-                  <XAxis
-                    dataKey="date"
-                  />
+                  <XAxis dataKey="date" />
 
                   <YAxis />
 
@@ -198,89 +145,63 @@ function OrdersOverviewSection() {
                 SUMMARY
             ========================= */}
 
-            <div
-              className={styles.summaryGrid}
-            >
+            <div className={styles.summaryGrid}>
               {/* TOTAL */}
 
-              <div
-                className={
-                  styles.summaryCard
-                }
-              >
-                <h3>
-                  {
-                    ordersOverview.summary
-                      .totalOrders
-                  }
-                </h3>
+              <div className={styles.summaryCard}>
+                <h3>{ordersOverview.summary?.totalOrders}</h3>
 
                 <p>Total Orders</p>
               </div>
 
               {/* COMPLETED */}
 
-              <div
-                className={
-                  styles.summaryCard
-                }
-              >
-                <h3
-                  className={
-                    styles.greenText
-                  }
-                >
-                  {
-                    ordersOverview.summary
-                      .completedOrders
-                  }
+              <div className={styles.summaryCard}>
+                <h3 className={styles.greenText}>
+                  {ordersOverview.summary?.completedOrders}
                 </h3>
 
                 <p>Completed</p>
               </div>
 
-              {/* PENDING */}
-
-              <div
-                className={
-                  styles.summaryCard
-                }
-              >
-                <h3
-                  className={
-                    styles.orangeText
-                  }
-                >
-                  {
-                    ordersOverview.summary
-                      .pendingOrders
-                  }
-                </h3>
-
-                <p>Pending</p>
-              </div>
-
               {/* PARTIAL */}
 
-              <div
-                className={
-                  styles.summaryCard
-                }
-              >
-                <h3
-                  className={
-                    styles.blueText
-                  }
-                >
-                  {
-                    ordersOverview.summary
-                      .partialShipmentOrders
-                  }
+              <div className={styles.summaryCard}>
+                <h3 className={styles.blueText}>
+                  {ordersOverview.summary?.partialShipmentOrders}
                 </h3>
 
-                <p>
-                  Partial Shipment
-                </p>
+                <p>Partial Shipment</p>
+              </div>
+
+              {/* WAITING */}
+
+              <div className={styles.summaryCard}>
+                <h3 className={styles.orangeText}>
+                  {ordersOverview.summary?.waitingForConfirmation}
+                </h3>
+
+                <p>Waiting For Your Confirmation</p>
+              </div>
+
+              {/* CANCELLED */}
+
+              <div className={styles.summaryCard}>
+                <h3 className={styles.redText}>
+                  {ordersOverview.summary?.cancelledOrders}
+                </h3>
+
+                <p>Cancelled</p>
+              </div>
+
+              {/* CONFIRMED */}
+
+              <div className={styles.summaryCard}>
+                <h3 className={styles.purpleText}>
+                  {ordersOverview.summary?.confirmedOrders}
+                </h3>
+
+                <p>Confirmed (Not Shipped Yet)</p>
               </div>
             </div>
           </>

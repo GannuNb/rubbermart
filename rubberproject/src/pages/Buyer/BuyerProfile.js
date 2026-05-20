@@ -1,6 +1,4 @@
-// src/pages/buyer/BuyerProfile.js
-
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   FaUserCircle,
@@ -15,7 +13,10 @@ import {
   FaHome,
   FaCheckCircle,
   FaEdit,
+  FaSave,
 } from "react-icons/fa";
+
+import axios from "axios";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -23,14 +24,56 @@ import { fetchProfileThunk } from "../../redux/slices/profileThunk";
 
 import styles from "../../styles/Buyer/BuyerProfile.module.css";
 
+const productOptions = [
+  "Baled Tyres PCR",
+  "Baled Tyres TBR",
+  "Three Piece PCR",
+  "Three Piece TBR",
+  "Shreds",
+  "Mulch PCR",
+  "Rubber Granules/crumb",
+  "Pyro Oil",
+  "Pyro Steel",
+  "Rubber Crumb Steel",
+];
+
 function BuyerProfile() {
   const dispatch = useDispatch();
 
   const { user } = useSelector((state) => state.auth);
 
+  const [editMode, setEditMode] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+
+  const [formData, setFormData] = useState({
+    fullName: "",
+    location: "",
+    phoneNumber: "",
+    billingAddress: "",
+    shippingAddress: "",
+    interestedProducts: [],
+  });
+
   useEffect(() => {
     dispatch(fetchProfileThunk());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        fullName: user?.fullName || "",
+        location: user?.location || "",
+        phoneNumber: user?.businessProfile?.phoneNumber || "",
+
+        billingAddress: user?.businessProfile?.billingAddress || "",
+
+        shippingAddress: user?.businessProfile?.shippingAddress || "",
+
+        interestedProducts: user?.businessProfile?.interestedProducts || [],
+      });
+    }
+  }, [user]);
 
   const businessProfile = user?.businessProfile || {};
 
@@ -42,7 +85,87 @@ function BuyerProfile() {
     return user.profileImage;
   };
 
-  const openDocument = (base64File, fileName = "document") => {
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleProductCheckbox = (product) => {
+    const exists = formData.interestedProducts.includes(product);
+
+    if (exists) {
+      setFormData({
+        ...formData,
+        interestedProducts: formData.interestedProducts.filter(
+          (item) => item !== product,
+        ),
+      });
+    } else {
+      setFormData({
+        ...formData,
+        interestedProducts: [...formData.interestedProducts, product],
+      });
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditMode(false);
+
+    setFormData({
+      fullName: user?.fullName || "",
+      location: user?.location || "",
+      phoneNumber: user?.businessProfile?.phoneNumber || "",
+
+      billingAddress: user?.businessProfile?.billingAddress || "",
+
+      shippingAddress: user?.businessProfile?.shippingAddress || "",
+
+      interestedProducts: user?.businessProfile?.interestedProducts || [],
+    });
+  };
+
+  const handleUpdateProfile = async () => {
+    try {
+      setLoading(true);
+
+      const token = localStorage.getItem("token");
+
+      const response = await axios.put(
+        `${process.env.REACT_APP_API_URL}/api/user/update-profile`,
+        {
+          fullName: formData.fullName,
+          location: formData.location,
+          phoneNumber: formData.phoneNumber,
+          billingAddress: formData.billingAddress,
+          shippingAddress: formData.shippingAddress,
+          interestedProducts: formData.interestedProducts,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      if (response.data.success) {
+        await dispatch(fetchProfileThunk());
+
+        setEditMode(false);
+
+        alert("Profile updated successfully");
+      }
+    } catch (error) {
+      console.log("Update Profile Error:", error);
+
+      alert(error?.response?.data?.message || "Failed to update profile");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const openDocument = (base64File) => {
     try {
       const byteCharacters = atob(base64File.split(",")[1]);
 
@@ -77,15 +200,12 @@ function BuyerProfile() {
   return (
     <div className={styles.profilePage}>
       <div className={styles.profileContainer}>
-        {/* =========================
-            HERO SECTION
-        ========================= */}
+        {/* HERO SECTION */}
 
         <div className={styles.heroSection}>
           <div className={styles.heroOverlay}></div>
 
           <div className={styles.heroContent}>
-            {/* LEFT */}
             <div className={styles.profileLeft}>
               <div className={styles.profileImageWrapper}>
                 {getProfileImage() ? (
@@ -108,7 +228,7 @@ function BuyerProfile() {
                 <p>{user?.email || "-"}</p>
 
                 <div className={styles.badges}>
-                  <span className={styles.roleBadge}>Buyer</span>
+                  <span className={styles.roleBadge}>{user?.role}</span>
 
                   {user?.isVerified && (
                     <span className={styles.verifiedBadge}>Verified</span>
@@ -117,17 +237,41 @@ function BuyerProfile() {
               </div>
             </div>
 
-            {/* RIGHT */}
-            <button className={styles.editBtn}>
-              <FaEdit />
-              Edit Profile
-            </button>
+            {!editMode ? (
+              <button
+                className={styles.editBtn}
+                onClick={() => setEditMode(true)}
+              >
+                <FaEdit />
+                Edit Profile
+              </button>
+            ) : (
+              <div
+                style={{
+                  display: "flex",
+                  gap: "12px",
+                  flexWrap: "wrap",
+                }}
+              >
+                <button
+                  className={styles.editBtn}
+                  onClick={handleUpdateProfile}
+                  disabled={loading}
+                >
+                  <FaSave />
+
+                  {loading ? "Saving..." : "Save Profile"}
+                </button>
+
+                <button className={styles.cancelBtn} onClick={handleCancelEdit}>
+                  Cancel
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* =========================
-            ACCOUNT INFORMATION
-        ========================= */}
+        {/* ACCOUNT INFORMATION */}
 
         <div className={styles.section}>
           <div className={styles.sectionTitle}>
@@ -139,7 +283,16 @@ function BuyerProfile() {
             <div className={styles.card}>
               <span>Full Name</span>
 
-              <h4>{user?.fullName || "-"}</h4>
+              {editMode ? (
+                <input
+                  type="text"
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={handleChange}
+                />
+              ) : (
+                <h4>{user?.fullName || "-"}</h4>
+              )}
 
               <FaUserCircle className={styles.cardIcon} />
             </div>
@@ -155,7 +308,16 @@ function BuyerProfile() {
             <div className={styles.card}>
               <span>Location</span>
 
-              <h4>{user?.location || "Not Added"}</h4>
+              {editMode ? (
+                <input
+                  type="text"
+                  name="location"
+                  value={formData.location}
+                  onChange={handleChange}
+                />
+              ) : (
+                <h4>{user?.location || "Not Added"}</h4>
+              )}
 
               <FaMapMarkerAlt className={styles.cardIcon} />
             </div>
@@ -190,67 +352,91 @@ function BuyerProfile() {
           </div>
         </div>
 
-        {/* =========================
-            BUSINESS INFORMATION
-        ========================= */}
+        {/* BUSINESS INFORMATION */}
 
-        {(businessProfile.companyName ||
-          businessProfile.phoneNumber ||
-          businessProfile.gstNumber ||
-          businessProfile.billingAddress) && (
-          <div className={styles.section}>
-            <div className={styles.sectionTitle}>
-              <FaBuilding />
-              <h2>Business Information</h2>
+        <div className={styles.section}>
+          <div className={styles.sectionTitle}>
+            <FaBuilding />
+            <h2>Business Information</h2>
+          </div>
+
+          <div className={styles.grid}>
+            <div className={styles.card}>
+              <span>Company Name</span>
+
+              <h4>{businessProfile.companyName}</h4>
+
+              <FaBuilding className={styles.cardIcon} />
             </div>
 
-            <div className={styles.grid}>
-              {businessProfile.companyName && (
-                <div className={styles.card}>
-                  <span>Company Name</span>
+            <div className={styles.card}>
+              <span>Phone Number</span>
 
-                  <h4>{businessProfile.companyName}</h4>
-
-                  <FaBuilding className={styles.cardIcon} />
-                </div>
+              {editMode ? (
+                <input
+                  type="text"
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handleChange}
+                />
+              ) : (
+                <h4>{businessProfile.phoneNumber}</h4>
               )}
 
-              {businessProfile.phoneNumber && (
-                <div className={styles.card}>
-                  <span>Phone Number</span>
+              <FaPhoneAlt className={styles.cardIcon} />
+            </div>
 
-                  <h4>{businessProfile.phoneNumber}</h4>
+            <div className={styles.card}>
+              <span>GST Number</span>
 
-                  <FaPhoneAlt className={styles.cardIcon} />
-                </div>
+              <h4>{businessProfile.gstNumber}</h4>
+
+              <FaIdCard className={styles.cardIcon} />
+            </div>
+
+            <div className={styles.card}>
+              <span>PAN Number</span>
+
+              <h4>{businessProfile.panNumber}</h4>
+
+              <FaIdCard className={styles.cardIcon} />
+            </div>
+
+            <div className={styles.card}>
+              <span>Billing Address</span>
+
+              {editMode ? (
+                <textarea
+                  name="billingAddress"
+                  value={formData.billingAddress}
+                  onChange={handleChange}
+                />
+              ) : (
+                <h4>{businessProfile.billingAddress}</h4>
               )}
 
-              {businessProfile.gstNumber && (
-                <div className={styles.card}>
-                  <span>GST Number</span>
+              <FaHome className={styles.cardIcon} />
+            </div>
 
-                  <h4>{businessProfile.gstNumber}</h4>
+            <div className={styles.card}>
+              <span>Shipping Address</span>
 
-                  <FaIdCard className={styles.cardIcon} />
-                </div>
+              {editMode ? (
+                <textarea
+                  name="shippingAddress"
+                  value={formData.shippingAddress}
+                  onChange={handleChange}
+                />
+              ) : (
+                <h4>{businessProfile.shippingAddress}</h4>
               )}
 
-              {businessProfile.billingAddress && (
-                <div className={styles.card}>
-                  <span>Billing Address</span>
-
-                  <h4>{businessProfile.billingAddress}</h4>
-
-                  <FaHome className={styles.cardIcon} />
-                </div>
-              )}
+              <FaHome className={styles.cardIcon} />
             </div>
           </div>
-        )}
+        </div>
 
-        {/* =========================
-            INTERESTED PRODUCTS
-        ========================= */}
+        {/* INTERESTED PRODUCTS */}
 
         <div className={styles.section}>
           <div className={styles.sectionTitle}>
@@ -258,22 +444,36 @@ function BuyerProfile() {
             <h2>Interested Products</h2>
           </div>
 
-          <div className={styles.productsWrapper}>
-            {businessProfile.interestedProducts?.length > 0 ? (
-              businessProfile.interestedProducts.map((product, index) => (
-                <span key={index} className={styles.productTag}>
-                  {product}
-                </span>
-              ))
-            ) : (
-              <p className={styles.emptyText}>No interested products added</p>
-            )}
-          </div>
+          {editMode ? (
+            <div className={styles.checkboxGrid}>
+              {productOptions.map((product) => (
+                <label key={product} className={styles.checkboxLabel}>
+                  <input
+                    type="checkbox"
+                    checked={formData.interestedProducts.includes(product)}
+                    onChange={() => handleProductCheckbox(product)}
+                  />
+
+                  <span>{product}</span>
+                </label>
+              ))}
+            </div>
+          ) : (
+            <div className={styles.productsWrapper}>
+              {businessProfile.interestedProducts?.length > 0 ? (
+                businessProfile.interestedProducts.map((product, index) => (
+                  <span key={index} className={styles.productTag}>
+                    {product}
+                  </span>
+                ))
+              ) : (
+                <p className={styles.emptyText}>No interested products added</p>
+              )}
+            </div>
+          )}
         </div>
 
-        {/* =========================
-            SAVED ADDRESSES
-        ========================= */}
+        {/* SAVED ADDRESSES */}
 
         <div className={styles.section}>
           <div className={styles.sectionTitle}>
@@ -312,9 +512,7 @@ function BuyerProfile() {
           )}
         </div>
 
-        {/* =========================
-            DOCUMENTS
-        ========================= */}
+        {/* DOCUMENTS */}
 
         {(businessProfile.gstCertificate?.file ||
           businessProfile.panCertificate?.file) && (
@@ -330,17 +528,14 @@ function BuyerProfile() {
                   <div>
                     <h4>GST Certificate</h4>
 
-                    <p>Uploaded Document</p>
+                    <p>Protected Document</p>
                   </div>
 
                   <button
                     type="button"
                     className={styles.viewDocumentBtn}
                     onClick={() =>
-                      openDocument(
-                        businessProfile.gstCertificate.file,
-                        "gst-certificate",
-                      )
+                      openDocument(businessProfile.gstCertificate.file)
                     }
                   >
                     View
@@ -353,17 +548,14 @@ function BuyerProfile() {
                   <div>
                     <h4>PAN Certificate</h4>
 
-                    <p>Uploaded Document</p>
+                    <p>Protected Document</p>
                   </div>
 
                   <button
                     type="button"
                     className={styles.viewDocumentBtn}
                     onClick={() =>
-                      openDocument(
-                        businessProfile.panCertificate.file,
-                        "pan-certificate",
-                      )
+                      openDocument(businessProfile.panCertificate.file)
                     }
                   >
                     View

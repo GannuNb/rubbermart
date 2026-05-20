@@ -19,7 +19,9 @@ function OrdersOverview() {
     totalOrders: 0,
     completedOrders: 0,
     partialShipments: 0,
-    pendingOrders: 0,
+    waitingForSeller: 0,
+    rejectedOrders: 0,
+    sellerConfirmedOrders: 0,
   });
 
   const [graphData, setGraphData] = useState([]);
@@ -90,14 +92,22 @@ function OrdersOverview() {
 
         <div className={styles.ordersFilters}>
           <button
-            className={range === "7days" ? styles.activeFilter : ""}
+            className={
+              range === "7days"
+                ? styles.activeFilter
+                : ""
+            }
             onClick={() => setRange("7days")}
           >
             Last 7 Days
           </button>
 
           <button
-            className={range === "30days" ? styles.activeFilter : ""}
+            className={
+              range === "30days"
+                ? styles.activeFilter
+                : ""
+            }
             onClick={() => setRange("30days")}
           >
             Last 30 Days
@@ -127,16 +137,33 @@ function OrdersOverview() {
         </div>
 
         <div className={styles.ordersStatCard}>
-          <span>Pending</span>
+          <span>Waiting For Seller</span>
 
-          <h3>{overview.pendingOrders}</h3>
+          <h3>{overview.waitingForSeller}</h3>
+        </div>
+
+        <div className={styles.ordersStatCard}>
+          <span>Rejected Orders</span>
+
+          <h3>{overview.rejectedOrders}</h3>
+        </div>
+
+        <div className={styles.ordersStatCard}>
+          <span>Seller Confirmed</span>
+
+          <h3>
+            {overview.sellerConfirmedOrders}
+          </h3>
         </div>
       </div>
 
       {/* CHART */}
 
       <div className={styles.ordersChartWrapper}>
-        <ResponsiveContainer width="100%" height={320}>
+        <ResponsiveContainer
+          width="100%"
+          height={320}
+        >
           <AreaChart
             data={graphData}
             margin={{
@@ -147,10 +174,24 @@ function OrdersOverview() {
             }}
           >
             <defs>
-              <linearGradient id="ordersGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#7c3aed" stopOpacity={0.4} />
+              <linearGradient
+                id="ordersGradient"
+                x1="0"
+                y1="0"
+                x2="0"
+                y2="1"
+              >
+                <stop
+                  offset="5%"
+                  stopColor="#7c3aed"
+                  stopOpacity={0.4}
+                />
 
-                <stop offset="95%" stopColor="#7c3aed" stopOpacity={0} />
+                <stop
+                  offset="95%"
+                  stopColor="#7c3aed"
+                  stopOpacity={0}
+                />
               </linearGradient>
             </defs>
 
@@ -160,15 +201,24 @@ function OrdersOverview() {
               stroke="#e5e7eb"
             />
 
-            <XAxis dataKey="date" tickLine={false} axisLine={false} />
+            <XAxis
+              dataKey="date"
+              tickLine={false}
+              axisLine={false}
+            />
 
-            <YAxis tickLine={false} axisLine={false} allowDecimals={false} />
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              allowDecimals={false}
+            />
 
             <Tooltip
               contentStyle={{
                 borderRadius: "12px",
                 border: "none",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                boxShadow:
+                  "0 4px 12px rgba(0,0,0,0.1)",
               }}
             />
 
