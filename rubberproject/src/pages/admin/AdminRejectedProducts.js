@@ -10,7 +10,7 @@ function AdminRejectedProducts() {
 
   // PAGINATION STATES
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6; // Matching structural inventory limit configurations
+  const itemsPerPage = 3; // Matching structural inventory limit configurations
 
   const fetchRejectedProducts = async () => {
     try {
@@ -24,7 +24,7 @@ function AdminRejectedProducts() {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      
+
       const data = await response.json();
       if (data.success) {
         setProducts(data.products);
@@ -72,10 +72,10 @@ function AdminRejectedProducts() {
               <div key={product._id} className={styles.adminProductCard}>
                 <div className={styles.adminProductImageWrapper}>
                   {product.images?.length > 0 && product.images[0].image ? (
-                    <img 
-                      src={product.images[0].image} 
-                      alt={product.category} 
-                      className={styles.adminProductImage} 
+                    <img
+                      src={product.images[0].image}
+                      alt={product.category}
+                      className={styles.adminProductImage}
                     />
                   ) : (
                     <div className={styles.adminProductNoImage}>No Image Available</div>
@@ -84,8 +84,8 @@ function AdminRejectedProducts() {
                 <div className={styles.adminProductContent}>
                   <div className={styles.adminProductTopRow}>
                     <h3 className={styles.adminProductCategory}>{product.category}</h3>
-                    <span 
-                      className={styles.adminProductStatusBadge} 
+                    <span
+                      className={styles.adminProductStatusBadge}
                       style={{ backgroundColor: "#fff1f2", color: "#b91c1c", border: "1px solid #fee2e2" }}
                     >
                       Rejected
@@ -113,30 +113,45 @@ function AdminRejectedProducts() {
           {/* PAGINATION CONTROL FOOTER UI INTERFACE - PERMANENTLY VISIBLE WHEN RECORDS EXIST */}
           {products.length > 0 && (
             <div className={styles.paginationWrapper}>
-              <button 
+              <button
                 className={styles.pageArrowButton}
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
               >
                 &laquo; Previous
               </button>
-              
+
               <div className={styles.pageNumbersGrid}>
-                {Array.from({ length: totalPages || 1 }, (_, index) => {
-                  const pageNum = index + 1;
-                  return (
-                    <button
-                      key={pageNum}
-                      className={`${styles.pageNumberPill} ${currentPage === pageNum ? styles.activePageNumberPill : ""}`}
-                      onClick={() => handlePageChange(pageNum)}
-                    >
-                      {pageNum}
-                    </button>
-                  );
-                })}
+                {(() => {
+                  // Determine start page based on current selection window
+                  let startPage = Math.max(1, currentPage);
+
+                  // If we are at the very last page, shift backwards to still show 2 pills if possible
+                  if (currentPage === totalPages && totalPages > 1) {
+                    startPage = Math.max(1, currentPage - 1);
+                  }
+
+                  // Calculate the final boundary to show exactly 2 items maximum
+                  const endPage = Math.min(totalPages, startPage + 1);
+
+                  const pageNumbers = [];
+                  for (let i = startPage; i <= endPage; i++) {
+                    pageNumbers.push(
+                      <button
+                        key={i}
+                        className={`${styles.pageNumberPill} ${currentPage === i ? styles.activePageNumberPill : ""
+                          }`}
+                        onClick={() => handlePageChange(i)}
+                      >
+                        {i}
+                      </button>
+                    );
+                  }
+                  return pageNumbers;
+                })()}
               </div>
 
-              <button 
+              <button
                 className={styles.pageArrowButton}
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages || totalPages <= 1}
@@ -154,17 +169,17 @@ function AdminRejectedProducts() {
           <div className={styles.adminProductModal} onClick={(e) => e.stopPropagation()}>
             <button className={styles.adminModalCloseButton} onClick={() => setSelectedProduct(null)}>×</button>
             <h2 className={styles.adminModalTitle}>{selectedProduct.category}</h2>
-            
+
             {selectedProduct.images?.length > 0 && selectedProduct.images[0].image ? (
-              <img 
-                src={selectedProduct.images[0].image} 
-                alt={selectedProduct.category} 
-                className={styles.adminModalImage} 
+              <img
+                src={selectedProduct.images[0].image}
+                alt={selectedProduct.category}
+                className={styles.adminModalImage}
               />
             ) : (
               <div className={styles.adminProductNoImage} style={{ height: "200px", marginBottom: "15px" }}>No Image Available</div>
             )}
-            
+
             <div className={styles.adminModalDetails}>
               <p><strong>Application:</strong> {selectedProduct.application}</p>
               <p><strong>Quantity:</strong> {selectedProduct.quantity} MT</p>
@@ -174,17 +189,17 @@ function AdminRejectedProducts() {
               <p><strong>HSN Code:</strong> {selectedProduct.hsnCode}</p>
               <p><strong>Seller Name:</strong> {selectedProduct.seller?.fullName || "N/A"}</p>
               <p><strong>Seller Email:</strong> {selectedProduct.seller?.email || "N/A"}</p>
-              
+
               <p style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <strong>Status:</strong> 
-                <span 
-                  className={styles.adminProductStatusBadge} 
+                <strong>Status:</strong>
+                <span
+                  className={styles.adminProductStatusBadge}
                   style={{ backgroundColor: "#fff1f2", color: "#b91c1c", border: "1px solid #fee2e2" }}
                 >
                   {selectedProduct.status ? selectedProduct.status.toUpperCase() : "REJECTED"}
                 </span>
               </p>
-              
+
               <p><strong>Stock Status:</strong> {selectedProduct.stockStatus}</p>
               {selectedProduct.description && <p><strong>Description:</strong> {selectedProduct.description}</p>}
             </div>

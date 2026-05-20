@@ -1,11 +1,9 @@
-// src/pages/seller/SellerPendingProducts.js
-
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPendingProductsThunk } from "../../redux/slices/pendingProductsThunk";
 import styles from "../../styles/Seller/SellerPendingProducts.module.css";
 
-function SellerPendingProducts() {
+function SellerRejectedProducts() {
   const dispatch = useDispatch();
   const [expandedCard, setExpandedCard] = useState(null);
 
@@ -23,38 +21,20 @@ function SellerPendingProducts() {
     dispatch(fetchPendingProductsThunk());
   }, [dispatch]);
 
-  // FILTERED: Only keep items whose status is explicitly pending
-  const purelyPendingProducts = pendingProducts.filter(
-    (product) => product.status === "pending"
+  // FILTERED: Only keep items whose status is explicitly rejected
+  const rejectedProducts = pendingProducts.filter(
+    (product) => product.status === "rejected"
   );
 
   const handleToggle = (id) => {
     setExpandedCard(expandedCard === id ? null : id);
   };
 
-  const getStatusClass = (status) => {
-    if (status === "approved") return styles.approved;
-    if (status === "rejected") return styles.rejected;
-    return styles.pending;
-  };
-
-  const getBadgeClass = (status) => {
-    if (status === "approved") return styles.statusApproved;
-    if (status === "rejected") return styles.statusRejected;
-    return styles.statusPending;
-  };
-
-  const getStatusText = (status) => {
-    if (status === "approved") return "Approved";
-    if (status === "rejected") return "Rejected";
-    return "Pending";
-  };
-
-  // Pagination metrics tied strictly to filtered pending collection
-  const totalPages = Math.ceil(purelyPendingProducts.length / itemsPerPage) || 1;
+  // Pagination metrics tied strictly to filtered rejected collection
+  const totalPages = Math.ceil(rejectedProducts.length / itemsPerPage) || 1;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentProducts = purelyPendingProducts.slice(indexOfFirstItem, indexOfLastItem);
+  const currentProducts = rejectedProducts.slice(indexOfFirstItem, indexOfLastItem);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -64,7 +44,7 @@ function SellerPendingProducts() {
   if (pendingProductsLoading) {
     return (
       <div className={styles.loadingContainer}>
-        <p>Loading pending products...</p>
+        <p>Loading rejected products...</p>
       </div>
     );
   }
@@ -79,19 +59,19 @@ function SellerPendingProducts() {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.heading}>Pending Products</h1>
+      <h1 className={styles.heading}>Rejected Products</h1>
 
-      {purelyPendingProducts.length === 0 ? (
+      {rejectedProducts.length === 0 ? (
         <div className={styles.emptyState}>
-          <p>No pending products found</p>
+          <p>No rejected products found</p>
         </div>
       ) : (
         <div className={styles.grid}>
           {currentProducts.map((product) => (
             <div className={styles.card} key={product._id}>
               <div className={styles.imageWrapper}>
-                <div className={`${styles.statusBadge} ${getBadgeClass(product.status)}`}>
-                  {getStatusText(product.status)}
+                <div className={`${styles.statusBadge} ${styles.statusRejected}`}>
+                  Rejected
                 </div>
 
                 {product.images && product.images.length > 0 ? (
@@ -119,9 +99,7 @@ function SellerPendingProducts() {
 
                 <p>
                   <strong>Status:</strong>{" "}
-                  <span className={getStatusClass(product.status)}>
-                    Pending Approval
-                  </span>
+                  <span className={styles.rejected}>Rejected</span>
                 </p>
 
                 {expandedCard === product._id && (
@@ -160,6 +138,7 @@ function SellerPendingProducts() {
         </div>
       )}
 
+      {/* PERSISTENT PAGINATION FOOTER */}
       <div className={styles.paginationWrapper}>
         <button
           className={styles.pageArrowButton}
@@ -183,7 +162,9 @@ function SellerPendingProducts() {
               pageNumbers.push(
                 <button
                   key={i}
-                  className={`${styles.pageNumberPill} ${currentPage === i ? styles.activePageNumberPill : ""}`}
+                  className={`${styles.pageNumberPill} ${
+                    currentPage === i ? styles.activePageNumberPill : ""
+                  }`}
                   onClick={() => handlePageChange(i)}
                 >
                   {i}
@@ -206,4 +187,4 @@ function SellerPendingProducts() {
   );
 }
 
-export default SellerPendingProducts;
+export default SellerRejectedProducts;

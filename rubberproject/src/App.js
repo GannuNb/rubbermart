@@ -66,6 +66,8 @@ import ScrollToTopArrow from "./components/ScrollToTop/ScrollToTopArrow";
 import AdminApprovedProducts from "./pages/admin/AdminApprovedProducts";
 import AdminPendingProducts from "./pages/admin/AdminPendingProducts";
 import AdminRejectedProducts from "./pages/admin/AdminRejectedProducts";
+import SellerApprovedProducts from "./pages/seller/SellerApprovedProducts";
+import SellerRejectedProducts from "./pages/seller/SellerRejectedProducts";
 
 function AppContent() {
   const location = useLocation();
@@ -109,6 +111,8 @@ function AppContent() {
         <Route path="/seller-dashboard" element={<ProtectedRoute allowedRole="seller"><SellerDashboard /></ProtectedRoute>} />
         <Route path="/seller-add-products" element={<ProtectedRoute allowedRole="seller"><SellerAddproduct /></ProtectedRoute>} />
         <Route path="/seller-pending-products" element={<ProtectedRoute allowedRoles={["seller"]}><SellerPendingProducts /></ProtectedRoute>} />
+        <Route path="/seller-approved-products" element={<ProtectedRoute allowedRoles={["seller"]}><SellerApprovedProducts /></ProtectedRoute>} />
+        <Route path="/seller-rejected-products" element={<ProtectedRoute allowedRoles={["seller"]}><SellerRejectedProducts /></ProtectedRoute>} />
         <Route path="/seller-products" element={<ProtectedRoute allowedRoles={["seller"]}><SellerProducts /></ProtectedRoute>} />
         <Route path="/seller-profile" element={<ProtectedRoute allowedRole="seller"><SellerProfile /></ProtectedRoute>} />
         <Route path="/seller/orders" element={<ProtectedRoute><SellerOrders /> </ProtectedRoute>} />

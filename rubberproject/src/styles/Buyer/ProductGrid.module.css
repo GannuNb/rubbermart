@@ -199,3 +199,81 @@
 .emptyBox p {
   color: #6f7d8d;
 }
+
+/* ==========================================================================
+   PAGINATION BLOCK (Added & themed to match your styles seamlessly)
+   ========================================================================== */
+
+.paginationWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 40px auto 10px auto;
+  width: 100%;
+}
+
+.pageNumbersGrid {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pageArrowButton {
+  border: 1px solid #edf0f5;
+  background: #ffffff;
+  color: #5e6d7c;
+  padding: 10px 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s ease;
+}
+
+.pageArrowButton:hover:not(:disabled) {
+  background: #f9fbfd;
+  color: #182848;
+  border-color: #cbd5e1;
+}
+
+.pageArrowButton:disabled {
+  background: #f5f7fa;
+  color: #cbd5e1;
+  border-color: #edf0f5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.pageNumberPill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid #edf0f5;
+  background: #ffffff;
+  color: #182848;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s ease;
+}
+
+.pageNumberPill:hover:not(.activePageNumberPill) {
+  background: #f9fbfd;
+  border-color: #cbd5e1;
+}
+
+.activePageNumberPill {
+  background: linear-gradient(135deg, #182848, #4b6cb7) !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 6px 16px rgba(75, 108, 183, 0.25);
+}

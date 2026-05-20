@@ -341,11 +341,11 @@
 
 .paginationWrapper {
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 16px;
-  margin-top: 50px;
-  padding: 20px 0;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 40px;
+  width: 100%;
 }
 
 .pageArrowButton {
@@ -377,22 +377,22 @@
 .pageNumbersGrid {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 8px; /* Spacing between the 2 numbers */
 }
 
 .pageNumberPill {
-  background: transparent;
-  border: none;
-  color: #475467;
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  color: #334155;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
   transition: all 0.2s ease;
 }
 
@@ -402,9 +402,10 @@
 }
 
 .activePageNumberPill {
-  background: #2563eb !important;
-  color: #ffffff !important;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+  background: #2563eb !important; /* Matches your active blue */
+  color: white !important;
+  border-color: #2563eb !important;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
 }
 
 /* RESPONSIVE BREAKPOINT SYSTEM PRESETS */

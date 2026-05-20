@@ -147,6 +147,11 @@ export const sellerLinks = [
     path: "/seller-pending-products",
     icon: FaClock,
   },
+  {
+    label: "Approved",
+    path: "/seller-approved-products",
+    icon: FaCheckCircle,
+  },
 
   {
     label: "Orders",

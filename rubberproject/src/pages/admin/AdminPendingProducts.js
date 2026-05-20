@@ -27,7 +27,7 @@ function AdminPendingProducts() {
 
   // PAGINATION STATES
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6;
+  const itemsPerPage = 3;
 
   useEffect(() => {
     dispatch(fetchAdminPendingProductsThunk());
@@ -206,18 +206,34 @@ function AdminPendingProducts() {
               </button>
               
               <div className={styles.pageNumbersGrid}>
-                {Array.from({ length: totalPages || 1 }, (_, index) => {
-                  const pageNum = index + 1;
-                  return (
-                    <button
-                      key={pageNum}
-                      className={`${styles.pageNumberPill} ${currentPage === pageNum ? styles.activePageNumberPill : ""}`}
-                      onClick={() => handlePageChange(pageNum)}
-                    >
-                      {pageNum}
-                    </button>
-                  );
-                })}
+                                {(() => {
+                  // Determine start page based on current selection window
+                  let startPage = Math.max(1, currentPage);
+                  
+                  // If we are at the very last page, shift backwards to still show 2 pills if possible
+                  if (currentPage === totalPages && totalPages > 1) {
+                    startPage = Math.max(1, currentPage - 1);
+                  }
+                
+                  // Calculate the final boundary to show exactly 2 items maximum
+                  const endPage = Math.min(totalPages, startPage + 1);
+                
+                  const pageNumbers = [];
+                  for (let i = startPage; i <= endPage; i++) {
+                    pageNumbers.push(
+                      <button
+                        key={i}
+                        className={`${styles.pageNumberPill} ${
+                          currentPage === i ? styles.activePageNumberPill : ""
+                        }`}
+                        onClick={() => handlePageChange(i)}
+                      >
+                        {i}
+                      </button>
+                    );
+                  }
+                  return pageNumbers;
+                })()}
               </div>
 
               <button 

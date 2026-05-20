@@ -1,14 +1,11 @@
 import React from "react";
-
 import {
   FaPlusCircle,
   FaBoxOpen,
   FaClock,
   FaShoppingBag,
 } from "react-icons/fa";
-
 import { Link } from "react-router-dom";
-
 import styles from "./WelcomeSection.module.css";
 
 function WelcomeSection() {
@@ -17,129 +14,68 @@ function WelcomeSection() {
       {/* =========================
           HERO SECTION
       ========================= */}
-
       <div className={styles.heroSection}>
         {/* LEFT CONTENT */}
-
         <div className={styles.heroContent}>
-          <h1>
-            Welcome back, Seller! 👋
-          </h1>
-
-          <p>
-            Manage your products and
-            orders efficiently.
-          </p>
+          <h1>Welcome back, Seller! 👋</h1>
+          <p>Manage your products and orders efficiently.</p>
         </div>
 
         {/* =========================
-            ACTION CARDS
+            ACTION CARDS GRID
         ========================= */}
-
         <div className={styles.cardsGrid}>
-          {/* CARD */}
-
-          <div className={styles.card}>
-            <div
-              className={`${styles.iconBox} ${styles.purple}`}
-            >
+          {/* CARD 1: Add Products */}
+          <Link to="/seller-add-products" className={styles.card}>
+            <div className={`${styles.iconBox} ${styles.purple}`}>
               <FaPlusCircle />
             </div>
 
             <div className={styles.cardContent}>
               <h3>Add Products</h3>
-
-              <p>
-                Create and list new
-                products
-              </p>
-
-              <Link
-                to="/seller-add-products"
-                className={styles.btnPurple}
-              >
-                Add Product
-              </Link>
+              <p>Create and list new products</p>
+              <span className={styles.btnPurple}>Add Product</span>
             </div>
-          </div>
+          </Link>
 
-          {/* CARD */}
-
-          <div className={styles.card}>
-            <div
-              className={`${styles.iconBox} ${styles.blue}`}
-            >
+          {/* CARD 2: Manage Products */}
+          <Link to="/seller-approved-products" className={styles.card}>
+            <div className={`${styles.iconBox} ${styles.blue}`}>
               <FaBoxOpen />
             </div>
 
             <div className={styles.cardContent}>
               <h3>Manage Products</h3>
-
-              <p>
-                Edit or update your
-                products
-              </p>
-
-              <Link
-                to="/seller-products"
-                className={styles.btnBlue}
-              >
-                Manage Products
-              </Link>
+              <p>Edit or update your products</p>
+              <span className={styles.btnBlue}>Manage Products</span>
             </div>
-          </div>
+          </Link>
 
-          {/* CARD */}
-
-          <div className={styles.card}>
-            <div
-              className={`${styles.iconBox} ${styles.orange}`}
-            >
+          {/* CARD 3: Pending Products */}
+          <Link to="/seller-pending-products" className={styles.card}>
+            <div className={`${styles.iconBox} ${styles.orange}`}>
               <FaClock />
             </div>
 
             <div className={styles.cardContent}>
               <h3>Pending Products</h3>
-
-              <p>
-                Products awaiting admin
-                approval
-              </p>
-
-              <Link
-                to="/seller-pending-products"
-                className={styles.btnOrange}
-              >
-                View Pending
-              </Link>
+              <p>Products awaiting admin approval</p>
+              <span className={styles.btnOrange}>View Pending</span>
             </div>
-          </div>
+          </Link>
 
-          {/* CARD */}
-
-          <div className={styles.card}>
-            <div
-              className={`${styles.iconBox} ${styles.green}`}
-            >
+          {/* CARD 4: Orders */}
+          <Link to="/seller/orders" className={styles.card}>
+            <div className={`${styles.iconBox} ${styles.green}`}>
               <FaShoppingBag />
             </div>
 
             <div className={styles.cardContent}>
               <h3>Orders</h3>
-
-              <p>
-                Track and manage buyer
-                orders
-              </p>
-
-              <Link
-                to="/seller/orders"
-                className={styles.btnGreen}
-              >
-                View Orders
-              </Link>
+              <p>Track and manage buyer orders</p>
+              <span className={styles.btnGreen}>View Orders</span>
             </div>
-          </div>
+          </Link>
         </div>
       </div>
     </section>

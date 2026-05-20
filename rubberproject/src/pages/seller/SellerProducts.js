@@ -1,57 +1,32 @@
-// src/pages/seller/SellerProducts.js
-
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPendingProductsThunk } from "../../redux/slices/pendingProductsThunk";
-import { updateSellerProductThunk } from "../../redux/slices/sellerProductThunk";
-import CustomAlert from "../../components/alert/CustomAlert";
 import styles from "../../styles/Seller/SellerPendingProducts.module.css";
 
 function SellerProducts() {
   const dispatch = useDispatch();
 
   const [expandedCard, setExpandedCard] = useState(null);
-  const [editingProductId, setEditingProductId] = useState(null);
 
   // PAGINATION STATES
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
 
-  const [alert, setAlert] = useState({
-    show: false,
-    type: "",
-    title: "",
-    message: "",
-  });
-
-  const [editForm, setEditForm] = useState({
-    quantity: "",
-    pricePerMT: "",
-    description: "",
-    loadingLocation: "",
-    stockStatus: "available",
-  });
-
   const {
     pendingProducts,
     pendingProductsLoading,
     pendingProductsError,
-    approveProductLoading,
   } = useSelector((state) => state.sellerProduct);
 
   useEffect(() => {
     dispatch(fetchPendingProductsThunk());
   }, [dispatch]);
 
-  const approvedProducts = pendingProducts.filter(
-    (product) => product.status === "approved"
-  );
-
-  // CORE PAGINATION CALCULATIONS
-  const totalPages = Math.ceil(approvedProducts.length / itemsPerPage) || 1;
+  // UNFILTERED: Shows everything inside pendingProducts array (approved, rejected, pending)
+  const totalPages = Math.ceil(pendingProducts.length / itemsPerPage) || 1;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentApprovedProducts = approvedProducts.slice(indexOfFirstItem, indexOfLastItem);
+  const currentAllProducts = pendingProducts.slice(indexOfFirstItem, indexOfLastItem);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -62,56 +37,10 @@ function SellerProducts() {
     setExpandedCard(expandedCard === id ? null : id);
   };
 
-  const handleEditClick = (product) => {
-    setEditingProductId(
-      editingProductId === product._id ? null : product._id
-    );
-
-    setEditForm({
-      quantity: product.quantity,
-      pricePerMT: product.pricePerMT,
-      description: product.description || "",
-      loadingLocation: product.loadingLocation,
-      stockStatus: product.stockStatus || "available",
-    });
-  };
-
-  const handleEditChange = (e) => {
-    const { name, value } = e.target;
-
-    setEditForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleUpdateProduct = async (productId) => {
-    try {
-      await dispatch(updateSellerProductThunk(productId, editForm));
-
-      setAlert({
-        show: true,
-        type: "success",
-        title: "Product Updated",
-        message: "Your product has been updated successfully.",
-      });
-
-      dispatch(fetchPendingProductsThunk());
-      setEditingProductId(null);
-    } catch (error) {
-      setAlert({
-        show: true,
-        type: "error",
-        title: "Update Failed",
-        message: "Failed to update product.",
-      });
-    }
-  };
-
   if (pendingProductsLoading) {
     return (
       <div className={styles.loadingContainer}>
-        <p>Loading approved products...</p>
+        <p>Loading total products...</p>
       </div>
     );
   }
@@ -126,31 +55,15 @@ function SellerProducts() {
 
   return (
     <div className={styles.container}>
-      {alert.show && (
-        <CustomAlert
-          type={alert.type}
-          title={alert.title}
-          message={alert.message}
-          onClose={() =>
-            setAlert({
-              show: false,
-              type: "",
-              title: "",
-              message: "",
-            })
-          }
-        />
-      )}
+      <h1 className={styles.heading}>Your Total Products</h1>
 
-      <h1 className={styles.heading}>Approved Products</h1>
-
-      {approvedProducts.length === 0 ? (
+      {pendingProducts.length === 0 ? (
         <div className={styles.emptyState}>
-          <p>No approved products found</p>
+          <p>No products found</p>
         </div>
       ) : (
         <div className={styles.grid}>
-          {currentApprovedProducts.map((product) => (
+          {currentAllProducts.map((product) => (
             <div className={styles.card} key={product._id}>
               <div className={styles.imageWrapper}>
                 <div
@@ -158,15 +71,15 @@ function SellerProducts() {
                     product.status === "approved"
                       ? styles.statusApproved
                       : product.status === "rejected"
-                      ? styles.statusRejected
-                      : styles.statusPending
+                        ? styles.statusRejected
+                        : styles.statusPending
                   }`}
                 >
                   {product.status === "approved"
                     ? "Approved"
                     : product.status === "rejected"
-                    ? "Rejected"
-                    : "Pending"}
+                      ? "Rejected"
+                      : "Pending"}
                 </div>
 
                 {product.images && product.images.length > 0 ? (
@@ -194,7 +107,21 @@ function SellerProducts() {
 
                 <p>
                   <strong>Status:</strong>{" "}
-                  <span className={styles.approved}>Approved</span>
+                  <span
+                    className={
+                      product.status === "approved"
+                        ? styles.approved
+                        : product.status === "rejected"
+                          ? styles.rejected
+                          : styles.pending
+                    }
+                  >
+                    {product.status === "approved"
+                      ? "Approved"
+                      : product.status === "rejected"
+                        ? "Rejected"
+                        : "Pending Approval"}
+                  </span>
                 </p>
 
                 <p>
@@ -206,9 +133,7 @@ function SellerProducts() {
                         : styles.approved
                     }
                   >
-                    {product.stockStatus === "soldout"
-                      ? "Sold Out"
-                      : "Available"}
+                    {product.stockStatus === "soldout" ? "Sold Out" : "Available"}
                   </span>
                 </p>
 
@@ -231,9 +156,7 @@ function SellerProducts() {
                     </p>
 
                     {product.description && (
-                      <p className={styles.description}>
-                        {product.description}
-                      </p>
+                      <p className={styles.description}>{product.description}</p>
                     )}
                   </>
                 )}
@@ -244,108 +167,50 @@ function SellerProducts() {
                 >
                   {expandedCard === product._id ? "View Less" : "View Details"}
                 </button>
-
-                <button
-                  className={styles.viewMoreBtn}
-                  onClick={() => handleEditClick(product)}
-                >
-                  {editingProductId === product._id
-                    ? "Cancel Edit"
-                    : "Edit Product"}
-                </button>
-
-                {editingProductId === product._id && (
-                  <div className={styles.editSection}>
-                    <input
-                      type="number"
-                      name="quantity"
-                      placeholder="Quantity"
-                      value={editForm.quantity}
-                      onChange={handleEditChange}
-                      className={styles.editInput}
-                    />
-
-                    <input
-                      type="number"
-                      name="pricePerMT"
-                      placeholder="Price Per MT"
-                      value={editForm.pricePerMT}
-                      onChange={handleEditChange}
-                      className={styles.editInput}
-                    />
-
-                    <select
-                      name="loadingLocation"
-                      value={editForm.loadingLocation}
-                      onChange={handleEditChange}
-                      className={styles.editInput}
-                    >
-                      <option value="Ex Chennai">Ex Chennai</option>
-                      <option value="Ex Mundra">Ex Mundra</option>
-                      <option value="Ex Nhavasheva">Ex Nhavasheva</option>
-                    </select>
-
-                    <select
-                      name="stockStatus"
-                      value={editForm.stockStatus}
-                      onChange={handleEditChange}
-                      className={styles.editInput}
-                    >
-                      <option value="available">Available</option>
-                      <option value="soldout">Sold Out</option>
-                    </select>
-
-                    <textarea
-                      name="description"
-                      placeholder="Description"
-                      value={editForm.description}
-                      onChange={handleEditChange}
-                      className={styles.editTextarea}
-                    />
-
-                    <button
-                      className={styles.saveBtn}
-                      onClick={() => handleUpdateProduct(product._id)}
-                      disabled={approveProductLoading}
-                    >
-                      {approveProductLoading
-                        ? "Updating..."
-                        : "Save Changes"}
-                    </button>
-                  </div>
-                )}
               </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* PERSISTENT PAGINATION WRAPPER FOOTER */}
+      {/* PERSISTENT PAGINATION FOOTER */}
       <div className={styles.paginationWrapper}>
-        <button 
+        <button
           className={styles.pageArrowButton}
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
         >
           &laquo; Previous
         </button>
-        
+
         <div className={styles.pageNumbersGrid}>
-          {Array.from({ length: totalPages }, (_, index) => {
-            const pageNum = index + 1;
-            return (
-              <button
-                key={pageNum}
-                className={`${styles.pageNumberPill} ${currentPage === pageNum ? styles.activePageNumberPill : ""}`}
-                onClick={() => handlePageChange(pageNum)}
-              >
-                {pageNum}
-              </button>
-            );
-          })}
+          {(() => {
+            let startPage = currentPage;
+            if (currentPage === totalPages && totalPages > 1) {
+              startPage = currentPage - 1;
+            }
+
+            const pageNumbers = [];
+            const endPage = Math.min(totalPages, startPage + 1);
+
+            for (let i = startPage; i <= endPage; i++) {
+              pageNumbers.push(
+                <button
+                  key={i}
+                  className={`${styles.pageNumberPill} ${
+                    currentPage === i ? styles.activePageNumberPill : ""
+                  }`}
+                  onClick={() => handlePageChange(i)}
+                >
+                  {i}
+                </button>
+              );
+            }
+            return pageNumbers;
+          })()}
         </div>
 
-        <button 
+        <button
           className={styles.pageArrowButton}
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}

@@ -10,13 +10,13 @@ function AdminApprovedProducts() {
 
   // PAGINATION STATES
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6; // Matching structural inventory limit configurations
+  const itemsPerPage = 3; // Matching structural inventory limit configurations
 
   const fetchApprovedProducts = async () => {
     try {
       const token = localStorage.getItem("token");
       const baseUrl = process.env.REACT_APP_API_URL ? process.env.REACT_APP_API_URL.replace(/\/$/, "") : "";
-      
+
       const response = await fetch(
         `${baseUrl}/api/products/admin/approved-products`,
         {
@@ -103,30 +103,45 @@ function AdminApprovedProducts() {
           {/* PAGINATION CONTROL FOOTER UI INTERFACE - PERMANENTLY VISIBLE WHEN RECORDS EXIST */}
           {products.length > 0 && (
             <div className={styles.paginationWrapper}>
-              <button 
+              <button
                 className={styles.pageArrowButton}
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
               >
                 &laquo; Previous
               </button>
-              
+
               <div className={styles.pageNumbersGrid}>
-                {Array.from({ length: totalPages || 1 }, (_, index) => {
-                  const pageNum = index + 1;
-                  return (
-                    <button
-                      key={pageNum}
-                      className={`${styles.pageNumberPill} ${currentPage === pageNum ? styles.activePageNumberPill : ""}`}
-                      onClick={() => handlePageChange(pageNum)}
-                    >
-                      {pageNum}
-                    </button>
-                  );
-                })}
+                {(() => {
+                  // Determine start page based on current selection window
+                  let startPage = Math.max(1, currentPage);
+
+                  // If we are at the very last page, shift backwards to still show 2 pills if possible
+                  if (currentPage === totalPages && totalPages > 1) {
+                    startPage = Math.max(1, currentPage - 1);
+                  }
+
+                  // Calculate the final boundary to show exactly 2 items maximum
+                  const endPage = Math.min(totalPages, startPage + 1);
+
+                  const pageNumbers = [];
+                  for (let i = startPage; i <= endPage; i++) {
+                    pageNumbers.push(
+                      <button
+                        key={i}
+                        className={`${styles.pageNumberPill} ${currentPage === i ? styles.activePageNumberPill : ""
+                          }`}
+                        onClick={() => handlePageChange(i)}
+                      >
+                        {i}
+                      </button>
+                    );
+                  }
+                  return pageNumbers;
+                })()}
               </div>
 
-              <button 
+              <button
                 className={styles.pageArrowButton}
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages || totalPages <= 1}

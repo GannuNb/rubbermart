@@ -26,6 +26,12 @@ export const getSellerDashboardStats = async (req, res) => {
       status: "pending",
     });
 
+    // 🟢 ADDED: Count rejected products for this seller
+    const rejectedProducts = await Product.countDocuments({
+      seller: sellerId,
+      status: "rejected",
+    });
+
     /* =========================
           ORDERS
       ========================= */
@@ -45,6 +51,7 @@ export const getSellerDashboardStats = async (req, res) => {
         totalProducts,
         approvedProducts,
         pendingProducts,
+        rejectedProducts, // 🟢 ADDED: Returning it to frontend
         totalOrders,
       },
     });
