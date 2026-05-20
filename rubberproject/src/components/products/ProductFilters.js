@@ -6,14 +6,22 @@ function ProductFilters({ filters, setFilters }) {
   const categoryOptions = ["Tyre Scrap", "Pyro Oil", "Tyre Steel Scrap"];
 
   const applicationOptions = {
-    "Tyre Scrap": ["Baled Tyres PCR", "Baled Tyres TBR", "Three Piece PCR", "Three Piece TBR", "Shredds", "Mulch PCR", "Rubber Granules/Crum"],
+
+    "Tyre Scrap": ["Baled Tyres PCR", "Baled Tyres TBR", "Three Piece PCR", "Three Piece TBR", "Shreds", "PCR Mulch", "Rubber Granules/Crumb"],
     "Pyro Oil": ["Pyro Oil"],
-    "Tyre Steel Scrap": ["Rubber Crum Steel", "Pyro Steel"],
+    "Tyre Steel Scrap": ["Rubber Crumb Steel", "Pyro Steel"],
+
   };
 
   const availableApplications = filters.category
     ? applicationOptions[filters.category] || []
-    : ["Baled Tyres PCR", "Baled Tyres TBR", "Three Piece PCR", "Three Piece TBR", "Shredds", "Mulch PCR", "Rubber Granules/Crum", "Pyro Oil", "Pyro Steel", "Rubber Crum Steel"];
+
+    : ["Baled Tyres PCR", "Baled Tyres TBR", "Three Piece PCR", "Three Piece TBR", "Shreds", "PCR Mulch", "Rubber Granules/Crumb", "Pyro Oil", "Pyro Steel", "Rubber Crumb Steel"];
+
+  /* =========================
+      HANDLE CHANGE
+  ========================== */
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;

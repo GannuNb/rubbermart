@@ -80,11 +80,11 @@ function BusinessProfile() {
     "Three Piece PCR",
     "Three Piece TBR",
     "Shreds",
-    "Mulch PCR",
+    "PCR Mulch",
     "Rubber Granules/crumb",
     "Pyro Oil",
     "Pyro Steel",
-    "Rubber Crum Steel",
+    "Rubber Crumb Steel",
   ];
 
   const handleChange = (e) => {

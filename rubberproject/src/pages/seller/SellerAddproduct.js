@@ -1,7 +1,13 @@
+// src/pages/seller/SellerAddproduct.js
+
 import React, { useState, useEffect } from "react";
+
 import { useDispatch, useSelector } from "react-redux";
+
 import { addProductThunk } from "../../redux/slices/sellerProductThunk";
+
 import addstyles from "../../styles/Seller/SellerAddProduct.module.css";
+
 import CustomAlert from "../../components/alert/CustomAlert";
 
 import { resetProductState } from "../../redux/slices/sellerProductSlice";
@@ -9,11 +15,9 @@ import { resetProductState } from "../../redux/slices/sellerProductSlice";
 function SellerAddproduct() {
   const dispatch = useDispatch();
 
-  const {
-    addProductLoading,
-    addProductError,
-    addProductSuccess,
-  } = useSelector((state) => state.sellerProduct);
+  const { addProductLoading, addProductError, addProductSuccess } = useSelector(
+    (state) => state.sellerProduct,
+  );
 
   const [alertData, setAlertData] = useState({
     show: false,
@@ -34,9 +38,14 @@ function SellerAddproduct() {
   });
 
   const [images, setImages] = useState([]);
+
   const [manualHsnEdit, setManualHsnEdit] = useState(false);
 
+  const [isCustomLocation, setIsCustomLocation] = useState(false);
+
   const categoryOptions = ["Tyre Scrap", "Pyro Oil", "Tyre Steel Scrap"];
+
+  const loadingLocationOptions = ["Ex Chennai", "Ex Mundra", "Ex Nhavasheva"];
 
   const applicationOptions = {
     "Tyre Scrap": [
@@ -44,25 +53,36 @@ function SellerAddproduct() {
       "Baled Tyres TBR",
       "Three Piece PCR",
       "Three Piece TBR",
-      "Shredds",
-      "Mulch PCR",
-      "Rubber Granules/Crum",
+      "Shreds",
+      "PCR Mulch",
+      "Rubber Granules/Crumb",
     ],
+
     "Pyro Oil": ["Pyro Oil"],
-    "Tyre Steel Scrap": ["Pyro Steel", "Rubber Crum Steel"],
+
+    "Tyre Steel Scrap": ["Pyro Steel", "Rubber Crumb Steel"],
   };
 
   const hsnCodeMap = {
     "Baled Tyres PCR": "40040000",
+
     "Baled Tyres TBR": "40040000",
+
     "Three Piece PCR": "40040000",
+
     "Three Piece TBR": "40040000",
-    "Shredds": "40040000",
-    "Mulch PCR": "40040000",
-    "Rubber Granules/Crum": "40040000",
+
+    Shreds: "40040000",
+
+    "PCR Mulch": "40040000",
+
+    "Rubber Granules/Crumb": "40040000",
+
     "Pyro Oil": "27101990",
+
     "Pyro Steel": "72042900",
-    "Rubber Crum Steel": "72042900",
+
+    "Rubber Crumb Steel": "72042900",
   };
 
   useEffect(() => {
@@ -86,7 +106,10 @@ function SellerAddproduct() {
       });
 
       setImages([]);
+
       setManualHsnEdit(false);
+
+      setIsCustomLocation(false);
     }
   }, [addProductSuccess]);
 
@@ -100,14 +123,17 @@ function SellerAddproduct() {
       });
     }
   }, [addProductError]);
-useEffect(() => {
-  return () => {
-    dispatch(resetProductState());
-  };
-}, [dispatch]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetProductState());
+    };
+  }, [dispatch]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    /* CATEGORY */
 
     if (name === "category") {
       setFormData((prev) => ({
@@ -116,9 +142,13 @@ useEffect(() => {
         application: "",
         hsnCode: "",
       }));
+
       setManualHsnEdit(false);
+
       return;
     }
+
+    /* APPLICATION */
 
     if (name === "application") {
       if (!value) {
@@ -127,25 +157,56 @@ useEffect(() => {
           application: "",
           hsnCode: "",
         }));
+
         setManualHsnEdit(false);
       } else {
         setFormData((prev) => ({
           ...prev,
           application: value,
+
           hsnCode: manualHsnEdit ? prev.hsnCode : hsnCodeMap[value] || "",
         }));
       }
+
       return;
     }
 
+    /* HSN */
+
     if (name === "hsnCode") {
       setManualHsnEdit(true);
+
       setFormData((prev) => ({
         ...prev,
         hsnCode: value,
       }));
+
       return;
     }
+
+    /* LOCATION */
+
+    if (name === "loadingLocationSelect") {
+      if (value === "custom") {
+        setIsCustomLocation(true);
+
+        setFormData((prev) => ({
+          ...prev,
+          loadingLocation: "",
+        }));
+      } else {
+        setIsCustomLocation(false);
+
+        setFormData((prev) => ({
+          ...prev,
+          loadingLocation: value,
+        }));
+      }
+
+      return;
+    }
+
+    /* DEFAULT */
 
     setFormData((prev) => ({
       ...prev,
@@ -163,6 +224,7 @@ useEffect(() => {
         title: "Too Many Images",
         message: "You can upload a maximum of 3 images only.",
       });
+
       return;
     }
 
@@ -171,24 +233,6 @@ useEffect(() => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (
-      !formData.category ||
-      !formData.application ||
-      !formData.quantity ||
-      !formData.loadingLocation ||
-      !formData.countryOfOrigin ||
-      !formData.pricePerMT ||
-      !formData.hsnCode
-    ) {
-      setAlertData({
-        show: true,
-        type: "warning",
-        title: "Missing Fields",
-        message: "Please fill all required fields before submitting.",
-      });
-      return;
-    }
 
     const data = new FormData();
 
@@ -223,6 +267,8 @@ useEffect(() => {
         <h2 className={addstyles.heading}>Add Product</h2>
 
         <form onSubmit={handleSubmit}>
+          {/* CATEGORY */}
+
           <div className={addstyles.formGroup}>
             <select
               name="category"
@@ -232,6 +278,7 @@ useEffect(() => {
               value={formData.category}
             >
               <option value="">Category</option>
+
               {categoryOptions.map((c) => (
                 <option key={c} value={c}>
                   {c}
@@ -239,6 +286,8 @@ useEffect(() => {
               ))}
             </select>
           </div>
+
+          {/* APPLICATION */}
 
           <div className={addstyles.formGroup}>
             <select
@@ -250,6 +299,7 @@ useEffect(() => {
               disabled={!formData.category}
             >
               <option value="">Application</option>
+
               {applicationOptions[formData.category]?.map((a) => (
                 <option key={a} value={a}>
                   {a}
@@ -257,6 +307,8 @@ useEffect(() => {
               ))}
             </select>
           </div>
+
+          {/* QUANTITY + LOCATION */}
 
           <div className={addstyles.formGroup}>
             <input
@@ -269,21 +321,39 @@ useEffect(() => {
               value={formData.quantity}
             />
 
-            <select
-              name="loadingLocation"
-              onChange={handleChange}
-              className={addstyles.select}
-              required
-              value={formData.loadingLocation}
-            >
-              <option value="">Loading Location</option>
-              {["Ex Chennai", "Ex Mundra", "Ex Nhavasheva"].map((l) => (
-                <option key={l} value={l}>
-                  {l}
-                </option>
-              ))}
-            </select>
+            <div className={addstyles.locationWrapper}>
+              <select
+                name="loadingLocationSelect"
+                onChange={handleChange}
+                className={`${addstyles.select} ${addstyles.locationSelect}`}
+                value={isCustomLocation ? "custom" : formData.loadingLocation}
+              >
+                <option value="">Loading Location</option>
+
+                {loadingLocationOptions.map((location) => (
+                  <option key={location} value={location}>
+                    {location}
+                  </option>
+                ))}
+
+                <option value="custom">Enter Custom Location</option>
+              </select>
+
+              {isCustomLocation && (
+                <input
+                  type="text"
+                  name="loadingLocation"
+                  placeholder="Enter Custom Location"
+                  onChange={handleChange}
+                  className={`${addstyles.input} ${addstyles.customLocationInput}`}
+                  required
+                  value={formData.loadingLocation}
+                />
+              )}
+            </div>
           </div>
+
+          {/* COUNTRY + PRICE */}
 
           <div className={addstyles.formGroup}>
             <input
@@ -307,6 +377,8 @@ useEffect(() => {
             />
           </div>
 
+          {/* HSN */}
+
           <div className={addstyles.formGroup}>
             <input
               type="text"
@@ -317,6 +389,8 @@ useEffect(() => {
               value={formData.hsnCode}
             />
           </div>
+
+          {/* IMAGES */}
 
           <div className={addstyles.formGroup}>
             <label htmlFor="images" className={addstyles.fileLabel}>
@@ -333,6 +407,8 @@ useEffect(() => {
             />
           </div>
 
+          {/* DESCRIPTION */}
+
           <div className={`${addstyles.formGroup} ${addstyles.fullWidth}`}>
             <textarea
               name="description"
@@ -342,6 +418,8 @@ useEffect(() => {
               value={formData.description}
             />
           </div>
+
+          {/* BUTTON */}
 
           <button
             type="submit"

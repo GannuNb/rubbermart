@@ -72,7 +72,7 @@ const TyreScrap = () => {
         },
         { 
             id: 6, 
-            name: "Rubber Granules", 
+            name: "Rubber Granules/Crumb", 
             category: "Processed", 
             image: rubbergranules, 
             featured: true, 
@@ -80,7 +80,7 @@ const TyreScrap = () => {
         },
         { 
             id: 7, 
-            name: "Mulch PCR", 
+            name: "PCR Mulch", 
             category: "Processed", 
             image: mulch, 
             featured: false, 

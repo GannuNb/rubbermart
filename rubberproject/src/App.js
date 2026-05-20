@@ -83,36 +83,19 @@ function AppContent() {
 
       <Routes>
         {/* pages */}
-                      <Route
-                path="/"
-                element={
-                  (() => {
-                    const user = JSON.parse(
-                      localStorage.getItem("user")
-                    );
-
-                    if (user?.role === "admin") {
-                      return (
-                        <Navigate
-                          to="/admin-dashboard"
-                          replace
-                        />
-                      );
-                    }
-
-                    if (user?.role === "seller") {
-                      return (
-                        <Navigate
-                          to="/seller-dashboard"
-                          replace
-                        />
-                      );
-                    }
-
-                    return <Homepage />;
-                  })()
-                }
-              />
+        <Route
+          path="/"
+          element={(() => {
+            const user = JSON.parse(localStorage.getItem("user"));
+            if (user?.role === "admin") {
+              return <Navigate to="/admin-dashboard" replace />;
+            }
+            if (user?.role === "seller") {
+              return <Navigate to="/seller-dashboard" replace />;
+            }
+            return <Homepage />;
+          })()}
+        />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/business-profile" element={<BusinessProfile />} />

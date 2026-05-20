@@ -31,7 +31,7 @@ const TyreSteelScrap = () => {
         },
         {
             id: 2,
-            name: "Rubber Crum Steel",
+            name: "Rubber Crumb Steel",
             image: RubberCrumSteel, // Uses RubberCrumSteel1.jpg
             desc: "Thin gauge high-tensile wire extracted during mechanical shredding and secondary magnetic separation processes.",
             featured: false,

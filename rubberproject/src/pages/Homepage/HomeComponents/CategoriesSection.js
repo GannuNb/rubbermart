@@ -57,11 +57,11 @@ function CategoriesSection() {
     },
 
     {
-      label: "Shredds",
-      desc: "Premium tyre shredds",
+      label: "Shreds",
+      desc: "Premium tyre shreds",
       image: shreddsImg,
       category: "Tyre Scrap",
-      application: "Shredds",
+      application: "Shreds",
     },
 
     {
