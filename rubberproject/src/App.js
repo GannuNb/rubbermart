@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import {  BrowserRouter as Router,  Routes,  Route,  useLocation,  Navigate,} from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 //pages
@@ -81,7 +81,36 @@ function AppContent() {
 
       <Routes>
         {/* pages */}
-        <Route path="/" element={<Homepage />} />
+                      <Route
+                path="/"
+                element={
+                  (() => {
+                    const user = JSON.parse(
+                      localStorage.getItem("user")
+                    );
+
+                    if (user?.role === "admin") {
+                      return (
+                        <Navigate
+                          to="/admin-dashboard"
+                          replace
+                        />
+                      );
+                    }
+
+                    if (user?.role === "seller") {
+                      return (
+                        <Navigate
+                          to="/seller-dashboard"
+                          replace
+                        />
+                      );
+                    }
+
+                    return <Homepage />;
+                  })()
+                }
+              />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/business-profile" element={<BusinessProfile />} />
