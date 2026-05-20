@@ -76,10 +76,8 @@ export const getOrdersOverview = async (req, res) => {
     startDate.setHours(0, 0, 0, 0);
 
     startDate.setDate(
-      startDate.getDate() - (days - 1)
+      startDate.getDate() - (days - 1),
     );
-
-
 
     /*
     --------------------------------------------------------
@@ -95,8 +93,6 @@ export const getOrdersOverview = async (req, res) => {
       isDeleted: false,
     });
 
-
-
     /*
     --------------------------------------------------------
     CREATE DATE MAP
@@ -105,8 +101,6 @@ export const getOrdersOverview = async (req, res) => {
 
     const graphMap = {};
 
-
-
     /*
     --------------------------------------------------------
     ADD ALL DATES FIRST
@@ -114,11 +108,10 @@ export const getOrdersOverview = async (req, res) => {
     */
 
     for (let i = 0; i < days; i++) {
-
       const currentDate = new Date(startDate);
 
       currentDate.setDate(
-        startDate.getDate() + i
+        startDate.getDate() + i,
       );
 
       const formattedDate =
@@ -127,13 +120,11 @@ export const getOrdersOverview = async (req, res) => {
           {
             day: "2-digit",
             month: "short",
-          }
+          },
         );
 
       graphMap[formattedDate] = 0;
     }
-
-
 
     /*
     --------------------------------------------------------
@@ -142,27 +133,20 @@ export const getOrdersOverview = async (req, res) => {
     */
 
     orders.forEach((order) => {
-
       const formattedDate =
         new Date(
-          order.createdAt
-        ).toLocaleDateString(
-          "en-IN",
-          {
-            day: "2-digit",
-            month: "short",
-          }
-        );
+          order.createdAt,
+        ).toLocaleDateString("en-IN", {
+          day: "2-digit",
+          month: "short",
+        });
 
       if (
         graphMap[formattedDate] !== undefined
       ) {
         graphMap[formattedDate] += 1;
       }
-
     });
-
-
 
     /*
     --------------------------------------------------------
@@ -171,13 +155,11 @@ export const getOrdersOverview = async (req, res) => {
     */
 
     const graphData = Object.entries(
-      graphMap
+      graphMap,
     ).map(([date, orders]) => ({
       date,
       orders,
     }));
-
-
 
     /*
     --------------------------------------------------------
@@ -193,24 +175,35 @@ export const getOrdersOverview = async (req, res) => {
           order.orderStatus ===
             "completed" ||
           order.orderStatus ===
-            "delivered"
+            "delivered",
       ).length;
 
     const partialShipments =
       orders.filter(
         (order) =>
           order.orderStatus ===
-          "partially_shipped"
+          "partially_shipped",
       ).length;
 
-    const pendingOrders =
+    const waitingForSeller =
+      orders.filter(
+        (order) =>
+          order.orderStatus === "pending",
+      ).length;
+
+    const rejectedOrders =
       orders.filter(
         (order) =>
           order.orderStatus ===
-          "pending"
+          "cancelled",
       ).length;
 
-
+    const sellerConfirmedOrders =
+      orders.filter(
+        (order) =>
+          order.orderStatus ===
+          "seller_confirmed",
+      ).length;
 
     return res.status(200).json({
       success: true,
@@ -219,17 +212,17 @@ export const getOrdersOverview = async (req, res) => {
         totalOrders,
         completedOrders,
         partialShipments,
-        pendingOrders,
+        waitingForSeller,
+        rejectedOrders,
+        sellerConfirmedOrders,
       },
 
       graphData,
     });
-
   } catch (error) {
-
     console.log(
       "Orders Overview Error:",
-      error
+      error,
     );
 
     return res.status(500).json({
@@ -237,7 +230,6 @@ export const getOrdersOverview = async (req, res) => {
       message:
         "Failed to fetch orders overview",
     });
-
   }
 };
 

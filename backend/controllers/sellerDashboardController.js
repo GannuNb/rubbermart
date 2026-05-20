@@ -59,15 +59,19 @@ export const getSellerDashboardStats = async (req, res) => {
   }
 };
 
-export const getSellerOrdersOverview = async (req, res) => {
+export const getSellerOrdersOverview = async (
+  req,
+  res,
+) => {
   try {
     const sellerId = req.user._id;
 
-    const filter = req.query.filter || "7days";
+    const filter =
+      req.query.filter || "7days";
 
     /* =========================
-         DATE RANGE
-      ========================= */
+       DATE RANGE
+    ========================= */
 
     let days = 7;
 
@@ -77,11 +81,15 @@ export const getSellerOrdersOverview = async (req, res) => {
 
     const startDate = new Date();
 
-    startDate.setDate(startDate.getDate() - days);
+    startDate.setHours(0, 0, 0, 0);
+
+    startDate.setDate(
+      startDate.getDate() - (days - 1),
+    );
 
     /* =========================
-         FETCH ORDERS
-      ========================= */
+       FETCH ORDERS
+    ========================= */
 
     const orders = await Order.find({
       seller: sellerId,
@@ -89,63 +97,113 @@ export const getSellerOrdersOverview = async (req, res) => {
       createdAt: {
         $gte: startDate,
       },
+
+      isDeleted: false,
     });
 
     /* =========================
-         GRAPH DATA
-      ========================= */
+       GRAPH DATA
+    ========================= */
 
     const graphData = [];
 
     for (let i = days - 1; i >= 0; i--) {
       const currentDate = new Date();
 
-      currentDate.setDate(currentDate.getDate() - i);
-
-      const dateLabel = currentDate.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-      });
-
-      const dayOrders = orders.filter((order) => {
-        const orderDate = new Date(order.createdAt);
-
-        return orderDate.toDateString() === currentDate.toDateString();
-      });
-
-      const completedOrders = dayOrders.filter(
-        (order) =>
-          order.orderStatus === "completed" ||
-          order.orderStatus === "delivered",
+      currentDate.setHours(
+        0,
+        0,
+        0,
+        0,
       );
+
+      currentDate.setDate(
+        currentDate.getDate() - i,
+      );
+
+      const dateLabel =
+        currentDate.toLocaleDateString(
+          "en-US",
+          {
+            month: "short",
+            day: "numeric",
+          },
+        );
+
+      const dayOrders = orders.filter(
+        (order) => {
+          const orderDate = new Date(
+            order.createdAt,
+          );
+
+          return (
+            orderDate.toDateString() ===
+            currentDate.toDateString()
+          );
+        },
+      );
+
+      const completedOrders =
+        dayOrders.filter(
+          (order) =>
+            order.orderStatus ===
+              "completed" ||
+            order.orderStatus ===
+              "delivered",
+        );
 
       graphData.push({
         date: dateLabel,
 
         totalOrders: dayOrders.length,
 
-        completedOrders: completedOrders.length,
+        completedOrders:
+          completedOrders.length,
       });
     }
 
     /* =========================
-         SUMMARY
-      ========================= */
+       SUMMARY
+    ========================= */
 
     const totalOrders = orders.length;
 
-    const completedOrders = orders.filter(
-      (order) =>
-        order.orderStatus === "completed" || order.orderStatus === "delivered",
-    ).length;
+    const completedOrders =
+      orders.filter(
+        (order) =>
+          order.orderStatus ===
+            "completed" ||
+          order.orderStatus ===
+            "delivered",
+      ).length;
 
-    const pendingOrders = orders.filter(
-      (order) => order.orderStatus === "pending",
-    ).length;
+    const waitingForConfirmation =
+      orders.filter(
+        (order) =>
+          order.orderStatus ===
+          "pending",
+      ).length;
 
-    const partialShipmentOrders = orders.filter(
-      (order) => order.orderStatus === "partially_shipped",
-    ).length;
+    const partialShipmentOrders =
+      orders.filter(
+        (order) =>
+          order.orderStatus ===
+          "partially_shipped",
+      ).length;
+
+    const cancelledOrders =
+      orders.filter(
+        (order) =>
+          order.orderStatus ===
+          "cancelled",
+      ).length;
+
+    const confirmedOrders =
+      orders.filter(
+        (order) =>
+          order.orderStatus ===
+          "seller_confirmed",
+      ).length;
 
     return res.status(200).json({
       success: true,
@@ -157,18 +215,26 @@ export const getSellerOrdersOverview = async (req, res) => {
 
         completedOrders,
 
-        pendingOrders,
-
         partialShipmentOrders,
+
+        waitingForConfirmation,
+
+        cancelledOrders,
+
+        confirmedOrders,
       },
     });
   } catch (error) {
-    console.log("Orders Overview Error:", error);
+    console.log(
+      "Orders Overview Error:",
+      error,
+    );
 
     return res.status(500).json({
       success: false,
 
-      message: "Failed to fetch orders overview",
+      message:
+        "Failed to fetch orders overview",
     });
   }
 };

@@ -21,10 +21,6 @@ router.get(  "/orders-overview",  protectUser,  getSellerOrdersOverview);
 router.get(  "/recent-orders",  protectUser,  getRecentSellerOrders);
 router.get(  "/pending-products",  protectUser,  getSellerPendingProducts);
 
-router.get(
-  "/top-selling-products",
-  protectUser,
-  getTopSellingProducts
-);
+router.get(  "/top-selling-products",  protectUser,  getTopSellingProducts);
 
 export default router;

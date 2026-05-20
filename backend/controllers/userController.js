@@ -51,7 +51,6 @@ export const getMyProfile = async (req, res) => {
   }
 };
 
-
 // backend/controllers/userController.js
 
 export const getAllUsersForAdmin = async (req, res) => {
@@ -134,9 +133,7 @@ export const getAllUsersForAdmin = async (req, res) => {
   }
 };
 
-
 // backend/controllers/userController.js
-
 
 export const getUserProfile = async (req, res) => {
   try {
@@ -244,6 +241,90 @@ export const addUserAddress = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Failed to add address",
+    });
+  }
+};
+
+export const updateProfile = async (req, res) => {
+  try {
+    const {
+      fullName,
+      location,
+      phoneNumber,
+      billingAddress,
+      shippingAddress,
+      interestedProducts,
+    } = req.body;
+
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // =========================
+    // BASIC USER INFO
+    // =========================
+
+    if (fullName !== undefined) {
+      user.fullName = fullName;
+    }
+
+    if (location !== undefined) {
+      user.location = location;
+    }
+
+    // =========================
+    // BUSINESS PROFILE INFO
+    // =========================
+
+    if (phoneNumber !== undefined) {
+      user.businessProfile.phoneNumber = phoneNumber;
+    }
+
+    if (billingAddress !== undefined) {
+      user.businessProfile.billingAddress = billingAddress;
+    }
+
+    if (shippingAddress !== undefined) {
+      user.businessProfile.shippingAddress = shippingAddress;
+    }
+
+    // buyer only
+    if (
+      user.role === "buyer" &&
+      interestedProducts !== undefined
+    ) {
+      user.businessProfile.interestedProducts =
+        interestedProducts;
+    }
+
+    // =========================
+    // IMPORTANT:
+    // NOT ALLOWING UPDATE
+    // =========================
+    // companyName
+    // gstNumber
+    // panNumber
+    // gstCertificate
+    // panCertificate
+
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      user,
+    });
+  } catch (error) {
+    console.log("Update Profile Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Server error while updating profile",
     });
   }
 };

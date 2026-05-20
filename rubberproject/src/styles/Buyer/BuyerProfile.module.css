@@ -481,3 +481,74 @@
     justify-content: center;
   }
 }
+
+.editInput,
+.editTextarea,
+.card input,
+.card textarea {
+  width: 90%;
+  margin-top: 10px;
+  border: 1px solid #d8c8f3;
+  background: white;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 15px;
+  outline: none;
+  transition: 0.2s ease;
+}
+
+.card input:focus,
+.card textarea:focus {
+  border-color: #6c2fa4;
+  box-shadow: 0 0 0 4px rgba(108, 47, 164, 0.08);
+}
+
+.card textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.cancelBtn {
+  border: none;
+  outline: none;
+  background: #e5e7eb;
+  color: #111827;
+  padding: 16px 28px;
+  border-radius: 16px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.checkboxGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #faf8ff;
+  border: 1px solid #eee7ff;
+  border-radius: 16px;
+  padding: 16px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.checkboxLabel:hover {
+  border-color: #6c2fa4;
+}
+
+.checkboxLabel input {
+  width: 18px;
+  height: 18px;
+  accent-color: #6c2fa4;
+}
+
+.checkboxLabel span {
+  color: #111827;
+  font-weight: 600;
+}
