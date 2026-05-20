@@ -14,15 +14,15 @@ export const SEARCH_SUGGESTIONS = [
 
   "Three Piece TBR",
 
-  "Shredds",
+  "Shreds",
 
-  "Mulch PCR",
+  "PCR Mulch",
 
-  "Rubber Granules/Crum",
+  "Rubber Granules/Crumb",
 
   "Pyro Steel",
 
-  "Rubber Crum Steel",
+  "Rubber Crumb Steel",
 ];
 
 

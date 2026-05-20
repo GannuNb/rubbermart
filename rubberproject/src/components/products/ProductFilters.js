@@ -25,16 +25,16 @@ function ProductFilters({ filters, setFilters }) {
 
       "Three Piece TBR",
 
-      "Shredds",
+      "Shreds",
 
-      "Mulch PCR",
+      "PCR Mulch",
 
-      "Rubber Granules/Crum",
+      "Rubber Granules/Crumb",
     ],
 
     "Pyro Oil": ["Pyro Oil", "Pyro Steel"],
 
-    "Tyre Steel Scrap": ["Rubber Crum Steel"],
+    "Tyre Steel Scrap": ["Rubber Crumb Steel"],
   };
 
   /* =========================
@@ -52,17 +52,17 @@ function ProductFilters({ filters, setFilters }) {
 
         "Three Piece TBR",
 
-        "Shredds",
+        "Shreds",
 
-        "Mulch PCR",
+        "PCR Mulch",
 
-        "Rubber Granules/Crum",
+        "Rubber Granules/Crumb",
 
         "Pyro Oil",
 
         "Pyro Steel",
 
-        "Rubber Crum Steel",
+        "Rubber Crumb Steel",
       ];
 
   /* =========================

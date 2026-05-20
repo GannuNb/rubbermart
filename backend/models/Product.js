@@ -33,8 +33,8 @@ const productSchema = new mongoose.Schema(
 
     loadingLocation: {
       type: String,
-      enum: ["Ex Chennai", "Ex Mundra", "Ex Nhavasheva"],
       required: true,
+      trim: true,
     },
 
     countryOfOrigin: {
@@ -64,12 +64,12 @@ const productSchema = new mongoose.Schema(
       default: "pending",
     },
     stockStatus: {
-    type: String,
-    enum: ["available", "soldout"],
-    default: "available",
+      type: String,
+      enum: ["available", "soldout"],
+      default: "available",
+    },
   },
-  },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("Product", productSchema);

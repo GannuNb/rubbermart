@@ -30,7 +30,7 @@ const productOptions = [
   "Three Piece PCR",
   "Three Piece TBR",
   "Shreds",
-  "Mulch PCR",
+  "PCR Mulch",
   "Rubber Granules/crumb",
   "Pyro Oil",
   "Pyro Steel",
