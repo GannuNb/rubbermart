@@ -1,74 +1,64 @@
-// src/components/admin/AdminProducts.js
+// src/components/admin/AdminRejectedProducts.js
 
 import React, { useEffect, useState } from "react";
 import styles from "../../styles/Admin/AdminProducts.module.css";
 
-function AdminProducts() {
+function AdminRejectedProducts() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-  const fetchAllProducts = async () => {
+  const fetchRejectedProducts = async () => {
     try {
       const token = localStorage.getItem("token");
-      const headers = { Authorization: `Bearer ${token}` };
       const baseUrl = process.env.REACT_APP_API_URL ? process.env.REACT_APP_API_URL.replace(/\/$/, "") : "";
 
-      // Single fetch call replaces the old multi-stream architecture
-      const response = await fetch(`${baseUrl}/api/products/admin/all-products`, { headers });
-      
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success && data.products) {
-          setProducts(data.products);
+      const response = await fetch(
+        `${baseUrl}/api/products/admin/rejected-products`,
+        {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
         }
+      );
+      
+      const data = await response.json();
+      if (data.success) {
+        setProducts(data.products);
       }
     } catch (error) {
-      console.error("Compilation process tracking failure:", error);
+      console.log("Fetch Rejected Products Error:", error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchAllProducts();
+    fetchRejectedProducts();
   }, []);
-
-  const getStatusBadgeStyle = (status) => {
-    switch (status?.toLowerCase()) {
-      case "approved":
-        return { backgroundColor: "#ecfdf3", color: "#027a48", border: "1px solid #d1fadf" };
-      case "rejected":
-        return { backgroundColor: "#fff1f2", color: "#b91c1c", border: "1px solid #fee2e2" };
-      case "pending":
-      default:
-        return { backgroundColor: "#fff7ed", color: "#c2410c", border: "1px solid #ffedd5" };
-    }
-  };
 
   return (
     <div className={styles.adminProductsWrapper}>
       <div className={styles.adminProductsHeader}>
-        <h1 className={styles.adminProductsTitle}>Total Products</h1>
+        <h1 className={styles.adminProductsTitle}>Rejected Products</h1>
         <p className={styles.adminProductsSubtitle}>
-          View comprehensive inventory across approved, pending, and rejected statuses
+          View and manage all rejected seller products
         </p>
       </div>
 
       {loading ? (
-        <div className={styles.adminProductsEmptyState}>Loading total products inventory...</div>
+        <div className={styles.adminProductsEmptyState}>Loading rejected products...</div>
       ) : products.length === 0 ? (
-        <div className={styles.adminProductsEmptyState}>No products found inside inventory records</div>
+        <div className={styles.adminProductsEmptyState}>No rejected products found</div>
       ) : (
         <div className={styles.adminProductsGrid}>
           {products.map((product) => (
             <div key={product._id} className={styles.adminProductCard}>
               <div className={styles.adminProductImageWrapper}>
                 {product.images?.length > 0 && product.images[0].image ? (
-                  <img
-                    src={product.images[0].image}
-                    alt={product.category}
-                    className={styles.adminProductImage}
+                  <img 
+                    src={product.images[0].image} 
+                    alt={product.category} 
+                    className={styles.adminProductImage} 
                   />
                 ) : (
                   <div className={styles.adminProductNoImage}>No Image Available</div>
@@ -77,11 +67,12 @@ function AdminProducts() {
               <div className={styles.adminProductContent}>
                 <div className={styles.adminProductTopRow}>
                   <h3 className={styles.adminProductCategory}>{product.category}</h3>
-                  <span
-                    className={styles.adminProductStatusBadge}
-                    style={getStatusBadgeStyle(product.status)}
+                  {/* Styled dynamically using a custom inline background to match your error badges */}
+                  <span 
+                    className={styles.adminProductStatusBadge} 
+                    style={{ backgroundColor: "#fff1f2", color: "#b91c1c", border: "1px solid #fee2e2" }}
                   >
-                    {product.status ? product.status.charAt(0).toUpperCase() + product.status.slice(1) : "Pending"}
+                    Rejected
                   </span>
                 </div>
                 <div className={styles.adminShortInfo}>
@@ -110,7 +101,7 @@ function AdminProducts() {
           <div className={styles.adminProductModal} onClick={(e) => e.stopPropagation()}>
             <button className={styles.adminModalCloseButton} onClick={() => setSelectedProduct(null)}>×</button>
             <h2 className={styles.adminModalTitle}>{selectedProduct.category}</h2>
-
+            
             {selectedProduct.images?.length > 0 && selectedProduct.images[0].image ? (
               <img 
                 src={selectedProduct.images[0].image} 
@@ -120,7 +111,7 @@ function AdminProducts() {
             ) : (
               <div className={styles.adminProductNoImage} style={{ height: "200px", marginBottom: "15px" }}>No Image Available</div>
             )}
-
+            
             <div className={styles.adminModalDetails}>
               <p><strong>Application:</strong> {selectedProduct.application}</p>
               <p><strong>Quantity:</strong> {selectedProduct.quantity} MT</p>
@@ -130,14 +121,17 @@ function AdminProducts() {
               <p><strong>HSN Code:</strong> {selectedProduct.hsnCode}</p>
               <p><strong>Seller Name:</strong> {selectedProduct.seller?.fullName || "N/A"}</p>
               <p><strong>Seller Email:</strong> {selectedProduct.seller?.email || "N/A"}</p>
-
+              
               <p style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <strong>Status:</strong>
-                <span className={styles.adminProductStatusBadge} style={getStatusBadgeStyle(selectedProduct.status)}>
-                  {selectedProduct.status ? selectedProduct.status.toUpperCase() : "PENDING"}
+                <strong>Status:</strong> 
+                <span 
+                  className={styles.adminProductStatusBadge} 
+                  style={{ backgroundColor: "#fff1f2", color: "#b91c1c", border: "1px solid #fee2e2" }}
+                >
+                  {selectedProduct.status ? selectedProduct.status.toUpperCase() : "REJECTED"}
                 </span>
               </p>
-
+              
               <p><strong>Stock Status:</strong> {selectedProduct.stockStatus}</p>
               {selectedProduct.description && <p><strong>Description:</strong> {selectedProduct.description}</p>}
             </div>
@@ -148,4 +142,4 @@ function AdminProducts() {
   );
 }
 
-export default AdminProducts;
+export default AdminRejectedProducts;

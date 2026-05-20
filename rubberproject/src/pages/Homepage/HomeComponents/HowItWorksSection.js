@@ -29,7 +29,7 @@ function HowItWorksSection() {
     {
       icon: <Search size={22} />,
       title: "Explore & Connect",
-      desc: "Find verified suppliers, products, and connect with buyers or sellers worldwide.",
+      desc: "Find verified suppliers, products, and connect with buyers or sellers country wide.",
       theme: "green",
     },
 

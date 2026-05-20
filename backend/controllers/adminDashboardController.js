@@ -16,6 +16,7 @@ export const getDashboardOverview = async (req, res) => {
       totalProducts,
       approvedProducts,
       pendingProducts,
+      rejectedProducts, // Added placeholder variable for the new array index location
       totalOrders,
       totalUsers,
     ] = await Promise.all([
@@ -27,6 +28,10 @@ export const getDashboardOverview = async (req, res) => {
 
       Product.countDocuments({
         status: "pending",
+      }),
+
+      Product.countDocuments({
+        status: "rejected", // Added database query count for rejected status types
       }),
 
       Order.countDocuments({
@@ -43,6 +48,7 @@ export const getDashboardOverview = async (req, res) => {
         totalProducts,
         approvedProducts,
         pendingProducts,
+        rejectedProducts, // Added key variable so it gets sent down in your server responses
         totalOrders,
         totalUsers,
       },

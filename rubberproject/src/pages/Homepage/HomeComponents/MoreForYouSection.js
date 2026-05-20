@@ -25,7 +25,7 @@ const MoreForYouSection = () => {
   const registerCard = {
     icon: <UserPlus size={26} />,
     title: "Register as Buyer / Seller",
-    desc: "Create your business account and start connecting with verified buyers and suppliers worldwide.",
+    desc: "Create your business account and start connecting with verified buyers and suppliers country wide.",
     btn: "Create Account",
     green: false,
     action: () => navigate("/signup"),

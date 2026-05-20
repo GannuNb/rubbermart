@@ -171,11 +171,6 @@ export const adminLinks = [
     icon: FaBoxOpen,
   },
   {
-    label: "Approved Products",
-    path: "/admin-approved-products",
-    icon: FaCheckCircle,
-  },
-  {
     label: "Pending Products",
     path: "/admin-pending-products",
     icon: FaClock,

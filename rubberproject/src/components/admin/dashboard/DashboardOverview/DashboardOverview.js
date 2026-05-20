@@ -1,21 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom"; 
 import {
   FaBoxOpen,
   FaCheckCircle,
   FaClock,
   FaShoppingCart,
   FaUsers,
+  FaTimesCircle, // Icon is imported correctly here
 } from "react-icons/fa";
 
 import styles from "./DashboardOverview.module.css";
 
 function DashboardOverview() {
-  const navigate = useNavigate(); // Initialize hook
+  const navigate = useNavigate(); 
   const [overview, setOverview] = useState({
     totalProducts: 0,
     approvedProducts: 0,
     pendingProducts: 0,
+    rejectedProducts: 0, // FIXED: Ensure this is explicitly defined in your initial state!
     totalOrders: 0,
     totalUsers: 0,
   });
@@ -27,14 +29,15 @@ function DashboardOverview() {
   const fetchDashboardOverview = async () => {
     try {
       const token = localStorage.getItem("token");
+      const baseUrl = process.env.REACT_APP_API_URL ? process.env.REACT_APP_API_URL.replace(/\/$/, "") : "";
 
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/admin-dashboard/overview`,
+        `${baseUrl}/api/admin-dashboard/overview`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
 
       const data = await response.json();
@@ -60,14 +63,21 @@ function DashboardOverview() {
       value: overview.approvedProducts,
       icon: <FaCheckCircle />,
       className: styles.greenCard,
-      path: "/admin-approved-products", // Updated path to match new route structure
+      path: "/admin-approved-products",
     },
     {
       title: "Pending Products",
       value: overview.pendingProducts,
       icon: <FaClock />,
       className: styles.orangeCard,
-      path: "/admin-pending-products", // Updated path to route specifically to pending view
+      path: "/admin-pending-products",
+    },
+    {
+      title: "Rejected Products",
+      value: overview.rejectedProducts, // Using the cleanly tracked value now
+      icon: <FaTimesCircle />, 
+      className: styles.redCard, // This class will now load properly from your updated CSS file
+      path: "/admin-rejected-products",
     },
     {
       title: "Total Orders",
@@ -95,8 +105,8 @@ function DashboardOverview() {
               ${styles.dashboardCard}
               ${card.className}
             `}
-            onClick={() => navigate(card.path)} // Trigger routing action
-            style={{ cursor: "pointer" }} // Change cursor type to pointer
+            onClick={() => navigate(card.path)} 
+            style={{ cursor: "pointer" }} 
           >
             <div className={styles.dashboardCardTop}>
               <div className={styles.dashboardIcon}>{card.icon}</div>

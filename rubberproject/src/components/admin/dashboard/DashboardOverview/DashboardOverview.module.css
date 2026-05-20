@@ -136,6 +136,13 @@
   );
 }
 
+/* Add this inside DashboardOverview.module.css */
+
+.redCard .dashboardIcon {
+  color: #ffffff;            /* Deep red icon fill color */
+  background-color: #e6424d; /* Circular background wrapper tint for the icon */
+}
+
 .purpleCard .dashboardIcon {
   background: linear-gradient(
     135deg,
@@ -202,3 +209,4 @@
   }
 
 }
+

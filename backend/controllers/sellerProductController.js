@@ -94,6 +94,7 @@ export const getSellerProducts = async (req, res) => {
   }
 };
 
+// 2. PENDING (Kept identical to your original structure)
 export const getAllPendingProductsForAdmin = async (req, res) => {
   try {
     const products = await Product.find({
@@ -116,7 +117,6 @@ export const getAllPendingProductsForAdmin = async (req, res) => {
     });
   } catch (error) {
     console.log("Get Admin Pending Products Error:", error);
-
     return res.status(500).json({
       success: false,
       message: "Failed to fetch pending products",
@@ -258,8 +258,7 @@ export const updateSellerProduct = async (req, res) => {
   }
 };
 
-// backend/controllers/sellerProductController.js
-
+// 1. APPROVED (Your exact original code)
 export const getAllApprovedProductsForAdmin = async (req, res) => {
   try {
     const products = await Product.find({
@@ -282,10 +281,73 @@ export const getAllApprovedProductsForAdmin = async (req, res) => {
     });
   } catch (error) {
     console.log("Get Approved Products Error:", error);
-
     return res.status(500).json({
       success: false,
       message: "Failed to fetch approved products",
+    });
+  }
+};
+
+// 3. REJECTED (Updated to match your original structure perfectly)
+export const getAllRejectedProductsForAdmin = async (req, res) => {
+  try {
+    const products = await Product.find({
+      status: "rejected",
+    })
+      .populate("seller", "fullName email")
+      .sort({ updatedAt: -1 });
+
+    const formattedProducts = products.map((product) => ({
+      ...product._doc,
+      images: product.images.map((img) => ({
+        contentType: img.contentType,
+        image: `data:${img.contentType};base64,${img.data.toString("base64")}`,
+      })),
+    }));
+
+    return res.status(200).json({
+      success: true,
+      products: formattedProducts, // Matches your array response format exactly
+    });
+  } catch (error) {
+    console.log("Get Admin Rejected Products Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch rejected products",
+    });
+  }
+};
+
+// backend/controllers/sellerProductController.js
+
+// NEW UNIFIED METHOD: Replaces the 3 individual status endpoints
+export const getAllProductsForAdmin = async (req, res) => {
+  try {
+    // Find all products matching the target administrative statuses
+    const products = await Product.find({
+      status: { $in: ["approved", "pending", "rejected"] }
+    })
+      .populate("seller", "fullName email")
+      .sort({ createdAt: -1 });
+
+    // YOUR ORIGINAL IMAGE FORMATTING (Kept completely untouched)
+    const formattedProducts = products.map((product) => ({
+      ...product._doc,
+      images: product.images.map((img) => ({
+        contentType: img.contentType,
+        image: `data:${img.contentType};base64,${img.data.toString("base64")}`,
+      })),
+    }));
+
+    return res.status(200).json({
+      success: true,
+      products: formattedProducts,
+    });
+  } catch (error) {
+    console.log("Get Admin Comprehensive Inventory Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch dashboard inventory analytics",
     });
   }
 };

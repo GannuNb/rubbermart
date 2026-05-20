@@ -28,7 +28,7 @@ const FAQPage = () => {
             num: "01",
             category: "All Questions",
             question: "What is RubberScrapMart?",
-            answer: "RubberScrapMart is a trusted B2B marketplace for rubber scrap, tyre scraps, crumb rubber, pyrolysis oil, and other rubber related materials. We connect verified buyers and sellers from around the world, ensuring safe, transparent and reliable trade."
+            answer: "RubberScrapMart is a trusted B2B marketplace for rubber scrap, tyre scraps, crumb rubber, pyrolysis oil, and other rubber related materials. We connect verified buyers and sellers from around the country, ensuring safe, transparent and reliable trade."
         },
         {
             id: 2,
