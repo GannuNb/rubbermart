@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+// src/components/admin/AdminPendingProducts.js
 
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
 import {
   fetchAdminPendingProductsThunk,
   approveProductThunk,
@@ -25,9 +25,21 @@ function AdminPendingProducts() {
     rejectProductLoadingId,
   } = useSelector((state) => state.sellerProduct);
 
+  // PAGINATION STATES
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
+
   useEffect(() => {
     dispatch(fetchAdminPendingProductsThunk());
   }, [dispatch]);
+
+  // Reset pagination window when items get removed from the list stream (approved/rejected)
+  useEffect(() => {
+    const maxPagesPossible = Math.ceil(adminPendingProducts.length / itemsPerPage);
+    if (currentPage > maxPagesPossible && maxPagesPossible > 0) {
+      setCurrentPage(maxPagesPossible);
+    }
+  }, [adminPendingProducts, currentPage]);
 
   const handleApprove = (productId) => {
     dispatch(approveProductThunk(productId));
@@ -53,128 +65,171 @@ function AdminPendingProducts() {
     );
   }
 
+  // PAGINATION CHUNK ENGINE CALCULATION
+  const indexOfLastProduct = currentPage * itemsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
+  const currentProducts = adminPendingProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+  const totalPages = Math.ceil(adminPendingProducts.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <h1>Approve Products</h1>
-
         <p>Review seller submitted products and approve or reject them.</p>
       </div>
 
       {adminPendingProducts.length === 0 ? (
         <div className={styles.emptyState}>
           <h2>No Pending Products</h2>
-
           <p>All seller products have already been reviewed.</p>
         </div>
       ) : (
-        <div className={styles.grid}>
-          {adminPendingProducts.map((product) => (
-            <div className={styles.card} key={product._id}>
-              <div className={styles.imageWrapper}>
-                {product.images?.length > 0 ? (
-                  <img
-                    src={product.images[0].image}
-                    alt={product.application}
-                    className={styles.image}
-                  />
-                ) : (
-                  <div className={styles.noImage}>No Image</div>
-                )}
-              </div>
-
-              <div className={styles.content}>
-                <div className={styles.topSection}>
-                  <h2>{product.application}</h2>
-
-                  <span className={styles.pendingBadge}>Pending</span>
+        <>
+          <div className={styles.grid}>
+            {currentProducts.map((product) => (
+              <div className={styles.card} key={product._id}>
+                <div className={styles.imageWrapper}>
+                  {product.images?.length > 0 ? (
+                    <img
+                      src={product.images[0].image}
+                      alt={product.application}
+                      className={styles.image}
+                    />
+                  ) : (
+                    <div className={styles.noImage}>No Image</div>
+                  )}
                 </div>
 
-                <div className={styles.infoGrid}>
-                  <div>
-                    <span>Category</span>
-                    <p>{product.category}</p>
+                <div className={styles.content}>
+                  <div className={styles.topSection}>
+                    <h2>{product.application}</h2>
+                    <span className={styles.pendingBadge}>Pending</span>
                   </div>
 
-                  <div>
-                    <span>Quantity</span>
-                    <p>{product.quantity} MT</p>
+                  <div className={styles.infoGrid}>
+                    <div>
+                      <span>Category</span>
+                      <p>{product.category}</p>
+                    </div>
+
+                    <div>
+                      <span>Quantity</span>
+                      <p>{product.quantity} MT</p>
+                    </div>
+
+                    <div>
+                      <span>Location</span>
+                      <p>{product.loadingLocation}</p>
+                    </div>
+
+                    <div>
+                      <span>Country</span>
+                      <p>{product.countryOfOrigin}</p>
+                    </div>
+
+                    <div>
+                      <span>Price</span>
+                      <p>₹{product.pricePerMT}</p>
+                    </div>
+
+                    <div>
+                      <span>HSN Code</span>
+                      <p>{product.hsnCode}</p>
+                    </div>
                   </div>
 
-                  <div>
-                    <span>Location</span>
-                    <p>{product.loadingLocation}</p>
+                  <div className={styles.sellerInfo}>
+                    <h3>Seller Information</h3>
+                    <p>
+                      <strong>Name:</strong> {product.seller?.fullName}
+                    </p>
+                    <p>
+                      <strong>Email:</strong> {product.seller?.email}
+                    </p>
                   </div>
 
-                  <div>
-                    <span>Country</span>
-                    <p>{product.countryOfOrigin}</p>
-                  </div>
+                  {product.description && (
+                    <div className={styles.description}>
+                      <h3>Description</h3>
+                      <p>{product.description}</p>
+                    </div>
+                  )}
 
-                  <div>
-                    <span>Price</span>
-                    <p>₹{product.pricePerMT}</p>
-                  </div>
-
-                  <div>
-                    <span>HSN Code</span>
-                    <p>{product.hsnCode}</p>
-                  </div>
-                </div>
-
-                <div className={styles.sellerInfo}>
-                  <h3>Seller Information</h3>
-
-                  <p>
-                    <strong>Name:</strong> {product.seller?.fullName}
-                  </p>
-
-                  <p>
-                    <strong>Email:</strong> {product.seller?.email}
-                  </p>
-                </div>
-
-                {product.description && (
-                  <div className={styles.description}>
-                    <h3>Description</h3>
-
-                    <p>{product.description}</p>
-                  </div>
-                )}
-
-                <div className={styles.buttonGroup}>
-                  <button
-                    className={styles.approveBtn}
-                    onClick={() => handleApprove(product._id)}
-                    disabled={
-                      approveProductLoading &&
+                  <div className={styles.buttonGroup}>
+                    <button
+                      className={styles.approveBtn}
+                      onClick={() => handleApprove(product._id)}
+                      disabled={
+                        approveProductLoading &&
+                        approveProductLoadingId === product._id
+                      }
+                    >
+                      {approveProductLoading &&
                       approveProductLoadingId === product._id
-                    }
-                  >
-                    {approveProductLoading &&
-                    approveProductLoadingId === product._id
-                      ? "Approving..."
-                      : "Approve"}
-                  </button>
+                        ? "Approving..."
+                        : "Approve"}
+                    </button>
 
-                  <button
-                    className={styles.rejectBtn}
-                    onClick={() => handleReject(product._id)}
-                    disabled={
-                      rejectProductLoading &&
+                    <button
+                      className={styles.rejectBtn}
+                      onClick={() => handleReject(product._id)}
+                      disabled={
+                        rejectProductLoading &&
+                        rejectProductLoadingId === product._id
+                      }
+                    >
+                      {rejectProductLoading &&
                       rejectProductLoadingId === product._id
-                    }
-                  >
-                    {rejectProductLoading &&
-                    rejectProductLoadingId === product._id
-                      ? "Rejecting..."
-                      : "Reject"}
-                  </button>
+                        ? "Rejecting..."
+                        : "Reject"}
+                    </button>
+                  </div>
                 </div>
               </div>
+            ))}
+          </div>
+
+          {/* PAGINATION CONTROL FOOTER UI INTERFACE */}
+          {totalPages > 1 && (
+            <div className={styles.paginationWrapper}>
+              <button 
+                className={styles.pageArrowButton}
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                &laquo; Previous
+              </button>
+              
+              <div className={styles.pageNumbersGrid}>
+                {Array.from({ length: totalPages }, (_, index) => {
+                  const pageNum = index + 1;
+                  return (
+                    <button
+                      key={pageNum}
+                      className={`${styles.pageNumberPill} ${currentPage === pageNum ? styles.activePageNumberPill : ""}`}
+                      onClick={() => handlePageChange(pageNum)}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <button 
+                className={styles.pageArrowButton}
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                Next &raquo;
+              </button>
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
     </div>
   );

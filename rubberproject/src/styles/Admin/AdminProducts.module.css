@@ -336,3 +336,92 @@
     height: 220px;
   }
 }
+
+/* PAGINATION LAYOUT WRAPPERS AND NAV SYSTEM */
+
+.paginationWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 50px;
+  padding: 20px 0;
+}
+
+.pageArrowButton {
+  background: #ffffff;
+  border: 1px solid #d0d5dd;
+  color: #344054;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+}
+
+.pageArrowButton:hover:not(:disabled) {
+  background: #f9fafb;
+  border-color: #b3b9c4;
+  color: #1d2939;
+}
+
+.pageArrowButton:disabled {
+  background: #f2f4f7;
+  border-color: #eaecf0;
+  color: #98a2b3;
+  cursor: not-allowed;
+}
+
+.pageNumbersGrid {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pageNumberPill {
+  background: transparent;
+  border: none;
+  color: #475467;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.pageNumberPill:hover {
+  background: #f2f4f7;
+  color: #1d2939;
+}
+
+.activePageNumberPill {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+/* RESPONSIVE BREAKPOINT SYSTEM PRESETS */
+@media (max-width: 768px) {
+  .paginationWrapper {
+    gap: 8px;
+    margin-top: 35px;
+  }
+  
+  .pageArrowButton {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+  
+  .pageNumberPill {
+    width: 34px;
+    height: 34px;
+    font-size: 13px;
+  }
+}

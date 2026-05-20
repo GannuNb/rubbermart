@@ -8,6 +8,10 @@ function AdminRejectedProducts() {
   const [loading, setLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
+  // PAGINATION STATES
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6; // Matching structural inventory limit configurations
+
   const fetchRejectedProducts = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -24,6 +28,7 @@ function AdminRejectedProducts() {
       const data = await response.json();
       if (data.success) {
         setProducts(data.products);
+        setCurrentPage(1); // Safely reset page viewport context back to page 1 on content reload
       }
     } catch (error) {
       console.log("Fetch Rejected Products Error:", error);
@@ -35,6 +40,17 @@ function AdminRejectedProducts() {
   useEffect(() => {
     fetchRejectedProducts();
   }, []);
+
+  // PAGINATION CHUNK ENGINE CALCULATION
+  const indexOfLastProduct = currentPage * itemsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
+  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+  const totalPages = Math.ceil(products.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 0, behavior: "smooth" }); // Move client viewport upper frame gracefully
+  };
 
   return (
     <div className={styles.adminProductsWrapper}>
@@ -50,49 +66,86 @@ function AdminRejectedProducts() {
       ) : products.length === 0 ? (
         <div className={styles.adminProductsEmptyState}>No rejected products found</div>
       ) : (
-        <div className={styles.adminProductsGrid}>
-          {products.map((product) => (
-            <div key={product._id} className={styles.adminProductCard}>
-              <div className={styles.adminProductImageWrapper}>
-                {product.images?.length > 0 && product.images[0].image ? (
-                  <img 
-                    src={product.images[0].image} 
-                    alt={product.category} 
-                    className={styles.adminProductImage} 
-                  />
-                ) : (
-                  <div className={styles.adminProductNoImage}>No Image Available</div>
-                )}
+        <>
+          <div className={styles.adminProductsGrid}>
+            {currentProducts.map((product) => (
+              <div key={product._id} className={styles.adminProductCard}>
+                <div className={styles.adminProductImageWrapper}>
+                  {product.images?.length > 0 && product.images[0].image ? (
+                    <img 
+                      src={product.images[0].image} 
+                      alt={product.category} 
+                      className={styles.adminProductImage} 
+                    />
+                  ) : (
+                    <div className={styles.adminProductNoImage}>No Image Available</div>
+                  )}
+                </div>
+                <div className={styles.adminProductContent}>
+                  <div className={styles.adminProductTopRow}>
+                    <h3 className={styles.adminProductCategory}>{product.category}</h3>
+                    <span 
+                      className={styles.adminProductStatusBadge} 
+                      style={{ backgroundColor: "#fff1f2", color: "#b91c1c", border: "1px solid #fee2e2" }}
+                    >
+                      Rejected
+                    </span>
+                  </div>
+                  <div className={styles.adminShortInfo}>
+                    <p><strong>Quantity:</strong> {product.quantity} MT</p>
+                    <p><strong>Price:</strong> ₹{product.pricePerMT} / MT</p>
+                    <p><strong>Location:</strong> {product.loadingLocation}</p>
+                    <p><strong>Seller:</strong> {product.seller?.fullName || "N/A"}</p>
+                  </div>
+                  <div className={styles.adminProductBottomRow}>
+                    <span className={product.stockStatus === "available" ? styles.adminProductAvailable : styles.adminProductSoldOut}>
+                      {product.stockStatus}
+                    </span>
+                    <button className={styles.adminViewMoreButton} onClick={() => setSelectedProduct(product)}>
+                      View More
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div className={styles.adminProductContent}>
-                <div className={styles.adminProductTopRow}>
-                  <h3 className={styles.adminProductCategory}>{product.category}</h3>
-                  {/* Styled dynamically using a custom inline background to match your error badges */}
-                  <span 
-                    className={styles.adminProductStatusBadge} 
-                    style={{ backgroundColor: "#fff1f2", color: "#b91c1c", border: "1px solid #fee2e2" }}
-                  >
-                    Rejected
-                  </span>
-                </div>
-                <div className={styles.adminShortInfo}>
-                  <p><strong>Quantity:</strong> {product.quantity} MT</p>
-                  <p><strong>Price:</strong> ₹{product.pricePerMT} / MT</p>
-                  <p><strong>Location:</strong> {product.loadingLocation}</p>
-                  <p><strong>Seller:</strong> {product.seller?.fullName || "N/A"}</p>
-                </div>
-                <div className={styles.adminProductBottomRow}>
-                  <span className={product.stockStatus === "available" ? styles.adminProductAvailable : styles.adminProductSoldOut}>
-                    {product.stockStatus}
-                  </span>
-                  <button className={styles.adminViewMoreButton} onClick={() => setSelectedProduct(product)}>
-                    View More
-                  </button>
-                </div>
+            ))}
+          </div>
+
+          {/* PAGINATION CONTROL FOOTER UI INTERFACE */}
+          {totalPages > 1 && (
+            <div className={styles.paginationWrapper}>
+              <button 
+                className={styles.pageArrowButton}
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                &laquo; Previous
+              </button>
+              
+              <div className={styles.pageNumbersGrid}>
+                {Array.from({ length: totalPages }, (_, index) => {
+                  const pageNum = index + 1;
+                  return (
+                    <button
+                      key={pageNum}
+                      className={`${styles.pageNumberPill} ${currentPage === pageNum ? styles.activePageNumberPill : ""}`}
+                      onClick={() => handlePageChange(pageNum)}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
               </div>
+
+              <button 
+                className={styles.pageArrowButton}
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                Next &raquo;
+              </button>
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
 
       {/* VIEW DETAILS MODAL */}
