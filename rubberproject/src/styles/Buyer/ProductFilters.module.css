@@ -1,10 +1,10 @@
-
 .filterCard {
   background: #fff;
   border-radius: 24px;
   padding: 24px;
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
   border: 1px solid #edf0f5;
+  box-sizing: border-box; /* Keeps padding inside width */
 }
 
 .filterHeader {
@@ -15,10 +15,7 @@
   color: #182848;
 }
 
-.searchBox {
-  position: relative;
-  margin-bottom: 20px;
-}
+.searchBox { position: relative; margin-bottom: 20px; }
 
 .searchBox input,
 .filterGroup select {
@@ -28,28 +25,28 @@
   border-radius: 14px;
   outline: none;
   font-size: 14px;
+  box-sizing: border-box; /* Prevents overflow */
 }
 
-.filterGroup select {
-  padding-left: 14px;
-}
+.filterGroup select { padding-left: 14px; cursor: pointer; }
 
-.searchIcon {
-  position: absolute;
-  top: 15px;
-  left: 14px;
-  color: #7d8ca0;
-}
+.searchIcon { position: absolute; top: 15px; left: 14px; color: #7d8ca0; pointer-events: none; }
 
-.filterGroup {
-  margin-bottom: 20px;
-}
+.filterGroup { margin-bottom: 20px; }
+.filterGroup label { display: block; margin-bottom: 8px; font-weight: 600; color: #39485a; }
 
-.filterGroup label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 600;
-  color: #39485a;
+.priceSection { margin-bottom: 20px; }
+.priceSection label { display: block; margin-bottom: 8px; font-weight: 600; color: #39485a; }
+
+.priceInputs { display: flex; gap: 10px; }
+.priceInputs input {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #d8e0ea;
+  border-radius: 14px;
+  outline: none;
+  font-size: 14px;
+  box-sizing: border-box;
 }
 
 .clearBtn {
@@ -61,31 +58,12 @@
   color: #fff;
   font-weight: 600;
   cursor: pointer;
+  transition: opacity 0.2s;
 }
 
-/* Add in src/styles/ProductFilters.module.css */
+.clearBtn:hover { opacity: 0.9; }
 
-.priceSection {
-  margin-bottom: 20px;
-}
-
-.priceSection label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 600;
-  color: #39485a;
-}
-
-.priceInputs {
-  display: flex;
-  gap: 10px;
-}
-
-.priceInputs input {
-  width: 100%;
-  padding: 14px;
-  border: 1px solid #d8e0ea;
-  border-radius: 14px;
-  outline: none;
-  font-size: 14px;
+/* Responsive tweaks */
+@media (max-width: 480px) {
+  .filterCard { padding: 16px; }
 }

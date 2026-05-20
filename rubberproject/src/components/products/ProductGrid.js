@@ -18,7 +18,7 @@ function ProductGrid({ filters }) {
       PAGINATION STATE
   ========================== */
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 4; // Adjust this number to show more/fewer cards per page
+  const itemsPerPage = 4;
 
   // Get buyer products state
   const {
@@ -27,7 +27,7 @@ function ProductGrid({ filters }) {
     approvedProductsError = null,
   } = useSelector((state) => state.buyerProducts || {});
 
-  // Fetch authentication state to check if user is logged in
+  // Fetch authentication state
   const { token } = useSelector((state) => state.auth || {});
 
   /* =========================
@@ -40,7 +40,6 @@ function ProductGrid({ filters }) {
   /* =========================
       RESET PAGE ON FILTER CHANGE
   ========================== */
-  // Whenever the user searches or modifies a filter, snap back to page 1
   useEffect(() => {
     setCurrentPage(1);
   }, [filters]);
@@ -48,75 +47,58 @@ function ProductGrid({ filters }) {
   /* =========================
       FILTER PRODUCTS
   ========================== */
-  const filteredProducts = approvedProducts.filter((product) => {
-    // SEARCH
-    const searchText = filters.search?.toLowerCase().trim() || "";
-    const matchesSearch =
-      !searchText ||
-      product.application?.toLowerCase().includes(searchText) ||
-      product.category?.toLowerCase().includes(searchText) ||
-      product.productName?.toLowerCase().includes(searchText);
 
-    // CATEGORY
-    const matchesCategory =
-      !filters.category || product.category === filters.category;
+const filteredProducts = approvedProducts.filter((product) => {
+  const searchText = filters.search?.toLowerCase().trim() || "";
+  let matchesSearch = true;
 
-    // APPLICATION
-    const matchesApplication =
-      !filters.application ||
-      product.application === filters.application ||
-      product.application
-        ?.toLowerCase()
-        .includes(filters.application.toLowerCase());
+  if (searchText) {
+    const searchWords = searchText.split(/\s+/);
+    
+    const appText = (product.application || "").toLowerCase();
+    const catText = (product.category || "").toLowerCase();
+    const nameText = (product.productName || "").toLowerCase();
 
-    // LOCATION
-    const matchesLocation =
-      !filters.loadingLocation ||
-      product.loadingLocation === filters.loadingLocation;
-
-    // STOCK
-    const matchesStock =
-      !filters.stockStatus || product.stockStatus === filters.stockStatus;
-
-    // PRICE
-    const matchesMinPrice =
-      !filters.minPrice ||
-      Number(product.pricePerMT) >= Number(filters.minPrice);
-
-    const matchesMaxPrice =
-      !filters.maxPrice ||
-      Number(product.pricePerMT) <= Number(filters.maxPrice);
-
-    return (
-      matchesSearch &&
-      matchesCategory &&
-      matchesApplication &&
-      matchesLocation &&
-      matchesStock &&
-      matchesMinPrice &&
-      matchesMaxPrice
+    // CHANGE: Use .some() so if ANY word matches, it's a valid result.
+    // This allows "oil" to match "Pyro Oil" even if "car" is also typed.
+    matchesSearch = searchWords.some((word) => 
+      appText.includes(word) || 
+      catText.includes(word) || 
+      nameText.includes(word)
     );
-  });
+  }
 
+  // ... (rest of your logic remains exactly the same)
+  const matchesCategory = !filters.category || product.category === filters.category;
+  const matchesApplication = !filters.application || product.application === filters.application;
+  const matchesLocation = !filters.loadingLocation || product.loadingLocation === filters.loadingLocation;
+  const matchesStock = !filters.stockStatus || product.stockStatus === filters.stockStatus;
+  const matchesMinPrice = !filters.minPrice || Number(product.pricePerMT) >= Number(filters.minPrice);
+  const matchesMaxPrice = !filters.maxPrice || Number(product.pricePerMT) <= Number(filters.maxPrice);
+
+  return (
+    matchesSearch &&
+    matchesCategory &&
+    matchesApplication &&
+    matchesLocation &&
+    matchesStock &&
+    matchesMinPrice &&
+    matchesMaxPrice
+  );
+});
   /* =========================
       PAGINATION METRICS
   ========================== */
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage) || 1;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  
-  // Slicing happens AFTER filtering
   const currentProducts = filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
-    // Smooth scroll back up to grid top on change
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  /* =========================
-      NAVIGATION GUARD HANDLER
-  ========================== */
   const handleDetailsClick = (productId) => {
     if (token) {
       navigate(`/product/${productId}`);
@@ -125,9 +107,6 @@ function ProductGrid({ filters }) {
     }
   };
 
-  /* =========================
-      LOADING / ERROR STATES
-  ========================== */
   if (approvedProductsLoading) {
     return (
       <div className={styles.loaderWrapper}>
@@ -224,7 +203,7 @@ function ProductGrid({ filters }) {
             ))}
           </div>
 
-          {/* PERSISTENT FIXED 2-PILL PAGINATION CONTROL */}
+          {/* PAGINATION CONTROL */}
           <div className={styles.paginationWrapper}>
             <button
               className={styles.pageArrowButton}

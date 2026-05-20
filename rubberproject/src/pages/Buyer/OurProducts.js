@@ -1,190 +1,63 @@
-// src/pages/Buyer/OurProducts.js
-
-import React, {
-  useEffect,
-  useState,
-} from "react";
-
-import {
-  useLocation,
-} from "react-router-dom";
-
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import ProductFilters from "../../components/products/ProductFilters";
-
 import ProductGrid from "../../components/products/ProductGrid";
-
 import styles from "../../styles/Buyer/OurProducts.module.css";
 
 function OurProducts() {
-
   const location = useLocation();
 
-  const [filters, setFilters] =
-    useState({
+  const [filters, setFilters] = useState({
+    category: "",
+    application: "",
+    loadingLocation: "",
+    stockStatus: "",
+    minPrice: "",
+    maxPrice: "",
+    search: "",
+  });
 
-      category: "",
-
-      application: "",
-
-      loadingLocation: "",
-
-      stockStatus: "",
-
-      minPrice: "",
-
-      maxPrice: "",
-
-      search: "",
-    });
-
-
-  /* =========================
-      URL SEARCH PARAMS
-  ========================== */
-
+  // 1. Sync state with URL params
   useEffect(() => {
-
-    const queryParams =
-      new URLSearchParams(
-        location.search
-      );
-
-    const category =
-      queryParams.get(
-        "category"
-      ) || "";
-
-    const search =
-  queryParams.get(
-    "search"
-  ) || "";
-
-const application =
-  queryParams.get(
-    "application"
-  ) || "";
-
-
-    /* AUTO CATEGORY */
-
-    let autoCategory = "";
-
-    if (
-      search
-        .toLowerCase()
-        .includes("pyro")
-    ) {
-
-      autoCategory =
-        "Pyro Oil";
-    }
-
-    else if (
-
-      search
-        .toLowerCase()
-        .includes("steel")
-
-    ) {
-
-      autoCategory =
-        "Tyre Steel Scrap";
-    }
-
-    else if (search) {
-
-      autoCategory =
-        "Tyre Scrap";
-    }
-
-
-    setFilters({
-
-      category:
-        category ||
-        autoCategory,
-
-      // IMPORTANT FIX
-      application: application,
-
-      loadingLocation: "",
-
-      stockStatus: "",
-
-      minPrice: "",
-
-      maxPrice: "",
-
-      // SEARCH ONLY
-      search: search,
-    });
-
+    const queryParams = new URLSearchParams(location.search);
+    setFilters((prev) => ({
+      ...prev,
+      search: queryParams.get("search") || "",
+      category: queryParams.get("category") || "",
+      application: queryParams.get("application") || "",
+    }));
   }, [location.search]);
 
+  // 2. Cleanup: Reset filters when navigating away
+  useEffect(() => {
+    return () => {
+      setFilters({
+        category: "",
+        application: "",
+        loadingLocation: "",
+        stockStatus: "",
+        minPrice: "",
+        maxPrice: "",
+        search: "",
+      });
+    };
+  }, [location.pathname]);
 
   return (
-
     <div className={styles.pageWrapper}>
-
-
-      {/* TOP */}
-
       <div className={styles.topSection}>
-
-        <h1>
-          Our Products
-        </h1>
-
-        <p>
-          Explore premium rubber
-          scrap products uploaded
-          by verified sellers.
-        </p>
-
+        <h1>Our Products</h1>
+        <p>Explore premium rubber scrap products uploaded by verified sellers.</p>
       </div>
 
-
-      {/* CONTENT */}
-
-      <div
-        className={
-          styles.contentWrapper
-        }
-      >
-
-
-        {/* LEFT */}
-
-        <div
-          className={
-            styles.leftSection
-          }
-        >
-
-          <ProductFilters
-            filters={filters}
-            setFilters={setFilters}
-          />
-
+      <div className={styles.contentWrapper}>
+        <div className={styles.leftSection}>
+          <ProductFilters filters={filters} setFilters={setFilters} />
         </div>
-
-
-        {/* RIGHT */}
-
-        <div
-          className={
-            styles.rightSection
-          }
-        >
-
-          <ProductGrid
-            filters={filters}
-          />
-
+        <div className={styles.rightSection}>
+          <ProductGrid filters={filters} />
         </div>
-
       </div>
-
     </div>
   );
 }
