@@ -11,11 +11,12 @@ import {
   FaBuilding,
 } from "react-icons/fa";
 import ProductOrderPanel from "./ProductOrderPanel";
+import ProductReviewsSection from "./ProductReviewsSection";
 import styles from "../../styles/Buyer/ProductDetailsInfo.module.css";
 
 function ProductDetailsInfo({ singleProduct }) {
   const [selectedImage, setSelectedImage] = useState(
-    singleProduct.images?.[0]?.image || ""
+    singleProduct.images?.[0]?.image || "",
   );
 
   const productImages =
@@ -89,8 +90,7 @@ function ProductDetailsInfo({ singleProduct }) {
               <div>
                 <span>Price Per MT</span>
                 <h4>
-                  ₹
-                  {Number(singleProduct.pricePerMT || 0).toLocaleString()}
+                  ₹{Number(singleProduct.pricePerMT || 0).toLocaleString()}
                 </h4>
               </div>
             </div>
@@ -138,9 +138,10 @@ function ProductDetailsInfo({ singleProduct }) {
         </div>
       </div>
 
-<div className={styles.rightSection}>
-  <ProductOrderPanel singleProduct={singleProduct} />
-</div>
+      <div className={styles.rightSection}>
+        <ProductOrderPanel singleProduct={singleProduct} />
+      </div>
+      <ProductReviewsSection singleProduct={singleProduct} />
     </div>
   );
 }

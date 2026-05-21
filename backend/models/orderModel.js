@@ -158,6 +158,14 @@ const orderSchema = new mongoose.Schema(
     adminNotes: {
       type: String,
     },
+    isReviewed: {
+      type: Boolean,
+      default: false,
+    },
+
+    reviewedAt: {
+      type: Date,
+    },
 
     isDeleted: {
       type: Boolean,
@@ -166,7 +174,7 @@ const orderSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 const Order = mongoose.model("Order", orderSchema);

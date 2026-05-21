@@ -1,9 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
+
 import { FaTruck, FaArrowRight } from "react-icons/fa";
-import { getDisplayStatus, getProgressClass, getProgressLabels, } from "../../utils/orderStatusHelpers";
+
+import ReviewModal from "./ReviewModal";
+
+import {
+  getDisplayStatus,
+  getProgressClass,
+  getProgressLabels,
+} from "../../utils/orderStatusHelpers";
+
 import styles from "../../styles/Buyer/BuyerOrders.module.css";
 
 function OrderCard({ order, navigate }) {
+  const [showReviewModal, setShowReviewModal] = useState(false);
+
   const firstItem = order.orderItems?.[0];
 
   const getMainProductImage = () => {
@@ -21,92 +32,120 @@ function OrderCard({ order, navigate }) {
         );
       }
 
-      return `data:${firstItem.productImage.contentType || "image/jpeg"
-        };base64,${base64String}`;
+      return `data:${
+        firstItem.productImage.contentType || "image/jpeg"
+      };base64,${base64String}`;
     }
 
     return "/logo192.png";
   };
 
   const displayStatus = getDisplayStatus(order);
+
   const progressLabels = getProgressLabels(order);
 
+  const canReview =
+    order.orderStatus === "delivered" || order.orderStatus === "completed";
+
   return (
-    <div
-      className={styles.orderCard}
-      onClick={() => navigate(`/buyer-orders/${order._id}`)}
-      style={{ cursor: "pointer" }}
-    >
-      {/* Header */}
-      <div className={styles.cardHeader}>
-        <div className={styles.statusPill}>{displayStatus}</div>
+    <>
+      <div
+        className={styles.orderCard}
+        onClick={() => navigate(`/buyer-orders/${order._id}`)}
+        style={{ cursor: "pointer" }}
+      >
+        {/* Header */}
 
-        <div className={styles.orderDate}>
-          {new Date(order.createdAt).toLocaleDateString()}
-        </div>
-      </div>
+        <div className={styles.cardHeader}>
+          <div className={styles.statusPill}>{displayStatus}</div>
 
-      {/* Body */}
-      <div className={styles.cardBody}>
-        <img
-          src={getMainProductImage()}
-          alt="product"
-          className={styles.productImage}
-        />
-
-        <div className={styles.orderContent}>
-          <h3>Order ID : {order.orderId}</h3>
-
-          <p>
-            {firstItem?.productName || firstItem?.application}
-            {order.orderItems?.length > 1
-              ? ` & ${order.orderItems.length - 1} more item`
-              : ""}
-          </p>
-
-          <h2>
-            ₹{Number(order.totalAmount).toLocaleString()}
-          </h2>
+          <div className={styles.orderDate}>
+            {new Date(order.createdAt).toLocaleDateString()}
+          </div>
         </div>
 
-        <div className={styles.arrowButton}>
-          <FaArrowRight />
-        </div>
-      </div>
+        {/* Body */}
 
-      {/* Progress Bar */}
-      <div className={styles.progressWrapper}>
-        <div className={styles.progressBar}>
-          <div
-            className={`${styles.progressFill} ${getProgressClass(
-              order,
-              styles,
-            )}`}
+        <div className={styles.cardBody}>
+          <img
+            src={getMainProductImage()}
+            alt="product"
+            className={styles.productImage}
           />
+
+          <div className={styles.orderContent}>
+            <h3>Order ID : {order.orderId}</h3>
+
+            <p>
+              {firstItem?.productName || firstItem?.application}
+
+              {order.orderItems?.length > 1
+                ? ` & ${order.orderItems.length - 1} more item`
+                : ""}
+            </p>
+
+            <h2>₹{Number(order.totalAmount).toLocaleString()}</h2>
+          </div>
+
+          <div className={styles.arrowButton}>
+            <FaArrowRight />
+          </div>
         </div>
 
-        {/* Desktop labels */}
-        <div className={styles.progressLabels}>
-          <span>{progressLabels[0]}</span>
-          <span>{progressLabels[1]}</span>
-          <span>{progressLabels[2]}</span>
-          <span>{progressLabels[3]}</span>
+        {/* Progress Bar */}
+
+        <div className={styles.progressWrapper}>
+          <div className={styles.progressBar}>
+            <div
+              className={`${
+                styles.progressFill
+              } ${getProgressClass(order, styles)}`}
+            />
+          </div>
+
+          {/* Desktop labels */}
+
+          <div className={styles.progressLabels}>
+            <span>{progressLabels[0]}</span>
+            <span>{progressLabels[1]}</span>
+            <span>{progressLabels[2]}</span>
+            <span>{progressLabels[3]}</span>
+          </div>
+
+          {/* Mobile simple status */}
+
+          <div className={styles.mobileProgressText}>{displayStatus}</div>
         </div>
 
-        {/* Mobile simple status */}
-        <div className={styles.mobileProgressText}>
-          {displayStatus}
+        {/* Bottom */}
+
+        <div className={styles.bottomRow}>
+          <div className={styles.trackButton}>
+            <FaTruck />
+            Track Item
+          </div>
+
+          {canReview && (
+            <button
+              className={styles.orderReviewBtn}
+              onClick={(e) => {
+                e.stopPropagation();
+
+                setShowReviewModal(true);
+              }}
+            >
+              {order.isReviewed ? "Edit Review" : "Write Review"}
+            </button>
+          )}
         </div>
       </div>
 
-      {/* Bottom */}
-      <div className={styles.bottomRow}>
-        <div className={styles.trackButton}>
-          <FaTruck />
-          Track Item
-        </div>
-      </div>
-    </div>
+      {/* REVIEW MODAL */}
+
+      {showReviewModal && (
+        <ReviewModal order={order} onClose={() => setShowReviewModal(false)} />
+      )}
+    </>
   );
 }
 

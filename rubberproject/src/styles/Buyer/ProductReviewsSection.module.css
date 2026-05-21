@@ -1,0 +1,528 @@
+/* src/styles/Buyer/ProductReviewsSection.module.css */
+
+.reviewSection {
+  width: 100%;
+  margin-top: 40px;
+  background: #ffffff;
+  border-radius: 30px;
+  padding: 30px;
+  box-shadow:
+    0 10px 30px rgba(15, 23, 42, 0.05);
+}
+
+/* =========================
+   TOP SECTION
+========================= */
+
+.topSection {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 24px;
+  align-items: stretch;
+}
+
+/* =========================
+   RATING CARD
+========================= */
+
+.ratingCard {
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+  padding: 24px;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.ratingTop {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.bigRating {
+  font-size: 72px;
+  font-weight: 800;
+  line-height: 1;
+  color: #0f172a;
+}
+
+.ratingRight {
+  padding-top: 10px;
+}
+
+.bigStars {
+  color: #f59e0b;
+  font-size: 24px;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+.ratingRight p {
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+/* =========================
+   BREAKDOWN
+========================= */
+
+.ratingBreakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ratingRow {
+  display: grid;
+  grid-template-columns: 42px 1fr 42px;
+  gap: 12px;
+  align-items: center;
+}
+
+.starLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.ratingBar {
+  width: 100%;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.ratingFill {
+  height: 100%;
+  background: #f59e0b;
+  border-radius: 999px;
+}
+
+.ratingPercent {
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  text-align: right;
+}
+
+/* =========================
+   REVIEW GALLERY
+========================= */
+
+.reviewGallery {
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+  padding: 24px;
+  background: white;
+}
+
+.galleryTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.galleryTop h3 {
+  font-size: 30px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.viewAllBtn {
+  border: none;
+  background: transparent;
+  color: #2563eb;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.viewAllBtn:hover {
+  color: #1d4ed8;
+}
+
+/* =========================
+   IMAGE GRID
+========================= */
+
+.reviewImageGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+}
+
+.reviewImageCard {
+  position: relative;
+  aspect-ratio: 1/1;
+  overflow: hidden;
+  border-radius: 18px;
+  cursor: pointer;
+  background: #f8fafc;
+  transition: 0.25s ease;
+}
+
+.reviewImageCard:hover {
+  transform: translateY(-4px);
+}
+
+.reviewGridImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.moreOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 32px;
+  font-weight: 800;
+}
+
+.noReviewImages {
+  min-height: 180px;
+  border-radius: 18px;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.noReviewImages p {
+  color: #64748b;
+  font-size: 15px;
+}
+
+/* =========================
+   MODAL
+========================= */
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(15, 23, 42, 0.92);
+  padding: 30px;
+  overflow-y: auto;
+}
+
+.modalContent {
+  width: 100%;
+  max-width: 1450px;
+  margin: auto;
+  background: white;
+  border-radius: 30px;
+  padding: 32px;
+  position: relative;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  border: none;
+  background: transparent;
+  font-size: 30px;
+  color: #475569;
+  cursor: pointer;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.modalHeader {
+  margin-bottom: 28px;
+}
+
+.modalHeader h2 {
+  font-size: 42px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+/* =========================
+   BODY
+========================= */
+
+.modalBody {
+  display: grid;
+  grid-template-columns: 80px 1fr 80px;
+  gap: 24px;
+  align-items: center;
+}
+
+/* =========================
+   ARROWS
+========================= */
+
+.arrowBtn {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  border: none;
+  background: white;
+  box-shadow:
+    0 12px 30px rgba(15, 23, 42, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.arrowBtn:hover {
+  transform: scale(1.06);
+}
+
+/* =========================
+   CENTER
+========================= */
+
+.modalCenter {
+  width: 100%;
+}
+
+.mainPreviewImage {
+  width: 100%;
+  max-height: 650px;
+  object-fit: contain;
+  border-radius: 26px;
+  background: #f8fafc;
+}
+
+/* =========================
+   REVIEW DETAILS
+========================= */
+
+.reviewDetails {
+  margin-top: 24px;
+}
+
+.profileRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.profileImage {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.userCircle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    #2563eb,
+    #1d4ed8
+  );
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.profileRow h4 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+.reviewMeta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.verified {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #16a34a;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.reviewMeta span:last-child {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.modalStars {
+  color: #f59e0b;
+  font-size: 24px;
+  margin-bottom: 16px;
+  letter-spacing: 1px;
+}
+
+.reviewComment {
+  font-size: 18px;
+  line-height: 1.9;
+  color: #334155;
+  white-space: pre-line;
+}
+
+/* =========================
+   THUMBNAILS
+========================= */
+
+.thumbnailRow {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  margin-top: 30px;
+  padding-bottom: 8px;
+}
+
+.thumbnailRow::-webkit-scrollbar {
+  height: 8px;
+}
+
+.thumbnailRow::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+.thumbnailImage {
+  width: 110px;
+  height: 110px;
+  border-radius: 18px;
+  object-fit: cover;
+  cursor: pointer;
+  border: 3px solid transparent;
+  flex-shrink: 0;
+  transition: 0.2s ease;
+}
+
+.thumbnailImage:hover {
+  transform: scale(1.03);
+}
+
+.activeThumbnail {
+  border-color: #2563eb;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 992px) {
+  .topSection {
+    grid-template-columns: 1fr;
+  }
+
+  .reviewImageGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .modalBody {
+    grid-template-columns: 1fr;
+  }
+
+.arrowBtn {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 99999;
+
+  width: 52px;
+  height: 52px;
+
+  background: rgba(255, 255, 255, 0.95);
+
+  backdrop-filter: blur(10px);
+
+  box-shadow:
+    0 10px 25px rgba(15, 23, 42, 0.15);
+
+  font-size: 18px;
+}
+
+.modalBody {
+  grid-template-columns: 1fr;
+}
+
+.modalCenter {
+  width: 100%;
+}
+
+.arrowBtn:first-child {
+  left: 12px;
+}
+
+.arrowBtn:last-child {
+  right: 12px;
+}
+
+  .modalHeader h2 {
+    font-size: 30px;
+  }
+
+  .bigRating {
+    font-size: 58px;
+  }
+}
+
+@media (max-width: 640px) {
+  .reviewSection {
+    padding: 20px;
+  }
+
+  .reviewImageGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .galleryTop {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .galleryTop h3 {
+    font-size: 24px;
+  }
+
+  .modalContent {
+    padding: 20px;
+  }
+
+  .mainPreviewImage {
+    max-height: 320px;
+  }
+
+  .thumbnailImage {
+    width: 82px;
+    height: 82px;
+  }
+
+  .bigRating {
+    font-size: 48px;
+  }
+
+  .ratingTop {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
