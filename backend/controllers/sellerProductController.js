@@ -262,15 +262,26 @@ export const updateSellerProduct = async (req, res) => {
   }
 };
 
-// 1. APPROVED (Your exact original code)
 export const getAllApprovedProductsForAdmin = async (req, res) => {
   try {
-    const products = await Product.find({
-      status: "approved",
-    })
-      .populate("seller", "fullName email")
-      .sort({ createdAt: -1 });
+    // 1. Extract query values from request and enforce defaults
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 3;
+    const skip = (page - 1) * limit;
 
+    const query = { status: "approved" };
+
+    // 2. Count the full volume of records matching this filter condition in total
+    const totalProducts = await Product.countDocuments(query);
+
+    // 3. Extract purely the relevant slice window context from Database storage
+    const products = await Product.find(query)
+      .populate("seller", "fullName email")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    // 4. Format images to base64 structural delivery data
     const formattedProducts = products.map((product) => ({
       ...product._doc,
       images: product.images.map((img) => ({
@@ -279,9 +290,12 @@ export const getAllApprovedProductsForAdmin = async (req, res) => {
       })),
     }));
 
+    // 5. Send results to the frontend along with page metrics
     return res.status(200).json({
       success: true,
       products: formattedProducts,
+      totalPages: Math.ceil(totalProducts / limit) || 1,
+      currentPage: page,
     });
   } catch (error) {
     console.log("Get Approved Products Error:", error);

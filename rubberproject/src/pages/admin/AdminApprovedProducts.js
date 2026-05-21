@@ -1,5 +1,3 @@
-// src/components/admin/AdminApprovedProducts.js
-
 import React, { useEffect, useState } from "react";
 import styles from "../../styles/Admin/AdminProducts.module.css";
 
@@ -8,17 +6,20 @@ function AdminApprovedProducts() {
   const [loading, setLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-  // PAGINATION STATES
+  // PAGINATION STATES (Driven entirely by backend measurements)
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 3; // Matching structural inventory limit configurations
+  const [totalPages, setTotalPages] = useState(1);
+  const itemsPerPage = 3; 
 
-  const fetchApprovedProducts = async () => {
+  const fetchApprovedProducts = async (pageNumber) => {
+    setLoading(true);
     try {
       const token = localStorage.getItem("token");
       const baseUrl = process.env.REACT_APP_API_URL ? process.env.REACT_APP_API_URL.replace(/\/$/, "") : "";
 
+      // Send the current page context and fixed item frame limits straight down to backend queries
       const response = await fetch(
-        `${baseUrl}/api/products/admin/approved-products`,
+        `${baseUrl}/api/products/admin/approved-products?page=${pageNumber}&limit=${itemsPerPage}`,
         {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },
@@ -27,7 +28,8 @@ function AdminApprovedProducts() {
       const data = await response.json();
       if (data.success) {
         setProducts(data.products);
-        setCurrentPage(1); // Safely reset page viewport context back to page 1 on content reload
+        setTotalPages(data.totalPages || 1);
+        setCurrentPage(data.currentPage || pageNumber);
       }
     } catch (error) {
       console.log("Fetch Approved Products Error:", error);
@@ -36,19 +38,14 @@ function AdminApprovedProducts() {
     }
   };
 
+  // Fetch data cleanly on mounting lifecycle or structural page updates
   useEffect(() => {
-    fetchApprovedProducts();
-  }, []);
-
-  // PAGINATION CHUNK ENGINE CALCULATION
-  const indexOfLastProduct = currentPage * itemsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
-  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
-  const totalPages = Math.ceil(products.length / itemsPerPage);
+    fetchApprovedProducts(currentPage);
+  }, [currentPage]);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
-    window.scrollTo({ top: 0, behavior: "smooth" }); // Move client viewport upper frame gracefully
+    window.scrollTo({ top: 0, behavior: "smooth" }); 
   };
 
   return (
@@ -67,7 +64,7 @@ function AdminApprovedProducts() {
       ) : (
         <>
           <div className={styles.adminProductsGrid}>
-            {currentProducts.map((product) => (
+            {products.map((product) => (
               <div key={product._id} className={styles.adminProductCard}>
                 <div className={styles.adminProductImageWrapper}>
                   {product.images?.length > 0 ? (
@@ -100,7 +97,7 @@ function AdminApprovedProducts() {
             ))}
           </div>
 
-          {/* PAGINATION CONTROL FOOTER UI INTERFACE - PERMANENTLY VISIBLE WHEN RECORDS EXIST */}
+          {/* PAGINATION CONTROL FOOTER UI INTERFACE */}
           {products.length > 0 && (
             <div className={styles.paginationWrapper}>
               <button
@@ -113,24 +110,20 @@ function AdminApprovedProducts() {
 
               <div className={styles.pageNumbersGrid}>
                 {(() => {
-                  // Determine start page based on current selection window
                   let startPage = Math.max(1, currentPage);
 
-                  // If we are at the very last page, shift backwards to still show 2 pills if possible
                   if (currentPage === totalPages && totalPages > 1) {
                     startPage = Math.max(1, currentPage - 1);
                   }
 
-                  // Calculate the final boundary to show exactly 2 items maximum
                   const endPage = Math.min(totalPages, startPage + 1);
-
                   const pageNumbers = [];
+                  
                   for (let i = startPage; i <= endPage; i++) {
                     pageNumbers.push(
                       <button
                         key={i}
-                        className={`${styles.pageNumberPill} ${currentPage === i ? styles.activePageNumberPill : ""
-                          }`}
+                        className={`${styles.pageNumberPill} ${currentPage === i ? styles.activePageNumberPill : ""}`}
                         onClick={() => handlePageChange(i)}
                       >
                         {i}
