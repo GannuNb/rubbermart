@@ -1,42 +1,38 @@
-// src/redux/slices/pendingProductsThunk.js
-
 import {
-  setPendingProductsLoading,
-  setPendingProductsSuccess,
-  setPendingProductsError,
+  setProductsLoading,
+  setProductsError,
+  fetchProductsSuccess,
 } from "./sellerProductSlice";
 
-// Add 'page' as an argument here with a default value of 1
-export const fetchPendingProductsThunk = (page = 1) => async (dispatch) => {
+export const fetchPendingProductsThunk = (page = 1, status = "") => async (dispatch) => {
   try {
-    dispatch(setPendingProductsLoading(true));
-    dispatch(setPendingProductsError(null));
+    dispatch(setProductsLoading(true));
+    dispatch(setProductsError(null));
 
     const token = localStorage.getItem("token");
-
-    // Now 'page' is defined and will be correctly injected into the URL
-    const response = await fetch(
-      `${process.env.REACT_APP_API_URL}/api/seller/products?page=${page}&limit=3`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    // Ensure status is handled correctly by the backend
+    const url = `${process.env.REACT_APP_API_URL}/api/seller/products?page=${page}${status ? `&status=${status}` : ""}`;
+    
+    const response = await fetch(url, {
+      method: "GET",
+      headers: { 
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}` 
+      },
+    });
 
     const data = await response.json();
-
+    
     if (response.ok && data.success) {
-      // Ensure your slice is configured to handle the object containing 
-      // { products, totalPages, currentPage }
-      dispatch(setPendingProductsSuccess(data)); 
+      // Pass the data object and status so the slice knows which bucket to fill
+      // Using 'pending' as the default status if none is provided
+      dispatch(fetchProductsSuccess({ data, status: status || "pending" })); 
     } else {
-      dispatch(setPendingProductsError(data.message));
+      dispatch(setProductsError(data.message || "Failed to fetch products"));
     }
   } catch (error) {
-    dispatch(setPendingProductsError("Failed to fetch products"));
+    dispatch(setProductsError("Failed to fetch products"));
   } finally {
-    dispatch(setPendingProductsLoading(false));
+    dispatch(setProductsLoading(false));
   }
 };

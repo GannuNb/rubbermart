@@ -7,15 +7,19 @@ function SellerProducts() {
   const dispatch = useDispatch();
   const [expandedCard, setExpandedCard] = useState(null);
 
-  // Pulling state from Redux
-  const {
-    pendingProducts,
-    totalPages,
-    currentPage,
-    pendingProductsLoading,
-    pendingProductsError,
-  } = useSelector((state) => state.sellerProduct);
+  // 1. Correctly target the 'pendingProducts' state sub-bucket
+  const { 
+    items: pendingProducts, 
+    totalPages, 
+    currentPage 
+  } = useSelector((state) => state.sellerProduct.pendingProducts);
 
+  // 2. Select the parent list loader/error statuses 
+  const { 
+    pendingProductsLoading, 
+    pendingProductsError 
+  } = useSelector((state) => state.sellerProduct);
+  
   // Fetch products whenever the currentPage changes
   useEffect(() => {
     dispatch(fetchPendingProductsThunk(currentPage));
@@ -48,11 +52,11 @@ function SellerProducts() {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.heading}>Your Total Products</h1>
+      <h1 className={styles.heading}>My Total Products</h1>
 
       {pendingProducts.length === 0 ? (
         <div className={styles.emptyState}>
-          <p>No products found</p>
+          <p>No pending products found</p>
         </div>
       ) : (
         <div className={styles.grid}>
@@ -60,12 +64,13 @@ function SellerProducts() {
             <div className={styles.card} key={product._id}>
               <div className={styles.imageWrapper}>
                 <div
-                  className={`${styles.statusBadge} ${product.status === "approved"
-                    ? styles.statusApproved
-                    : product.status === "rejected"
-                      ? styles.statusRejected
-                      : styles.statusPending
-                    }`}
+                  className={`${styles.statusBadge} ${
+                    product.status === "approved"
+                      ? styles.statusApproved
+                      : product.status === "rejected"
+                        ? styles.statusRejected
+                        : styles.statusPending
+                  }`}
                 >
                   {product.status === "approved"
                     ? "Approved"
@@ -77,7 +82,7 @@ function SellerProducts() {
                 {product.images && product.images.length > 0 ? (
                   <img
                     src={product.images[0].image}
-                    alt={product.application}
+                    alt={product.application || "Product Layout"}
                     className={styles.image}
                     loading="lazy"
                   />
@@ -173,12 +178,9 @@ function SellerProducts() {
 
         <div className={styles.pageNumbersGrid}>
           {(() => {
-            // Calculate the sliding window: start at 1, but shift based on current page
             let start = Math.max(1, currentPage - 1);
-            // Ensure we don't go past the last page
             let end = Math.min(totalPages, start + 2);
 
-            // Adjust start if we are at the very end
             if (end === totalPages && totalPages > 2) {
               start = Math.max(1, totalPages - 2);
             }
@@ -188,8 +190,9 @@ function SellerProducts() {
               pages.push(
                 <button
                   key={i}
-                  className={`${styles.pageNumberPill} ${currentPage === i ? styles.activePageNumberPill : ""
-                    }`}
+                  className={`${styles.pageNumberPill} ${
+                    currentPage === i ? styles.activePageNumberPill : ""
+                  }`}
                   onClick={() => handlePageChange(i)}
                 >
                   {i}

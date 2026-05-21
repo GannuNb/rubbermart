@@ -1,67 +1,45 @@
 // src/pages/seller/SellerPendingProducts.js
-
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPendingProductsThunk } from "../../redux/slices/pendingProductsThunk";
+import { fetchPendingProductsThunk } from "../../redux/slices/pendingProductsThunk"; 
 import styles from "../../styles/Seller/SellerPendingProducts.module.css";
 
 function SellerPendingProducts() {
   const dispatch = useDispatch();
+  
   const [expandedCard, setExpandedCard] = useState(null);
-
-  // Pagination parameters state
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 3;
 
-  const {
-    pendingProducts,
-    pendingProductsLoading,
-    pendingProductsError,
+  // Correctly pulling from the isolated pendingProducts bucket
+  const { 
+    items: pendingProducts, 
+    totalPages 
+  } = useSelector((state) => state.sellerProduct.pendingProducts);
+
+  // Pulling loading/error states from the root slice
+  const { 
+    pendingProductsLoading, 
+    pendingProductsError 
   } = useSelector((state) => state.sellerProduct);
 
+  // Fetch pending products whenever the currentPage changes
   useEffect(() => {
-    dispatch(fetchPendingProductsThunk());
-  }, [dispatch]);
+    dispatch(fetchPendingProductsThunk(currentPage, "pending"));
+  }, [dispatch, currentPage]);
 
-  // FILTERED: Only keep items whose status is explicitly pending
-  const purelyPendingProducts = pendingProducts.filter(
-    (product) => product.status === "pending"
-  );
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    // The Thunk dispatch inside useEffect will handle the update, 
+    // but we can also trigger it here to ensure immediate state syncing
+    dispatch(fetchPendingProductsThunk(pageNumber, "pending"));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const handleToggle = (id) => {
     setExpandedCard(expandedCard === id ? null : id);
   };
 
-  const getStatusClass = (status) => {
-    if (status === "approved") return styles.approved;
-    if (status === "rejected") return styles.rejected;
-    return styles.pending;
-  };
-
-  const getBadgeClass = (status) => {
-    if (status === "approved") return styles.statusApproved;
-    if (status === "rejected") return styles.statusRejected;
-    return styles.statusPending;
-  };
-
-  const getStatusText = (status) => {
-    if (status === "approved") return "Approved";
-    if (status === "rejected") return "Rejected";
-    return "Pending";
-  };
-
-  // Pagination metrics tied strictly to filtered pending collection
-  const totalPages = Math.ceil(purelyPendingProducts.length / itemsPerPage) || 1;
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentProducts = purelyPendingProducts.slice(indexOfFirstItem, indexOfLastItem);
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  if (pendingProductsLoading) {
+  if (pendingProductsLoading && pendingProducts.length === 0) {
     return (
       <div className={styles.loadingContainer}>
         <p>Loading pending products...</p>
@@ -81,19 +59,18 @@ function SellerPendingProducts() {
     <div className={styles.container}>
       <h1 className={styles.heading}>Pending Products</h1>
 
-      {purelyPendingProducts.length === 0 ? (
+      {pendingProducts.length === 0 ? (
         <div className={styles.emptyState}>
           <p>No pending products found</p>
         </div>
       ) : (
         <div className={styles.grid}>
-          {currentProducts.map((product) => (
+          {pendingProducts.map((product) => (
             <div className={styles.card} key={product._id}>
               <div className={styles.imageWrapper}>
-                <div className={`${styles.statusBadge} ${getBadgeClass(product.status)}`}>
-                  {getStatusText(product.status)}
+                <div className={`${styles.statusBadge} ${styles.statusPending}`}>
+                  Pending
                 </div>
-
                 {product.images && product.images.length > 0 ? (
                   <img
                     src={product.images[0].image}
@@ -108,43 +85,17 @@ function SellerPendingProducts() {
 
               <div className={styles.content}>
                 <h2>{product.application}</h2>
-
-                <p>
-                  <strong>Category:</strong> {product.category}
-                </p>
-
-                <p>
-                  <strong>Loading Location:</strong> {product.loadingLocation}
-                </p>
-
-                <p>
-                  <strong>Status:</strong>{" "}
-                  <span className={getStatusClass(product.status)}>
-                    Pending Approval
-                  </span>
-                </p>
+                <p><strong>Category:</strong> {product.category}</p>
+                <p><strong>Loading Location:</strong> {product.loadingLocation}</p>
+                <p><strong>Status:</strong> <span className={styles.pending}>Pending Approval</span></p>
 
                 {expandedCard === product._id && (
                   <>
-                    <p>
-                      <strong>Quantity:</strong> {product.quantity} MT
-                    </p>
-
-                    <p>
-                      <strong>Country:</strong> {product.countryOfOrigin}
-                    </p>
-
-                    <p>
-                      <strong>Price Per MT:</strong> ₹{product.pricePerMT}
-                    </p>
-
-                    <p>
-                      <strong>HSN Code:</strong> {product.hsnCode}
-                    </p>
-
-                    {product.description && (
-                      <p className={styles.description}>{product.description}</p>
-                    )}
+                    <p><strong>Quantity:</strong> {product.quantity} MT</p>
+                    <p><strong>Country:</strong> {product.countryOfOrigin}</p>
+                    <p><strong>Price Per MT:</strong> ₹{product.pricePerMT}</p>
+                    <p><strong>HSN Code:</strong> {product.hsnCode}</p>
+                    {product.description && <p className={styles.description}>{product.description}</p>}
                   </>
                 )}
 
@@ -160,48 +111,40 @@ function SellerPendingProducts() {
         </div>
       )}
 
-      <div className={styles.paginationWrapper}>
-        <button
-          className={styles.pageArrowButton}
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-        >
-          &laquo; Previous
-        </button>
+      {/* Pagination Footer */}
+      {pendingProducts.length > 0 && (
+        <div className={styles.paginationWrapper}>
+          <button
+            className={styles.pageArrowButton}
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            &laquo; Previous
+          </button>
 
-        <div className={styles.pageNumbersGrid}>
-          {(() => {
-            let startPage = currentPage;
-            if (currentPage === totalPages && totalPages > 1) {
-              startPage = currentPage - 1;
-            }
+          <div className={styles.pageNumbersGrid}>
+            {[...Array(totalPages)].map((_, i) => (
+              <button
+                key={i + 1}
+                className={`${styles.pageNumberPill} ${
+                  currentPage === i + 1 ? styles.activePageNumberPill : ""
+                }`}
+                onClick={() => handlePageChange(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+          </div>
 
-            const pageNumbers = [];
-            const endPage = Math.min(totalPages, startPage + 1);
-
-            for (let i = startPage; i <= endPage; i++) {
-              pageNumbers.push(
-                <button
-                  key={i}
-                  className={`${styles.pageNumberPill} ${currentPage === i ? styles.activePageNumberPill : ""}`}
-                  onClick={() => handlePageChange(i)}
-                >
-                  {i}
-                </button>
-              );
-            }
-            return pageNumbers;
-          })()}
+          <button
+            className={styles.pageArrowButton}
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            Next &raquo;
+          </button>
         </div>
-
-        <button
-          className={styles.pageArrowButton}
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-        >
-          Next &raquo;
-        </button>
-      </div>
+      )}
     </div>
   );
 }

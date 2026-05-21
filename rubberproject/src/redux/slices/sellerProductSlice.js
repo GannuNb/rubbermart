@@ -1,21 +1,27 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
+  // Add Product Flow
   addProductLoading: false,
   addProductError: null,
   addProductSuccess: null,
 
-  // PAGINATION FIELDS ADDED
-  pendingProducts: [],
-  totalPages: 1,
-  currentPage: 1,
+  // Isolated state buckets
+  allProducts: { items: [], totalPages: 1, currentPage: 1 },
+  pendingProducts: { items: [], totalPages: 1, currentPage: 1 },
+  approvedProducts: { items: [], totalPages: 1, currentPage: 1 },
+  rejectedProducts: { items: [], totalPages: 1, currentPage: 1 },
+
+  // Global loading/error states
   pendingProductsLoading: false,
   pendingProductsError: null,
 
+  // Admin Flow
   adminPendingProducts: [],
   adminPendingProductsLoading: false,
   adminPendingProductsError: null,
 
+  // Action Flows
   approveProductLoading: false,
   approveProductLoadingId: null,
   approveProductSuccess: null,
@@ -31,6 +37,7 @@ const sellerProductSlice = createSlice({
   name: "sellerProduct",
   initialState,
   reducers: {
+    // Add Product reducers
     setAddProductLoading: (state, action) => {
       state.addProductLoading = action.payload;
     },
@@ -41,31 +48,47 @@ const sellerProductSlice = createSlice({
       state.addProductSuccess = action.payload;
     },
 
-    setPendingProductsLoading: (state, action) => {
+    // Seller List Loading / Error
+    setProductsLoading: (state, action) => {
       state.pendingProductsLoading = action.payload;
     },
-    // UPDATED: Now handles products array + pagination metadata
-    setPendingProductsSuccess: (state, action) => {
-      state.pendingProducts = action.payload.products || [];
-      state.totalPages = action.payload.totalPages || 1;
-      state.currentPage = action.payload.currentPage || 1;
-      state.pendingProductsLoading = false;
-    },
-    setPendingProductsError: (state, action) => {
+    setProductsError: (state, action) => {
       state.pendingProductsError = action.payload;
       state.pendingProductsLoading = false;
     },
 
+    // Renamed to match your Thunk exactly: fetchProductsSuccess
+    fetchProductsSuccess: (state, action) => {
+      const { data, status } = action.payload;
+
+      let targetBucket = "allProducts";
+      if (status === "approved") targetBucket = "approvedProducts";
+      if (status === "rejected") targetBucket = "rejectedProducts";
+      if (status === "pending")  targetBucket = "pendingProducts";
+
+      state[targetBucket] = {
+        items: data.products || data.pendingProducts || [],
+        totalPages: data.totalPages || 1,
+        currentPage: data.currentPage || 1,
+      };
+
+      state.pendingProductsLoading = false;
+    },
+
+    // Admin List
     setAdminPendingProductsLoading: (state, action) => {
       state.adminPendingProductsLoading = action.payload;
     },
     setAdminPendingProductsSuccess: (state, action) => {
       state.adminPendingProducts = action.payload;
+      state.adminPendingProductsLoading = false;
     },
     setAdminPendingProductsError: (state, action) => {
       state.adminPendingProductsError = action.payload;
+      state.adminPendingProductsLoading = false;
     },
 
+    // Action Management
     setApproveProductLoading: (state, action) => {
       state.approveProductLoading = action.payload.loading;
       state.approveProductLoadingId = action.payload.productId;
@@ -105,23 +128,18 @@ export const {
   setAddProductLoading,
   setAddProductError,
   setAddProductSuccess,
-
-  setPendingProductsLoading,
-  setPendingProductsSuccess,
-  setPendingProductsError,
-
+  setProductsLoading,
+  setProductsError,
+  fetchProductsSuccess,
   setAdminPendingProductsLoading,
   setAdminPendingProductsSuccess,
   setAdminPendingProductsError,
-
   setApproveProductLoading,
   setApproveProductSuccess,
   setApproveProductError,
-
   setRejectProductLoading,
   setRejectProductSuccess,
   setRejectProductError,
-
   resetProductState,
 } = sellerProductSlice.actions;
 

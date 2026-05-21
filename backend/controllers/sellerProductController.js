@@ -65,40 +65,56 @@ export const addProduct = async (req, res) => {
     });
   }
 };
+// src/controllers/sellerProductController.js
+
+// backend/controllers/sellerProductController.js
 
 export const getSellerProducts = async (req, res) => {
   try {
-    // FIX: Default page to 1
-    const page = parseInt(req.query.page) || 1; 
-    
-    // Using the limit provided by the frontend, falling back to 3 if undefined
-    const limit = 3; 
-    const skip = (page - 1) * limit;
+    const { page = 1, status } = req.query;
+    const LIMIT = 3; 
+    const pageNumber = parseInt(page, 10) || 1;
+    const skip = (pageNumber - 1) * LIMIT;
 
-    const totalCount = await Product.countDocuments({ seller: req.user._id });
+    let query = { seller: req.user._id };
+    if (status) {
+      query.status = status; 
+    }
+
+    const totalCount = await Product.countDocuments(query);
     
-    // Ensure you use .skip() and .limit()
-    const products = await Product.find({ seller: req.user._id })
+    const rawProducts = await Product.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(limit);
+      .limit(LIMIT);
 
-    const formattedProducts = products.map((product) => ({
-      ...product._doc,
-      images: product.images?.map((img) => ({
-        image: `data:${img.contentType};base64,${img.data.toString("base64")}`,
-      })) || [],
-    }));
+    // Transform raw binary buffers to Data URL strings right here!
+    const products = rawProducts.map(product => {
+      const plainProduct = product.toObject();
+      if (plainProduct.images && plainProduct.images.length > 0) {
+        plainProduct.images = plainProduct.images.map(img => {
+          if (img.data && img.contentType) {
+            const base64 = img.data.toString("base64");
+            return {
+              image: `data:${img.contentType};base64,${base64}`,
+              contentType: img.contentType
+            };
+          }
+          return img;
+        });
+      }
+      return plainProduct;
+    });
 
     return res.status(200).json({
       success: true,
-      products: formattedProducts,
-      totalPages: Math.ceil(totalCount / limit),
-      currentPage: page,
+      products,
+      totalPages: Math.ceil(totalCount / LIMIT) || 1,
+      currentPage: pageNumber,
     });
   } catch (error) {
-    console.error("Error in getSellerProducts:", error);
-    return res.status(500).json({ success: false, message: "Error fetching products" });
+    console.error("Get Seller Products Error:", error);
+    return res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
 

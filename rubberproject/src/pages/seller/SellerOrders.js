@@ -4,26 +4,34 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getSellerOrdersThunk } from "../../redux/slices/sellerOrderThunk";
-import { Package } from "lucide-react"; 
+import { Package } from "lucide-react";
 import styles from "../../styles/Seller/SellerOrders.module.css";
 
 const SellerOrders = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // PAGINATION ENGINE STATE
+  const itemsPerPage = 5;
+
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 4;
 
   const {
-    sellerOrders,
+    sellerOrders, // Expected structure: { orders: [], totalPages: N }
     sellerOrdersLoading,
     sellerOrdersError,
   } = useSelector((state) => state.sellerOrders);
 
+  const orders = sellerOrders?.orders || [];
+  const totalPages = sellerOrders?.totalPages || 1;
+
   useEffect(() => {
-    dispatch(getSellerOrdersThunk());
-  }, [dispatch]);
+    dispatch(getSellerOrdersThunk(currentPage));
+  }, [dispatch, currentPage]);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   if (sellerOrdersLoading) {
     return <div className={styles.loading}>Loading orders...</div>;
@@ -33,140 +41,49 @@ const SellerOrders = () => {
     return <div className={styles.error}>{sellerOrdersError}</div>;
   }
 
-  // PAGINATION MATHEMATICS ENGINE
-  // Ensures totalPages defaults to at least 1 so pagination controls are always built
-  const totalPages = Math.ceil(sellerOrders.length / itemsPerPage) || 1;
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentOrders = sellerOrders.slice(indexOfFirstItem, indexOfLastItem);
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   return (
     <div className={styles.container}>
       <h1 className={styles.heading}>Seller Orders</h1>
 
-      {sellerOrders.length === 0 ? (
-        <>
-          <div className={styles.empty}>No orders found</div>
-          
-          {/* ALWAYS VISIBLE PAGINATION BLOCK FOR EMPTY STATE */}
-          <div className={styles.paginationWrapper}>
-            <button 
-              className={styles.pageArrowButton}
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              &laquo; Previous
-            </button>
-            <div className={styles.pageNumbersGrid}>
-              <button className={`${styles.pageNumberPill} ${styles.activePageNumberPill}`}>
-                1
-              </button>
-            </div>
-            <button 
-              className={styles.pageArrowButton}
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-            >
-              Next &raquo;
-            </button>
-          </div>
-        </>
+      {orders.length === 0 ? (
+        <div className={styles.empty}>No orders found</div>
       ) : (
         <>
           <div className={styles.ordersGrid}>
-            {currentOrders.map((order) => {
-              // --- BACKEND PROTECTED ITEM TARGETING ---
+            {orders.map((order) => {
               const item = order.orderItems?.[0];
-
-              /* ===================================================
-                 EXACT BINARY TO BASE64 IMAGE CONVERSION 
-                 =================================================== */
               const productImage =
                 item?.productImage?.data?.data && item?.productImage?.contentType
                   ? `data:${item.productImage.contentType};base64,${btoa(
-                      new Uint8Array(item.productImage.data.data).reduce(
-                        (data, byte) => data + String.fromCharCode(byte),
-                        "",
-                      ),
-                    )}`
+                    new Uint8Array(item.productImage.data.data).reduce(
+                      (data, byte) => data + String.fromCharCode(byte),
+                      ""
+                    )
+                  )}`
                   : null;
 
               return (
                 <div key={order._id} className={styles.orderCard}>
-                  
-                  {/* DYNAMIC CARD IMAGE WRAPPER */}
                   <div className={styles.imageContainer}>
                     {productImage ? (
-                      <img
-                        src={productImage}
-                        alt={item?.productName || "Ordered Product"}
-                        className={styles.productImage}
-                      />
+                      <img src={productImage} alt={item?.productName || "Product"} className={styles.productImage} />
                     ) : (
-                      <div className={styles.imageFallback}>
-                        <Package size={32} />
-                      </div>
+                      <div className={styles.imageFallback}><Package size={32} /></div>
                     )}
-                    
-                    {/* MULTI-ITEM ARRAY COUNTER */}
                     {order.orderItems?.length > 1 && (
-                      <span className={styles.itemBadge}>
-                        +{order.orderItems.length - 1} More Items
-                      </span>
+                      <span className={styles.itemBadge}>+{order.orderItems.length - 1} More</span>
                     )}
                   </div>
 
-                  {/* UNTOUCHED BACKEND CORES */}
-                  <div className={styles.row}>
-                    <span>Order ID:</span>
-                    <strong>{order.orderId}</strong>
-                  </div>
+                  <div className={styles.row}><span>Order ID:</span> <strong>{order.orderId}</strong></div>
+                  <div className={styles.row}><span>Buyer:</span> <strong>{order.buyer?.fullName}</strong></div>
+                  <div className={styles.row}><span>Email:</span> <strong>{order.buyer?.email}</strong></div>
+                  <div className={styles.row}><span>Total Products:</span> <strong>{order.orderItems?.length || 0}</strong></div>
+                  <div className={styles.row}><span>Total Amount:</span> <strong>₹ {order.totalAmount}</strong></div>
+                  <div className={styles.row}><span>Status:</span> <strong className={styles.status}>{order.orderStatus}</strong></div>
+                  <div className={styles.row}><span>Created:</span> <strong>{new Date(order.createdAt).toLocaleDateString()}</strong></div>
 
-                  <div className={styles.row}>
-                    <span>Buyer:</span>
-                    <strong>{order.buyer?.fullName}</strong>
-                  </div>
-
-                  <div className={styles.row}>
-                    <span>Email:</span>
-                    <strong>{order.buyer?.email}</strong>
-                  </div>
-
-                  <div className={styles.row}>
-                    <span>Total Products:</span>
-                    <strong>{order.orderItems?.length}</strong>
-                  </div>
-
-                  <div className={styles.row}>
-                    <span>Total Amount:</span>
-                    <strong>₹ {order.totalAmount}</strong>
-                  </div>
-
-                  <div className={styles.row}>
-                    <span>Status:</span>
-                    <strong className={styles.status}>
-                      {order.orderStatus}
-                    </strong>
-                  </div>
-
-                  <div className={styles.row}>
-                    <span>Created:</span>
-                    <strong>
-                      {new Date(order.createdAt).toLocaleDateString()}
-                    </strong>
-                  </div>
-
-                  <button
-                    className={styles.viewButton}
-                    onClick={() =>
-                      navigate(`/seller/order-manage/${order._id}`)
-                    }
-                  >
+                  <button className={styles.viewButton} onClick={() => navigate(`/seller/order-manage/${order._id}`)}>
                     View Details
                   </button>
                 </div>
@@ -174,37 +91,41 @@ const SellerOrders = () => {
             })}
           </div>
 
-          {/* ALWAYS VISIBLE PAGINATION CONTROL FOOTER */}
+          {/* DYNAMIC SLIDING PAGINATION FOOTER */}
           <div className={styles.paginationWrapper}>
-            <button 
+            <button
               className={styles.pageArrowButton}
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
             >
               &laquo; Previous
             </button>
-            
+
             <div className={styles.pageNumbersGrid}>
-                              {(() => {
-                // Determine start page based on current selection window
-                let startPage = Math.max(1, currentPage);
-                
-                // If we are at the very last page, shift backwards to still show 2 pills if possible
-                if (currentPage === totalPages && totalPages > 1) {
-                  startPage = Math.max(1, currentPage - 1);
+              {(() => {
+                // 1. Calculate the range
+                // Always show 3 pages if possible, sliding based on current page
+                let startPage = Math.max(1, currentPage - 1);
+                let endPage = Math.min(totalPages, startPage + 2);
+
+                // Adjust if we are at the very beginning
+                if (currentPage <= 2) {
+                  startPage = 1;
+                  endPage = Math.min(totalPages, 3);
                 }
-              
-                // Calculate the final boundary to show exactly 2 items maximum
-                const endPage = Math.min(totalPages, startPage + 1);
-              
+
+                // Adjust if we are at the very end
+                if (currentPage >= totalPages - 1 && totalPages > 2) {
+                  startPage = Math.max(1, totalPages - 2);
+                  endPage = totalPages;
+                }
+
                 const pageNumbers = [];
                 for (let i = startPage; i <= endPage; i++) {
                   pageNumbers.push(
                     <button
                       key={i}
-                      className={`${styles.pageNumberPill} ${
-                        currentPage === i ? styles.activePageNumberPill : ""
-                      }`}
+                      className={`${styles.pageNumberPill} ${currentPage === i ? styles.activePageNumberPill : ""}`}
                       onClick={() => handlePageChange(i)}
                     >
                       {i}
@@ -215,7 +136,7 @@ const SellerOrders = () => {
               })()}
             </div>
 
-            <button 
+            <button
               className={styles.pageArrowButton}
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}

@@ -5,23 +5,27 @@ const API_URL = process.env.REACT_APP_API_URL;
 
 export const getSellerOrdersThunk = createAsyncThunk(
   "sellerOrders/getSellerOrders",
-  async (_, thunkAPI) => {
+  async (page = 1, thunkAPI) => {
     try {
-      const token = thunkAPI.getState().auth.token;
-
+      // 1. Get token from Redux state safely
+      const token = thunkAPI.getState().auth?.token;
+      
+      // 2. Perform the GET request with pagination query parameter
       const response = await axios.get(
-        `${API_URL}/api/orders/seller-orders`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        `${API_URL}/api/orders/seller-orders?page=${page}`,
+        { 
+          headers: { 
+            Authorization: `Bearer ${token}` 
+          } 
         }
       );
-
-      return response.data.orders;
+      
+      // 3. Return the payload (expects { orders, totalPages, currentPage })
+      return response.data;
     } catch (error) {
+      // 4. Handle errors gracefully by returning the server message or a fallback
       return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Failed to fetch seller orders"
+        error.response?.data?.message || "Failed to fetch orders. Please try again."
       );
     }
   }

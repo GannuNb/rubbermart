@@ -213,6 +213,13 @@ for (const item of validatedOrderItems) {
 export const getSellerOrders = async (req, res) => {
   try {
     const sellerId = req.user._id;
+    const { page = 1 } = req.query; // Get page from query
+    const LIMIT = 5; // Matches your itemsPerPage in frontend
+    const pageNumber = parseInt(page, 10) || 1;
+    const skip = (pageNumber - 1) * LIMIT;
+
+    // Get total count for pagination math
+    const totalCount = await Order.countDocuments({ seller: sellerId, isDeleted: false });
 
     const orders = await Order.find({
       seller: sellerId,
@@ -220,21 +227,18 @@ export const getSellerOrders = async (req, res) => {
     })
       .populate("buyer", "fullName email")
       .populate("orderItems.product")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(LIMIT);
 
     return res.status(200).json({
       success: true,
-      totalOrders: orders.length,
       orders,
+      totalPages: Math.ceil(totalCount / LIMIT),
+      currentPage: pageNumber,
     });
   } catch (error) {
-    console.log("Get Seller Orders Error:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Failed to fetch seller orders",
-      error: error.message,
-    });
+    return res.status(500).json({ success: false, message: "Failed to fetch orders" });
   }
 };
 

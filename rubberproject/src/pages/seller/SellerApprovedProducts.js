@@ -9,10 +9,7 @@ function SellerApprovedProducts() {
   const dispatch = useDispatch();
   const [expandedCard, setExpandedCard] = useState(null);
   const [editingProductId, setEditingProductId] = useState(null);
-
-  // Pagination parameters state
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 3;
 
   const [alert, setAlert] = useState({
     show: false,
@@ -29,42 +26,34 @@ function SellerApprovedProducts() {
     stockStatus: "available",
   });
 
-  const {
-    pendingProducts,
-    pendingProductsLoading,
-    pendingProductsError,
-    approveProductLoading,
+  // Correctly target the 'approvedProducts' bucket and global loading states
+  const { items: approvedProducts, totalPages } = useSelector(
+    (state) => state.sellerProduct.approvedProducts
+  );
+  const { 
+    pendingProductsLoading, 
+    pendingProductsError, 
+    approveProductLoading 
   } = useSelector((state) => state.sellerProduct);
 
   useEffect(() => {
-    dispatch(fetchPendingProductsThunk());
-  }, [dispatch]);
-
-  // FILTERED: Only keep items whose status is explicitly approved
-  const approvedProducts = pendingProducts.filter(
-    (product) => product.status === "approved"
-  );
+    // Note: Ensure your Thunk handles the status parameter to route data to 'approvedProducts'
+    dispatch(fetchPendingProductsThunk(currentPage, "approved"));
+  }, [dispatch, currentPage]);
 
   const handleToggle = (id) => {
     setExpandedCard(expandedCard === id ? null : id);
   };
 
-  // Pagination metrics tied strictly to filtered approved collection
-  const totalPages = Math.ceil(approvedProducts.length / itemsPerPage) || 1;
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentProducts = approvedProducts.slice(indexOfFirstItem, indexOfLastItem);
-
   const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   const handleEditClick = (product) => {
-    setEditingProductId(
-      editingProductId === product._id ? null : product._id
-    );
-
+    setEditingProductId(editingProductId === product._id ? null : product._id);
     setEditForm({
       quantity: product.quantity,
       pricePerMT: product.pricePerMT,
@@ -90,19 +79,19 @@ function SellerApprovedProducts() {
         message: "Your approved product has been updated successfully.",
       });
 
-      dispatch(fetchPendingProductsThunk());
+      dispatch(fetchPendingProductsThunk(currentPage, "approved"));
       setEditingProductId(null);
     } catch (error) {
       setAlert({
         show: true,
         type: "error",
         title: "Update Failed",
-        message: "Failed to update product.",
+        message: error.message || "Failed to update product.",
       });
     }
   };
 
-  if (pendingProductsLoading) {
+  if (pendingProductsLoading && approvedProducts.length === 0) {
     return (
       <div className={styles.loadingContainer}>
         <p>Loading approved products...</p>
@@ -125,9 +114,7 @@ function SellerApprovedProducts() {
           type={alert.type}
           title={alert.title}
           message={alert.message}
-          onClose={() =>
-            setAlert({ show: false, type: "", title: "", message: "" })
-          }
+          onClose={() => setAlert({ show: false, type: "", title: "", message: "" })}
         />
       )}
 
@@ -139,13 +126,12 @@ function SellerApprovedProducts() {
         </div>
       ) : (
         <div className={styles.grid}>
-          {currentProducts.map((product) => (
+          {approvedProducts.map((product) => (
             <div className={styles.card} key={product._id}>
               <div className={styles.imageWrapper}>
                 <div className={`${styles.statusBadge} ${styles.statusApproved}`}>
                   Approved
                 </div>
-
                 {product.images && product.images.length > 0 ? (
                   <img
                     src={product.images[0].image}
@@ -160,125 +146,49 @@ function SellerApprovedProducts() {
 
               <div className={styles.content}>
                 <h2>{product.application}</h2>
-
-                <p>
-                  <strong>Category:</strong> {product.category}
-                </p>
-
-                <p>
-                  <strong>Loading Location:</strong> {product.loadingLocation}
-                </p>
-
-                <p>
-                  <strong>Status:</strong>{" "}
-                  <span className={styles.approved}>Approved</span>
-                </p>
-
+                <p><strong>Category:</strong> {product.category}</p>
+                <p><strong>Loading Location:</strong> {product.loadingLocation}</p>
+                <p><strong>Status:</strong> <span className={styles.approved}>Approved</span></p>
                 <p>
                   <strong>Stock:</strong>{" "}
-                  <span
-                    className={
-                      product.stockStatus === "soldout"
-                        ? styles.rejected
-                        : styles.approved
-                    }
-                  >
+                  <span className={product.stockStatus === "soldout" ? styles.rejected : styles.approved}>
                     {product.stockStatus === "soldout" ? "Sold Out" : "Available"}
                   </span>
                 </p>
 
                 {expandedCard === product._id && (
                   <>
-                    <p>
-                      <strong>Quantity:</strong> {product.quantity} MT
-                    </p>
-
-                    <p>
-                      <strong>Country:</strong> {product.countryOfOrigin}
-                    </p>
-
-                    <p>
-                      <strong>Price Per MT:</strong> ₹{product.pricePerMT}
-                    </p>
-
-                    <p>
-                      <strong>HSN Code:</strong> {product.hsnCode}
-                    </p>
-
-                    {product.description && (
-                      <p className={styles.description}>{product.description}</p>
-                    )}
+                    <p><strong>Quantity:</strong> {product.quantity} MT</p>
+                    <p><strong>Country:</strong> {product.countryOfOrigin}</p>
+                    <p><strong>Price Per MT:</strong> ₹{product.pricePerMT}</p>
+                    <p><strong>HSN Code:</strong> {product.hsnCode}</p>
+                    {product.description && <p className={styles.description}>{product.description}</p>}
                   </>
                 )}
 
-                <button
-                  className={styles.viewMoreBtn}
-                  onClick={() => handleToggle(product._id)}
-                >
+                <button className={styles.viewMoreBtn} onClick={() => handleToggle(product._id)}>
                   {expandedCard === product._id ? "View Less" : "View Details"}
                 </button>
 
-                <button
-                  className={styles.viewMoreBtn}
-                  onClick={() => handleEditClick(product)}
-                >
+                <button className={styles.viewMoreBtn} onClick={() => handleEditClick(product)}>
                   {editingProductId === product._id ? "Cancel Edit" : "Edit Product"}
                 </button>
 
                 {editingProductId === product._id && (
                   <div className={styles.editSection}>
-                    <input
-                      type="number"
-                      name="quantity"
-                      placeholder="Quantity"
-                      value={editForm.quantity}
-                      onChange={handleEditChange}
-                      className={styles.editInput}
-                    />
-
-                    <input
-                      type="number"
-                      name="pricePerMT"
-                      placeholder="Price Per MT"
-                      value={editForm.pricePerMT}
-                      onChange={handleEditChange}
-                      className={styles.editInput}
-                    />
-
-                    <select
-                      name="loadingLocation"
-                      value={editForm.loadingLocation}
-                      onChange={handleEditChange}
-                      className={styles.editInput}
-                    >
+                    <input type="number" name="quantity" placeholder="Quantity" value={editForm.quantity} onChange={handleEditChange} className={styles.editInput} />
+                    <input type="number" name="pricePerMT" placeholder="Price Per MT" value={editForm.pricePerMT} onChange={handleEditChange} className={styles.editInput} />
+                    <select name="loadingLocation" value={editForm.loadingLocation} onChange={handleEditChange} className={styles.editInput}>
                       <option value="Ex Chennai">Ex Chennai</option>
                       <option value="Ex Mundra">Ex Mundra</option>
                       <option value="Ex Nhavasheva">Ex Nhavasheva</option>
                     </select>
-
-                    <select
-                      name="stockStatus"
-                      value={editForm.stockStatus}
-                      onChange={handleEditChange}
-                      className={styles.editInput}
-                    >
+                    <select name="stockStatus" value={editForm.stockStatus} onChange={handleEditChange} className={styles.editInput}>
                       <option value="available">Available</option>
                       <option value="soldout">Sold Out</option>
                     </select>
-
-                    <textarea
-                      name="description"
-                      placeholder="Description"
-                      value={editForm.description}
-                      onChange={handleEditChange}
-                      className={styles.editTextarea}
-                    />
-
-                    <button
-                      className={styles.saveBtn}
-                      onClick={() => handleUpdateProduct(product._id)}
-                      disabled={approveProductLoading}
-                    >
+                    <textarea name="description" placeholder="Description" value={editForm.description} onChange={handleEditChange} className={styles.editTextarea} />
+                    <button className={styles.saveBtn} onClick={() => handleUpdateProduct(product._id)} disabled={approveProductLoading}>
                       {approveProductLoading ? "Updating..." : "Save Changes"}
                     </button>
                   </div>
@@ -289,50 +199,25 @@ function SellerApprovedProducts() {
         </div>
       )}
 
-      {/* PERSISTENT 2-PILL MAX PAGINATION FOOTER */}
+      {/* Pagination Footer */}
       <div className={styles.paginationWrapper}>
-        <button
-          className={styles.pageArrowButton}
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-        >
-          &laquo; Previous
-        </button>
-
+        <button className={styles.pageArrowButton} onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>&laquo; Previous</button>
         <div className={styles.pageNumbersGrid}>
           {(() => {
             let startPage = currentPage;
-            if (currentPage === totalPages && totalPages > 1) {
-              startPage = currentPage - 1;
-            }
-
+            if (currentPage === totalPages && totalPages > 1) startPage = currentPage - 1;
             const pageNumbers = [];
             const endPage = Math.min(totalPages, startPage + 1);
-
             for (let i = startPage; i <= endPage; i++) {
+              if (i < 1) continue;
               pageNumbers.push(
-                <button
-                  key={i}
-                  className={`${styles.pageNumberPill} ${
-                    currentPage === i ? styles.activePageNumberPill : ""
-                  }`}
-                  onClick={() => handlePageChange(i)}
-                >
-                  {i}
-                </button>
+                <button key={i} className={`${styles.pageNumberPill} ${currentPage === i ? styles.activePageNumberPill : ""}`} onClick={() => handlePageChange(i)}>{i}</button>
               );
             }
             return pageNumbers;
           })()}
         </div>
-
-        <button
-          className={styles.pageArrowButton}
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-        >
-          Next &raquo;
-        </button>
+        <button className={styles.pageArrowButton} onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>Next &raquo;</button>
       </div>
     </div>
   );

@@ -6,42 +6,37 @@ import styles from "../../styles/Seller/SellerPendingProducts.module.css";
 function SellerRejectedProducts() {
   const dispatch = useDispatch();
   const [expandedCard, setExpandedCard] = useState(null);
-
-  // Pagination parameters state
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 3;
 
-  const {
-    pendingProducts,
-    pendingProductsLoading,
-    pendingProductsError,
+  // 1. Correctly target the rejectedProducts bucket
+  const { 
+    items: rejectedProducts, 
+    totalPages 
+  } = useSelector((state) => state.sellerProduct.rejectedProducts);
+
+  // 2. Select the global loading/error states
+  const { 
+    pendingProductsLoading, 
+    pendingProductsError 
   } = useSelector((state) => state.sellerProduct);
 
+  // Fetch data dynamically whenever the current page changes
   useEffect(() => {
-    dispatch(fetchPendingProductsThunk());
-  }, [dispatch]);
-
-  // FILTERED: Only keep items whose status is explicitly rejected
-  const rejectedProducts = pendingProducts.filter(
-    (product) => product.status === "rejected"
-  );
+    dispatch(fetchPendingProductsThunk(currentPage, "rejected"));
+  }, [dispatch, currentPage]);
 
   const handleToggle = (id) => {
     setExpandedCard(expandedCard === id ? null : id);
   };
 
-  // Pagination metrics tied strictly to filtered rejected collection
-  const totalPages = Math.ceil(rejectedProducts.length / itemsPerPage) || 1;
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentProducts = rejectedProducts.slice(indexOfFirstItem, indexOfLastItem);
-
   const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (pageNumber >= 1 && pageNumber <= (totalPages || 1)) {
+      setCurrentPage(pageNumber);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
-  if (pendingProductsLoading) {
+  if (pendingProductsLoading && rejectedProducts.length === 0) {
     return (
       <div className={styles.loadingContainer}>
         <p>Loading rejected products...</p>
@@ -61,13 +56,13 @@ function SellerRejectedProducts() {
     <div className={styles.container}>
       <h1 className={styles.heading}>Rejected Products</h1>
 
-      {rejectedProducts.length === 0 ? (
+      {!rejectedProducts || rejectedProducts.length === 0 ? (
         <div className={styles.emptyState}>
           <p>No rejected products found</p>
         </div>
       ) : (
         <div className={styles.grid}>
-          {currentProducts.map((product) => (
+          {rejectedProducts.map((product) => (
             <div className={styles.card} key={product._id}>
               <div className={styles.imageWrapper}>
                 <div className={`${styles.statusBadge} ${styles.statusRejected}`}>
@@ -76,7 +71,20 @@ function SellerRejectedProducts() {
 
                 {product.images && product.images.length > 0 ? (
                   <img
-                    src={product.images[0].image}
+                    src={(() => {
+                      const imgObj = product.images[0];
+                      if (typeof imgObj === "string") return imgObj;
+                      if (typeof imgObj.image === "string") return imgObj.image;
+                      
+                      // Handling potential Buffer data
+                      if (imgObj.data && imgObj.data.data) {
+                        const base64String = btoa(
+                          String.fromCharCode(...new Uint8Array(imgObj.data.data))
+                        );
+                        return `data:${imgObj.contentType};base64,${base64String}`;
+                      }
+                      return "";
+                    })()}
                     alt={product.application}
                     className={styles.image}
                     loading="lazy"
@@ -88,41 +96,17 @@ function SellerRejectedProducts() {
 
               <div className={styles.content}>
                 <h2>{product.application}</h2>
-
-                <p>
-                  <strong>Category:</strong> {product.category}
-                </p>
-
-                <p>
-                  <strong>Loading Location:</strong> {product.loadingLocation}
-                </p>
-
-                <p>
-                  <strong>Status:</strong>{" "}
-                  <span className={styles.rejected}>Rejected</span>
-                </p>
+                <p><strong>Category:</strong> {product.category}</p>
+                <p><strong>Loading Location:</strong> {product.loadingLocation}</p>
+                <p><strong>Status:</strong> <span className={styles.rejected}>Rejected</span></p>
 
                 {expandedCard === product._id && (
                   <>
-                    <p>
-                      <strong>Quantity:</strong> {product.quantity} MT
-                    </p>
-
-                    <p>
-                      <strong>Country:</strong> {product.countryOfOrigin}
-                    </p>
-
-                    <p>
-                      <strong>Price Per MT:</strong> ₹{product.pricePerMT}
-                    </p>
-
-                    <p>
-                      <strong>HSN Code:</strong> {product.hsnCode}
-                    </p>
-
-                    {product.description && (
-                      <p className={styles.description}>{product.description}</p>
-                    )}
+                    <p><strong>Quantity:</strong> {product.quantity} MT</p>
+                    <p><strong>Country:</strong> {product.countryOfOrigin}</p>
+                    <p><strong>Price Per MT:</strong> ₹{product.pricePerMT}</p>
+                    <p><strong>HSN Code:</strong> {product.hsnCode}</p>
+                    {product.description && <p className={styles.description}>{product.description}</p>}
                   </>
                 )}
 
@@ -138,7 +122,7 @@ function SellerRejectedProducts() {
         </div>
       )}
 
-      {/* PERSISTENT PAGINATION FOOTER */}
+      {/* Pagination Footer */}
       <div className={styles.paginationWrapper}>
         <button
           className={styles.pageArrowButton}
@@ -150,13 +134,14 @@ function SellerRejectedProducts() {
 
         <div className={styles.pageNumbersGrid}>
           {(() => {
-            let startPage = currentPage;
-            if (currentPage === totalPages && totalPages > 1) {
-              startPage = currentPage - 1;
-            }
-
             const pageNumbers = [];
-            const endPage = Math.min(totalPages, startPage + 1);
+            const maxPagesToShow = 3;
+            let startPage = Math.max(1, currentPage - 1);
+            let endPage = Math.min(totalPages || 1, startPage + maxPagesToShow - 1);
+
+            if (endPage - startPage < maxPagesToShow - 1) {
+              startPage = Math.max(1, endPage - maxPagesToShow + 1);
+            }
 
             for (let i = startPage; i <= endPage; i++) {
               pageNumbers.push(
@@ -178,7 +163,7 @@ function SellerRejectedProducts() {
         <button
           className={styles.pageArrowButton}
           onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
+          disabled={currentPage === (totalPages || 1)}
         >
           Next &raquo;
         </button>
