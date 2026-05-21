@@ -11,16 +11,14 @@ import {
 import styles from "../../styles/Admin/AdminPendingProducts.module.css";
 
 function AdminPendingProducts() {
-  const dispatch = useDispatch();                       
+  const dispatch = useDispatch();
 
   const {
     adminPendingProducts,
     adminPendingProductsLoading,
     adminPendingProductsError,
-
     approveProductLoading,
     approveProductLoadingId,
-
     rejectProductLoading,
     rejectProductLoadingId,
   } = useSelector((state) => state.sellerProduct);
@@ -33,7 +31,7 @@ function AdminPendingProducts() {
     dispatch(fetchAdminPendingProductsThunk());
   }, [dispatch]);
 
-  // Reset pagination window when items get removed from the list stream (approved/rejected)
+  // Reset pagination window when items get removed
   useEffect(() => {
     const maxPagesPossible = Math.ceil(adminPendingProducts.length / itemsPerPage);
     if (currentPage > maxPagesPossible && maxPagesPossible > 0) {
@@ -116,27 +114,22 @@ function AdminPendingProducts() {
                       <span>Category</span>
                       <p>{product.category}</p>
                     </div>
-
                     <div>
                       <span>Quantity</span>
                       <p>{product.quantity} MT</p>
                     </div>
-
                     <div>
                       <span>Location</span>
                       <p>{product.loadingLocation}</p>
                     </div>
-
                     <div>
                       <span>Country</span>
                       <p>{product.countryOfOrigin}</p>
                     </div>
-
                     <div>
                       <span>Price</span>
                       <p>₹{product.pricePerMT}</p>
                     </div>
-
                     <div>
                       <span>HSN Code</span>
                       <p>{product.hsnCode}</p>
@@ -194,7 +187,7 @@ function AdminPendingProducts() {
             ))}
           </div>
 
-          {/* PAGINATION CONTROL FOOTER UI INTERFACE - PERMANENTLY VISIBLE WHEN RECORDS EXIST */}
+          {/* UPDATED PAGINATION CONTROL - VISIBLE EVEN FOR 1 PAGE */}
           {adminPendingProducts.length > 0 && (
             <div className={styles.paginationWrapper}>
               <button 
@@ -206,40 +199,23 @@ function AdminPendingProducts() {
               </button>
               
               <div className={styles.pageNumbersGrid}>
-                                {(() => {
-                  // Determine start page based on current selection window
-                  let startPage = Math.max(1, currentPage);
-                  
-                  // If we are at the very last page, shift backwards to still show 2 pills if possible
-                  if (currentPage === totalPages && totalPages > 1) {
-                    startPage = Math.max(1, currentPage - 1);
-                  }
-                
-                  // Calculate the final boundary to show exactly 2 items maximum
-                  const endPage = Math.min(totalPages, startPage + 1);
-                
-                  const pageNumbers = [];
-                  for (let i = startPage; i <= endPage; i++) {
-                    pageNumbers.push(
-                      <button
-                        key={i}
-                        className={`${styles.pageNumberPill} ${
-                          currentPage === i ? styles.activePageNumberPill : ""
-                        }`}
-                        onClick={() => handlePageChange(i)}
-                      >
-                        {i}
-                      </button>
-                    );
-                  }
-                  return pageNumbers;
-                })()}
+                {Array.from({ length: Math.max(1, totalPages) }, (_, i) => i + 1).map((pageNumber) => (
+                  <button
+                    key={pageNumber}
+                    className={`${styles.pageNumberPill} ${
+                      currentPage === pageNumber ? styles.activePageNumberPill : ""
+                    }`}
+                    onClick={() => handlePageChange(pageNumber)}
+                  >
+                    {pageNumber}
+                  </button>
+                ))}
               </div>
 
               <button 
                 className={styles.pageArrowButton}
                 onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages || totalPages <= 1}
+                disabled={currentPage === totalPages}
               >
                 Next &raquo;
               </button>

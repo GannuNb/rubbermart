@@ -12,29 +12,19 @@ import {
   setRejectProductError,
 } from "./sellerProductSlice";
 
-export const fetchAdminPendingProductsThunk = () => async (dispatch) => {
+export const fetchAdminPendingProductsThunk = (page = 1) => async (dispatch) => {
   try {
     dispatch(setAdminPendingProductsLoading(true));
-    dispatch(setAdminPendingProductsError(null));
-
     const token = localStorage.getItem("token");
-
     const response = await fetch(
-      `${process.env.REACT_APP_API_URL}/api/seller/admin/pending-products`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
+      `${process.env.REACT_APP_API_URL}/api/seller/admin/pending-products?page=${page}&limit=3`,
+      { headers: { Authorization: `Bearer ${token}` } }
     );
-
     const data = await response.json();
-
     if (data.success) {
-      dispatch(setAdminPendingProductsSuccess(data.products));
-    } else {
-      dispatch(setAdminPendingProductsError(data.message));
+      // Note: You should update your slice to store totalPages as well
+      dispatch(setAdminPendingProductsSuccess(data.products)); 
+      return data.totalPages; // Return totalPages for the component to use
     }
   } catch (error) {
     dispatch(setAdminPendingProductsError("Failed to fetch products"));

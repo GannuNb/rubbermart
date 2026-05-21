@@ -1,5 +1,3 @@
-// src/components/admin/AdminProducts.js
-
 import React, { useEffect, useState } from "react";
 import styles from "../../styles/Admin/AdminProducts.module.css";
 
@@ -10,21 +8,23 @@ function AdminProducts() {
 
   // PAGINATION STATES
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 3; // Set layout limit per page configuration
+  const [totalPages, setTotalPages] = useState(1);
+  const itemsPerPage = 3; 
 
-  const fetchAllProducts = async () => {
+  const fetchAllProducts = async (page) => {
+    setLoading(true);
     try {
       const token = localStorage.getItem("token");
       const headers = { Authorization: `Bearer ${token}` };
       const baseUrl = process.env.REACT_APP_API_URL ? process.env.REACT_APP_API_URL.replace(/\/$/, "") : "";
 
-      const response = await fetch(`${baseUrl}/api/products/admin/all-products`, { headers });
+      const response = await fetch(`${baseUrl}/api/products/admin/all-products?page=${page}&limit=${itemsPerPage}`, { headers });
 
       if (response.ok) {
         const data = await response.json();
         if (data.success && data.products) {
           setProducts(data.products);
-          setCurrentPage(1); // Reset page pointer back on safe inventory pull refills
+          setTotalPages(data.totalPages);
         }
       }
     } catch (error) {
@@ -35,8 +35,8 @@ function AdminProducts() {
   };
 
   useEffect(() => {
-    fetchAllProducts();
-  }, []);
+    fetchAllProducts(currentPage);
+  }, [currentPage]);
 
   const getStatusBadgeStyle = (status) => {
     switch (status?.toLowerCase()) {
@@ -50,15 +50,9 @@ function AdminProducts() {
     }
   };
 
-  // PAGINATION CHUNK ENGINE CALCULATION
-  const indexOfLastProduct = currentPage * itemsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
-  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
-  const totalPages = Math.ceil(products.length / itemsPerPage);
-
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
-    window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll up gently for fresh screen updates
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -77,15 +71,11 @@ function AdminProducts() {
       ) : (
         <>
           <div className={styles.adminProductsGrid}>
-            {currentProducts.map((product) => (
+            {products.map((product) => (
               <div key={product._id} className={styles.adminProductCard}>
                 <div className={styles.adminProductImageWrapper}>
                   {product.images?.length > 0 && product.images[0].image ? (
-                    <img
-                      src={product.images[0].image}
-                      alt={product.category}
-                      className={styles.adminProductImage}
-                    />
+                    <img src={product.images[0].image} alt={product.category} className={styles.adminProductImage} />
                   ) : (
                     <div className={styles.adminProductNoImage}>No Image Available</div>
                   )}
@@ -93,10 +83,7 @@ function AdminProducts() {
                 <div className={styles.adminProductContent}>
                   <div className={styles.adminProductTopRow}>
                     <h3 className={styles.adminProductCategory}>{product.category}</h3>
-                    <span
-                      className={styles.adminProductStatusBadge}
-                      style={getStatusBadgeStyle(product.status)}
-                    >
+                    <span className={styles.adminProductStatusBadge} style={getStatusBadgeStyle(product.status)}>
                       {product.status ? product.status.charAt(0).toUpperCase() + product.status.slice(1) : "Pending"}
                     </span>
                   </div>
@@ -119,12 +106,11 @@ function AdminProducts() {
             ))}
           </div>
 
-          {/* PAGINATION CONTROL FOOTER UI INTERFACE - ALWAYS VISIBLE WHEN PRODUCTS EXIST */}
-          {products.length > 0 && (
+          {totalPages > 1 && (
             <div className={styles.paginationWrapper}>
-              <button
-                className={styles.pageArrowButton}
-                onClick={() => handlePageChange(currentPage - 1)}
+              <button 
+                className={styles.pageArrowButton} 
+                onClick={() => handlePageChange(currentPage - 1)} 
                 disabled={currentPage === 1}
               >
                 &laquo; Previous
@@ -132,38 +118,35 @@ function AdminProducts() {
 
               <div className={styles.pageNumbersGrid}>
                 {(() => {
-                  // Determine start page based on current selection window
-                  let startPage = Math.max(1, currentPage);
-
-                  // If we are at the very last page, shift backwards to still show 2 pills if possible
-                  if (currentPage === totalPages && totalPages > 1) {
-                    startPage = Math.max(1, currentPage - 1);
+                  let pages = [];
+                  // Logic: Show up to 3 buttons centered on current page
+                  let start = Math.max(1, currentPage - 1);
+                  let end = Math.min(totalPages, start + 2);
+                  
+                  // Adjust if we are at the end of the list
+                  if (end - start < 2 && totalPages > 2) {
+                    start = Math.max(1, totalPages - 2);
                   }
 
-                  // Calculate the final boundary to show exactly 2 items maximum
-                  const endPage = Math.min(totalPages, startPage + 1);
-
-                  const pageNumbers = [];
-                  for (let i = startPage; i <= endPage; i++) {
-                    pageNumbers.push(
+                  for (let i = start; i <= end; i++) {
+                    pages.push(
                       <button
                         key={i}
-                        className={`${styles.pageNumberPill} ${currentPage === i ? styles.activePageNumberPill : ""
-                          }`}
+                        className={`${styles.pageNumberPill} ${currentPage === i ? styles.activePageNumberPill : ""}`}
                         onClick={() => handlePageChange(i)}
                       >
                         {i}
                       </button>
                     );
                   }
-                  return pageNumbers;
+                  return pages;
                 })()}
               </div>
 
-              <button
-                className={styles.pageArrowButton}
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages || totalPages <= 1}
+              <button 
+                className={styles.pageArrowButton} 
+                onClick={() => handlePageChange(currentPage + 1)} 
+                disabled={currentPage === totalPages}
               >
                 Next &raquo;
               </button>
@@ -172,7 +155,7 @@ function AdminProducts() {
         </>
       )}
 
-      {/* VIEW DETAILS MODAL */}
+      {/* VIEW DETAILS MODAL - FULLY RESTORED */}
       {selectedProduct && (
         <div className={styles.adminProductModalOverlay} onClick={() => setSelectedProduct(null)}>
           <div className={styles.adminProductModal} onClick={(e) => e.stopPropagation()}>
@@ -180,11 +163,7 @@ function AdminProducts() {
             <h2 className={styles.adminModalTitle}>{selectedProduct.category}</h2>
 
             {selectedProduct.images?.length > 0 && selectedProduct.images[0].image ? (
-              <img
-                src={selectedProduct.images[0].image}
-                alt={selectedProduct.category}
-                className={styles.adminModalImage}
-              />
+              <img src={selectedProduct.images[0].image} alt={selectedProduct.category} className={styles.adminModalImage} />
             ) : (
               <div className={styles.adminProductNoImage} style={{ height: "200px", marginBottom: "15px" }}>No Image Available</div>
             )}
@@ -198,14 +177,12 @@ function AdminProducts() {
               <p><strong>HSN Code:</strong> {selectedProduct.hsnCode}</p>
               <p><strong>Seller Name:</strong> {selectedProduct.seller?.fullName || "N/A"}</p>
               <p><strong>Seller Email:</strong> {selectedProduct.seller?.email || "N/A"}</p>
-
               <p style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                 <strong>Status:</strong>
                 <span className={styles.adminProductStatusBadge} style={getStatusBadgeStyle(selectedProduct.status)}>
                   {selectedProduct.status ? selectedProduct.status.toUpperCase() : "PENDING"}
                 </span>
               </p>
-
               <p><strong>Stock Status:</strong> {selectedProduct.stockStatus}</p>
               {selectedProduct.description && <p><strong>Description:</strong> {selectedProduct.description}</p>}
             </div>

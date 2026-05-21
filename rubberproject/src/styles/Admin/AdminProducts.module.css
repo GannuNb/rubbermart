@@ -426,3 +426,11 @@
     font-size: 13px;
   }
 }
+
+.pageIndicator {
+  margin: 0 15px;
+  font-weight: 600;
+  color: #374151;
+  display: flex;
+  align-items: center;
+}

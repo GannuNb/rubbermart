@@ -94,14 +94,19 @@ export const getSellerProducts = async (req, res) => {
   }
 };
 
-// 2. PENDING (Kept identical to your original structure)
 export const getAllPendingProductsForAdmin = async (req, res) => {
   try {
-    const products = await Product.find({
-      status: "pending",
-    })
+    const { page = 1, limit = 3 } = req.query;
+    const pageNumber = Number(page);
+    const limitNumber = Number(limit);
+
+    const totalProducts = await Product.countDocuments({ status: "pending" });
+
+    const products = await Product.find({ status: "pending" })
       .populate("seller", "fullName email")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .skip((pageNumber - 1) * limitNumber)
+      .limit(limitNumber);
 
     const formattedProducts = products.map((product) => ({
       ...product._doc,
@@ -114,13 +119,12 @@ export const getAllPendingProductsForAdmin = async (req, res) => {
     return res.status(200).json({
       success: true,
       products: formattedProducts,
+      totalPages: Math.ceil(totalProducts / limitNumber),
+      totalProducts
     });
   } catch (error) {
     console.log("Get Admin Pending Products Error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to fetch pending products",
-    });
+    return res.status(500).json({ success: false, message: "Failed to fetch pending products" });
   }
 };
 
@@ -318,19 +322,29 @@ export const getAllRejectedProductsForAdmin = async (req, res) => {
   }
 };
 
-// backend/controllers/sellerProductController.js
-
 // NEW UNIFIED METHOD: Replaces the 3 individual status endpoints
 export const getAllProductsForAdmin = async (req, res) => {
   try {
-    // Find all products matching the target administrative statuses
+    // 1. Extract page and limit
+    const { page = 1, limit = 3 } = req.query;
+    const pageNumber = Number(page);
+    const limitNumber = Number(limit);
+
+    // 2. Count total (for the pagination UI)
+    const totalProducts = await Product.countDocuments({
+      status: { $in: ["approved", "pending", "rejected"] }
+    });
+
+    // 3. Find only the slice
     const products = await Product.find({
       status: { $in: ["approved", "pending", "rejected"] }
     })
       .populate("seller", "fullName email")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .skip((pageNumber - 1) * limitNumber)
+      .limit(limitNumber);
 
-    // YOUR ORIGINAL IMAGE FORMATTING (Kept completely untouched)
+    // 4. Format images (only for the 3 items we fetched)
     const formattedProducts = products.map((product) => ({
       ...product._doc,
       images: product.images.map((img) => ({
@@ -342,12 +356,11 @@ export const getAllProductsForAdmin = async (req, res) => {
     return res.status(200).json({
       success: true,
       products: formattedProducts,
+      totalPages: Math.ceil(totalProducts / limitNumber), // Send this to FE
+      totalProducts
     });
   } catch (error) {
-    console.log("Get Admin Comprehensive Inventory Error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to fetch dashboard inventory analytics",
-    });
+    return res.status(500).json({ success: false, message: "Error" });
   }
 };
+
