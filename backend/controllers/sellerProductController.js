@@ -68,29 +68,37 @@ export const addProduct = async (req, res) => {
 
 export const getSellerProducts = async (req, res) => {
   try {
-    const products = await Product.find({
-      seller: req.user._id,
-    }).sort({ createdAt: -1 });
+    // FIX: Default page to 1
+    const page = parseInt(req.query.page) || 1; 
+    
+    // Using the limit provided by the frontend, falling back to 3 if undefined
+    const limit = 3; 
+    const skip = (page - 1) * limit;
+
+    const totalCount = await Product.countDocuments({ seller: req.user._id });
+    
+    // Ensure you use .skip() and .limit()
+    const products = await Product.find({ seller: req.user._id })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
 
     const formattedProducts = products.map((product) => ({
       ...product._doc,
-      images: product.images.map((img) => ({
-        contentType: img.contentType,
+      images: product.images?.map((img) => ({
         image: `data:${img.contentType};base64,${img.data.toString("base64")}`,
-      })),
+      })) || [],
     }));
 
     return res.status(200).json({
       success: true,
       products: formattedProducts,
+      totalPages: Math.ceil(totalCount / limit),
+      currentPage: page,
     });
   } catch (error) {
-    console.log("Get Seller Products Error:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Failed to fetch seller products",
-    });
+    console.error("Error in getSellerProducts:", error);
+    return res.status(500).json({ success: false, message: "Error fetching products" });
   }
 };
 

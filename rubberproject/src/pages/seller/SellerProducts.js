@@ -5,31 +5,24 @@ import styles from "../../styles/Seller/SellerPendingProducts.module.css";
 
 function SellerProducts() {
   const dispatch = useDispatch();
-
   const [expandedCard, setExpandedCard] = useState(null);
 
-  // PAGINATION STATES
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 3;
-
+  // Pulling state from Redux
   const {
     pendingProducts,
+    totalPages,
+    currentPage,
     pendingProductsLoading,
     pendingProductsError,
   } = useSelector((state) => state.sellerProduct);
 
+  // Fetch products whenever the currentPage changes
   useEffect(() => {
-    dispatch(fetchPendingProductsThunk());
-  }, [dispatch]);
-
-  // UNFILTERED: Shows everything inside pendingProducts array (approved, rejected, pending)
-  const totalPages = Math.ceil(pendingProducts.length / itemsPerPage) || 1;
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentAllProducts = pendingProducts.slice(indexOfFirstItem, indexOfLastItem);
+    dispatch(fetchPendingProductsThunk(currentPage));
+  }, [dispatch, currentPage]);
 
   const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
+    dispatch(fetchPendingProductsThunk(pageNumber));
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -40,7 +33,7 @@ function SellerProducts() {
   if (pendingProductsLoading) {
     return (
       <div className={styles.loadingContainer}>
-        <p>Loading total products...</p>
+        <p>Loading products...</p>
       </div>
     );
   }
@@ -63,17 +56,16 @@ function SellerProducts() {
         </div>
       ) : (
         <div className={styles.grid}>
-          {currentAllProducts.map((product) => (
+          {pendingProducts.map((product) => (
             <div className={styles.card} key={product._id}>
               <div className={styles.imageWrapper}>
                 <div
-                  className={`${styles.statusBadge} ${
-                    product.status === "approved"
-                      ? styles.statusApproved
-                      : product.status === "rejected"
-                        ? styles.statusRejected
-                        : styles.statusPending
-                  }`}
+                  className={`${styles.statusBadge} ${product.status === "approved"
+                    ? styles.statusApproved
+                    : product.status === "rejected"
+                      ? styles.statusRejected
+                      : styles.statusPending
+                    }`}
                 >
                   {product.status === "approved"
                     ? "Approved"
@@ -142,19 +134,15 @@ function SellerProducts() {
                     <p>
                       <strong>Quantity:</strong> {product.quantity} MT
                     </p>
-
                     <p>
                       <strong>Country:</strong> {product.countryOfOrigin}
                     </p>
-
                     <p>
                       <strong>Price Per MT:</strong> ₹{product.pricePerMT}
                     </p>
-
                     <p>
                       <strong>HSN Code:</strong> {product.hsnCode}
                     </p>
-
                     {product.description && (
                       <p className={styles.description}>{product.description}</p>
                     )}
@@ -173,7 +161,7 @@ function SellerProducts() {
         </div>
       )}
 
-      {/* PERSISTENT PAGINATION FOOTER */}
+      {/* SLIDING PAGINATION FOOTER */}
       <div className={styles.paginationWrapper}>
         <button
           className={styles.pageArrowButton}
@@ -185,28 +173,30 @@ function SellerProducts() {
 
         <div className={styles.pageNumbersGrid}>
           {(() => {
-            let startPage = currentPage;
-            if (currentPage === totalPages && totalPages > 1) {
-              startPage = currentPage - 1;
+            // Calculate the sliding window: start at 1, but shift based on current page
+            let start = Math.max(1, currentPage - 1);
+            // Ensure we don't go past the last page
+            let end = Math.min(totalPages, start + 2);
+
+            // Adjust start if we are at the very end
+            if (end === totalPages && totalPages > 2) {
+              start = Math.max(1, totalPages - 2);
             }
 
-            const pageNumbers = [];
-            const endPage = Math.min(totalPages, startPage + 1);
-
-            for (let i = startPage; i <= endPage; i++) {
-              pageNumbers.push(
+            const pages = [];
+            for (let i = start; i <= end; i++) {
+              pages.push(
                 <button
                   key={i}
-                  className={`${styles.pageNumberPill} ${
-                    currentPage === i ? styles.activePageNumberPill : ""
-                  }`}
+                  className={`${styles.pageNumberPill} ${currentPage === i ? styles.activePageNumberPill : ""
+                    }`}
                   onClick={() => handlePageChange(i)}
                 >
                   {i}
                 </button>
               );
             }
-            return pageNumbers;
+            return pages;
           })()}
         </div>
 

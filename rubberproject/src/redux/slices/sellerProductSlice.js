@@ -1,5 +1,3 @@
-// src/redux/slices/sellerProductSlice.js
-
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -7,7 +5,10 @@ const initialState = {
   addProductError: null,
   addProductSuccess: null,
 
+  // PAGINATION FIELDS ADDED
   pendingProducts: [],
+  totalPages: 1,
+  currentPage: 1,
   pendingProductsLoading: false,
   pendingProductsError: null,
 
@@ -43,11 +44,16 @@ const sellerProductSlice = createSlice({
     setPendingProductsLoading: (state, action) => {
       state.pendingProductsLoading = action.payload;
     },
+    // UPDATED: Now handles products array + pagination metadata
     setPendingProductsSuccess: (state, action) => {
-      state.pendingProducts = action.payload;
+      state.pendingProducts = action.payload.products || [];
+      state.totalPages = action.payload.totalPages || 1;
+      state.currentPage = action.payload.currentPage || 1;
+      state.pendingProductsLoading = false;
     },
     setPendingProductsError: (state, action) => {
       state.pendingProductsError = action.payload;
+      state.pendingProductsLoading = false;
     },
 
     setAdminPendingProductsLoading: (state, action) => {

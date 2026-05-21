@@ -6,15 +6,17 @@ import {
   setPendingProductsError,
 } from "./sellerProductSlice";
 
-export const fetchPendingProductsThunk = () => async (dispatch) => {
+// Add 'page' as an argument here with a default value of 1
+export const fetchPendingProductsThunk = (page = 1) => async (dispatch) => {
   try {
     dispatch(setPendingProductsLoading(true));
     dispatch(setPendingProductsError(null));
 
     const token = localStorage.getItem("token");
 
+    // Now 'page' is defined and will be correctly injected into the URL
     const response = await fetch(
-      `${process.env.REACT_APP_API_URL}/api/seller/products`,
+      `${process.env.REACT_APP_API_URL}/api/seller/products?page=${page}&limit=3`,
       {
         method: "GET",
         headers: {
@@ -26,13 +28,11 @@ export const fetchPendingProductsThunk = () => async (dispatch) => {
     const data = await response.json();
 
     if (response.ok && data.success) {
-      dispatch(setPendingProductsSuccess(data.products));
+      // Ensure your slice is configured to handle the object containing 
+      // { products, totalPages, currentPage }
+      dispatch(setPendingProductsSuccess(data)); 
     } else {
-      dispatch(
-        setPendingProductsError(
-          data.message || "Failed to fetch products"
-        )
-      );
+      dispatch(setPendingProductsError(data.message));
     }
   } catch (error) {
     dispatch(setPendingProductsError("Failed to fetch products"));
