@@ -51,22 +51,38 @@ export const getMyProfile = async (req, res) => {
   }
 };
 
-// backend/controllers/userController.js
-
 export const getAllUsersForAdmin = async (req, res) => {
   try {
-    const users = await User.find({
-      role: { $in: ["buyer", "seller"] },
-    })
-      .select("-password")
-      .sort({ createdAt: -1 });
+    // 1. Determine which role segment the frontend is actively viewing
+    let targetRole = "buyer"; 
+    if (req.query.role === "sellers") targetRole = "seller";
+    if (req.query.role === "admins") targetRole = "admin";
 
+    // 2. Parse pagination variables from query string (defaults to page 1, limit 4)
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 4;
+    const skip = (page - 1) * limit;
+
+    // 3. EFFICIENT COUNTING: Get the live database counts for all roles in parallel.
+    // This is super fast because countDocuments() doesn't fetch actual user data profiles.
+    const [totalAdmins, totalBuyers, totalSellers] = await Promise.all([
+      User.countDocuments({ role: "admin" }),
+      User.countDocuments({ role: "buyer" }),
+      User.countDocuments({ role: "seller" })
+    ]);
+
+    // 4. TRUE BACKEND PAGINATION: Fetch ONLY 4 documents from the database for the active tab
+    const users = await User.find({ role: targetRole })
+      .select("-password")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    // 5. Format certificates ONLY for the 4 documents retrieved
     const formattedUsers = users.map((user) => {
       const formattedUser = {
         ...user._doc,
-
         profileImage: user.profileImage || "",
-
         businessProfile: {
           companyId: user.businessProfile?.companyId || "",
           companyName: user.businessProfile?.companyName || "",
@@ -76,10 +92,8 @@ export const getAllUsersForAdmin = async (req, res) => {
           panNumber: user.businessProfile?.panNumber || "",
           billingAddress: user.businessProfile?.billingAddress || "",
           shippingAddress: user.businessProfile?.shippingAddress || "",
-          sameAsBillingAddress:
-            user.businessProfile?.sameAsBillingAddress || false,
-          interestedProducts:
-            user.businessProfile?.interestedProducts || [],
+          sameAsBillingAddress: user.businessProfile?.sameAsBillingAddress || false,
+          interestedProducts: user.businessProfile?.interestedProducts || [],
         },
       };
 
@@ -87,11 +101,7 @@ export const getAllUsersForAdmin = async (req, res) => {
         formattedUser.businessProfile.gstCertificate = {
           contentType: user.businessProfile.gstCertificate.contentType,
           originalName: user.businessProfile.gstCertificate.originalName,
-          file: `data:${
-            user.businessProfile.gstCertificate.contentType
-          };base64,${user.businessProfile.gstCertificate.data.toString(
-            "base64"
-          )}`,
+          file: `data:${user.businessProfile.gstCertificate.contentType};base64,${user.businessProfile.gstCertificate.data.toString("base64")}`,
         };
       }
 
@@ -99,33 +109,33 @@ export const getAllUsersForAdmin = async (req, res) => {
         formattedUser.businessProfile.panCertificate = {
           contentType: user.businessProfile.panCertificate.contentType,
           originalName: user.businessProfile.panCertificate.originalName,
-          file: `data:${
-            user.businessProfile.panCertificate.contentType
-          };base64,${user.businessProfile.panCertificate.data.toString(
-            "base64"
-          )}`,
+          file: `data:${user.businessProfile.panCertificate.contentType};base64,${user.businessProfile.panCertificate.data.toString("base64")}`,
         };
       }
 
       return formattedUser;
     });
 
-    const buyers = formattedUsers.filter(
-      (user) => user.role === "buyer"
-    );
+    // Determine target total context based on current view segment
+    let activeTotalCount = totalBuyers;
+    if (targetRole === "seller") activeTotalCount = totalSellers;
+    if (targetRole === "admin") activeTotalCount = totalAdmins;
 
-    const sellers = formattedUsers.filter(
-      (user) => user.role === "seller"
-    );
-
+    // 6. Return the paginated chunk alongside global database counts
     return res.status(200).json({
       success: true,
-      buyers,
-      sellers,
+      users: formattedUsers,
+      totalCount: activeTotalCount, 
+      totalPages: Math.ceil(activeTotalCount / limit) || 1,
+      currentPage: page,
+      globalCounts: {
+        admins: totalAdmins,
+        buyers: totalBuyers,
+        sellers: totalSellers
+      }
     });
   } catch (error) {
     console.log("Get All Users For Admin Error:", error);
-
     return res.status(500).json({
       success: false,
       message: "Failed to fetch users",

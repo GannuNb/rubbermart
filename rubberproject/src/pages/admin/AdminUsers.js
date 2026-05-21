@@ -1,5 +1,3 @@
-// src/pages/admin/AdminUsers.js
-
 import React, { useEffect, useState } from "react";
 import styles from "../../styles/Admin/AdminUsers.module.css";
 import AdminBuyerCard from "../../components/admin/AdminBuyerCard";
@@ -8,68 +6,86 @@ import AdminAdminCard from "../../components/admin/AdminAdminCard";
 
 function AdminUsers() {
   const [activeTab, setActiveTab] = useState("buyers");
-  const [buyers, setBuyers] = useState([]);
-  const [sellers, setSellers] = useState([]);
-  const [admins, setAdmins] = useState([]); 
+  const [usersList, setUsersList] = useState([]); // ONLY contains the 4 visible items
+  const [admins, setAdmins] = useState([]);      
   const [loading, setLoading] = useState(true);
 
-  // PAGINATION ENGINE STATE
+  // TRUE BACKEND PAGINATION DRIVER STATES
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  
+  // Holds global total numbers to display across all tab badges immediately
+  const [tabCounts, setTabCounts] = useState({ admins: 0, buyers: 0, sellers: 0 });
   const itemsPerPage = 4;
 
+  // 1. Fetch single admin profile summary
   useEffect(() => {
-    fetchUsersAndAdminProfile();
+    const fetchAdminProfile = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const headers = { Authorization: `Bearer ${token}` };
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/user/my-profile`, { headers });
+        const profileData = await res.json();
+
+        if (profileData.success) {
+          if (profileData.user) setAdmins([profileData.user]);
+          else if (profileData.profile) setAdmins([profileData.profile]);
+        }
+      } catch (error) {
+        console.log("Fetch Admin Profile Error:", error);
+      }
+    };
+    fetchAdminProfile();
   }, []);
 
-  // Reset pagination sequence to page 1 whenever user switches views
+  // 2. Fetch network slices dynamically when tab or page index changes
   useEffect(() => {
-    setCurrentPage(1);
-  }, [activeTab]);
-
-  const fetchUsersAndAdminProfile = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const headers = { Authorization: `Bearer ${token}` };
-
-      const [usersRes, profileRes] = await Promise.all([
-        fetch(`${process.env.REACT_APP_API_URL}/api/user/admin/all-users`, { headers }),
-        fetch(`${process.env.REACT_APP_API_URL}/api/user/my-profile`, { headers })
-      ]);
-
-      const usersData = await usersRes.json();
-      const profileData = await profileRes.json();
-
-      if (usersData.success) {
-        setBuyers(usersData.buyers || []);
-        setSellers(usersData.sellers || []);
-      }
-
-      if (profileData.success && profileData.user) {
-        setAdmins([profileData.user]); 
-      } else if (profileData.success && profileData.profile) {
-        setAdmins([profileData.profile]); 
-      }
-    } catch (error) {
-      console.log("Fetch Complete Users compilation package Error:", error);
-    } finally {
+    if (activeTab === "admins") {
       setLoading(false);
+      return; 
     }
-  };
 
-  // PAGINATION CONTROLLERS ENGINE Math
-  const getCurrentDataset = () => {
-    if (activeTab === "admins") return admins;
-    if (activeTab === "buyers") return buyers;
-    return sellers;
-  };
+    const fetchPaginatedUsersFromServer = async () => {
+      setLoading(true);
+      try {
+        const token = localStorage.getItem("token");
+        
+        // Pass the target role, active page index, and strict display limit to backend
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/api/user/admin/all-users?role=${activeTab}&page=${currentPage}&limit=${itemsPerPage}`,
+          {
+            method: "GET",
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        const data = await response.json();
 
-  const currentDataset = getCurrentDataset();
-  // Ensure totalPages is at least 1 so page 1 button displays even if the array is empty
-  const totalPages = Math.ceil(currentDataset.length / itemsPerPage) || 1;
-  
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = currentDataset.slice(indexOfFirstItem, indexOfLastItem);
+        if (data.success) {
+          setUsersList(data.users || []); // Save ONLY the 4 records returned
+          setTotalPages(data.totalPages || 1);
+          
+          // Sync all tab labels with current database counts instantly
+          if (data.globalCounts) {
+            setTabCounts(data.globalCounts);
+          }
+        } else {
+          setUsersList([]);
+        }
+      } catch (error) {
+        console.log("Fetch Paginated Users Error:", error);
+        setUsersList([]); 
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPaginatedUsersFromServer();
+  }, [activeTab, currentPage]);
+
+  const handleTabChange = (tabName) => {
+    setActiveTab(tabName);
+    setCurrentPage(1); // Reset page selection back to 1 on tab switch
+  };
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -85,32 +101,27 @@ function AdminUsers() {
         </p>
       </div>
 
+      {/* Tab counts update immediately without needing a tab click */}
       <div className={styles.adminUsersTabsContainer}>
         <button
-          className={`${styles.adminUsersTabButton} ${
-            activeTab === "admins" ? styles.adminUsersActiveTab : ""
-          }`}
-          onClick={() => setActiveTab("admins")}
+          className={`${styles.adminUsersTabButton} ${activeTab === "admins" ? styles.adminUsersActiveTab : ""}`}
+          onClick={() => handleTabChange("admins")}
         >
-          Admins ({admins.length})
+          Admins ({tabCounts.admins || admins.length})
         </button>
 
         <button
-          className={`${styles.adminUsersTabButton} ${
-            activeTab === "buyers" ? styles.adminUsersActiveTab : ""
-          }`}
-          onClick={() => setActiveTab("buyers")}
+          className={`${styles.adminUsersTabButton} ${activeTab === "buyers" ? styles.adminUsersActiveTab : ""}`}
+          onClick={() => handleTabChange("buyers")}
         >
-          Buyers ({buyers.length})
+          Buyers ({tabCounts.buyers})
         </button>
 
         <button
-          className={`${styles.adminUsersTabButton} ${
-            activeTab === "sellers" ? styles.adminUsersActiveTab : ""
-          }`}
-          onClick={() => setActiveTab("sellers")}
+          className={`${styles.adminUsersTabButton} ${activeTab === "sellers" ? styles.adminUsersActiveTab : ""}`}
+          onClick={() => handleTabChange("sellers")}
         >
-          Sellers ({sellers.length})
+          Sellers ({tabCounts.sellers})
         </button>
       </div>
 
@@ -118,16 +129,10 @@ function AdminUsers() {
         <div className={styles.adminUsersEmptyState}>Loading users directory entries...</div>
       ) : (
         <>
-          <div 
-            className={
-              activeTab === "admins" 
-                ? styles.centerGridItems 
-                : styles.adminUsersGrid
-            }
-          >
+          <div className={activeTab === "admins" ? styles.centerGridItems : styles.adminUsersGrid}>
             {activeTab === "admins" ? (
-              currentItems.length > 0 ? (
-                currentItems.map((admin) => (
+              admins.length > 0 ? (
+                admins.map((admin) => (
                   <div key={admin._id || "admin-root"} style={{ width: "100%", maxWidth: "560px" }}>
                     <AdminAdminCard user={admin} />
                   </div>
@@ -136,15 +141,15 @@ function AdminUsers() {
                 <div className={styles.adminUsersEmptyState}>No administrator profiles resolved</div>
               )
             ) : activeTab === "buyers" ? (
-              currentItems.length > 0 ? (
-                currentItems.map((buyer) => (
+              usersList.length > 0 ? (
+                usersList.map((buyer) => (
                   <AdminBuyerCard key={buyer._id} user={buyer} />
                 ))
               ) : (
                 <div className={styles.adminUsersEmptyState}>No buyers found inside database documentation</div>
               )
-            ) : currentItems.length > 0 ? (
-              currentItems.map((seller) => (
+            ) : usersList.length > 0 ? (
+              usersList.map((seller) => (
                 <AdminSellerCard key={seller._id} user={seller} />
               ))
             ) : (
@@ -152,55 +157,51 @@ function AdminUsers() {
             )}
           </div>
 
-          {/* ALWAYS VISIBLE PAGINATION CONTROL FOOTER */}
-          <div className={styles.paginationWrapper}>
-            <button 
-              className={styles.pageArrowButton}
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              &laquo; Previous
-            </button>
-            
-            <div className={styles.pageNumbersGrid}>
-                              {(() => {
-                // Determine start page based on current selection window
-                let startPage = Math.max(1, currentPage);
+          {/* SERVER-SIDE CONTROL FOOTER */}
+          {activeTab !== "admins" && (
+            <div className={styles.paginationWrapper}>
+              <button 
+                className={styles.pageArrowButton}
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                &laquo; Previous
+              </button>
+              
+              <div className={styles.pageNumbersGrid}>
+                {(() => {
+                  let startPage = Math.max(1, currentPage);
+                  if (currentPage === totalPages && totalPages > 1) {
+                    startPage = Math.max(1, currentPage - 1);
+                  }
                 
-                // If we are at the very last page, shift backwards to still show 2 pills if possible
-                if (currentPage === totalPages && totalPages > 1) {
-                  startPage = Math.max(1, currentPage - 1);
-                }
-              
-                // Calculate the final boundary to show exactly 2 items maximum
-                const endPage = Math.min(totalPages, startPage + 1);
-              
-                const pageNumbers = [];
-                for (let i = startPage; i <= endPage; i++) {
-                  pageNumbers.push(
-                    <button
-                      key={i}
-                      className={`${styles.pageNumberPill} ${
-                        currentPage === i ? styles.activePageNumberPill : ""
-                      }`}
-                      onClick={() => handlePageChange(i)}
-                    >
-                      {i}
-                    </button>
-                  );
-                }
-                return pageNumbers;
-              })()}
-            </div>
+                  const endPage = Math.min(totalPages, startPage + 1);
+                  const pageNumbers = [];
 
-            <button 
-              className={styles.pageArrowButton}
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-            >
-              Next &raquo;
-            </button>
-          </div>
+                  for (let i = startPage; i <= endPage; i++) {
+                    pageNumbers.push(
+                      <button
+                        key={i}
+                        className={`${styles.pageNumberPill} ${currentPage === i ? styles.activePageNumberPill : ""}`}
+                        onClick={() => handlePageChange(i)}
+                      >
+                        {i}
+                      </button>
+                    );
+                  }
+                  return pageNumbers;
+                })()}
+              </div>
+
+              <button 
+                className={styles.pageArrowButton}
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages || totalPages <= 1}
+              >
+                Next &raquo;
+              </button>
+            </div>
+          )}
         </>
       )}
     </div>
