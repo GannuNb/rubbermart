@@ -306,15 +306,27 @@ export const getAllApprovedProductsForAdmin = async (req, res) => {
   }
 };
 
-// 3. REJECTED (Updated to match your original structure perfectly)
+// 3. REJECTED (With Server-Side Pagination & Math Blueprints)
 export const getAllRejectedProductsForAdmin = async (req, res) => {
   try {
-    const products = await Product.find({
-      status: "rejected",
-    })
-      .populate("seller", "fullName email")
-      .sort({ updatedAt: -1 });
+    // 1. Parse pagination queries from frontend parameters
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 1;
+    const skip = (page - 1) * limit;
 
+    const query = { status: "rejected" };
+
+    // 2. Query MongoDB for total count matching the 'rejected' flag
+    const totalProducts = await Product.countDocuments(query);
+
+    // 3. Request database stream to fetch only the restricted item slice
+    const products = await Product.find(query)
+      .populate("seller", "fullName email")
+      .sort({ updatedAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    // 4. Transform raw buffer images into inline base64 components
     const formattedProducts = products.map((product) => ({
       ...product._doc,
       images: product.images.map((img) => ({
@@ -323,9 +335,12 @@ export const getAllRejectedProductsForAdmin = async (req, res) => {
       })),
     }));
 
+    // 5. Send optimized payload back down with structural page indexes
     return res.status(200).json({
       success: true,
-      products: formattedProducts, // Matches your array response format exactly
+      products: formattedProducts,
+      totalPages: Math.ceil(totalProducts / limit) || 1,
+      currentPage: page,
     });
   } catch (error) {
     console.log("Get Admin Rejected Products Error:", error);
