@@ -3,9 +3,13 @@
 import express from "express";
 import { protectAdmin, protectUser } from "../middlewares/authMiddleware.js";
 import uploadDocuments from "../middlewares/uploadDocuments.js";
+import { uploadDocumentsErrorHandler } from "../middlewares/uploadDocumentsErrorHandler.js";
+
 import { createOrder,getSellerOrders,  getSellerSingleOrder,  confirmSellerOrder,rejectSellerOrder,addShipmentToOrder,getBuyerOrders,
     getBuyerSingleOrder, uploadBuyerPayment ,getAdminAllOrders,getAdminSingleOrderDetails,approveBuyerPayment, uploadAdminToSellerPayment,
-      markShipmentDeliveredByAdmin,downloadProformaInvoice,downloadShippingInvoice,downloadBuyReport,markShipmentDeliveredBySeller, } from "../controllers/orderController.js";
+    markShipmentDeliveredByAdmin,downloadProformaInvoice,downloadShippingInvoice,downloadBuyReport,markShipmentDeliveredBySeller, } from "../controllers/orderController.js";
+
+import { submitOrderReview } from "../controllers/reviewController.js";
 
 const router = express.Router();
 
@@ -15,10 +19,10 @@ router.post("/create", protectUser, createOrder);
 router.get("/buyer-orders", protectUser, getBuyerOrders);
 router.get("/buyer-orders/:orderId",  protectUser,  getBuyerSingleOrder);
 router.post("/buyer-orders/:orderId/payment",  protectUser,  uploadDocuments.single("file"),  uploadBuyerPayment);
-router.get(  "/buyer-orders/:orderId/proforma-invoice",  protectUser,  downloadProformaInvoice);
-router.get(  "/buyer-orders/:orderId/buy-report",  protectUser,  downloadBuyReport);
-router.get(  "/buyer-orders/:orderId/shipment/:shipmentId/invoice",  protectUser,  downloadShippingInvoice);
-
+router.get("/buyer-orders/:orderId/proforma-invoice",  protectUser,  downloadProformaInvoice);
+router.get("/buyer-orders/:orderId/buy-report",  protectUser,  downloadBuyReport);
+router.get("/buyer-orders/:orderId/shipment/:shipmentId/invoice",  protectUser,  downloadShippingInvoice);
+router.post("/buyer-orders/:orderId/review",  protectUser,  uploadDocuments.single("image"),  uploadDocumentsErrorHandler,  submitOrderReview);
 
 
 //seller

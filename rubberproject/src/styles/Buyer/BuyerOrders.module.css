@@ -327,8 +327,11 @@
 
 .bottomRow {
   display: flex;
-  justify-content: flex-end;
-  margin-top: 14px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 18px;
+  flex-wrap: wrap;
 }
 
 .trackButton {
@@ -518,4 +521,20 @@
     font-size: 12px;
     border-radius: 10px;
   }
+}
+
+.orderReviewBtn {
+  border: none;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.orderReviewBtn:hover {
+  transform: translateY(-2px);
 }

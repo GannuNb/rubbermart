@@ -48,10 +48,10 @@ function BuyerOrderDetails() {
   };
 
   useEffect(() => {
-  if (!user) {
-    dispatch(fetchProfileThunk());
-  }
-}, [dispatch, user]);
+    if (!user) {
+      dispatch(fetchProfileThunk());
+    }
+  }, [dispatch, user]);
   /* =========================
      LOADING
   ========================= */
@@ -92,8 +92,6 @@ function BuyerOrderDetails() {
     <div className={styles.pageWrapper}>
       {/* TOP HEADER */}
 
-      {/* TOP HEADER */}
-
       <div className={styles.topHeaderCard}>
         <div className={styles.pageTitleSection}>
           <h1>My Orders</h1>
@@ -131,7 +129,10 @@ function BuyerOrderDetails() {
           <div className={styles.leftSection}>
             <OrderSummaryHeader order={order} />
 
-            <OrderItemsSection order={order} />
+            <OrderItemsSection
+              order={order}
+              onReviewSubmitted={fetchOrderDetails}
+            />
           </div>
 
           {/* RIGHT */}

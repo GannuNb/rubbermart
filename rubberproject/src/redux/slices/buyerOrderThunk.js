@@ -143,3 +143,32 @@ export const downloadShippingInvoiceThunk =
       console.log("Download Shipping Invoice Error:", error);
     }
   };
+
+
+  export const submitOrderReviewThunk = createAsyncThunk(
+  "buyerOrders/submitOrderReview",
+
+  async ({ orderId, formData }, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.token;
+
+      const response = await axios.post(
+        `${API_URL}/api/orders/buyer-orders/${orderId}/review`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message ||
+          "Failed to submit review"
+      );
+    }
+  }
+);

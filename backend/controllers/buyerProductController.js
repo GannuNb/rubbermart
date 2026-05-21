@@ -1,6 +1,7 @@
 // backend/controllers/buyerProductController.js
 
 import Product from "../models/Product.js";
+import User from "../models/User.js";
 
 export const getApprovedProducts = async (req, res) => {
   try {
@@ -9,7 +10,7 @@ export const getApprovedProducts = async (req, res) => {
     })
       .populate(
         "seller",
-        "fullName email businessProfile addresses profileImage"
+        "fullName email businessProfile addresses profileImage",
       )
       .sort({ createdAt: -1 });
 
@@ -44,7 +45,7 @@ export const getSingleApprovedProduct = async (req, res) => {
       status: "approved",
     }).populate(
       "seller",
-      "fullName email businessProfile addresses profileImage"
+      "fullName email businessProfile addresses profileImage",
     );
 
     if (!product) {
@@ -56,10 +57,47 @@ export const getSingleApprovedProduct = async (req, res) => {
 
     const formattedProduct = {
       ...product._doc,
+
       images: product.images.map((img) => ({
         contentType: img.contentType,
+
         image: `data:${img.contentType};base64,${img.data.toString("base64")}`,
       })),
+
+reviews: await Promise.all(
+  product.reviews.map(async (review) => {
+    const populatedUser =
+      await User.findById(review.user).select(
+        "fullName profileImage"
+      );
+
+    return {
+      _id: review._id,
+
+      rating: review.rating,
+
+      comment: review.comment,
+
+      createdAt: review.createdAt,
+
+      user: {
+        fullName:
+          populatedUser?.fullName || "User",
+
+        profileImage:
+          populatedUser?.profileImage || "",
+      },
+
+      image: review.image?.data
+        ? `data:${
+            review.image.contentType
+          };base64,${review.image.data.toString(
+            "base64"
+          )}`
+        : null,
+    };
+  })
+),
     };
 
     return res.status(200).json({
@@ -75,8 +113,6 @@ export const getSingleApprovedProduct = async (req, res) => {
     });
   }
 };
-
-
 
 // backend/controllers/buyerProductController.js
 
@@ -95,7 +131,7 @@ export const getBuyerProducts = async (req, res) => {
     const products = await Product.find(filter)
       .populate(
         "seller",
-        "fullName email businessProfile addresses profileImage"
+        "fullName email businessProfile addresses profileImage",
       )
       .sort({ createdAt: -1 });
 
@@ -152,7 +188,7 @@ export const getRecommendedProducts = async (req, res) => {
     const products = await Product.find(filter)
       .populate(
         "seller",
-        "fullName email businessProfile addresses profileImage"
+        "fullName email businessProfile addresses profileImage",
       )
       .sort({ createdAt: -1 })
       .limit(10);
@@ -167,9 +203,7 @@ export const getRecommendedProducts = async (req, res) => {
       images: product.images.map((img) => ({
         contentType: img.contentType,
 
-        image: `data:${img.contentType};base64,${img.data.toString(
-          "base64"
-        )}`,
+        image: `data:${img.contentType};base64,${img.data.toString("base64")}`,
       })),
     }));
 
@@ -183,16 +217,12 @@ export const getRecommendedProducts = async (req, res) => {
       products: formattedProducts,
     });
   } catch (error) {
-    console.log(
-      "Get Recommended Products Error:",
-      error
-    );
+    console.log("Get Recommended Products Error:", error);
 
     return res.status(500).json({
       success: false,
 
-      message:
-        "Failed to fetch recommended products",
+      message: "Failed to fetch recommended products",
     });
   }
 };
@@ -206,7 +236,7 @@ export const getFeaturedProducts = async (req, res) => {
     })
       .populate(
         "seller",
-        "fullName email businessProfile addresses profileImage"
+        "fullName email businessProfile addresses profileImage",
       )
       .sort({ createdAt: -1 })
       .limit(10);
@@ -217,9 +247,7 @@ export const getFeaturedProducts = async (req, res) => {
       images: product.images.map((img) => ({
         contentType: img.contentType,
 
-        image: `data:${img.contentType};base64,${img.data.toString(
-          "base64"
-        )}`,
+        image: `data:${img.contentType};base64,${img.data.toString("base64")}`,
       })),
     }));
 
@@ -229,16 +257,12 @@ export const getFeaturedProducts = async (req, res) => {
       products: formattedProducts,
     });
   } catch (error) {
-    console.log(
-      "Get Featured Products Error:",
-      error
-    );
+    console.log("Get Featured Products Error:", error);
 
     return res.status(500).json({
       success: false,
 
-      message:
-        "Failed to fetch featured products",
+      message: "Failed to fetch featured products",
     });
   }
 };

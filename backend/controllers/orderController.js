@@ -771,6 +771,47 @@ export const getBuyerOrders = async (req, res) => {
         `
       )
       .sort({ createdAt: -1 });
+      /* =========================
+   ATTACH REVIEW DATA
+========================= */
+
+for (const order of orders) {
+  for (const item of order.orderItems) {
+    if (!item.product) continue;
+
+    const product = await Product.findById(item.product);
+
+    if (!product) continue;
+
+    const existingReview = product.reviews.find(
+      (review) =>
+        review.user.toString() === buyerId.toString() &&
+        review.order.toString() === order._id.toString()
+    );
+
+    if (existingReview) {
+      order._doc.reviewData = {
+        rating: existingReview.rating,
+
+        comment: existingReview.comment,
+
+        image: existingReview.image?.data
+          ? {
+              data:
+                existingReview.image.data.toString(
+                  "base64"
+                ),
+
+              contentType:
+                existingReview.image?.contentType || "",
+            }
+          : null,
+      };
+
+      break;
+    }
+  }
+}
 
     return res.status(200).json({
       success: true,
@@ -825,7 +866,42 @@ export const getBuyerSingleOrder = async (req, res) => {
         message: "Order not found",
       });
     }
+/* =========================
+   ATTACH REVIEW DATA
+========================= */
 
+for (const item of order.orderItems) {
+  if (!item.product) continue;
+
+  const product = await Product.findById(item.product);
+
+  if (!product) continue;
+
+  const existingReview = product.reviews.find(
+    (review) =>
+      review.user.toString() === buyerId.toString() &&
+      review.order.toString() === order._id.toString()
+  );
+
+  if (existingReview) {
+   order._doc.reviewData = {
+  rating: existingReview.rating,
+
+  comment: existingReview.comment,
+
+  image: existingReview.image?.data
+    ? {
+        data: existingReview.image.data.toString("base64"),
+
+        contentType:
+          existingReview.image?.contentType || "",
+      }
+    : null,
+};
+
+    break;
+  }
+}
     return res.status(200).json({
       success: true,
       order,
