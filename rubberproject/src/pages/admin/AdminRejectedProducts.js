@@ -9,7 +9,7 @@ function AdminRejectedProducts() {
   // PAGINATION STATES (Driven entirely by backend measurements)
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const itemsPerPage = 1; 
+  const itemsPerPage = 3; 
 
   const fetchRejectedProducts = async (pageNumber) => {
     setLoading(true);

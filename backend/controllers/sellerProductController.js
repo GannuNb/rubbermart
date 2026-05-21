@@ -311,7 +311,7 @@ export const getAllRejectedProductsForAdmin = async (req, res) => {
   try {
     // 1. Parse pagination queries from frontend parameters
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 1;
+    const limit = parseInt(req.query.limit) || 3;
     const skip = (page - 1) * limit;
 
     const query = { status: "rejected" };
