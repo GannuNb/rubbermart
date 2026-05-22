@@ -1,90 +1,81 @@
-// src/pages/buyer/BuyerOrders.js
+import React, { useEffect, useState } from "react";
 
-import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { useDispatch, useSelector } from "react-redux";
 
 import styles from "../../styles/Buyer/BuyerOrders.module.css";
 
 import OrderCard from "../../components/orders/OrderCard";
+
 import OrderFilters from "../../components/orders/OrderFilters";
+
 import OrderHeader from "../../components/orders/OrderHeader";
 
 import { getBuyerOrdersThunk } from "../../redux/slices/getBuyerOrdersThunk";
-import { getDisplayStatus } from "../../utils/orderStatusHelpers";
 
 function BuyerOrders() {
   const navigate = useNavigate();
+
   const dispatch = useDispatch();
+
+  /* =========================
+     FILTER + PAGINATION
+  ========================= */
 
   const [activeFilter, setActiveFilter] = useState("all");
 
-  // PAGINATION CONTROLLER STATE
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 3;
 
-  const { orders, ordersLoading, ordersError } = useSelector(
+  /* =========================
+     REDUX
+  ========================= */
+
+  const { orders, ordersLoading, ordersError, pagination } = useSelector(
     (state) => state.buyerOrders,
   );
 
   /* =========================
-     FETCH BUYER ORDERS
+     FETCH ORDERS
   ========================= */
 
   useEffect(() => {
-    dispatch(getBuyerOrdersThunk());
-  }, [dispatch]);
+    dispatch(
+      getBuyerOrdersThunk({
+        page: currentPage,
 
-  // Reset pagination position to page 1 whenever filters change
-  useEffect(() => {
+        limit: 3,
+
+        filter: activeFilter,
+      }),
+    );
+  }, [dispatch, currentPage, activeFilter]);
+
+  /* =========================
+     FILTER CHANGE
+  ========================= */
+
+  const handleFilterChange = (filterValue) => {
+    setActiveFilter(filterValue);
+
     setCurrentPage(1);
-  }, [activeFilter]);
+  };
 
   /* =========================
-     FILTER LOGIC
+     PAGE CHANGE
   ========================= */
-
-  const filteredOrders = useMemo(() => {
-    if (activeFilter === "all") return orders;
-
-    return orders.filter((order) => {
-      const displayStatus = getDisplayStatus(order);
-
-      if (activeFilter === "in_progress") {
-        return displayStatus !== "Delivered" && displayStatus !== "Cancelled";
-      }
-
-      if (activeFilter === "partial_shipments") {
-        return displayStatus === "Partial Shipment";
-      }
-
-      if (activeFilter === "shipped") {
-        return displayStatus === "Shipped";
-      }
-
-      if (activeFilter === "delivered") {
-        return displayStatus === "Delivered";
-      }
-
-      if (activeFilter === "cancelled") {
-        return displayStatus === "Cancelled";
-      }
-
-      return true;
-    });
-  }, [orders, activeFilter]);
-
-  /* =========================
-     CORE CHUNKING ENGINE METRICS
-  ========================= */
-  const totalPages = Math.ceil(filteredOrders.length / itemsPerPage) || 1;
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentOrders = filteredOrders.slice(indexOfFirstItem, indexOfLastItem);
 
   const handlePageChange = (pageNumber) => {
+    if (pageNumber < 1 || pageNumber > pagination.totalPages) {
+      return;
+    }
+
     setCurrentPage(pageNumber);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
 
   /* =========================
@@ -114,79 +105,85 @@ function BuyerOrders() {
   return (
     <div className={styles.pageWrapper}>
       {/* HEADER */}
+
       <OrderHeader />
 
       {/* CONTENT */}
+
       <div className={styles.contentCard}>
         {/* FILTERS */}
+
         <OrderFilters
           activeFilter={activeFilter}
-          setActiveFilter={setActiveFilter}
+          setActiveFilter={handleFilterChange}
         />
 
         {/* LIST */}
-        {filteredOrders.length === 0 ? (
+
+        {orders.length === 0 ? (
           <div className={styles.emptyState}>
             <h2>No Orders Found</h2>
+
             <p>No orders available for this filter.</p>
           </div>
         ) : (
           <div className={styles.ordersList}>
-            {currentOrders.map((order) => (
+            {orders.map((order) => (
               <OrderCard key={order._id} order={order} navigate={navigate} />
             ))}
           </div>
         )}
 
-        {/* PERSISTENT PAGINATION FOOTER */}
-        <div className={styles.paginationWrapper}>
-          <button 
-            className={styles.pageArrowButton}
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            &laquo; Previous
-          </button>
-          
-          <div className={styles.pageNumbersGrid}>
-                            {(() => {
-              // Determine start page based on current selection window
-              let startPage = Math.max(1, currentPage);
-              
-              // If we are at the very last page, shift backwards to still show 2 pills if possible
-              if (currentPage === totalPages && totalPages > 1) {
-                startPage = Math.max(1, currentPage - 1);
-              }
-            
-              // Calculate the final boundary to show exactly 2 items maximum
-              const endPage = Math.min(totalPages, startPage + 1);
-            
-              const pageNumbers = [];
-              for (let i = startPage; i <= endPage; i++) {
-                pageNumbers.push(
-                  <button
-                    key={i}
-                    className={`${styles.pageNumberPill} ${
-                      currentPage === i ? styles.activePageNumberPill : ""
-                    }`}
-                    onClick={() => handlePageChange(i)}
-                  >
-                    {i}
-                  </button>
-                );
-              }
-              return pageNumbers;
-            })()}
-          </div>
+        {/* PAGINATION */}
 
-          <button 
-            className={styles.pageArrowButton}
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          >
-            Next &raquo;
-          </button>
-        </div>
+        {pagination.totalPages > 1 && (
+          <div className={styles.paginationWrapper}>
+            {/* PREVIOUS */}
+
+            <button
+              className={styles.pageArrowButton}
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              &laquo; Previous
+            </button>
+
+            {/* PAGE NUMBERS */}
+
+            <div className={styles.pageNumbersGrid}>
+              {Array.from(
+                {
+                  length: pagination.totalPages,
+                },
+                (_, index) => {
+                  const page = index + 1;
+
+                  return (
+                    <button
+                      key={page}
+                      className={`${styles.pageNumberPill} ${
+                        currentPage === page ? styles.activePageNumberPill : ""
+                      }`}
+                      onClick={() => handlePageChange(page)}
+                    >
+                      {page}
+                    </button>
+                  );
+                },
+              )}
+            </div>
+
+            {/* NEXT */}
+
+            <button
+              className={styles.pageArrowButton}
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === pagination.totalPages}
+            >
+              Next &raquo;
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,39 +1,36 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API_URL =
-  process.env.REACT_APP_API_URL;
+const API_URL = process.env.REACT_APP_API_URL;
 
 /* =========================
    GET BUYER ALL ORDERS
 ========================= */
 
-export const getBuyerOrdersThunk =
-  createAsyncThunk(
-    "buyerOrders/getBuyerOrders",
-    async (_, thunkAPI) => {
-      try {
-        const token =
-          thunkAPI.getState().auth.token;
+export const getBuyerOrdersThunk = createAsyncThunk(
+  "buyerOrders/getBuyerOrders",
 
-        const response =
-          await axios.get(
-            `${API_URL}/api/orders/buyer-orders`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
+  async ({ page = 1, limit = 3, filter = "all" }, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.token;
 
-        return (
-          response.data.orders || []
-        );
-      } catch (error) {
-        return thunkAPI.rejectWithValue(
-          error.response?.data?.message ||
-            "Failed to fetch buyer orders"
-        );
-      }
+      const response = await axios.get(`${API_URL}/api/orders/buyer-orders`, {
+        params: {
+          page,
+          limit,
+          filter,
+        },
+
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Failed to fetch buyer orders",
+      );
     }
-  );
+  },
+);

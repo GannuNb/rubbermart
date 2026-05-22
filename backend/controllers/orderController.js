@@ -747,10 +747,32 @@ export const getBuyerOrders = async (req, res) => {
   try {
     const buyerId = req.user._id;
 
-    const orders = await Order.find({
+    /* =========================
+       PAGINATION + FILTERS
+    ========================= */
+
+    const page = Number(req.query.page) || 1;
+
+    const limit = Number(req.query.limit) || 3;
+
+    const skip = (page - 1) * limit;
+
+    const filter = req.query.filter || "all";
+
+    /* =========================
+       BASE QUERY
+    ========================= */
+
+    const query = {
       buyer: buyerId,
       isDeleted: false,
-    })
+    };
+
+    /* =========================
+       GET ALL ORDERS
+    ========================= */
+
+    let orders = await Order.find(query)
       .populate(
         "seller",
         `
@@ -771,59 +793,209 @@ export const getBuyerOrders = async (req, res) => {
         `
       )
       .sort({ createdAt: -1 });
-      /* =========================
-   ATTACH REVIEW DATA
-========================= */
 
-for (const order of orders) {
-  for (const item of order.orderItems) {
-    if (!item.product) continue;
+    /* =========================
+       CUSTOM FILTER LOGIC
+    ========================= */
 
-    const product = await Product.findById(item.product);
+    if (filter !== "all") {
+      orders = orders.filter((order) => {
+        const shipments = order.shipments || [];
 
-    if (!product) continue;
+        const totalShippedQuantity = shipments.reduce(
+          (total, shipment) =>
+            total +
+            Number(
+              shipment.shippedQuantity || 0
+            ),
+          0
+        );
 
-    const existingReview = product.reviews.find(
-      (review) =>
-        review.user.toString() === buyerId.toString() &&
-        review.order.toString() === order._id.toString()
+        const totalRequiredQuantity =
+          order.orderItems.reduce(
+            (total, item) =>
+              total +
+              Number(
+                item.requiredQuantity || 0
+              ),
+            0
+          );
+
+        /* =========================
+           CANCELLED
+        ========================= */
+
+        if (filter === "cancelled") {
+          return (
+            order.orderStatus ===
+            "cancelled"
+          );
+        }
+
+        /* =========================
+           DELIVERED
+        ========================= */
+
+        if (filter === "delivered") {
+          return (
+            order.orderStatus ===
+              "delivered" ||
+            order.orderStatus ===
+              "completed"
+          );
+        }
+
+        /* =========================
+           IN PROGRESS
+           waiting seller confirmation
+        ========================= */
+
+        if (filter === "in_progress") {
+          return (
+            order.orderStatus ===
+            "pending"
+          );
+        }
+
+        /* =========================
+           PARTIAL SHIPMENTS
+        ========================= */
+
+        if (filter === "partial_shipments") {
+          return (
+            shipments.length > 0 &&
+            totalShippedQuantity > 0 &&
+            totalShippedQuantity <
+              totalRequiredQuantity
+          );
+        }
+
+        /* =========================
+           SHIPPED
+           fully shipped but not delivered
+        ========================= */
+
+        if (filter === "shipped") {
+          return (
+            shipments.length > 0 &&
+            totalShippedQuantity >=
+              totalRequiredQuantity &&
+            order.orderStatus !==
+              "delivered" &&
+            order.orderStatus !==
+              "completed"
+          );
+        }
+
+        return true;
+      });
+    }
+
+    /* =========================
+       TOTAL COUNTS
+    ========================= */
+
+    const totalOrders = orders.length;
+
+    const totalPages = Math.ceil(
+      totalOrders / limit
     );
 
-    if (existingReview) {
-      order._doc.reviewData = {
-        rating: existingReview.rating,
+    /* =========================
+       PAGINATION
+    ========================= */
 
-        comment: existingReview.comment,
+    orders = orders.slice(
+      skip,
+      skip + limit
+    );
 
-        image: existingReview.image?.data
-          ? {
-              data:
-                existingReview.image.data.toString(
-                  "base64"
-                ),
+    /* =========================
+       ATTACH REVIEW DATA
+    ========================= */
 
-              contentType:
-                existingReview.image?.contentType || "",
-            }
-          : null,
-      };
+    for (const order of orders) {
+      for (const item of order.orderItems) {
+        if (!item.product) continue;
 
-      break;
+        const product =
+          await Product.findById(
+            item.product
+          );
+
+        if (!product) continue;
+
+        const existingReview =
+          product.reviews.find(
+            (review) =>
+              review.user.toString() ===
+                buyerId.toString() &&
+              review.order.toString() ===
+                order._id.toString()
+          );
+
+        if (existingReview) {
+          order._doc.reviewData = {
+            rating:
+              existingReview.rating,
+
+            comment:
+              existingReview.comment,
+
+            image:
+              existingReview.image
+                ?.data
+                ? {
+                    data:
+                      existingReview.image.data.toString(
+                        "base64"
+                      ),
+
+                    contentType:
+                      existingReview
+                        .image
+                        ?.contentType ||
+                      "",
+                  }
+                : null,
+          };
+
+          break;
+        }
+      }
     }
-  }
-}
+
+    /* =========================
+       RESPONSE
+    ========================= */
 
     return res.status(200).json({
       success: true,
-      totalOrders: orders.length,
+
       orders,
+
+      pagination: {
+        currentPage: page,
+
+        totalPages,
+
+        totalOrders,
+
+        limit,
+      },
     });
   } catch (error) {
-    console.log("Get Buyer Orders Error:", error);
+    console.log(
+      "Get Buyer Orders Error:",
+      error
+    );
 
     return res.status(500).json({
       success: false,
-      message: "Failed to fetch buyer orders",
+
+      message:
+        "Failed to fetch buyer orders",
+
       error: error.message,
     });
   }

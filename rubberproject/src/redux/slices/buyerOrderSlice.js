@@ -1,12 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import {
-  getBuyerSingleOrderThunk,
-} from "./buyerOrderThunk";
+import { getBuyerSingleOrderThunk } from "./buyerOrderThunk";
 
-import {
-  getBuyerOrdersThunk,
-} from "./getBuyerOrdersThunk";
+import { getBuyerOrdersThunk } from "./getBuyerOrdersThunk";
 
 const initialState = {
   /* =========================
@@ -16,6 +12,17 @@ const initialState = {
   orders: [],
   ordersLoading: false,
   ordersError: null,
+
+  /* =========================
+     PAGINATION
+  ========================= */
+
+  pagination: {
+    currentPage: 1,
+    totalPages: 1,
+    totalOrders: 0,
+    limit: 3,
+  },
 
   /* =========================
      SINGLE BUYER ORDER
@@ -32,10 +39,9 @@ const buyerOrderSlice = createSlice({
   initialState,
 
   reducers: {
-    clearBuyerSingleOrder: (
-      state
-    ) => {
+    clearBuyerSingleOrder: (state) => {
       state.singleOrder = null;
+
       state.singleOrderError = null;
     },
   },
@@ -47,73 +53,63 @@ const buyerOrderSlice = createSlice({
          GET BUYER ALL ORDERS
       ========================= */
 
-      .addCase(
-        getBuyerOrdersThunk.pending,
-        (state) => {
-          state.ordersLoading = true;
-          state.ordersError = null;
-        }
-      )
+      .addCase(getBuyerOrdersThunk.pending, (state) => {
+        state.ordersLoading = true;
 
-      .addCase(
-        getBuyerOrdersThunk.fulfilled,
-        (state, action) => {
-          state.ordersLoading = false;
-          state.orders =
-            action.payload || [];
-        }
-      )
+        state.ordersError = null;
+      })
 
-      .addCase(
-        getBuyerOrdersThunk.rejected,
-        (state, action) => {
-          state.ordersLoading = false;
-          state.ordersError =
-            action.payload;
-        }
-      )
+      .addCase(getBuyerOrdersThunk.fulfilled, (state, action) => {
+        state.ordersLoading = false;
+
+        /* =========================
+             ORDERS
+          ========================= */
+
+        state.orders = action.payload.orders || [];
+
+        /* =========================
+             PAGINATION
+          ========================= */
+
+        state.pagination = action.payload.pagination || {
+          currentPage: 1,
+          totalPages: 1,
+          totalOrders: 0,
+          limit: 3,
+        };
+      })
+
+      .addCase(getBuyerOrdersThunk.rejected, (state, action) => {
+        state.ordersLoading = false;
+
+        state.ordersError = action.payload;
+      })
 
       /* =========================
          GET BUYER SINGLE ORDER
       ========================= */
 
-      .addCase(
-        getBuyerSingleOrderThunk.pending,
-        (state) => {
-          state.singleOrderLoading =
-            true;
+      .addCase(getBuyerSingleOrderThunk.pending, (state) => {
+        state.singleOrderLoading = true;
 
-          state.singleOrderError =
-            null;
-        }
-      )
+        state.singleOrderError = null;
+      })
 
-      .addCase(
-        getBuyerSingleOrderThunk.fulfilled,
-        (state, action) => {
-          state.singleOrderLoading =
-            false;
+      .addCase(getBuyerSingleOrderThunk.fulfilled, (state, action) => {
+        state.singleOrderLoading = false;
 
-          state.singleOrder =
-            action.payload || null;
-        }
-      )
+        state.singleOrder = action.payload || null;
+      })
 
-      .addCase(
-        getBuyerSingleOrderThunk.rejected,
-        (state, action) => {
-          state.singleOrderLoading =
-            false;
+      .addCase(getBuyerSingleOrderThunk.rejected, (state, action) => {
+        state.singleOrderLoading = false;
 
-          state.singleOrderError =
-            action.payload;
-        }
-      );
+        state.singleOrderError = action.payload;
+      });
   },
 });
 
-export const {
-  clearBuyerSingleOrder,
-} = buyerOrderSlice.actions;
+export const { clearBuyerSingleOrder } = buyerOrderSlice.actions;
 
 export default buyerOrderSlice.reducer;
