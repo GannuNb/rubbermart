@@ -1001,6 +1001,101 @@ export const getBuyerOrders = async (req, res) => {
   }
 };
 
+export const cancelBuyerOrder = async (
+  req,
+  res
+) => {
+  try {
+    const { orderId } = req.params;
+
+    const { cancellationReason } = req.body;
+
+    /* =========================
+       FIND ORDER
+    ========================= */
+
+    const order = await Order.findById(
+      orderId
+    );
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    /* =========================
+       VERIFY BUYER
+    ========================= */
+
+    if (
+      order.buyer.toString() !==
+      req.user._id.toString()
+    ) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    /* =========================
+       ALLOWED STATUS ONLY
+    ========================= */
+
+    const allowedStatuses = [
+      "pending",
+      "seller_confirmed",
+    ];
+
+    if (
+      !allowedStatuses.includes(
+        order.orderStatus
+      )
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Order cannot be cancelled now",
+      });
+    }
+
+    /* =========================
+       UPDATE ORDER
+    ========================= */
+
+    order.orderStatus = "cancelled";
+
+    order.cancelledAt = new Date();
+
+    order.cancellationReason =
+      cancellationReason || "";
+
+    await order.save();
+
+    /* =========================
+       RESPONSE
+    ========================= */
+
+    return res.status(200).json({
+      success: true,
+      message:
+        "Order cancelled successfully",
+
+      order,
+    });
+  } catch (error) {
+    console.log(
+      "Cancel Buyer Order Error:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to cancel order",
+    });
+  }
+};
 
 export const getBuyerSingleOrder = async (req, res) => {
   try {

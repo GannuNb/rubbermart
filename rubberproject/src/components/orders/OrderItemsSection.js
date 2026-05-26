@@ -124,14 +124,19 @@ function OrderItemsSection({ order, onReviewSubmitted }) {
             <div
               key={index}
               className={styles.itemCard}
-              onClick={() =>
+              onClick={() => {
+                if (order.orderStatus === "cancelled") return;
+
                 navigate(
                   `/buyer/order/${order._id}/shipping/${encodeURIComponent(
                     item.productName,
                   )}`,
-                )
-              }
-              style={{ cursor: "pointer" }}
+                );
+              }}
+              style={{
+                cursor:
+                  order.orderStatus === "cancelled" ? "not-allowed" : "pointer",
+              }}
             >
               <div className={styles.statusRow}>
                 <span className={styles.statusBadge}>{progress.label}</span>
@@ -159,25 +164,51 @@ function OrderItemsSection({ order, onReviewSubmitted }) {
                   <p>Loading Location : {item.loadingLocation}</p>
                 </div>
 
-                <div className={styles.shippingBtn}>View Shipping</div>
+                <div
+                  className={`${
+                    order.orderStatus === "cancelled"
+                      ? styles.cancelledShippingBtn
+                      : styles.shippingBtn
+                  }`}
+                >
+                  {order.orderStatus === "cancelled"
+                    ? "Order Cancelled"
+                    : "View Shipping"}
+                </div>
               </div>
 
               <div className={styles.progressSection}>
                 <div className={styles.progressBar}>
                   <div
-                    className={styles.progressFill}
+                    className={
+                      order.orderStatus === "cancelled"
+                        ? styles.cancelledProgressFill
+                        : styles.progressFill
+                    }
                     style={{
-                      width: getProgressWidth(progress.stage),
+                      width:
+                        order.orderStatus === "cancelled"
+                          ? "100%"
+                          : getProgressWidth(progress.stage),
                     }}
                   />
                 </div>
 
-                <div className={styles.progressLabels}>
-                  <span>Order Confirmed</span>
-                  <span>Partial Shipment</span>
-                  <span>Shipped</span>
-                  <span>Delivered</span>
-                </div>
+                {order.orderStatus === "cancelled" ? (
+                  <div className={styles.cancelledProgressText}>
+                    Order Cancelled
+                  </div>
+                ) : (
+                  <div className={styles.progressLabels}>
+                    <span>Order Confirmed</span>
+
+                    <span>Partial Shipment</span>
+
+                    <span>Shipped</span>
+
+                    <span>Delivered</span>
+                  </div>
+                )}
               </div>
             </div>
           );

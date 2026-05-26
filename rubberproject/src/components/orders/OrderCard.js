@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import { useDispatch, useSelector } from "react-redux";
+
 import { FaTruck, FaArrowRight } from "react-icons/fa";
 
 import ReviewModal from "./ReviewModal";
@@ -9,11 +11,20 @@ import {
   getProgressClass,
   getProgressLabels,
 } from "../../utils/orderStatusHelpers";
+import { cancelBuyerOrderThunk } from "../../redux/slices/getBuyerOrdersThunk";
 
 import styles from "../../styles/Buyer/BuyerOrders.module.css";
 
 function OrderCard({ order, navigate }) {
   const [showReviewModal, setShowReviewModal] = useState(false);
+
+  const [showCancelBox, setShowCancelBox] = useState(false);
+
+  const [cancellationReason, setCancellationReason] = useState("");
+
+  const dispatch = useDispatch();
+
+  const { cancelOrderLoading } = useSelector((state) => state.buyerOrders);
 
   const firstItem = order.orderItems?.[0];
 
@@ -47,6 +58,28 @@ function OrderCard({ order, navigate }) {
   const canReview =
     order.orderStatus === "delivered" || order.orderStatus === "completed";
 
+  const canCancel = ["pending", "seller_confirmed"].includes(order.orderStatus);
+
+  const handleCancelOrder = () => {
+    if (!cancellationReason.trim()) {
+      return alert("Please enter cancellation reason");
+    }
+
+    dispatch(
+      cancelBuyerOrderThunk({
+        orderId: order._id,
+
+        cancellationReason,
+      }),
+    ).then((result) => {
+      if (result.meta.requestStatus === "fulfilled") {
+        setShowCancelBox(false);
+
+        setCancellationReason("");
+      }
+    });
+  };
+
   return (
     <>
       <div
@@ -57,7 +90,15 @@ function OrderCard({ order, navigate }) {
         {/* Header */}
 
         <div className={styles.cardHeader}>
-          <div className={styles.statusPill}>{displayStatus}</div>
+          <div
+            className={`${styles.statusPill} ${
+              order.orderStatus === "cancelled"
+                ? styles.cancelledStatusPill
+                : ""
+            }`}
+          >
+            {displayStatus}
+          </div>
 
           <div className={styles.orderDate}>
             {new Date(order.createdAt).toLocaleDateString()}
@@ -94,27 +135,55 @@ function OrderCard({ order, navigate }) {
 
         {/* Progress Bar */}
 
+        {/* Progress Section */}
+
         <div className={styles.progressWrapper}>
-          <div className={styles.progressBar}>
-            <div
-              className={`${
-                styles.progressFill
-              } ${getProgressClass(order, styles)}`}
-            />
-          </div>
+          {order.orderStatus === "cancelled" ? (
+            <div className={styles.cancelledProgressCard}>
+              <div className={styles.cancelledTop}>
+                <div className={styles.cancelledIcon}>✕</div>
 
-          {/* Desktop labels */}
+                <div>
+                  <h3>Order Cancelled</h3>
 
-          <div className={styles.progressLabels}>
-            <span>{progressLabels[0]}</span>
-            <span>{progressLabels[1]}</span>
-            <span>{progressLabels[2]}</span>
-            <span>{progressLabels[3]}</span>
-          </div>
+                  <p>Your order has been cancelled.</p>
+                </div>
+              </div>
 
-          {/* Mobile simple status */}
+              <div className={styles.progressBar}>
+                <div
+                  className={`${styles.progressFill} ${styles.cancelledProgress}`}
+                />
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className={styles.progressBar}>
+                <div
+                  className={`${styles.progressFill} ${getProgressClass(
+                    order,
+                    styles,
+                  )}`}
+                />
+              </div>
 
-          <div className={styles.mobileProgressText}>{displayStatus}</div>
+              {/* Desktop labels */}
+
+              <div className={styles.progressLabels}>
+                <span>{progressLabels[0]}</span>
+
+                <span>{progressLabels[1]}</span>
+
+                <span>{progressLabels[2]}</span>
+
+                <span>{progressLabels[3]}</span>
+              </div>
+
+              {/* Mobile status */}
+
+              <div className={styles.mobileProgressText}>{displayStatus}</div>
+            </>
+          )}
         </div>
 
         {/* Bottom */}
@@ -124,7 +193,18 @@ function OrderCard({ order, navigate }) {
             <FaTruck />
             Track Item
           </div>
+          {canCancel && (
+            <button
+              className={styles.orderCancelBtn}
+              onClick={(e) => {
+                e.stopPropagation();
 
+                setShowCancelBox(true);
+              }}
+            >
+              Cancel Order
+            </button>
+          )}
           {canReview && (
             <button
               className={styles.orderReviewBtn}
@@ -140,6 +220,51 @@ function OrderCard({ order, navigate }) {
         </div>
       </div>
 
+      {/* CANCEL ORDER MODAL */}
+
+      {showCancelBox && (
+        <div
+          className={styles.cancelModalOverlay}
+          onClick={(e) => {
+            e.stopPropagation();
+
+            setShowCancelBox(false);
+          }}
+        >
+          <div
+            className={styles.cancelModal}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2>Cancel Order</h2>
+
+            <p>Please provide a cancellation reason.</p>
+
+            <textarea
+              className={styles.cancelTextarea}
+              placeholder="Enter cancellation reason..."
+              value={cancellationReason}
+              onChange={(e) => setCancellationReason(e.target.value)}
+            />
+
+            <div className={styles.cancelModalButtons}>
+              <button
+                className={styles.keepOrderBtn}
+                onClick={() => setShowCancelBox(false)}
+              >
+                Keep Order
+              </button>
+
+              <button
+                className={styles.confirmCancelBtn}
+                onClick={handleCancelOrder}
+                disabled={cancelOrderLoading}
+              >
+                {cancelOrderLoading ? "Cancelling..." : "Confirm Cancel"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {/* REVIEW MODAL */}
 
       {showReviewModal && (

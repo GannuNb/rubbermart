@@ -82,12 +82,16 @@ export const getProgressClass = (order, styles) => {
     totalRequiredQuantity,
   } = getShipmentDetails(order);
 
-  if (
-    order.orderStatus === "delivered" ||
-    order.orderStatus === "completed"
-  ) {
-    return styles.fullProgress;
-  }
+  if (order.orderStatus === "cancelled") {
+  return styles.cancelledProgress;
+}
+
+if (
+  order.orderStatus === "delivered" ||
+  order.orderStatus === "completed"
+) {
+  return styles.fullProgress;
+}
 
   if (
     shipments.length > 0 &&

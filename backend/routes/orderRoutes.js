@@ -7,7 +7,8 @@ import { uploadDocumentsErrorHandler } from "../middlewares/uploadDocumentsError
 
 import { createOrder,getSellerOrders,  getSellerSingleOrder,  confirmSellerOrder,rejectSellerOrder,addShipmentToOrder,getBuyerOrders,
     getBuyerSingleOrder, uploadBuyerPayment ,getAdminAllOrders,getAdminSingleOrderDetails,approveBuyerPayment, uploadAdminToSellerPayment,
-    markShipmentDeliveredByAdmin,downloadProformaInvoice,downloadShippingInvoice,downloadBuyReport,markShipmentDeliveredBySeller, } from "../controllers/orderController.js";
+    markShipmentDeliveredByAdmin,downloadProformaInvoice,downloadShippingInvoice,downloadBuyReport,markShipmentDeliveredBySeller,
+    cancelBuyerOrder, } from "../controllers/orderController.js";
 
 import { submitOrderReview } from "../controllers/reviewController.js";
 
@@ -23,6 +24,7 @@ router.get("/buyer-orders/:orderId/proforma-invoice",  protectUser,  downloadPro
 router.get("/buyer-orders/:orderId/buy-report",  protectUser,  downloadBuyReport);
 router.get("/buyer-orders/:orderId/shipment/:shipmentId/invoice",  protectUser,  downloadShippingInvoice);
 router.post("/buyer-orders/:orderId/review",  protectUser,  uploadDocuments.single("image"),  uploadDocumentsErrorHandler,  submitOrderReview);
+router.put("/buyer-orders/:orderId/cancel", protectUser, cancelBuyerOrder);
 
 
 //seller
