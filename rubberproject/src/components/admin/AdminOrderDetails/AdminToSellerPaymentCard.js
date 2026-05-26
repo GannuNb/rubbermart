@@ -7,12 +7,12 @@ import {
   FaCheckCircle,
 } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-
+import CustomAlert from "../../alert/CustomAlert";
 import { uploadAdminToSellerPayment } from "../../../redux/slices/adminOrders/uploadAdminToSellerPaymentThunk";
-
 import styles from "../../../styles/Admin/AdminToSellerPaymentCard.module.css";
 
 const AdminToSellerPaymentCard = ({ order }) => {
+  const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
 
   const {
@@ -38,10 +38,12 @@ const AdminToSellerPaymentCard = ({ order }) => {
   const [file, setFile] =
     useState(null);
 
-  const [
-    successMessage,
-    setSuccessMessage,
-  ] = useState("");
+  const [alert, setAlert] = useState({
+    show: false,
+    type: "",
+    title: "",
+    message: "",
+  });
 
   /* =========================
      SUBMIT PAYMENT
@@ -51,10 +53,17 @@ const AdminToSellerPaymentCard = ({ order }) => {
     e.preventDefault();
 
     if (!amount) {
-      alert("Please enter amount");
+      setAlert({
+        show: true,
+        type: "warning",
+        title: "Amount Required",
+        message: "Please enter amount",
+      });
+
       return;
     }
 
+    
     try {
       await dispatch(
         uploadAdminToSellerPayment({
@@ -67,11 +76,6 @@ const AdminToSellerPaymentCard = ({ order }) => {
         })
       ).unwrap();
 
-      /* success message */
-      setSuccessMessage(
-        "Payment sent to seller successfully"
-      );
-
       /* reset form */
       setAmount("");
       setPaymentMode(
@@ -82,173 +86,198 @@ const AdminToSellerPaymentCard = ({ order }) => {
       setFile(null);
 
       /* auto remove after 4 sec */
-      setTimeout(() => {
-        setSuccessMessage("");
-      }, 4000);
+      setAlert({
+        show: true,
+        type: "success",
+        title: "Payment Successful",
+        message:
+          "Payment sent to seller successfully",
+      });
+
     } catch (error) {
-      console.log(error);
-      alert(error);
+      setAlert({
+        show: true,
+        type: "error",
+        title: "Payment Failed",
+        message:
+          error || "Something went wrong",
+      });
     }
   };
 
   return (
     <div className={styles.card}>
-      {/* HEADER */}
-      <div className={styles.cardHeader}>
-        <div className={styles.iconBox}>
-          <FaWallet />
+      <div
+        className={styles.dropdownHeader}
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <div className={styles.headerLeft}>
+          <div className={styles.iconBox}>
+            <FaWallet />
+          </div>
+
+          <h3>Payment To Seller</h3>
         </div>
 
-        <h3>
-          Payment To Seller
-        </h3>
+        <span
+          className={`${styles.arrow} ${isOpen ? styles.arrowOpen : ""
+            }`}
+        >
+          ▼
+        </span>
       </div>
 
-      {/* SUCCESS MESSAGE */}
-      {successMessage && (
-        <div className={styles.successBox}>
-          <FaCheckCircle />
-          <span>
-            {successMessage}
-          </span>
-        </div>
+      {alert.show && (
+        <CustomAlert
+          type={alert.type}
+          title={alert.title}
+          message={alert.message}
+          onClose={() =>
+            setAlert((prev) => ({
+              ...prev,
+              show: false,
+            }))
+          }
+        />
       )}
 
-      <form onSubmit={handleSubmit}>
-        {/* Amount */}
-        <div className={styles.formGroup}>
-          <label>
-            Amount
-          </label>
-
-          <input
-            type="number"
-            placeholder="Enter amount"
-            value={amount}
-            onChange={(e) =>
-              setAmount(
-                e.target.value
-              )
-            }
-          />
-        </div>
-
-        {/* Payment Mode */}
-        <div className={styles.formGroup}>
-          <label>
-            Payment Mode
-          </label>
-
-          <select
-            value={paymentMode}
-            onChange={(e) =>
-              setPaymentMode(
-                e.target.value
-              )
-            }
-          >
-            <option value="bank_transfer">
-              Bank Transfer
-            </option>
-            <option value="upi">
-              UPI
-            </option>
-            <option value="cash">
-              Cash
-            </option>
-            <option value="cheque">
-              Cheque
-            </option>
-            <option value="rtgs">
-              RTGS
-            </option>
-            <option value="neft">
-              NEFT
-            </option>
-          </select>
-        </div>
-
-        {/* Transaction ID */}
-        <div className={styles.formGroup}>
-          <label>
-            Transaction ID
-          </label>
-
-          <input
-            type="text"
-            placeholder="Enter transaction ID"
-            value={transactionId}
-            onChange={(e) =>
-              setTransactionId(
-                e.target.value
-              )
-            }
-          />
-        </div>
-
-        {/* Note */}
-        <div className={styles.formGroup}>
-          <label>
-            Note
-          </label>
-
-          <textarea
-            rows="3"
-            placeholder="Optional note"
-            value={note}
-            onChange={(e) =>
-              setNote(
-                e.target.value
-              )
-            }
-          />
-        </div>
-
-        {/* Upload Receipt */}
-        <div className={styles.formGroup}>
-          <label>
-            Upload Receipt
-          </label>
-
-          <label
-            className={
-              styles.uploadBox
-            }
-          >
-            <FaUpload />
-
-            <span>
-              {file
-                ? file.name
-                : "Choose file"}
-            </span>
+      {isOpen && (
+        <form onSubmit={handleSubmit}>
+          {/* Amount */}
+          <div className={styles.formGroup}>
+            <label>
+              Amount
+            </label>
 
             <input
-              type="file"
-              hidden
+              type="number"
+              placeholder="Enter amount"
+              value={amount}
               onChange={(e) =>
-                setFile(
-                  e.target
-                    .files[0]
+                setAmount(
+                  e.target.value
                 )
               }
             />
-          </label>
-        </div>
+          </div>
 
-        {/* Submit */}
-        <button
-          type="submit"
-          className={styles.submitBtn}
-          disabled={
-            uploadSellerPaymentLoading
-          }
-        >
-          {uploadSellerPaymentLoading
-            ? "Submitting..."
-            : "Submit Payment"}
-        </button>
-      </form>
+          {/* Payment Mode */}
+          <div className={styles.formGroup}>
+            <label>
+              Payment Mode
+            </label>
+
+            <select
+              value={paymentMode}
+              onChange={(e) =>
+                setPaymentMode(
+                  e.target.value
+                )
+              }
+            >
+              <option value="bank_transfer">
+                Bank Transfer
+              </option>
+              <option value="upi">
+                UPI
+              </option>
+              <option value="cash">
+                Cash
+              </option>
+              <option value="cheque">
+                Cheque
+              </option>
+              <option value="rtgs">
+                RTGS
+              </option>
+              <option value="neft">
+                NEFT
+              </option>
+            </select>
+          </div>
+
+          {/* Transaction ID */}
+          <div className={styles.formGroup}>
+            <label>
+              Transaction ID
+            </label>
+
+            <input
+              type="text"
+              placeholder="Enter transaction ID"
+              value={transactionId}
+              onChange={(e) =>
+                setTransactionId(
+                  e.target.value
+                )
+              }
+            />
+          </div>
+
+          {/* Note */}
+          <div className={styles.formGroup}>
+            <label>
+              Note
+            </label>
+
+            <textarea
+              rows="3"
+              placeholder="Optional note"
+              value={note}
+              onChange={(e) =>
+                setNote(
+                  e.target.value
+                )
+              }
+            />
+          </div>
+
+          {/* Upload Receipt */}
+          <div className={styles.formGroup}>
+            <label>
+              Upload Receipt
+            </label>
+
+            <label
+              className={
+                styles.uploadBox
+              }
+            >
+              <FaUpload />
+
+              <span>
+                {file
+                  ? file.name
+                  : "Choose file"}
+              </span>
+
+              <input
+                type="file"
+                hidden
+                onChange={(e) =>
+                  setFile(
+                    e.target
+                      .files[0]
+                  )
+                }
+              />
+            </label>
+          </div>
+
+          {/* Submit */}
+          <button
+            type="submit"
+            className={styles.submitBtn}
+            disabled={
+              uploadSellerPaymentLoading
+            }
+          >
+            {uploadSellerPaymentLoading
+              ? "Submitting..."
+              : "Submit Payment"}
+          </button>
+        </form>
+      )}
     </div>
   );
 };

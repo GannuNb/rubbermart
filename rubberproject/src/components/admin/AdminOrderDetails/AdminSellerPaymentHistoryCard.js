@@ -1,9 +1,10 @@
 import React from "react";
 import { FaWallet } from "react-icons/fa";
-
+import { useState } from "react";
 import styles from "../../../styles/Admin/AdminSellerPaymentHistoryCard.module.css";
 
 const AdminSellerPaymentHistoryCard = ({ order }) => {
+  const [openPayment, setOpenPayment] = useState(null);
   const payments =
     order?.sellerPaymentReceipts || [];
 
@@ -65,64 +66,85 @@ const AdminSellerPaymentHistoryCard = ({ order }) => {
             key={payment._id || index}
             className={styles.paymentBox}
           >
-            <div className={styles.paymentTitle}>
-              Payment #{index + 1}
-            </div>
-
-            <div className={styles.details}>
-              <div className={styles.row}>
-                <span>Amount</span>
-                <strong>
-                  ₹ {payment?.amount || 0}
-                </strong>
-              </div>
-
-              <div className={styles.row}>
-                <span>Payment Mode</span>
-                <strong>
-                  {payment?.paymentMode || "-"}
-                </strong>
-              </div>
-
-              <div className={styles.row}>
-                <span>Transaction ID</span>
-                <strong>
-                  {payment?.transactionId || "-"}
-                </strong>
-              </div>
-
-              <div className={styles.row}>
-                <span>Status</span>
-                <strong>
-                  {payment?.status || "-"}
-                </strong>
-              </div>
-
-              <div className={styles.row}>
-                <span>Total Paid</span>
-                <strong>
-                  ₹ {payment?.totalPaidTillNow || 0}
-                </strong>
-              </div>
-
-              <div className={styles.row}>
-                <span>Remaining</span>
-                <strong>
-                  ₹ {payment?.remainingAmount || 0}
-                </strong>
-              </div>
-            </div>
-
-            <button
-              className={styles.viewBtn}
+            <div
+              className={styles.paymentHeader}
               onClick={() =>
-                handleViewReceipt(
-                  payment?.file
+                setOpenPayment(
+                  openPayment === index
+                    ? null
+                    : index
                 )
               }
             >
-              View Receipt
-            </button>
+              <span>
+                Payment #{index + 1}
+              </span>
+
+              <span className={styles.arrow}>
+                {openPayment === index
+                  ? "▲"
+                  : "▼"}
+              </span>
+            </div>
+
+            {openPayment === index && (
+              <>
+                <div className={styles.details}>
+                  <div className={styles.row}>
+                    <span>Amount</span>
+                    <strong>
+                      ₹ {payment?.amount || 0}
+                    </strong>
+                  </div>
+
+                  <div className={styles.row}>
+                    <span>Payment Mode</span>
+                    <strong>
+                      {payment?.paymentMode || "-"}
+                    </strong>
+                  </div>
+
+                  <div className={styles.row}>
+                    <span>Transaction ID</span>
+                    <strong>
+                      {payment?.transactionId || "-"}
+                    </strong>
+                  </div>
+
+                  <div className={styles.row}>
+                    <span>Status</span>
+                    <strong>
+                      {payment?.status || "-"}
+                    </strong>
+                  </div>
+
+                  <div className={styles.row}>
+                    <span>Total Paid</span>
+                    <strong>
+                      ₹ {payment?.totalPaidTillNow || 0}
+                    </strong>
+                  </div>
+
+                  <div className={styles.row}>
+                    <span>Remaining</span>
+                    <strong>
+                      ₹ {payment?.remainingAmount || 0}
+                    </strong>
+                  </div>
+                </div>
+
+                <button
+                  className={styles.viewBtn}
+                  onClick={() =>
+                    handleViewReceipt(
+                      payment?.file
+                    )
+                  }
+                >
+                  View Receipt
+                </button>
+              </>
+            )}
           </div>
         ))
       ) : (

@@ -117,3 +117,22 @@
   color: #6b7280;
   padding: 20px 0;
 }
+
+.paymentHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 700;
+  color: #5b2be0;
+}
+
+.arrow {
+  font-size: 12px;
+  transition: 0.3s;
+}
+
+.details {
+  margin-top: 16px;
+}

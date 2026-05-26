@@ -12,6 +12,10 @@ import { approveBuyerPayment } from "../../../redux/slices/adminOrders/approveBu
 import styles from "../../../styles/Admin/AdminBuyerPaymentCard.module.css";
 
 const AdminBuyerPaymentCard = ({ order }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const [openPayment, setOpenPayment] =
+    useState(null);
   const dispatch = useDispatch();
 
   const payments =
@@ -99,116 +103,158 @@ const AdminBuyerPaymentCard = ({ order }) => {
 
   return (
     <div className={styles.card}>
-      {/* Header */}
-      <div className={styles.cardHeader}>
-        <div className={styles.iconBox}>
-          <FaDownload />
+      <div
+        className={styles.dropdownHeader}
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <div className={styles.headerLeft}>
+          <div className={styles.iconBox}>
+            <FaDownload />
+          </div>
+
+          <h3>
+            Payment From Buyer (Received)
+          </h3>
         </div>
 
-        <h3>
-          Payment From Buyer (Received)
-        </h3>
+        <span
+          className={`${styles.arrow} ${isOpen ? styles.arrowOpen : ""
+            }`}
+        >
+          ▼
+        </span>
       </div>
 
-      {payments.length > 0 ? (
-        payments.map((payment, index) => (
-          <div
-            key={payment._id || index}
-            className={styles.paymentBox}
-          >
-            <div className={styles.paymentTitle}>
-              Payment #{index + 1}
-            </div>
-
-            <div className={styles.details}>
-              <div className={styles.row}>
-                <span>Amount</span>
-                <strong>
-                  ₹ {payment?.amount || 0}
-                </strong>
-              </div>
-
-              <div className={styles.row}>
-                <span>Payment Method</span>
-                <strong>
-                  {payment?.paymentMode || "-"}
-                </strong>
-              </div>
-
-              <div className={styles.row}>
-                <span>Transaction ID</span>
-                <strong>
-                  {payment?.transactionId ||
-                    "-"}
-                </strong>
-              </div>
-
-              <div className={styles.row}>
-                <span>Status</span>
-                <strong>
-                  {payment?.status || "-"}
-                </strong>
-              </div>
-
-              <div className={styles.row}>
-                <span>Note</span>
-                <strong>
-                  {payment?.note || "-"}
-                </strong>
-              </div>
-            </div>
-
-            <div className={styles.buttonRow}>
-              <button
-                className={styles.lightBtn}
-                onClick={() =>
-                  handleViewReceipt(
-                    payment?.file
-                  )
-                }
+      {isOpen && (
+        <>
+          {payments.length > 0 ? (
+            payments.map((payment, index) => (
+              <div
+                key={payment._id || index}
+                className={styles.paymentBox}
               >
-                View Receipt
-              </button>
-
-              {payment?.status ===
-              "verified" ? (
-                <button
-                  className={
-                    styles.approvedBtn
-                  }
-                >
-                  Approved
-                </button>
-              ) : (
-                <button
-                  className={
-                    styles.primaryBtn
-                  }
+                <div
+                  className={styles.paymentDropdownHeader}
                   onClick={() =>
-                    handleApprovePayment(
-                      payment?._id
+                    setOpenPayment(
+                      openPayment === payment._id
+                        ? null
+                        : payment._id
                     )
                   }
-                  disabled={
-                    approvingPaymentId ===
-                    payment?._id
-                  }
                 >
-                  <FaCheckCircle />
+                  <span>
+                    Payment #{index + 1}
+                  </span>
 
-                  {approvingPaymentId ===
-                  payment?._id
-                    ? "Approving..."
-                    : "Approve Payment"}
-                </button>
-              )}
-            </div>
-          </div>
-        ))
-      ) : (
-        <p className={styles.emptyText}>
-          No buyer payments uploaded yet
-        </p>
+                  <span
+                    className={`${styles.arrowSmall} ${openPayment === payment._id
+                      ? styles.arrowOpen
+                      : ""
+                      }`}
+                  >
+                    ▼
+                  </span>
+                </div>
+
+                {openPayment === payment._id && (
+                  <>
+                    <div className={styles.paymentTitle}>
+                    </div>
+
+                    <div className={styles.details}>
+                      <div className={styles.row}>
+                        <span>Amount</span>
+                        <strong>
+                          ₹ {payment?.amount || 0}
+                        </strong>
+                      </div>
+
+                      <div className={styles.row}>
+                        <span>Payment Method</span>
+                        <strong>
+                          {payment?.paymentMode || "-"}
+                        </strong>
+                      </div>
+
+                      <div className={styles.row}>
+                        <span>Transaction ID</span>
+                        <strong>
+                          {payment?.transactionId ||
+                            "-"}
+                        </strong>
+                      </div>
+
+                      <div className={styles.row}>
+                        <span>Status</span>
+                        <strong>
+                          {payment?.status || "-"}
+                        </strong>
+                      </div>
+
+                      <div className={styles.row}>
+                        <span>Note</span>
+                        <strong>
+                          {payment?.note || "-"}
+                        </strong>
+                      </div>
+                    </div>
+
+                    <div className={styles.buttonRow}>
+                      <button
+                        className={styles.lightBtn}
+                        onClick={() =>
+                          handleViewReceipt(
+                            payment?.file
+                          )
+                        }
+                      >
+                        View Receipt
+                      </button>
+
+                      {payment?.status ===
+                        "verified" ? (
+                        <button
+                          className={
+                            styles.approvedBtn
+                          }
+                        >
+                          Approved
+                        </button>
+                      ) : (
+                        <button
+                          className={
+                            styles.primaryBtn
+                          }
+                          onClick={() =>
+                            handleApprovePayment(
+                              payment?._id
+                            )
+                          }
+                          disabled={
+                            approvingPaymentId ===
+                            payment?._id
+                          }
+                        >
+                          <FaCheckCircle />
+
+                          {approvingPaymentId ===
+                            payment?._id
+                            ? "Approving..."
+                            : "Approve Payment"}
+                        </button>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+            ))
+          ) : (
+            <p className={styles.emptyText}>
+              No buyer payments uploaded yet
+            </p>
+          )}
+        </>
       )}
     </div>
   );

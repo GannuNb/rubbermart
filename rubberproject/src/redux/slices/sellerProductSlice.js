@@ -18,6 +18,7 @@ const initialState = {
 
   // Admin Flow
   adminPendingProducts: [],
+  adminPendingProductsTotalPages: 1,
   adminPendingProductsLoading: false,
   adminPendingProductsError: null,
 
@@ -64,7 +65,7 @@ const sellerProductSlice = createSlice({
       let targetBucket = "allProducts";
       if (status === "approved") targetBucket = "approvedProducts";
       if (status === "rejected") targetBucket = "rejectedProducts";
-      if (status === "pending")  targetBucket = "pendingProducts";
+      if (status === "pending") targetBucket = "pendingProducts";
 
       state[targetBucket] = {
         items: data.products || data.pendingProducts || [],
@@ -80,7 +81,10 @@ const sellerProductSlice = createSlice({
       state.adminPendingProductsLoading = action.payload;
     },
     setAdminPendingProductsSuccess: (state, action) => {
-      state.adminPendingProducts = action.payload;
+      state.adminPendingProducts = action.payload.products;
+      state.adminPendingProductsTotalPages =
+        action.payload.totalPages || 1;
+
       state.adminPendingProductsLoading = false;
     },
     setAdminPendingProductsError: (state, action) => {

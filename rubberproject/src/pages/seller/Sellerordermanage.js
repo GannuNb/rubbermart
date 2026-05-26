@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import {  getSellerSingleOrderThunk,  confirmSellerOrderThunk,  rejectSellerOrderThunk,} from "../../redux/slices/sellerOrderThunk";
+import { getSellerSingleOrderThunk, confirmSellerOrderThunk, rejectSellerOrderThunk, } from "../../redux/slices/sellerOrderThunk";
 import { clearSellerOrderMessages } from "../../redux/slices/sellerOrderSlice";
 import SellerPaymentSection from "../../components/orders/SellerPaymentSection";
 import SellerShipmentSection from "../../components/orders/SellerShipmentSection";
 import styles from "../../styles/Seller/Sellerordermanage.module.css";
+import CustomAlert from "../../components/alert/CustomAlert";
 
 import {
   FiShoppingBag,
@@ -21,7 +22,12 @@ const Sellerordermanage = () => {
   const { orderId } = useParams();
 
   const [cancellationReason, setCancellationReason] = useState("");
-
+  const [alert, setAlert] = useState({
+    show: false,
+    type: "",
+    title: "",
+    message: "",
+  });
   const productsRef = useRef(null);
   const paymentRef = useRef(null);
   const shipmentRef = useRef(null);
@@ -56,13 +62,63 @@ const Sellerordermanage = () => {
     };
   }, [dispatch]);
 
+  useEffect(() => {
+    if (confirmOrderSuccess) {
+      setAlert({
+        show: true,
+        type: "success",
+        title: "Order Confirmed",
+        message: confirmOrderSuccess,
+      });
+    }
+  }, [confirmOrderSuccess]);
+
+  useEffect(() => {
+    if (rejectOrderSuccess) {
+      setAlert({
+        show: true,
+        type: "success",
+        title: "Order Rejected",
+        message: rejectOrderSuccess,
+      });
+    }
+  }, [rejectOrderSuccess]);
+
+  useEffect(() => {
+    if (confirmOrderError) {
+      setAlert({
+        show: true,
+        type: "error",
+        title: "Confirmation Failed",
+        message: confirmOrderError,
+      });
+    }
+  }, [confirmOrderError]);
+
+  useEffect(() => {
+    if (rejectOrderError) {
+      setAlert({
+        show: true,
+        type: "error",
+        title: "Rejection Failed",
+        message: rejectOrderError,
+      });
+    }
+  }, [rejectOrderError]);
+
   const handleConfirmOrder = () => {
     dispatch(confirmSellerOrderThunk(orderId));
   };
 
   const handleRejectOrder = () => {
     if (!cancellationReason.trim()) {
-      alert("Please enter rejection reason");
+      setAlert({
+        show: true,
+        type: "warning",
+        title: "Reason Required",
+        message: "Please enter rejection reason",
+      });
+
       return;
     }
 
@@ -88,6 +144,19 @@ const Sellerordermanage = () => {
 
   return (
     <div className={styles.container}>
+      {alert.show && (
+        <CustomAlert
+          type={alert.type}
+          title={alert.title}
+          message={alert.message}
+          onClose={() =>
+            setAlert((prev) => ({
+              ...prev,
+              show: false,
+            }))
+          }
+        />
+      )}
       {/* Header */}
       <div className={styles.pageHeader}>
         <div className={styles.headerWrapper}>
@@ -198,11 +267,11 @@ const Sellerordermanage = () => {
             const productImage =
               item?.productImage?.data?.data && item?.productImage?.contentType
                 ? `data:${item.productImage.contentType};base64,${btoa(
-                    new Uint8Array(item.productImage.data.data).reduce(
-                      (data, byte) => data + String.fromCharCode(byte),
-                      "",
-                    ),
-                  )}`
+                  new Uint8Array(item.productImage.data.data).reduce(
+                    (data, byte) => data + String.fromCharCode(byte),
+                    "",
+                  ),
+                )}`
                 : null;
 
             return (
@@ -302,23 +371,6 @@ const Sellerordermanage = () => {
         <div ref={shipmentRef}>
           <SellerShipmentSection selectedOrder={selectedOrder} />
         </div>
-      )}
-
-      {/* Messages */}
-      {confirmOrderSuccess && (
-        <div className={styles.success}>{confirmOrderSuccess}</div>
-      )}
-
-      {rejectOrderSuccess && (
-        <div className={styles.success}>{rejectOrderSuccess}</div>
-      )}
-
-      {confirmOrderError && (
-        <div className={styles.error}>{confirmOrderError}</div>
-      )}
-
-      {rejectOrderError && (
-        <div className={styles.error}>{rejectOrderError}</div>
       )}
 
       {/* Actions */}

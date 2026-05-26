@@ -23,8 +23,12 @@ export const fetchAdminPendingProductsThunk = (page = 1) => async (dispatch) => 
     const data = await response.json();
     if (data.success) {
       // Note: You should update your slice to store totalPages as well
-      dispatch(setAdminPendingProductsSuccess(data.products)); 
-      return data.totalPages; // Return totalPages for the component to use
+      dispatch(
+        setAdminPendingProductsSuccess({
+          products: data.products,
+          totalPages: data.totalPages,
+        })
+      ); return data.totalPages; // Return totalPages for the component to use
     }
   } catch (error) {
     dispatch(setAdminPendingProductsError("Failed to fetch products"));

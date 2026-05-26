@@ -159,3 +159,43 @@
   align-items: center;
   justify-content: center;
 }
+
+/* MAIN DROPDOWN */
+
+.dropdownHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.arrow {
+  transition: 0.3s;
+  color: #692ca0;
+}
+
+.arrowOpen {
+  transform: rotate(180deg);
+}
+
+/* PAYMENT DROPDOWN */
+
+.paymentDropdownHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 700;
+  color: #5b2be0;
+}
+
+.arrowSmall {
+  transition: 0.3s;
+}
