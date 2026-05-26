@@ -34,7 +34,7 @@ const steps = [
   {
     icon: <Package size={34} />,
     title: "Receive Order",
-    desc: "Inspect the material on shipment arrival for quality and quantity.",
+    desc: "Inspect the material on arrival for quality and quantity.",
   },
   {
     icon: <ShieldCheck size={34} />,
