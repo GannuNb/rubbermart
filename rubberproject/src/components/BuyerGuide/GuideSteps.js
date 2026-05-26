@@ -39,7 +39,7 @@ const steps = [
   {
     icon: <ShieldCheck size={34} />,
     title: "Order Completed",
-    desc: "Confirm completion and provide feedback for a trusted experience.",
+    desc: "Confirm completion and provide feedback for a trusted Buying experience.",
   },
 ];
 
