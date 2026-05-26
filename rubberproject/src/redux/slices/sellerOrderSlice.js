@@ -98,7 +98,7 @@ const sellerOrderSlice = createSlice({
         state.confirmOrderSuccess = "Order confirmed successfully";
         state.selectedOrder = action.payload;
 
-        state.sellerOrders = state.sellerOrders.map((order) =>
+        state.sellerOrders.orders = state.sellerOrders.orders.map((order) =>
           order._id === action.payload._id ? action.payload : order,
         );
       })
@@ -118,7 +118,7 @@ const sellerOrderSlice = createSlice({
         state.rejectOrderSuccess = "Order rejected successfully";
         state.selectedOrder = action.payload;
 
-        state.sellerOrders = state.sellerOrders.map((order) =>
+        state.sellerOrders.orders = state.sellerOrders.orders.map((order) =>
           order._id === action.payload._id ? action.payload : order,
         );
       })
