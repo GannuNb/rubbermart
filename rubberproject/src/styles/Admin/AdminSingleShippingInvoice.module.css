@@ -843,3 +843,148 @@
   font-weight: 600;
   color: #6b7280;
 }
+
+/* =========================
+   SUCCESS ALERT
+========================= */
+
+.successAlert {
+  position: fixed;
+
+  top: 20px;
+  right: 20px;
+
+  width: 360px;
+  max-width: calc(100vw - 40px);
+
+  background: #ecfdf3;
+  border: 1px solid #bbf7d0;
+  border-radius: 18px;
+
+  overflow: hidden;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+
+  z-index: 9999;
+
+  animation: fadeSlide 0.3s ease;
+}
+
+/* =========================
+   CONTENT
+========================= */
+
+.alertContent {
+  padding: 18px;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.alertLeft {
+  display: flex;
+  gap: 14px;
+}
+
+.alertIcon {
+  color: #16a34a;
+  font-size: 24px;
+  margin-top: 2px;
+}
+
+.successAlert h4 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #15803d;
+}
+
+.successAlert p {
+  margin-top: 4px;
+  font-size: 14px;
+  color: #166534;
+}
+
+/* =========================
+   CLOSE BUTTON
+========================= */
+
+.closeAlert {
+  border: none;
+  background: transparent;
+
+  cursor: pointer;
+
+  color: #15803d;
+
+  font-size: 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =========================
+   TOP PROGRESS LINE
+========================= */
+
+.alertProgress {
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  height: 4px;
+  width: 100%;
+
+  background: #16a34a;
+
+  animation: progressBar 3s linear forwards;
+}
+
+/* =========================
+   ANIMATION
+========================= */
+
+@keyframes progressBar {
+  from {
+    width: 100%;
+  }
+
+  to {
+    width: 0%;
+  }
+}
+
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 480px) {
+  .successAlert {
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    width: auto;
+  }
+
+  .successAlert h4 {
+    font-size: 18px;
+  }
+
+  .successAlert p {
+    font-size: 13px;
+  }
+}
