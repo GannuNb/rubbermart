@@ -7,14 +7,22 @@ import {
   approveProductThunk,
   rejectProductThunk,
 } from "../../redux/slices/adminProductThunk";
-
+import CustomAlert from "../../components/alert/CustomAlert";
 import styles from "../../styles/Admin/AdminPendingProducts.module.css";
 
 function AdminPendingProducts() {
   const dispatch = useDispatch();
+const [alert, setAlert] = useState(null);
+const showAlert = (type, title, message) => {
+  setAlert({ type, title, message });
 
+  setTimeout(() => {
+    setAlert(null);
+  }, 3000);
+};
   const {
     adminPendingProducts,
+    adminPendingProductsTotalPages,
     adminPendingProductsLoading,
     adminPendingProductsError,
     approveProductLoading,
@@ -25,27 +33,40 @@ function AdminPendingProducts() {
 
   // PAGINATION STATES
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 3;
 
   useEffect(() => {
-    dispatch(fetchAdminPendingProductsThunk());
-  }, [dispatch]);
+    dispatch(
+      fetchAdminPendingProductsThunk(currentPage)
+    );
+  }, [dispatch, currentPage]);
 
   // Reset pagination window when items get removed
-  useEffect(() => {
-    const maxPagesPossible = Math.ceil(adminPendingProducts.length / itemsPerPage);
-    if (currentPage > maxPagesPossible && maxPagesPossible > 0) {
-      setCurrentPage(maxPagesPossible);
-    }
-  }, [adminPendingProducts, currentPage]);
+ useEffect(() => {
+  if (
+    currentPage > adminPendingProductsTotalPages &&
+    adminPendingProductsTotalPages > 0
+  ) {
+    setCurrentPage(adminPendingProductsTotalPages);
+  }
+}, [adminPendingProductsTotalPages, currentPage]);
 
-  const handleApprove = (productId) => {
-    dispatch(approveProductThunk(productId));
-  };
+const handleApprove = async (productId) => {
+  try {
+    await dispatch(approveProductThunk(productId));
+    showAlert("success", "Approved", "Product approved successfully");
+  } catch (err) {
+    showAlert("error", "Approval Failed", "Something went wrong");
+  }
+};
 
-  const handleReject = (productId) => {
-    dispatch(rejectProductThunk(productId));
-  };
+const handleReject = async (productId) => {
+  try {
+    await dispatch(rejectProductThunk(productId));
+    showAlert("warning", "Rejected", "Product has been rejected");
+  } catch (err) {
+    showAlert("error", "Rejection Failed", "Something went wrong");
+  }
+};
 
   if (adminPendingProductsLoading) {
     return (
@@ -64,10 +85,8 @@ function AdminPendingProducts() {
   }
 
   // PAGINATION CHUNK ENGINE CALCULATION
-  const indexOfLastProduct = currentPage * itemsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
-  const currentProducts = adminPendingProducts.slice(indexOfFirstProduct, indexOfLastProduct);
-  const totalPages = Math.ceil(adminPendingProducts.length / itemsPerPage);
+  const currentProducts = adminPendingProducts;
+  const totalPages = adminPendingProductsTotalPages;
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -76,6 +95,14 @@ function AdminPendingProducts() {
 
   return (
     <div className={styles.container}>
+      {alert && (
+  <CustomAlert
+    type={alert.type}
+    title={alert.title}
+    message={alert.message}
+    onClose={() => setAlert(null)}
+  />
+)}
       <div className={styles.header}>
         <h1>Approve Products</h1>
         <p>Review seller submitted products and approve or reject them.</p>
@@ -163,7 +190,7 @@ function AdminPendingProducts() {
                       }
                     >
                       {approveProductLoading &&
-                      approveProductLoadingId === product._id
+                        approveProductLoadingId === product._id
                         ? "Approving..."
                         : "Approve"}
                     </button>
@@ -177,7 +204,7 @@ function AdminPendingProducts() {
                       }
                     >
                       {rejectProductLoading &&
-                      rejectProductLoadingId === product._id
+                        rejectProductLoadingId === product._id
                         ? "Rejecting..."
                         : "Reject"}
                     </button>
@@ -190,21 +217,20 @@ function AdminPendingProducts() {
           {/* UPDATED PAGINATION CONTROL - VISIBLE EVEN FOR 1 PAGE */}
           {adminPendingProducts.length > 0 && (
             <div className={styles.paginationWrapper}>
-              <button 
+              <button
                 className={styles.pageArrowButton}
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
               >
                 &laquo; Previous
               </button>
-              
+
               <div className={styles.pageNumbersGrid}>
                 {Array.from({ length: Math.max(1, totalPages) }, (_, i) => i + 1).map((pageNumber) => (
                   <button
                     key={pageNumber}
-                    className={`${styles.pageNumberPill} ${
-                      currentPage === pageNumber ? styles.activePageNumberPill : ""
-                    }`}
+                    className={`${styles.pageNumberPill} ${currentPage === pageNumber ? styles.activePageNumberPill : ""
+                      }`}
                     onClick={() => handlePageChange(pageNumber)}
                   >
                     {pageNumber}
@@ -212,7 +238,7 @@ function AdminPendingProducts() {
                 ))}
               </div>
 
-              <button 
+              <button
                 className={styles.pageArrowButton}
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}

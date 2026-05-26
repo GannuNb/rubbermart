@@ -17,11 +17,9 @@ import {
 } from "react-icons/fa";
 
 import axios from "axios";
-
+import CustomAlert from "../../components/alert/CustomAlert";
 import { useDispatch, useSelector } from "react-redux";
-
 import { fetchProfileThunk } from "../../redux/slices/profileThunk";
-
 import styles from "../../styles/Buyer/BuyerProfile.module.css";
 
 const productOptions = [
@@ -39,6 +37,13 @@ const productOptions = [
 
 function BuyerProfile() {
   const dispatch = useDispatch();
+
+  const [alert, setAlert] = useState({
+    show: false,
+    type: "",
+    title: "",
+    message: "",
+  });
 
   const { user } = useSelector((state) => state.auth);
 
@@ -154,12 +159,24 @@ function BuyerProfile() {
 
         setEditMode(false);
 
-        alert("Profile updated successfully");
+        setAlert({
+          show: true,
+          type: "success",
+          title: "Profile Updated",
+          message: "Profile updated successfully",
+        });
       }
     } catch (error) {
       console.log("Update Profile Error:", error);
 
-      alert(error?.response?.data?.message || "Failed to update profile");
+      setAlert({
+        show: true,
+        type: "error",
+        title: "Update Failed",
+        message:
+          error?.response?.data?.message ||
+          "Failed to update profile",
+      });
     } finally {
       setLoading(false);
     }
@@ -193,12 +210,31 @@ function BuyerProfile() {
     } catch (error) {
       console.log("Document Open Error:", error);
 
-      alert("Failed to open document");
+      setAlert({
+        show: true,
+        type: "error",
+        title: "Document Error",
+        message: "Failed to open document",
+      });
     }
   };
 
   return (
+
     <div className={styles.profilePage}>
+      {alert.show && (
+        <CustomAlert
+          type={alert.type}
+          title={alert.title}
+          message={alert.message}
+          onClose={() =>
+            setAlert((prev) => ({
+              ...prev,
+              show: false,
+            }))
+          }
+        />
+      )}
       <div className={styles.profileContainer}>
         {/* HERO SECTION */}
 
@@ -516,55 +552,55 @@ function BuyerProfile() {
 
         {(businessProfile.gstCertificate?.file ||
           businessProfile.panCertificate?.file) && (
-          <div className={styles.section}>
-            <div className={styles.sectionTitle}>
-              <FaFileAlt />
-              <h2>Uploaded Documents</h2>
-            </div>
+            <div className={styles.section}>
+              <div className={styles.sectionTitle}>
+                <FaFileAlt />
+                <h2>Uploaded Documents</h2>
+              </div>
 
-            <div className={styles.grid}>
-              {businessProfile.gstCertificate?.file && (
-                <div className={styles.documentCard}>
-                  <div>
-                    <h4>GST Certificate</h4>
+              <div className={styles.grid}>
+                {businessProfile.gstCertificate?.file && (
+                  <div className={styles.documentCard}>
+                    <div>
+                      <h4>GST Certificate</h4>
 
-                    <p>Protected Document</p>
+                      <p>Protected Document</p>
+                    </div>
+
+                    <button
+                      type="button"
+                      className={styles.viewDocumentBtn}
+                      onClick={() =>
+                        openDocument(businessProfile.gstCertificate.file)
+                      }
+                    >
+                      View
+                    </button>
                   </div>
+                )}
 
-                  <button
-                    type="button"
-                    className={styles.viewDocumentBtn}
-                    onClick={() =>
-                      openDocument(businessProfile.gstCertificate.file)
-                    }
-                  >
-                    View
-                  </button>
-                </div>
-              )}
+                {businessProfile.panCertificate?.file && (
+                  <div className={styles.documentCard}>
+                    <div>
+                      <h4>PAN Certificate</h4>
 
-              {businessProfile.panCertificate?.file && (
-                <div className={styles.documentCard}>
-                  <div>
-                    <h4>PAN Certificate</h4>
+                      <p>Protected Document</p>
+                    </div>
 
-                    <p>Protected Document</p>
+                    <button
+                      type="button"
+                      className={styles.viewDocumentBtn}
+                      onClick={() =>
+                        openDocument(businessProfile.panCertificate.file)
+                      }
+                    >
+                      View
+                    </button>
                   </div>
-
-                  <button
-                    type="button"
-                    className={styles.viewDocumentBtn}
-                    onClick={() =>
-                      openDocument(businessProfile.panCertificate.file)
-                    }
-                  >
-                    View
-                  </button>
-                </div>
-              )}
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
       </div>
     </div>
   );

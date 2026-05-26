@@ -36,27 +36,6 @@
   font-weight: 700;
   color: #111827;
 }
-/* =========================
-   SUCCESS MESSAGE
-========================= */
-
-.successBox {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: #ecfdf3;
-  border: 1px solid #bbf7d0;
-  color: #15803d;
-  padding: 14px 16px;
-  border-radius: 10px;
-  margin-bottom: 20px;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.successBox svg {
-  font-size: 16px;
-}
 
 /* =========================
    FORM
@@ -122,4 +101,37 @@
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+}
+
+/* =========================
+   DROPDOWN HEADER
+========================= */
+
+.dropdownHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.arrow {
+  font-size: 14px;
+  color: #692ca0;
+  transition: transform 0.3s ease;
+}
+
+.arrowOpen {
+  transform: rotate(180deg);
+}
+
+h3{
+  font-weight: 700;
+  font-size: 1.5rem;
 }

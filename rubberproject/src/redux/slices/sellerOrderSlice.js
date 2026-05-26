@@ -98,9 +98,11 @@ const sellerOrderSlice = createSlice({
         state.confirmOrderSuccess = "Order confirmed successfully";
         state.selectedOrder = action.payload;
 
-        state.sellerOrders.orders = state.sellerOrders.orders.map((order) =>
-          order._id === action.payload._id ? action.payload : order,
-        );
+        if (Array.isArray(state.sellerOrders)) {
+          state.sellerOrders = state.sellerOrders.map((order) =>
+            order._id === action.payload._id ? action.payload : order
+          );
+        }
       })
       .addCase(confirmSellerOrderThunk.rejected, (state, action) => {
         state.confirmOrderLoading = false;
@@ -118,9 +120,11 @@ const sellerOrderSlice = createSlice({
         state.rejectOrderSuccess = "Order rejected successfully";
         state.selectedOrder = action.payload;
 
-        state.sellerOrders.orders = state.sellerOrders.orders.map((order) =>
-          order._id === action.payload._id ? action.payload : order,
-        );
+        if (Array.isArray(state.sellerOrders)) {
+          state.sellerOrders = state.sellerOrders.map((order) =>
+            order._id === action.payload._id ? action.payload : order
+          );
+        }
       })
       .addCase(rejectSellerOrderThunk.rejected, (state, action) => {
         state.rejectOrderLoading = false;

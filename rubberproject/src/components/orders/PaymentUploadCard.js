@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styles from "../../styles/Buyer/BuyerOrderDetails.module.css";
-
+import CustomAlert from "../alert/CustomAlert";
 function PaymentUploadCard({ order, onPaymentUploaded }) {
   const [amount, setAmount] = useState("");
   const [paymentMode, setPaymentMode] = useState("bank_transfer");
@@ -8,10 +8,21 @@ function PaymentUploadCard({ order, onPaymentUploaded }) {
   const [note, setNote] = useState("");
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
-
+  const [alert, setAlert] = useState({
+    show: false,
+    type: "",
+    title: "",
+    message: "",
+  });
   const handleSubmit = async () => {
     if (!amount || !file) {
-      alert("Amount and receipt file are required");
+      setAlert({
+        show: true,
+        type: "warning",
+        title: "Missing Information",
+        message: "Amount and receipt file are required",
+      });
+
       return;
     }
 
@@ -23,7 +34,13 @@ function PaymentUploadCard({ order, onPaymentUploaded }) {
     const remaining = order.totalAmount - verifiedPaid;
 
     if (Number(amount) > remaining) {
-      alert("Amount exceeds remaining amount");
+      setAlert({
+        show: true,
+        type: "warning",
+        title: "Invalid Amount",
+        message: "Amount exceeds remaining amount",
+      });
+
       return;
     }
 
@@ -54,7 +71,12 @@ function PaymentUploadCard({ order, onPaymentUploaded }) {
       const data = await response.json();
 
       if (response.ok) {
-        alert("Payment uploaded (pending approval)");
+        setAlert({
+          show: true,
+          type: "success",
+          title: "Payment Uploaded",
+          message: "Payment uploaded and is pending approval",
+        });
         onPaymentUploaded();
 
         setAmount("");
@@ -62,11 +84,21 @@ function PaymentUploadCard({ order, onPaymentUploaded }) {
         setNote("");
         setFile(null);
       } else {
-        alert(data.message || "Upload failed");
+        setAlert({
+          show: true,
+          type: "error",
+          title: "Upload Failed",
+          message: data.message || "Upload failed",
+        });
       }
     } catch (error) {
       console.log(error);
-      alert("Something went wrong");
+      setAlert({
+        show: true,
+        type: "error",
+        title: "Error",
+        message: "Something went wrong",
+      });
     } finally {
       setLoading(false);
     }
@@ -74,6 +106,19 @@ function PaymentUploadCard({ order, onPaymentUploaded }) {
 
   return (
     <div className={styles.paymentCard}>
+      {alert.show && (
+        <CustomAlert
+          type={alert.type}
+          title={alert.title}
+          message={alert.message}
+          onClose={() =>
+            setAlert((prev) => ({
+              ...prev,
+              show: false,
+            }))
+          }
+        />
+      )}
       <h3 className={styles.cardTitle}>Upload Payment</h3>
 
       <div className={styles.formGroup}>
