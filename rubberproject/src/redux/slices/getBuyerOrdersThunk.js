@@ -34,3 +34,32 @@ export const getBuyerOrdersThunk = createAsyncThunk(
     }
   },
 );
+
+export const cancelBuyerOrderThunk = createAsyncThunk(
+  "buyerOrders/cancelBuyerOrder",
+
+  async ({ orderId, cancellationReason }, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.token;
+
+      const response = await axios.put(
+        `${API_URL}/api/orders/buyer-orders/${orderId}/cancel`,
+        {
+          cancellationReason,
+        },
+
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      return response.data.order;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Failed to cancel order",
+      );
+    }
+  },
+);

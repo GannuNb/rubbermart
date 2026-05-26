@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 const faqData = [
   {
     question: "How do I ensure the quality of the scrap material?",
-    answer: "You can review seller ratings, request detailed photos, and check for quality certifications or third-party inspection reports provided in the listing."
+    answer: "You can review seller ratings, request detailed photos, and check for quality certifications."
   },
   {
     question: "Do I need an account to buy?",
@@ -18,7 +18,7 @@ const faqData = [
   },
   {
     question: "How is the shipping cost calculated?",
-    answer: "Shipping costs are calculated based on the weight of the material, the distance between the buyer and seller, and the current freight market rates."
+    answer: "Shipping costs are calculated based on the shipment quantity of the material, and the current freight market rates."
   },
   {
     question: "What should I do if the material is not as described?",
@@ -26,7 +26,7 @@ const faqData = [
   },
   {
     question: "How do I get an invoice for my purchase?",
-    answer: "Invoices are automatically generated and available for download in the 'My Orders' section of your account immediately after payment confirmation."
+    answer: "Invoices are automatically generated and available for download in the 'My Orders' section of your account. "
   }
 ];
 

@@ -2,7 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import { getBuyerSingleOrderThunk } from "./buyerOrderThunk";
 
-import { getBuyerOrdersThunk } from "./getBuyerOrdersThunk";
+import {
+  getBuyerOrdersThunk,
+  cancelBuyerOrderThunk,
+} from "./getBuyerOrdersThunk";
 
 const initialState = {
   /* =========================
@@ -31,6 +34,10 @@ const initialState = {
   singleOrder: null,
   singleOrderLoading: false,
   singleOrderError: null,
+
+  cancelOrderLoading: false,
+  cancelOrderError: null,
+  cancelOrderSuccess: null,
 };
 
 const buyerOrderSlice = createSlice({
@@ -106,6 +113,46 @@ const buyerOrderSlice = createSlice({
         state.singleOrderLoading = false;
 
         state.singleOrderError = action.payload;
+      })
+
+      /* =========================
+            CANCEL ORDER
+          ========================= */
+
+      .addCase(cancelBuyerOrderThunk.pending, (state) => {
+        state.cancelOrderLoading = true;
+
+        state.cancelOrderError = null;
+
+        state.cancelOrderSuccess = null;
+      })
+
+      .addCase(cancelBuyerOrderThunk.fulfilled, (state, action) => {
+        state.cancelOrderLoading = false;
+
+        state.cancelOrderSuccess = "Order cancelled successfully";
+
+        /* =========================
+     UPDATE ORDER LIST
+  ========================= */
+
+        state.orders = state.orders.map((order) =>
+          order._id === action.payload._id ? action.payload : order,
+        );
+
+        /* =========================
+     UPDATE SINGLE ORDER
+  ========================= */
+
+        if (state.singleOrder && state.singleOrder._id === action.payload._id) {
+          state.singleOrder = action.payload;
+        }
+      })
+
+      .addCase(cancelBuyerOrderThunk.rejected, (state, action) => {
+        state.cancelOrderLoading = false;
+
+        state.cancelOrderError = action.payload;
       });
   },
 });
