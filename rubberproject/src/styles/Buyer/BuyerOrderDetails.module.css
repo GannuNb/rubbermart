@@ -22,6 +22,11 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  color: #6d28d9;
+}
+
+h1{
+  font-weight: 700;
 }
 
 .orderIconBox img {
@@ -292,6 +297,7 @@
   font-size: 16px;
   font-weight: 600;
   margin-bottom: 12px;
+  color: #7d3cb5;
 }
 
 .addressBox {
@@ -341,9 +347,20 @@
 .formGroup input,
 .formGroup select,
 .formGroup textarea {
-  padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(125, 60, 181, 0.16);
+  background: rgb(253, 250, 255);
+  transition: 0.2s ease;
+}
+
+.formGroup input:focus,
+.formGroup select:focus,
+.formGroup textarea:focus {
+  outline: none;
+  border-color: #7d3cb5;
+  box-shadow:
+    0 0 0 4px rgba(125, 60, 181, 0.10);
 }
 
 .submitBtn {
@@ -357,6 +374,10 @@
   cursor: pointer;
 }
 
+.submitBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(125, 60, 181, 0.35);
+}
 /* =========================
    PAYMENT SUMMARY
 ========================= */
