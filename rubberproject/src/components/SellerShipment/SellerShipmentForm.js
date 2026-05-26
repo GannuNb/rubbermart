@@ -15,11 +15,9 @@ const SellerShipmentForm = ({ selectedOrder }) => {
   const dispatch = useDispatch();
   const fileInputRef = useRef(null);
 
-  const {
-    shipmentLoading,
-    shipmentError,
-    shipmentSuccess,
-  } = useSelector((state) => state.sellerOrders);
+  const { shipmentLoading, shipmentError, shipmentSuccess } = useSelector(
+    (state) => state.sellerOrders,
+  );
 
   const [formData, setFormData] = useState({
     selectedItem: "",
@@ -34,22 +32,18 @@ const SellerShipmentForm = ({ selectedOrder }) => {
   });
 
   const selectedOrderItem = selectedOrder.orderItems?.find(
-    (item) => item.productName === formData.selectedItem
+    (item) => item.productName === formData.selectedItem,
   );
 
   const alreadyShippedQuantity = selectedOrder.shipments
-    ?.filter(
-      (shipment) => shipment.selectedItem === formData.selectedItem
-    )
+    ?.filter((shipment) => shipment.selectedItem === formData.selectedItem)
     .reduce(
-      (total, shipment) =>
-        total + Number(shipment.shippedQuantity || 0),
-      0
+      (total, shipment) => total + Number(shipment.shippedQuantity || 0),
+      0,
     );
 
   const remainingQuantity = selectedOrderItem
-    ? Number(selectedOrderItem.requiredQuantity) -
-      alreadyShippedQuantity
+    ? Number(selectedOrderItem.requiredQuantity) - alreadyShippedQuantity
     : 0;
 
   const shipmentFromOptions = [
@@ -60,15 +54,10 @@ const SellerShipmentForm = ({ selectedOrder }) => {
   ]
     .filter(
       (address) =>
-        address &&
-        typeof address === "string" &&
-        address.trim() !== ""
+        address && typeof address === "string" && address.trim() !== "",
     )
     .map((address) => address.trim())
-    .filter(
-      (address, index, self) =>
-        self.indexOf(address) === index
-    );
+    .filter((address, index, self) => self.indexOf(address) === index);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -91,7 +80,7 @@ const SellerShipmentForm = ({ selectedOrder }) => {
     const selectedValue = e.target.value;
 
     const selectedProduct = selectedOrder.orderItems?.find(
-      (item) => item.productName === selectedValue
+      (item) => item.productName === selectedValue,
     );
 
     const defaultShipmentFrom =
@@ -159,7 +148,7 @@ const SellerShipmentForm = ({ selectedOrder }) => {
       Number(formData.shippedQuantity) > remainingQuantity
     ) {
       return alert(
-        `Remaining quantity for ${formData.selectedItem} is ${remainingQuantity}`
+        `Remaining quantity for ${formData.selectedItem} is ${remainingQuantity}`,
       );
     }
 
@@ -174,12 +163,12 @@ const SellerShipmentForm = ({ selectedOrder }) => {
 
     shipmentData.append(
       "shipmentTo",
-      selectedOrder.shippingAddress?.fullAddress || ""
+      selectedOrder.shippingAddress?.fullAddress || "",
     );
 
     shipmentData.append(
       "selectedSubProducts",
-      JSON.stringify(formData.selectedSubProducts)
+      JSON.stringify(formData.selectedSubProducts),
     );
 
     if (formData.shipmentFile) {
@@ -190,7 +179,7 @@ const SellerShipmentForm = ({ selectedOrder }) => {
       addShipmentToOrderThunk({
         orderId: selectedOrder._id,
         shipmentData,
-      })
+      }),
     ).then((result) => {
       if (result.meta.requestStatus === "fulfilled") {
         setFormData({
@@ -220,9 +209,7 @@ const SellerShipmentForm = ({ selectedOrder }) => {
         <div className={styles.success}>{shipmentSuccess}</div>
       )}
 
-      {shipmentError && (
-        <div className={styles.error}>{shipmentError}</div>
-      )}
+      {shipmentError && <div className={styles.error}>{shipmentError}</div>}
 
       <div className={styles.formGrid}>
         <ShipmentItemSelector
@@ -245,19 +232,14 @@ const SellerShipmentForm = ({ selectedOrder }) => {
           remainingQuantity={remainingQuantity}
         />
 
-        <ShipmentBasicFields
-          formData={formData}
-          handleChange={handleChange}
-        />
+        <ShipmentBasicFields formData={formData} handleChange={handleChange} />
 
         <ShipmentAddressField
           formData={formData}
           handleChange={handleChange}
           handleShipmentFromChange={handleShipmentFromChange}
           shipmentFromOptions={shipmentFromOptions}
-          shipmentTo={
-            selectedOrder.shippingAddress?.fullAddress || ""
-          }
+          shipmentTo={selectedOrder.shippingAddress?.fullAddress || ""}
           setFormData={setFormData}
         />
 
@@ -272,14 +254,17 @@ const SellerShipmentForm = ({ selectedOrder }) => {
         onClick={handleSubmit}
         disabled={
           shipmentLoading ||
-          (selectedOrderItem && remainingQuantity <= 0)
+          (selectedOrderItem && remainingQuantity <= 0) ||
+          selectedOrder.orderStatus === "pending"
         }
       >
         {shipmentLoading
           ? "Submitting..."
-          : selectedOrderItem && remainingQuantity <= 0
-          ? "Fully Shipped"
-          : "Submit Shipment Details"}
+          : selectedOrder.orderStatus === "pending"
+            ? "Please Accept Order Before Shipment"
+            : selectedOrderItem && remainingQuantity <= 0
+              ? "Fully Shipped"
+              : "Submit Shipment Details"}
       </button>
     </div>
   );

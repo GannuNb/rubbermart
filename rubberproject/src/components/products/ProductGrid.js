@@ -1,103 +1,140 @@
 import React, { useEffect, useState } from "react";
+
 import {
   FaMapMarkerAlt,
   FaBoxes,
   FaArrowRight,
   FaSpinner,
 } from "react-icons/fa";
+
 import { useDispatch, useSelector } from "react-redux";
+
 import { useNavigate } from "react-router-dom";
+
 import { fetchApprovedProducts } from "../../redux/slices/buyerProductThunk";
+
 import styles from "../../styles/Buyer/ProductGrid.module.css";
 
 function ProductGrid({ filters }) {
   const dispatch = useDispatch();
+
   const navigate = useNavigate();
 
   /* =========================
-      PAGINATION STATE
+      PAGE STATE
   ========================== */
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 4;
 
-  // Get buyer products state
+  const [page, setPage] = useState(1);
+
+  /* =========================
+      REDUX STATE
+  ========================== */
+
   const {
     approvedProducts = [],
+
     approvedProductsLoading = false,
+
     approvedProductsError = null,
+
+    totalPages = 1,
+
+    totalProducts = 0,
   } = useSelector((state) => state.buyerProducts || {});
 
-  // Fetch authentication state
+  /* =========================
+      AUTH STATE
+  ========================== */
+
   const { token } = useSelector((state) => state.auth || {});
+
+  /* =========================
+      RESET PAGE
+      ONLY AFTER FIRST RENDER
+  ========================== */
+
+  const [initialLoadDone, setInitialLoadDone] = useState(false);
+
+  useEffect(() => {
+    if (!initialLoadDone) {
+      setInitialLoadDone(true);
+      return;
+    }
+
+    setPage(1);
+  }, [
+    filters.category,
+    filters.application,
+    filters.loadingLocation,
+    filters.stockStatus,
+    filters.minPrice,
+    filters.maxPrice,
+    filters.search,
+  ]);
 
   /* =========================
       FETCH PRODUCTS
   ========================== */
+
   useEffect(() => {
-    dispatch(fetchApprovedProducts());
-  }, [dispatch]);
+    dispatch(
+      fetchApprovedProducts({
+        page,
+        limit: 4,
 
-  /* =========================
-      RESET PAGE ON FILTER CHANGE
-  ========================== */
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [filters]);
+        category: filters.category || "",
 
-  /* =========================
-      FILTER PRODUCTS
-  ========================== */
+        application: filters.application || "",
 
-const filteredProducts = approvedProducts.filter((product) => {
-  const searchText = filters.search?.toLowerCase().trim() || "";
-  let matchesSearch = true;
+        loadingLocation: filters.loadingLocation || "",
 
-  if (searchText) {
-    const searchWords = searchText.split(/\s+/);
-    
-    const appText = (product.application || "").toLowerCase();
-    const catText = (product.category || "").toLowerCase();
-    const nameText = (product.productName || "").toLowerCase();
+        stockStatus: filters.stockStatus || "",
 
-    // CHANGE: Use .some() so if ANY word matches, it's a valid result.
-    // This allows "oil" to match "Pyro Oil" even if "car" is also typed.
-    matchesSearch = searchWords.some((word) => 
-      appText.includes(word) || 
-      catText.includes(word) || 
-      nameText.includes(word)
+        minPrice: filters.minPrice || "",
+
+        maxPrice: filters.maxPrice || "",
+
+        search: filters.search || "",
+      }),
     );
-  }
+  }, [
+    dispatch,
 
-  // ... (rest of your logic remains exactly the same)
-  const matchesCategory = !filters.category || product.category === filters.category;
-  const matchesApplication = !filters.application || product.application === filters.application;
-  const matchesLocation = !filters.loadingLocation || product.loadingLocation === filters.loadingLocation;
-  const matchesStock = !filters.stockStatus || product.stockStatus === filters.stockStatus;
-  const matchesMinPrice = !filters.minPrice || Number(product.pricePerMT) >= Number(filters.minPrice);
-  const matchesMaxPrice = !filters.maxPrice || Number(product.pricePerMT) <= Number(filters.maxPrice);
+    page,
 
-  return (
-    matchesSearch &&
-    matchesCategory &&
-    matchesApplication &&
-    matchesLocation &&
-    matchesStock &&
-    matchesMinPrice &&
-    matchesMaxPrice
-  );
-});
+    filters.category,
+
+    filters.application,
+
+    filters.loadingLocation,
+
+    filters.stockStatus,
+
+    filters.minPrice,
+
+    filters.maxPrice,
+
+    filters.search,
+  ]);
+
   /* =========================
-      PAGINATION METRICS
+      PAGE CHANGE
   ========================== */
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage) || 1;
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentProducts = filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
 
   const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (pageNumber < 1 || pageNumber > totalPages) return;
+
+    setPage(pageNumber);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
+
+  /* =========================
+      DETAILS CLICK
+  ========================== */
 
   const handleDetailsClick = (productId) => {
     if (token) {
@@ -107,14 +144,23 @@ const filteredProducts = approvedProducts.filter((product) => {
     }
   };
 
+  /* =========================
+      LOADING
+  ========================== */
+
   if (approvedProductsLoading) {
     return (
       <div className={styles.loaderWrapper}>
         <FaSpinner className={styles.loaderIcon} />
+
         <p>Loading approved products...</p>
       </div>
     );
   }
+
+  /* =========================
+      ERROR
+  ========================== */
 
   if (approvedProductsError) {
     return (
@@ -127,21 +173,27 @@ const filteredProducts = approvedProducts.filter((product) => {
   return (
     <div className={styles.productSection}>
       {/* TOP BAR */}
+
       <div className={styles.topBar}>
         <h2>Available Products</h2>
-        <span>{filteredProducts.length} Products Found</span>
+
+        <span>{totalProducts} Products Found</span>
       </div>
 
-      {/* MAIN CONTAINER GRID */}
-      {filteredProducts.length === 0 ? (
+      {/* EMPTY */}
+
+      {approvedProducts.length === 0 ? (
         <div className={styles.emptyBox}>
           <h3>No products found</h3>
+
           <p>Try changing filters or search keywords.</p>
         </div>
       ) : (
         <>
+          {/* GRID */}
+
           <div className={styles.grid}>
-            {currentProducts.map((product) => (
+            {approvedProducts.map((product) => (
               <div
                 key={product._id}
                 className={styles.card}
@@ -149,6 +201,7 @@ const filteredProducts = approvedProducts.filter((product) => {
                 style={{ cursor: "pointer" }}
               >
                 {/* IMAGE */}
+
                 <div className={styles.imageWrapper}>
                   <img
                     src={
@@ -157,6 +210,7 @@ const filteredProducts = approvedProducts.filter((product) => {
                     }
                     alt={product.application}
                   />
+
                   <span
                     className={`${styles.stockBadge} ${
                       product.stockStatus === "available"
@@ -168,18 +222,22 @@ const filteredProducts = approvedProducts.filter((product) => {
                   </span>
                 </div>
 
-                {/* CARD BODY */}
+                {/* BODY */}
+
                 <div className={styles.cardBody}>
                   <div className={styles.category}>{product.category}</div>
+
                   <h3>{product.application}</h3>
 
                   <div className={styles.infoRow}>
                     <FaBoxes />
+
                     <span>{product.quantity} MT Available</span>
                   </div>
 
                   <div className={styles.infoRow}>
                     <FaMapMarkerAlt />
+
                     <span>{product.loadingLocation}</span>
                   </div>
 
@@ -190,6 +248,7 @@ const filteredProducts = approvedProducts.filter((product) => {
                   <div className={styles.bottomRow}>
                     <div>
                       <p className={styles.priceLabel}>Price / MT</p>
+
                       <h4>₹{Number(product.pricePerMT).toLocaleString()}</h4>
                     </div>
 
@@ -203,50 +262,41 @@ const filteredProducts = approvedProducts.filter((product) => {
             ))}
           </div>
 
-          {/* PAGINATION CONTROL */}
-          <div className={styles.paginationWrapper}>
-            <button
-              className={styles.pageArrowButton}
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              &laquo; Previous
-            </button>
+          {/* PAGINATION */}
 
-            <div className={styles.pageNumbersGrid}>
-              {(() => {
-                let startPage = Math.max(1, currentPage);
-                if (currentPage === totalPages && totalPages > 1) {
-                  startPage = Math.max(1, currentPage - 1);
-                }
-                const endPage = Math.min(totalPages, startPage + 1);
+          {totalPages > 1 && (
+            <div className={styles.paginationWrapper}>
+              <button
+                className={styles.pageArrowButton}
+                onClick={() => handlePageChange(page - 1)}
+                disabled={page === 1}
+              >
+                &laquo; Previous
+              </button>
 
-                const pageNumbers = [];
-                for (let i = startPage; i <= endPage; i++) {
-                  pageNumbers.push(
-                    <button
-                      key={i}
-                      className={`${styles.pageNumberPill} ${
-                        currentPage === i ? styles.activePageNumberPill : ""
-                      }`}
-                      onClick={() => handlePageChange(i)}
-                    >
-                      {i}
-                    </button>
-                  );
-                }
-                return pageNumbers;
-              })()}
+              <div className={styles.pageNumbersGrid}>
+                {Array.from({ length: totalPages }, (_, index) => (
+                  <button
+                    key={index + 1}
+                    className={`${styles.pageNumberPill} ${
+                      page === index + 1 ? styles.activePageNumberPill : ""
+                    }`}
+                    onClick={() => handlePageChange(index + 1)}
+                  >
+                    {index + 1}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                className={styles.pageArrowButton}
+                onClick={() => handlePageChange(page + 1)}
+                disabled={page === totalPages}
+              >
+                Next &raquo;
+              </button>
             </div>
-
-            <button
-              className={styles.pageArrowButton}
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-            >
-              Next &raquo;
-            </button>
-          </div>
+          )}
         </>
       )}
     </div>

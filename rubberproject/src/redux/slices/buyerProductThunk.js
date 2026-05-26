@@ -2,23 +2,58 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export const fetchApprovedProducts = createAsyncThunk(
   "buyerProducts/fetchApprovedProducts",
-  async (_, thunkAPI) => {
+
+  async (
+    {
+      page = 1,
+      limit = 4,
+
+      category = "",
+      application = "",
+      loadingLocation = "",
+      stockStatus = "",
+      minPrice = "",
+      maxPrice = "",
+      search = "",
+    },
+    thunkAPI
+  ) => {
     try {
+      /* =========================
+          QUERY PARAMS
+      ========================== */
+
+      const queryParams = new URLSearchParams({
+        page,
+        limit,
+
+        category,
+        application,
+        loadingLocation,
+        stockStatus,
+        minPrice,
+        maxPrice,
+        search,
+      });
+
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/buyer-products/approved`
+        `${process.env.REACT_APP_API_URL}/api/buyer-products/approved?${queryParams.toString()}`
       );
 
       const data = await response.json();
 
       if (!response.ok) {
         return thunkAPI.rejectWithValue(
-          data.message || "Failed to fetch approved products"
+          data.message ||
+            "Failed to fetch approved products"
         );
       }
 
-      return data.products;
+      return data;
     } catch (error) {
-      return thunkAPI.rejectWithValue("Something went wrong");
+      return thunkAPI.rejectWithValue(
+        "Something went wrong"
+      );
     }
   }
 );

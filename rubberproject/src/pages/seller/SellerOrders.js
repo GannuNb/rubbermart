@@ -43,7 +43,7 @@ const SellerOrders = () => {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.heading}>Seller Orders</h1>
+      <h1 className={styles.heading}>Orders</h1>
 
       {orders.length === 0 ? (
         <div className={styles.empty}>No orders found</div>

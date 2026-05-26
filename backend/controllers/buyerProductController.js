@@ -5,26 +5,155 @@ import User from "../models/User.js";
 
 export const getApprovedProducts = async (req, res) => {
   try {
-    const products = await Product.find({
+    /* =========================
+        QUERY PARAMS
+    ========================== */
+
+    const page = Number(req.query.page) || 1;
+
+    const limit = Number(req.query.limit) || 4;
+
+    const skip = (page - 1) * limit;
+
+    /* =========================
+        FILTER VALUES
+    ========================== */
+
+    const {
+      category,
+      application,
+      loadingLocation,
+      stockStatus,
+      minPrice,
+      maxPrice,
+      search,
+    } = req.query;
+
+    /* =========================
+        FILTER OBJECT
+    ========================== */
+
+    const filterObject = {
       status: "approved",
-    })
+    };
+
+    /* =========================
+        CATEGORY
+    ========================== */
+
+    if (category) {
+      filterObject.category = category;
+    }
+
+    /* =========================
+        APPLICATION
+    ========================== */
+
+    if (application) {
+      filterObject.application = application;
+    }
+
+    /* =========================
+        LOCATION
+    ========================== */
+
+    if (loadingLocation) {
+      filterObject.loadingLocation = loadingLocation;
+    }
+
+    /* =========================
+        STOCK STATUS
+    ========================== */
+
+    if (stockStatus) {
+      filterObject.stockStatus = stockStatus;
+    }
+
+    /* =========================
+        PRICE FILTER
+    ========================== */
+
+    if (minPrice || maxPrice) {
+      filterObject.pricePerMT = {};
+
+      if (minPrice) {
+        filterObject.pricePerMT.$gte = Number(minPrice);
+      }
+
+      if (maxPrice) {
+        filterObject.pricePerMT.$lte = Number(maxPrice);
+      }
+    }
+
+    /* =========================
+        SEARCH FILTER
+    ========================== */
+
+    if (search) {
+      filterObject.$or = [
+        {
+          application: {
+            $regex: search,
+            $options: "i",
+          },
+        },
+
+        {
+          category: {
+            $regex: search,
+            $options: "i",
+          },
+        },
+      ];
+    }
+
+    /* =========================
+        TOTAL PRODUCTS
+    ========================== */
+
+    const totalProducts = await Product.countDocuments(filterObject);
+
+    /* =========================
+        FETCH PRODUCTS
+    ========================== */
+
+    const products = await Product.find(filterObject)
       .populate(
         "seller",
         "fullName email businessProfile addresses profileImage",
       )
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    /* =========================
+        FORMAT IMAGES
+    ========================== */
 
     const formattedProducts = products.map((product) => ({
       ...product._doc,
+
       images: product.images.map((img) => ({
         contentType: img.contentType,
+
         image: `data:${img.contentType};base64,${img.data.toString("base64")}`,
       })),
     }));
 
+    /* =========================
+        RESPONSE
+    ========================== */
+
     return res.status(200).json({
       success: true,
+
       products: formattedProducts,
+
+      currentPage: page,
+
+      totalPages: Math.ceil(totalProducts / limit),
+
+      totalProducts,
     });
   } catch (error) {
     console.log("Get Approved Products Error:", error);
@@ -64,40 +193,35 @@ export const getSingleApprovedProduct = async (req, res) => {
         image: `data:${img.contentType};base64,${img.data.toString("base64")}`,
       })),
 
-reviews: await Promise.all(
-  product.reviews.map(async (review) => {
-    const populatedUser =
-      await User.findById(review.user).select(
-        "fullName profileImage"
-      );
+      reviews: await Promise.all(
+        product.reviews.map(async (review) => {
+          const populatedUser = await User.findById(review.user).select(
+            "fullName profileImage",
+          );
 
-    return {
-      _id: review._id,
+          return {
+            _id: review._id,
 
-      rating: review.rating,
+            rating: review.rating,
 
-      comment: review.comment,
+            comment: review.comment,
 
-      createdAt: review.createdAt,
+            createdAt: review.createdAt,
 
-      user: {
-        fullName:
-          populatedUser?.fullName || "User",
+            user: {
+              fullName: populatedUser?.fullName || "User",
 
-        profileImage:
-          populatedUser?.profileImage || "",
-      },
+              profileImage: populatedUser?.profileImage || "",
+            },
 
-      image: review.image?.data
-        ? `data:${
-            review.image.contentType
-          };base64,${review.image.data.toString(
-            "base64"
-          )}`
-        : null,
-    };
-  })
-),
+            image: review.image?.data
+              ? `data:${
+                  review.image.contentType
+                };base64,${review.image.data.toString("base64")}`
+              : null,
+          };
+        }),
+      ),
     };
 
     return res.status(200).json({

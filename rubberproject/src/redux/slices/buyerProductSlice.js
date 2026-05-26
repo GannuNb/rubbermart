@@ -19,6 +19,10 @@ const initialState = {
   featuredProducts: [],
   featuredProductsLoading: false,
   featuredProductsError: null,
+
+  currentPage: 1,
+  totalPages: 1,
+  totalProducts: 0,
 };
 
 const buyerProductSlice = createSlice({
@@ -33,7 +37,14 @@ const buyerProductSlice = createSlice({
       })
       .addCase(fetchApprovedProducts.fulfilled, (state, action) => {
         state.approvedProductsLoading = false;
-        state.approvedProducts = action.payload;
+
+        state.approvedProducts = action.payload.products;
+
+        state.currentPage = action.payload.currentPage;
+
+        state.totalPages = action.payload.totalPages;
+
+        state.totalProducts = action.payload.totalProducts;
       })
       .addCase(fetchApprovedProducts.rejected, (state, action) => {
         state.approvedProductsLoading = false;
