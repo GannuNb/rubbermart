@@ -117,46 +117,48 @@ export const buyerLinks = [
   },
 ];
 
-
-/* =========================
-    SELLER NAV LINKS
-========================= */
-
+// seller links
 export const sellerLinks = [
-
   {
     label: "Dashboard",
     path: "/seller-dashboard",
     icon: FaChartLine,
+    requiresBusinessProfile: false,
   },
 
   {
     label: "Add Product",
     path: "/seller-add-products",
     icon: FaPlusCircle,
+    requiresBusinessProfile: true,
   },
 
   {
     label: "Products",
     path: "/seller-products",
     icon: FaLayerGroup,
+    requiresBusinessProfile: true,
   },
 
   {
     label: "Pending",
     path: "/seller-pending-products",
     icon: FaClock,
+    requiresBusinessProfile: true,
   },
+
   {
     label: "Approved",
     path: "/seller-approved-products",
     icon: FaCheckCircle,
+    requiresBusinessProfile: true,
   },
 
   {
     label: "Orders",
     path: "/seller/orders",
     icon: FaClipboardList,
+    requiresBusinessProfile: true,
   },
 ];
 

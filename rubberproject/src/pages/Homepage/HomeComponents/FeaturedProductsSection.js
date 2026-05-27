@@ -190,7 +190,17 @@ function FeaturedProductsSection() {
 
                   <button
                     className={styles.detailsBtn}
-                    onClick={() => navigate(`/product/${item._id}`)}
+                    onClick={() => {
+                      const token = localStorage.getItem("token");
+
+                      if (!token) {
+                        navigate("/login");
+
+                        return;
+                      }
+
+                      navigate(`/product/${item._id}`);
+                    }}
                   >
                     View Details
                     <MoveRight size={15} />

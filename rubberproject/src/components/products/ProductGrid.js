@@ -46,7 +46,7 @@ function ProductGrid({ filters }) {
       AUTH STATE
   ========================== */
 
-  const { token } = useSelector((state) => state.auth || {});
+const { token, user } = useSelector((state) => state.auth || {});
 
   /* =========================
       RESET PAGE
@@ -132,17 +132,29 @@ function ProductGrid({ filters }) {
     });
   };
 
-  /* =========================
-      DETAILS CLICK
-  ========================== */
+/* =========================
+    DETAILS CLICK
+========================== */
 
-  const handleDetailsClick = (productId) => {
-    if (token) {
-      navigate(`/product/${productId}`);
-    } else {
-      navigate("/login");
-    }
-  };
+const handleDetailsClick = (productId) => {
+  // NOT LOGGED IN
+  if (!token) {
+    navigate("/login");
+    return;
+  }
+
+  // LOGGED IN BUT NO BUSINESS PROFILE
+  if (
+    !user?.businessProfile ||
+    !user?.businessProfile?.companyName
+  ) {
+    navigate("/business-profile");
+    return;
+  }
+
+  // ALLOWED
+  navigate(`/product/${productId}`);
+};
 
   /* =========================
       LOADING
