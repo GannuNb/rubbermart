@@ -49,7 +49,7 @@ function PendingProducts() {
 
         <button
           className={styles.viewAllButton}
-          onClick={() => navigate("/admin-approve-products")}
+          onClick={() => navigate("/admin-pending-products")}
         >
           View All
         </button>

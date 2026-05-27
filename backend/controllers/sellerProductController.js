@@ -1,6 +1,7 @@
 // backend/controllers/sellerProductController.js
-
 import Product from "../models/Product.js";
+import { sendProductApprovedEmail } from "../utils/email/sendProductApprovedEmail.js";
+import { sendProductRejectedEmail } from "../utils/email/sendProductRejectedEmail.js";
 
 export const addProduct = async (req, res) => {
   try {
@@ -65,39 +66,38 @@ export const addProduct = async (req, res) => {
     });
   }
 };
-// src/controllers/sellerProductController.js
 
 // backend/controllers/sellerProductController.js
 
 export const getSellerProducts = async (req, res) => {
   try {
     const { page = 1, status } = req.query;
-    const LIMIT = 3; 
+    const LIMIT = 3;
     const pageNumber = parseInt(page, 10) || 1;
     const skip = (pageNumber - 1) * LIMIT;
 
     let query = { seller: req.user._id };
     if (status) {
-      query.status = status; 
+      query.status = status;
     }
 
     const totalCount = await Product.countDocuments(query);
-    
+
     const rawProducts = await Product.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(LIMIT);
 
     // Transform raw binary buffers to Data URL strings right here!
-    const products = rawProducts.map(product => {
+    const products = rawProducts.map((product) => {
       const plainProduct = product.toObject();
       if (plainProduct.images && plainProduct.images.length > 0) {
-        plainProduct.images = plainProduct.images.map(img => {
+        plainProduct.images = plainProduct.images.map((img) => {
           if (img.data && img.contentType) {
             const base64 = img.data.toString("base64");
             return {
               image: `data:${img.contentType};base64,${base64}`,
-              contentType: img.contentType
+              contentType: img.contentType,
             };
           }
           return img;
@@ -114,7 +114,9 @@ export const getSellerProducts = async (req, res) => {
     });
   } catch (error) {
     console.error("Get Seller Products Error:", error);
-    return res.status(500).json({ success: false, message: "Internal Server Error" });
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
   }
 };
 
@@ -144,11 +146,13 @@ export const getAllPendingProductsForAdmin = async (req, res) => {
       success: true,
       products: formattedProducts,
       totalPages: Math.ceil(totalProducts / limitNumber),
-      totalProducts
+      totalProducts,
     });
   } catch (error) {
     console.log("Get Admin Pending Products Error:", error);
-    return res.status(500).json({ success: false, message: "Failed to fetch pending products" });
+    return res
+      .status(500)
+      .json({ success: false, message: "Failed to fetch pending products" });
   }
 };
 
@@ -163,8 +167,8 @@ export const approveProduct = async (req, res) => {
       },
       {
         new: true,
-      }
-    );
+      },
+    ).populate("seller", "fullName email");
 
     if (!product) {
       return res.status(404).json({
@@ -172,6 +176,12 @@ export const approveProduct = async (req, res) => {
         message: "Product not found",
       });
     }
+
+    await sendProductApprovedEmail({
+      sellerEmail: product.seller.email,
+      sellerName: product.seller.fullName,
+      productName: product.application,
+    });
 
     return res.status(200).json({
       success: true,
@@ -199,8 +209,8 @@ export const rejectProduct = async (req, res) => {
       },
       {
         new: true,
-      }
-    );
+      },
+    ).populate("seller", "fullName email");
 
     if (!product) {
       return res.status(404).json({
@@ -208,6 +218,12 @@ export const rejectProduct = async (req, res) => {
         message: "Product not found",
       });
     }
+
+    await sendProductRejectedEmail({
+      sellerEmail: product.seller.email,
+      sellerName: product.seller.fullName,
+      productName: product.application,
+    });
 
     return res.status(200).json({
       success: true,
@@ -228,13 +244,8 @@ export const updateSellerProduct = async (req, res) => {
   try {
     const { productId } = req.params;
 
-    const {
-      quantity,
-      pricePerMT,
-      description,
-      loadingLocation,
-      stockStatus,
-    } = req.body;
+    const { quantity, pricePerMT, description, loadingLocation, stockStatus } =
+      req.body;
 
     const product = await Product.findOne({
       _id: productId,
@@ -385,12 +396,12 @@ export const getAllProductsForAdmin = async (req, res) => {
 
     // 2. Count total (for the pagination UI)
     const totalProducts = await Product.countDocuments({
-      status: { $in: ["approved", "pending", "rejected"] }
+      status: { $in: ["approved", "pending", "rejected"] },
     });
 
     // 3. Find only the slice
     const products = await Product.find({
-      status: { $in: ["approved", "pending", "rejected"] }
+      status: { $in: ["approved", "pending", "rejected"] },
     })
       .populate("seller", "fullName email")
       .sort({ createdAt: -1 })
@@ -410,10 +421,9 @@ export const getAllProductsForAdmin = async (req, res) => {
       success: true,
       products: formattedProducts,
       totalPages: Math.ceil(totalProducts / limitNumber), // Send this to FE
-      totalProducts
+      totalProducts,
     });
   } catch (error) {
     return res.status(500).json({ success: false, message: "Error" });
   }
 };
-

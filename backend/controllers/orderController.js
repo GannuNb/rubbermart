@@ -1213,7 +1213,15 @@ export const uploadBuyerPayment = async (req, res) => {
     }
 
     // ✅ allow after seller confirmation (and beyond)
-    if (!["seller_confirmed", "partially_shipped", "shipped"].includes(order.orderStatus)) {
+    if (
+  ![
+    "seller_confirmed",
+    "partially_shipped",
+    "shipped",
+    "delivered",
+    "completed",
+  ].includes(order.orderStatus)
+) {
       return res.status(400).json({
         success: false,
         message: "Payment allowed only after seller confirmation",
