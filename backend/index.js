@@ -16,11 +16,14 @@ import contactRoutes from "./routes/contactRoutes.js";
 import sellerDashboardRoutes from "./routes/sellerDashboardRoutes.js";
 import adminDashboardRoutes from "./routes/adminDashboardRoutes.js";
 
+
 dotenv.config();
 
 const app = express();
 
 connectDB();
+
+
 
 app.use(
   cors({
