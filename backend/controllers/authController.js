@@ -51,7 +51,7 @@ export const signup = async (req, res) => {
       process.env.JWT_SECRET,
       {
         expiresIn: "7d",
-      }
+      },
     );
 
     return res.status(201).json({
@@ -129,7 +129,7 @@ export const googleSignup = async (req, res) => {
       process.env.JWT_SECRET,
       {
         expiresIn: "7d",
-      }
+      },
     );
 
     return res.status(200).json({
@@ -165,7 +165,6 @@ export const googleSignup = async (req, res) => {
   }
 };
 
-
 // backend/controllers/authController.js
 // Replace only login and googleLogin with this
 
@@ -200,10 +199,7 @@ export const login = async (req, res) => {
       });
     }
 
-    const isPasswordMatched = await bcrypt.compare(
-      password,
-      user.password
-    );
+    const isPasswordMatched = await bcrypt.compare(password, user.password);
 
     if (!isPasswordMatched) {
       return res.status(400).json({
@@ -221,7 +217,7 @@ export const login = async (req, res) => {
       process.env.JWT_SECRET,
       {
         expiresIn: "7d",
-      }
+      },
     );
 
     return res.status(200).json({
@@ -252,7 +248,7 @@ export const login = async (req, res) => {
 
 export const googleLogin = async (req, res) => {
   try {
-    const { email } = req.body;
+    const { fullName, email, profileImage } = req.body;
 
     if (!email) {
       return res.status(400).json({
@@ -263,14 +259,18 @@ export const googleLogin = async (req, res) => {
 
     const normalizedEmail = email.toLowerCase().trim();
 
-    const user = await User.findOne({
+    let user = await User.findOne({
       email: normalizedEmail,
     });
 
     if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "No account found with this Google email",
+      user = await User.create({
+        fullName,
+        email: normalizedEmail,
+        profileImage,
+        authProvider: "google",
+        isVerified: true,
+        role: "buyer",
       });
     }
 
@@ -290,7 +290,7 @@ export const googleLogin = async (req, res) => {
       process.env.JWT_SECRET,
       {
         expiresIn: "7d",
-      }
+      },
     );
 
     return res.status(200).json({
@@ -319,11 +319,8 @@ export const googleLogin = async (req, res) => {
   }
 };
 
-
-
 export const forgotPassword = async (req, res) => {
   try {
-
     const { email } = req.body;
 
     if (!email) {
@@ -350,14 +347,11 @@ export const forgotPassword = async (req, res) => {
         CREATE RESET TOKEN
     ========================= */
 
-    const resetToken = crypto
-      .randomBytes(32)
-      .toString("hex");
+    const resetToken = crypto.randomBytes(32).toString("hex");
 
     user.resetPasswordToken = resetToken;
 
-    user.resetPasswordExpire =
-      Date.now() + 15 * 60 * 1000;
+    user.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
 
     await user.save();
 
@@ -365,35 +359,30 @@ export const forgotPassword = async (req, res) => {
         RESET URL
     ========================= */
 
-    const resetUrl =
-      `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
     /* =========================
         MAIL TRANSPORT
     ========================= */
 
-    const transporter =
-      nodemailer.createTransport({
+    const transporter = nodemailer.createTransport({
+      host: "smtp.hostinger.com",
 
-        host: "smtp.hostinger.com",
+      port: 465,
 
-        port: 465,
+      secure: true,
 
-        secure: true,
-
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-
-      });
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
 
     /* =========================
         SEND MAIL
     ========================= */
 
     await transporter.sendMail({
-
       from: `"Rubber Scrap Mart" <${process.env.EMAIL_USER}>`,
 
       to: user.email,
@@ -436,22 +425,18 @@ export const forgotPassword = async (req, res) => {
       success: true,
       message: "Password reset email sent",
     });
-
   } catch (error) {
-
     console.log("Forgot Password Error:", error);
 
     return res.status(500).json({
       success: false,
       message: "Failed to send reset email",
     });
-
   }
 };
 
 export const resetPassword = async (req, res) => {
   try {
-
     const { token } = req.params;
 
     const { password } = req.body;
@@ -474,8 +459,7 @@ export const resetPassword = async (req, res) => {
     if (!user) {
       return res.status(400).json({
         success: false,
-        message:
-          "Reset link is invalid or expired",
+        message: "Reset link is invalid or expired",
       });
     }
 
@@ -483,8 +467,7 @@ export const resetPassword = async (req, res) => {
         HASH NEW PASSWORD
     ========================= */
 
-    const hashedPassword =
-      await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     user.password = hashedPassword;
 
@@ -500,22 +483,14 @@ export const resetPassword = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message:
-        "Password reset successful",
+      message: "Password reset successful",
     });
-
   } catch (error) {
-
-    console.log(
-      "Reset Password Error:",
-      error
-    );
+    console.log("Reset Password Error:", error);
 
     return res.status(500).json({
       success: false,
-      message:
-        "Failed to reset password",
+      message: "Failed to reset password",
     });
-
   }
 };
