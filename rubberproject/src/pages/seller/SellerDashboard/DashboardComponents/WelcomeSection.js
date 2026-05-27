@@ -5,10 +5,29 @@ import {
   FaClock,
   FaShoppingBag,
 } from "react-icons/fa";
-import { Link } from "react-router-dom";
 import styles from "./WelcomeSection.module.css";
+import { useSelector } from "react-redux";
 
 function WelcomeSection() {
+  const { token, user } = useSelector((state) => state.auth || {});
+
+  const handleProtectedNavigation = (path) => {
+  // NOT LOGGED IN
+  if (!token) {
+    window.location.href = "/login";
+    return;
+  }
+
+  // BUSINESS PROFILE NOT COMPLETED
+  if (!user?.businessProfileCompleted) {
+    window.location.href = "/business-profile";
+    return;
+  }
+
+  // ALLOWED
+  window.location.href = path;
+};
+
   return (
     <section className={styles.wrapper}>
       {/* =========================
@@ -26,8 +45,10 @@ function WelcomeSection() {
         ========================= */}
         <div className={styles.cardsGrid}>
           {/* CARD 1: Add Products */}
-          <Link to="/seller-add-products" className={styles.card}>
-            <div className={`${styles.iconBox} ${styles.purple}`}>
+          <div
+            className={styles.card}
+            onClick={() => handleProtectedNavigation("/seller-add-products")}
+          >            <div className={`${styles.iconBox} ${styles.purple}`}>
               <FaPlusCircle />
             </div>
 
@@ -36,11 +57,13 @@ function WelcomeSection() {
               <p>Create and list new products</p>
               <span className={styles.btnPurple}>Add Product</span>
             </div>
-          </Link>
+          </div>
 
           {/* CARD 2: Manage Products */}
-          <Link to="/seller-approved-products" className={styles.card}>
-            <div className={`${styles.iconBox} ${styles.blue}`}>
+          <div
+            className={styles.card}
+            onClick={() => handleProtectedNavigation("/seller-approved-products")}
+          >            <div className={`${styles.iconBox} ${styles.blue}`}>
               <FaBoxOpen />
             </div>
 
@@ -49,11 +72,13 @@ function WelcomeSection() {
               <p>Edit or update your products</p>
               <span className={styles.btnBlue}>Manage Products</span>
             </div>
-          </Link>
+          </div>
 
           {/* CARD 3: Pending Products */}
-          <Link to="/seller-pending-products" className={styles.card}>
-            <div className={`${styles.iconBox} ${styles.orange}`}>
+          <div
+            className={styles.card}
+            onClick={() => handleProtectedNavigation("/seller-pending-products")}
+          >            <div className={`${styles.iconBox} ${styles.orange}`}>
               <FaClock />
             </div>
 
@@ -62,11 +87,13 @@ function WelcomeSection() {
               <p>Products awaiting admin approval</p>
               <span className={styles.btnOrange}>View Pending</span>
             </div>
-          </Link>
-
+          </div
+          >
           {/* CARD 4: Orders */}
-          <Link to="/seller/orders" className={styles.card}>
-            <div className={`${styles.iconBox} ${styles.green}`}>
+          <div
+            className={styles.card}
+            onClick={() => handleProtectedNavigation("/seller/orders")}
+          >            <div className={`${styles.iconBox} ${styles.green}`}>
               <FaShoppingBag />
             </div>
 
@@ -75,8 +102,7 @@ function WelcomeSection() {
               <p>Track and manage buyer orders</p>
               <span className={styles.btnGreen}>View Orders</span>
             </div>
-          </Link>
-        </div>
+          </div>        </div>
       </div>
     </section>
   );

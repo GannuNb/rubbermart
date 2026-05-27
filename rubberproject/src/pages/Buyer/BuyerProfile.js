@@ -21,6 +21,7 @@ import CustomAlert from "../../components/alert/CustomAlert";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProfileThunk } from "../../redux/slices/profileThunk";
 import styles from "../../styles/Buyer/BuyerProfile.module.css";
+import { useNavigate } from "react-router-dom";
 
 const productOptions = [
   "Baled Tyres PCR",
@@ -218,6 +219,7 @@ function BuyerProfile() {
       });
     }
   };
+  const navigate = useNavigate();
 
   return (
 
@@ -390,88 +392,114 @@ function BuyerProfile() {
 
         {/* BUSINESS INFORMATION */}
 
-        <div className={styles.section}>
-          <div className={styles.sectionTitle}>
-            <FaBuilding />
-            <h2>Business Information</h2>
-          </div>
-
-          <div className={styles.grid}>
-            <div className={styles.card}>
-              <span>Company Name</span>
-
-              <h4>{businessProfile.companyName}</h4>
-
-              <FaBuilding className={styles.cardIcon} />
+        {!user?.businessProfile ||
+          Object.keys(user?.businessProfile || {}).length === 0 ? (
+          <div className={styles.section}>
+            <div className={styles.sectionTitle}>
+              <FaBuilding />
+              <h2>Business Information</h2>
             </div>
 
-            <div className={styles.card}>
-              <span>Phone Number</span>
+            <div className={styles.noBusinessProfile}>
+              <FaBuilding className={styles.noBusinessIcon} />
 
-              {editMode ? (
-                <input
-                  type="text"
-                  name="phoneNumber"
-                  value={formData.phoneNumber}
-                  onChange={handleChange}
-                />
-              ) : (
-                <h4>{businessProfile.phoneNumber}</h4>
-              )}
+              <h3>No Business Profile Found</h3>
 
-              <FaPhoneAlt className={styles.cardIcon} />
-            </div>
+              <p>
+                Create your business profile to access buyer and seller features.
+              </p>
 
-            <div className={styles.card}>
-              <span>GST Number</span>
-
-              <h4>{businessProfile.gstNumber}</h4>
-
-              <FaIdCard className={styles.cardIcon} />
-            </div>
-
-            <div className={styles.card}>
-              <span>PAN Number</span>
-
-              <h4>{businessProfile.panNumber}</h4>
-
-              <FaIdCard className={styles.cardIcon} />
-            </div>
-
-            <div className={styles.card}>
-              <span>Billing Address</span>
-
-              {editMode ? (
-                <textarea
-                  name="billingAddress"
-                  value={formData.billingAddress}
-                  onChange={handleChange}
-                />
-              ) : (
-                <h4>{businessProfile.billingAddress}</h4>
-              )}
-
-              <FaHome className={styles.cardIcon} />
-            </div>
-
-            <div className={styles.card}>
-              <span>Shipping Address</span>
-
-              {editMode ? (
-                <textarea
-                  name="shippingAddress"
-                  value={formData.shippingAddress}
-                  onChange={handleChange}
-                />
-              ) : (
-                <h4>{businessProfile.shippingAddress}</h4>
-              )}
-
-              <FaHome className={styles.cardIcon} />
+              <button
+                className={styles.createBusinessBtn}
+                onClick={() => navigate("/business-profile")}
+              >
+                Create Business Profile
+              </button>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className={styles.section}>
+            <div className={styles.sectionTitle}>
+              <FaBuilding />
+              <h2>Business Information</h2>
+            </div>
 
+            <div className={styles.grid}>
+              <div className={styles.card}>
+                <span>Company Name</span>
+
+                <h4>{businessProfile.companyName}</h4>
+
+                <FaBuilding className={styles.cardIcon} />
+              </div>
+
+              <div className={styles.card}>
+                <span>Phone Number</span>
+
+                {editMode ? (
+                  <input
+                    type="text"
+                    name="phoneNumber"
+                    value={formData.phoneNumber}
+                    onChange={handleChange}
+                  />
+                ) : (
+                  <h4>{businessProfile.phoneNumber}</h4>
+                )}
+
+                <FaPhoneAlt className={styles.cardIcon} />
+              </div>
+
+              <div className={styles.card}>
+                <span>GST Number</span>
+
+                <h4>{businessProfile.gstNumber}</h4>
+
+                <FaIdCard className={styles.cardIcon} />
+              </div>
+
+              <div className={styles.card}>
+                <span>PAN Number</span>
+
+                <h4>{businessProfile.panNumber}</h4>
+
+                <FaIdCard className={styles.cardIcon} />
+              </div>
+
+              <div className={styles.card}>
+                <span>Billing Address</span>
+
+                {editMode ? (
+                  <textarea
+                    name="billingAddress"
+                    value={formData.billingAddress}
+                    onChange={handleChange}
+                  />
+                ) : (
+                  <h4>{businessProfile.billingAddress}</h4>
+                )}
+
+                <FaHome className={styles.cardIcon} />
+              </div>
+
+              <div className={styles.card}>
+                <span>Shipping Address</span>
+
+                {editMode ? (
+                  <textarea
+                    name="shippingAddress"
+                    value={formData.shippingAddress}
+                    onChange={handleChange}
+                  />
+                ) : (
+                  <h4>{businessProfile.shippingAddress}</h4>
+                )}
+
+                <FaHome className={styles.cardIcon} />
+              </div>
+            </div>
+          </div>
+        )}
         {/* INTERESTED PRODUCTS */}
 
         <div className={styles.section}>

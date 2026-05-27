@@ -58,12 +58,9 @@ function ProductOrderPanel({ singleProduct }) {
             ...address,
             fullAddress:
               address.fullAddress ||
-              `${address.flatHouse || ""}${
-                address.areaStreet ? `, ${address.areaStreet}` : ""
-              }${address.landmark ? `, ${address.landmark}` : ""}${
-                address.city ? `, ${address.city}` : ""
-              }${address.state ? `, ${address.state}` : ""}${
-                address.pincode ? ` - ${address.pincode}` : ""
+              `${address.flatHouse || ""}${address.areaStreet ? `, ${address.areaStreet}` : ""
+              }${address.landmark ? `, ${address.landmark}` : ""}${address.city ? `, ${address.city}` : ""
+              }${address.state ? `, ${address.state}` : ""}${address.pincode ? ` - ${address.pincode}` : ""
               }`,
           }));
 
@@ -148,12 +145,9 @@ function ProductOrderPanel({ singleProduct }) {
           ...address,
           fullAddress:
             address.fullAddress ||
-            `${address.flatHouse || ""}${
-              address.areaStreet ? `, ${address.areaStreet}` : ""
-            }${address.landmark ? `, ${address.landmark}` : ""}${
-              address.city ? `, ${address.city}` : ""
-            }${address.state ? `, ${address.state}` : ""}${
-              address.pincode ? ` - ${address.pincode}` : ""
+            `${address.flatHouse || ""}${address.areaStreet ? `, ${address.areaStreet}` : ""
+            }${address.landmark ? `, ${address.landmark}` : ""}${address.city ? `, ${address.city}` : ""
+            }${address.state ? `, ${address.state}` : ""}${address.pincode ? ` - ${address.pincode}` : ""
             }`,
         }));
 
@@ -189,6 +183,7 @@ function ProductOrderPanel({ singleProduct }) {
   };
 
   const handleContinueToOrder = () => {
+    
     const quantity = Number(requiredQuantity);
 
     if (!selectedAddress) {
@@ -320,6 +315,33 @@ function ProductOrderPanel({ singleProduct }) {
             </div>
           </div>
 
+          <div className={styles.verifiedBadge}>
+            <div className={styles.badgeOrbit}></div>
+
+            <div className={styles.verifiedSeal}>
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M9.2 12.8L11 14.6L15.5 10.1"
+                  stroke="currentColor"
+                  strokeWidth="2.4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+
+            <div className={styles.verifiedText}>
+              <span className={styles.title}>Verified Seller</span>
+              <span className={styles.status}>Trusted & Verified</span>
+            </div>
+
+            <div className={styles.liveDot}></div>
+          </div>
+
           <div className={styles.stockInfo}>
             {singleProduct.stockStatus === "available"
               ? "Product In Stock"
@@ -378,7 +400,7 @@ function ProductOrderPanel({ singleProduct }) {
             }
           >
             {singleProduct.stockStatus !== "available" ||
-            Number(singleProduct.quantity) <= 0
+              Number(singleProduct.quantity) <= 0
               ? "Currently Unavailable"
               : "Continue To Order"}
           </button>

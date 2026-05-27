@@ -16,9 +16,9 @@ export const getMyProfile = async (req, res) => {
     const formattedUser = {
       ...user._doc,
       profileImage: user.profileImage || "",
-      businessProfile: {
-        ...user.businessProfile,
-      },
+      businessProfile: user.businessProfile?.companyName
+        ? user.businessProfile
+        : null,
     };
 
     if (user.businessProfile?.gstCertificate?.data) {
@@ -54,7 +54,7 @@ export const getMyProfile = async (req, res) => {
 export const getAllUsersForAdmin = async (req, res) => {
   try {
     // 1. Determine which role segment the frontend is actively viewing
-    let targetRole = "buyer"; 
+    let targetRole = "buyer";
     if (req.query.role === "sellers") targetRole = "seller";
     if (req.query.role === "admins") targetRole = "admin";
 
@@ -125,7 +125,7 @@ export const getAllUsersForAdmin = async (req, res) => {
     return res.status(200).json({
       success: true,
       users: formattedUsers,
-      totalCount: activeTotalCount, 
+      totalCount: activeTotalCount,
       totalPages: Math.ceil(activeTotalCount / limit) || 1,
       currentPage: page,
       globalCounts: {
@@ -198,9 +198,8 @@ export const addUserAddress = async (req, res) => {
       });
     }
 
-    const fullAddress = `${flatHouse}, ${areaStreet}${
-      landmark ? `, ${landmark}` : ""
-    }, ${city}, ${state} - ${pincode}`;
+    const fullAddress = `${flatHouse}, ${areaStreet}${landmark ? `, ${landmark}` : ""
+      }, ${city}, ${state} - ${pincode}`;
 
     const user = await User.findById(req.user._id);
 
