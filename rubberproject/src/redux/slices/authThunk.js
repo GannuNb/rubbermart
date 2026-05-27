@@ -31,7 +31,7 @@ export const signupThunk = (formData) => async (dispatch) => {
           password: formData.password,
           role: formData.role,
         }),
-      }
+      },
     );
 
     const data = await response.json();
@@ -72,7 +72,7 @@ export const googleSignupThunk = (googleUserData) => async (dispatch) => {
           profileImage: googleUserData.profileImage,
           role: googleUserData.role,
         }),
-      }
+      },
     );
 
     const data = await response.json();
@@ -114,7 +114,7 @@ export const loginThunk = (formData) => async (dispatch) => {
           email: formData.email,
           password: formData.password,
         }),
-      }
+      },
     );
 
     const data = await response.json();
@@ -150,9 +150,11 @@ export const googleLoginThunk = (googleUserData) => async (dispatch) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          fullName: googleUserData.fullName,
           email: googleUserData.email,
+          profileImage: googleUserData.profileImage,
         }),
-      }
+      },
     );
 
     const data = await response.json();

@@ -93,7 +93,9 @@ function Login() {
 
         dispatch(
           googleLoginThunk({
+            fullName: userData.name,
             email: userData.email,
+            profileImage: userData.picture,
           }),
         );
       } catch (error) {
