@@ -62,6 +62,11 @@ function Login() {
       const timer = setTimeout(() => {
         if (user.role === "admin") {
           navigate("/admin-dashboard");
+        } else if (
+          (user.role === "buyer" || user.role === "seller") &&
+          !user.businessProfileCompleted
+        ) {
+          navigate("/business-profile");
         } else if (user.role === "seller") {
           navigate("/seller-dashboard");
         } else {

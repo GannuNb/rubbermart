@@ -16,9 +16,9 @@ export const getMyProfile = async (req, res) => {
     const formattedUser = {
       ...user._doc,
       profileImage: user.profileImage || "",
-      businessProfile: user.businessProfile?.companyName
-        ? user.businessProfile
-        : null,
+      businessProfile: {
+        ...user.businessProfile,
+      },
     };
 
     if (user.businessProfile?.gstCertificate?.data) {

@@ -594,3 +594,58 @@
   transform: translateY(-2px);
   box-shadow: 0 10px 25px rgba(37, 99, 235, 0.2);
 }
+
+
+
+.noBusinessProfileBox {
+  padding: 60px 20px;
+  text-align: center;
+  background: #f8fafc;
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+}
+
+.noBusinessProfileIcon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background: #0f172a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 32px;
+}
+
+.noBusinessProfileTitle {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: #0f172a;
+}
+
+.noBusinessProfileText {
+  color: #64748b;
+  max-width: 600px;
+  margin: 0 auto 30px;
+  line-height: 1.7;
+  font-size: 15px;
+}
+
+.completeProfileBtn {
+  padding: 14px 28px;
+  background: #0f172a;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+  transition: 0.3s ease;
+}
+
+.completeProfileBtn:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}

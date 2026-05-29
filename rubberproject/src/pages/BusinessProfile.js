@@ -166,21 +166,30 @@ function BusinessProfile() {
     const validationErrors = {};
 
     // Validate mandatory textual fields
-    if (!formData.companyName.trim()) validationErrors.companyName = "Company name is required";
-    if (!formData.phoneNumber.trim()) validationErrors.phoneNumber = "Phone number is required";
+    if (!formData.companyName.trim())
+      validationErrors.companyName = "Company name is required";
+    if (!formData.phoneNumber.trim())
+      validationErrors.phoneNumber = "Phone number is required";
     if (!formData.email.trim()) validationErrors.email = "Email is required";
-    if (!formData.gstNumber.trim()) validationErrors.gstNumber = "GST number is required";
-    if (!formData.panNumber.trim()) validationErrors.panNumber = "PAN number is required";
-    if (!formData.billingAddress.trim()) validationErrors.billingAddress = "Billing address is required";
+    if (!formData.gstNumber.trim())
+      validationErrors.gstNumber = "GST number is required";
+    if (!formData.panNumber.trim())
+      validationErrors.panNumber = "PAN number is required";
+    if (!formData.billingAddress.trim())
+      validationErrors.billingAddress = "Billing address is required";
     if (!formData.sameAsBillingAddress && !formData.shippingAddress.trim()) {
       validationErrors.shippingAddress = "Shipping address is required";
     }
 
     // Validate mandatory file fields (PAN certificate validation removed here)
-    if (!formData.gstCertificate) validationErrors.gstCertificate = "GST certificate is required (Max 1 MB)";
+    if (!formData.gstCertificate)
+      validationErrors.gstCertificate =
+        "GST certificate is required (Max 1 MB)";
 
     // Validate Terms checkbox
-    if (!formData.agreeTerms) validationErrors.agreeTerms = "You must agree to the Terms and Conditions";
+    if (!formData.agreeTerms)
+      validationErrors.agreeTerms =
+        "You must agree to the Terms and Conditions";
 
     // If any mandatory error exists, update error state and halt submission
     if (Object.keys(validationErrors).length > 0) {
@@ -190,7 +199,8 @@ function BusinessProfile() {
         show: true,
         type: "warning",
         title: "Action Required",
-        message: "Some mandatory fields are missing or invalid. Please check your details and try again.",
+        message:
+          "Some mandatory fields are missing or invalid. Please check your details and try again.",
       });
       return;
     }
@@ -214,7 +224,7 @@ function BusinessProfile() {
     }
 
     submitData.append("gstCertificate", formData.gstCertificate);
-    
+
     // Append PAN certificate if it exists, otherwise send empty/null value smoothly
     if (formData.panCertificate) {
       submitData.append("panCertificate", formData.panCertificate);
@@ -229,7 +239,7 @@ function BusinessProfile() {
     fontSize: "12px",
     marginTop: "4px",
     display: "block",
-    fontWeight: "500"
+    fontWeight: "500",
   };
 
   return (
@@ -247,8 +257,12 @@ function BusinessProfile() {
 
             if (alertData.type === "success") {
               dispatch(resetBusinessProfileState());
-              dispatch(logoutUser());
-              navigate("/login");
+
+              if (user?.role === "seller") {
+                navigate("/seller-dashboard");
+              } else {
+                navigate("/");
+              }
             }
           }}
         />
@@ -264,7 +278,11 @@ function BusinessProfile() {
           Complete your business details to continue using Rubber Scrap Mart.
         </p>
 
-        <form onSubmit={handleSubmit} className={styles.businessProfileForm} noValidate>
+        <form
+          onSubmit={handleSubmit}
+          className={styles.businessProfileForm}
+          noValidate
+        >
           <div className={styles.formGroup}>
             <label>Company Name</label>
             <input
@@ -274,7 +292,9 @@ function BusinessProfile() {
               onChange={handleChange}
               placeholder="Enter company name"
             />
-            {errors.companyName && <span style={errorTextStyles}>{errors.companyName}</span>}
+            {errors.companyName && (
+              <span style={errorTextStyles}>{errors.companyName}</span>
+            )}
           </div>
 
           <div className={styles.formGrid}>
@@ -287,7 +307,9 @@ function BusinessProfile() {
                 onChange={handleChange}
                 placeholder="Enter phone number"
               />
-              {errors.phoneNumber && <span style={errorTextStyles}>{errors.phoneNumber}</span>}
+              {errors.phoneNumber && (
+                <span style={errorTextStyles}>{errors.phoneNumber}</span>
+              )}
             </div>
 
             <div className={styles.formGroup}>
@@ -299,7 +321,9 @@ function BusinessProfile() {
                 onChange={handleChange}
                 placeholder="Enter email"
               />
-              {errors.email && <span style={errorTextStyles}>{errors.email}</span>}
+              {errors.email && (
+                <span style={errorTextStyles}>{errors.email}</span>
+              )}
             </div>
           </div>
 
@@ -313,7 +337,9 @@ function BusinessProfile() {
                 onChange={handleChange}
                 placeholder="Enter GST number"
               />
-              {errors.gstNumber && <span style={errorTextStyles}>{errors.gstNumber}</span>}
+              {errors.gstNumber && (
+                <span style={errorTextStyles}>{errors.gstNumber}</span>
+              )}
             </div>
 
             <div className={styles.formGroup}>
@@ -325,7 +351,9 @@ function BusinessProfile() {
                 onChange={handleChange}
                 placeholder="Enter PAN number"
               />
-              {errors.panNumber && <span style={errorTextStyles}>{errors.panNumber}</span>}
+              {errors.panNumber && (
+                <span style={errorTextStyles}>{errors.panNumber}</span>
+              )}
             </div>
           </div>
 
@@ -337,7 +365,9 @@ function BusinessProfile() {
               onChange={handleChange}
               placeholder="Enter billing address"
             />
-            {errors.billingAddress && <span style={errorTextStyles}>{errors.billingAddress}</span>}
+            {errors.billingAddress && (
+              <span style={errorTextStyles}>{errors.billingAddress}</span>
+            )}
           </div>
 
           <div className={styles.formGroup}>
@@ -351,7 +381,10 @@ function BusinessProfile() {
                 onChange={handleChange}
                 className={styles.checkboxInput}
               />
-              <label htmlFor="sameAsBillingAddress" className={styles.checkboxLabel}>
+              <label
+                htmlFor="sameAsBillingAddress"
+                className={styles.checkboxLabel}
+              >
                 Same as Billing Address
               </label>
             </div>
@@ -362,7 +395,9 @@ function BusinessProfile() {
               placeholder="Enter shipping address"
               disabled={formData.sameAsBillingAddress}
             />
-            {errors.shippingAddress && <span style={errorTextStyles}>{errors.shippingAddress}</span>}
+            {errors.shippingAddress && (
+              <span style={errorTextStyles}>{errors.shippingAddress}</span>
+            )}
           </div>
 
           <div className={styles.formGrid}>
@@ -374,24 +409,50 @@ function BusinessProfile() {
                 accept=".jpg,.jpeg,.png,.pdf"
                 onChange={handleFileChange}
               />
-              {errors.gstCertificate && <span style={errorTextStyles}>{errors.gstCertificate}</span>}
+              {errors.gstCertificate && (
+                <span style={errorTextStyles}>{errors.gstCertificate}</span>
+              )}
             </div>
 
             <div className={styles.formGroup}>
-              <label>Upload PAN Certificate <span style={{ color: "#64748b", fontSize: "12px", fontWeight: "normal" }}>(Optional)</span></label>
+              <label>
+                Upload PAN Certificate{" "}
+                <span
+                  style={{
+                    color: "#64748b",
+                    fontSize: "12px",
+                    fontWeight: "normal",
+                  }}
+                >
+                  (Optional)
+                </span>
+              </label>
               <input
                 type="file"
                 name="panCertificate"
                 accept=".jpg,.jpeg,.png,.pdf"
                 onChange={handleFileChange}
               />
-              {errors.panCertificate && <span style={errorTextStyles}>{errors.panCertificate}</span>}
+              {errors.panCertificate && (
+                <span style={errorTextStyles}>{errors.panCertificate}</span>
+              )}
             </div>
           </div>
 
           {user?.role === "buyer" && (
             <div className={styles.formGroup}>
-              <label>Interested Products <span style={{ color: "#64748b", fontSize: "12px", fontWeight: "normal" }}>(Optional)</span></label>
+              <label>
+                Interested Products{" "}
+                <span
+                  style={{
+                    color: "#64748b",
+                    fontSize: "12px",
+                    fontWeight: "normal",
+                  }}
+                >
+                  (Optional)
+                </span>
+              </label>
               <div className={styles.productsGrid}>
                 {interestedProductsList.map((product) => (
                   <div key={product} className={styles.productCheckbox}>
@@ -417,7 +478,9 @@ function BusinessProfile() {
               />
               <label>I agree to the Terms and Conditions</label>
             </div>
-            {errors.agreeTerms && <span style={errorTextStyles}>{errors.agreeTerms}</span>}
+            {errors.agreeTerms && (
+              <span style={errorTextStyles}>{errors.agreeTerms}</span>
+            )}
 
             <p>
               By Creating Business Profile, you agree to our Terms and
@@ -427,7 +490,13 @@ function BusinessProfile() {
             <button
               type="button"
               className={styles.viewMoreBtn}
-              onClick={() => window.open("/termsandconditions", "_blank", "noopener,noreferrer")}
+              onClick={() =>
+                window.open(
+                  "/termsandconditions",
+                  "_blank",
+                  "noopener,noreferrer",
+                )
+              }
             >
               View More
             </button>

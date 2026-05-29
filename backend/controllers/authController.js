@@ -263,6 +263,8 @@ export const googleLogin = async (req, res) => {
       email: normalizedEmail,
     });
 
+    let message = "Google login successful";
+
     if (!user) {
       user = await User.create({
         fullName,
@@ -272,6 +274,8 @@ export const googleLogin = async (req, res) => {
         isVerified: true,
         role: "buyer",
       });
+
+      message = "Account created and Google login successful";
     }
 
     if (user.authProvider !== "google") {
@@ -295,7 +299,7 @@ export const googleLogin = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: "Google login successful",
+      message,
       token,
       user: {
         id: user._id,

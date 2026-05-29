@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
   FaUserCircle,
@@ -21,7 +22,6 @@ import CustomAlert from "../../components/alert/CustomAlert";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProfileThunk } from "../../redux/slices/profileThunk";
 import styles from "../../styles/Buyer/BuyerProfile.module.css";
-import { useNavigate } from "react-router-dom";
 
 const productOptions = [
   "Baled Tyres PCR",
@@ -46,6 +46,7 @@ function BuyerProfile() {
     message: "",
   });
 
+  const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
 
   const [editMode, setEditMode] = useState(false);
@@ -174,9 +175,7 @@ function BuyerProfile() {
         show: true,
         type: "error",
         title: "Update Failed",
-        message:
-          error?.response?.data?.message ||
-          "Failed to update profile",
+        message: error?.response?.data?.message || "Failed to update profile",
       });
     } finally {
       setLoading(false);
@@ -219,10 +218,8 @@ function BuyerProfile() {
       });
     }
   };
-  const navigate = useNavigate();
 
   return (
-
     <div className={styles.profilePage}>
       {alert.show && (
         <CustomAlert
@@ -392,243 +389,211 @@ function BuyerProfile() {
 
         {/* BUSINESS INFORMATION */}
 
-        {!user?.businessProfile ||
-          Object.keys(user?.businessProfile || {}).length === 0 ? (
-          <div className={styles.section}>
-            <div className={styles.sectionTitle}>
-              <FaBuilding />
-              <h2>Business Information</h2>
-            </div>
+        <div className={styles.section}>
+          <div className={styles.sectionTitle}>
+            <FaBuilding />
+            <h2>Business Information</h2>
+          </div>
 
-            <div className={styles.noBusinessProfile}>
-              <FaBuilding className={styles.noBusinessIcon} />
+          {!user?.businessProfileCompleted ? (
+            <div className={styles.noBusinessProfileBox}>
+              <div className={styles.noBusinessProfileIcon}>
+                <FaBuilding />
+              </div>
 
-              <h3>No Business Profile Found</h3>
+              <h3 className={styles.noBusinessProfileTitle}>
+                No Business Profile Added
+              </h3>
 
-              <p>
-                Create your business profile to access buyer and seller features.
+              <p className={styles.noBusinessProfileText}>
+                Complete your business profile to unlock product exploration,
+                shipping management, interested products,
+                and all marketplace features.
               </p>
 
               <button
-                className={styles.createBusinessBtn}
                 onClick={() => navigate("/business-profile")}
+                className={styles.completeProfileBtn}
               >
-                Create Business Profile
+                Complete Business Profile
               </button>
             </div>
-          </div>
-        ) : (
-          <div className={styles.section}>
-            <div className={styles.sectionTitle}>
-              <FaBuilding />
-              <h2>Business Information</h2>
-            </div>
-
-            <div className={styles.grid}>
-              <div className={styles.card}>
-                <span>Company Name</span>
-
-                <h4>{businessProfile.companyName}</h4>
-
-                <FaBuilding className={styles.cardIcon} />
-              </div>
-
-              <div className={styles.card}>
-                <span>Phone Number</span>
-
-                {editMode ? (
-                  <input
-                    type="text"
-                    name="phoneNumber"
-                    value={formData.phoneNumber}
-                    onChange={handleChange}
-                  />
-                ) : (
-                  <h4>{businessProfile.phoneNumber}</h4>
-                )}
-
-                <FaPhoneAlt className={styles.cardIcon} />
-              </div>
-
-              <div className={styles.card}>
-                <span>GST Number</span>
-
-                <h4>{businessProfile.gstNumber}</h4>
-
-                <FaIdCard className={styles.cardIcon} />
-              </div>
-
-              <div className={styles.card}>
-                <span>PAN Number</span>
-
-                <h4>{businessProfile.panNumber}</h4>
-
-                <FaIdCard className={styles.cardIcon} />
-              </div>
-
-              <div className={styles.card}>
-                <span>Billing Address</span>
-
-                {editMode ? (
-                  <textarea
-                    name="billingAddress"
-                    value={formData.billingAddress}
-                    onChange={handleChange}
-                  />
-                ) : (
-                  <h4>{businessProfile.billingAddress}</h4>
-                )}
-
-                <FaHome className={styles.cardIcon} />
-              </div>
-
-              <div className={styles.card}>
-                <span>Shipping Address</span>
-
-                {editMode ? (
-                  <textarea
-                    name="shippingAddress"
-                    value={formData.shippingAddress}
-                    onChange={handleChange}
-                  />
-                ) : (
-                  <h4>{businessProfile.shippingAddress}</h4>
-                )}
-
-                <FaHome className={styles.cardIcon} />
-              </div>
-            </div>
-          </div>
-        )}
-        {/* INTERESTED PRODUCTS */}
-
-        <div className={styles.section}>
-          <div className={styles.sectionTitle}>
-            <FaFileAlt />
-            <h2>Interested Products</h2>
-          </div>
-
-          {editMode ? (
-            <div className={styles.checkboxGrid}>
-              {productOptions.map((product) => (
-                <label key={product} className={styles.checkboxLabel}>
-                  <input
-                    type="checkbox"
-                    checked={formData.interestedProducts.includes(product)}
-                    onChange={() => handleProductCheckbox(product)}
-                  />
-
-                  <span>{product}</span>
-                </label>
-              ))}
-            </div>
           ) : (
-            <div className={styles.productsWrapper}>
-              {businessProfile.interestedProducts?.length > 0 ? (
-                businessProfile.interestedProducts.map((product, index) => (
-                  <span key={index} className={styles.productTag}>
-                    {product}
-                  </span>
-                ))
-              ) : (
-                <p className={styles.emptyText}>No interested products added</p>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* SAVED ADDRESSES */}
-
-        <div className={styles.section}>
-          <div className={styles.sectionTitle}>
-            <FaMapMarkerAlt />
-            <h2>Saved Addresses</h2>
-          </div>
-
-          {addresses.length > 0 ? (
-            <div className={styles.addressGrid}>
-              {addresses.map((address, index) => (
-                <div key={index} className={styles.addressCard}>
-                  <div className={styles.addressTop}>
-                    <FaHome />
-
-                    <h3>{address.fullName || "Address"}</h3>
-                  </div>
-
-                  <p>
-                    {address.flatHouse}, {address.areaStreet}
-                  </p>
-
-                  <p>{address.landmark}</p>
-
-                  <p>
-                    {address.city}, {address.state}
-                  </p>
-
-                  <p>{address.pincode}</p>
-
-                  <span>Mobile: {address.mobileNumber}</span>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className={styles.emptyText}>No saved addresses found</p>
-          )}
-        </div>
-
-        {/* DOCUMENTS */}
-
-        {(businessProfile.gstCertificate?.file ||
-          businessProfile.panCertificate?.file) && (
-            <div className={styles.section}>
-              <div className={styles.sectionTitle}>
-                <FaFileAlt />
-                <h2>Uploaded Documents</h2>
-              </div>
-
+            <>
               <div className={styles.grid}>
-                {businessProfile.gstCertificate?.file && (
-                  <div className={styles.documentCard}>
-                    <div>
-                      <h4>GST Certificate</h4>
+                <div className={styles.card}>
+                  <span>Company Name</span>
 
-                      <p>Protected Document</p>
-                    </div>
+                  <h4>{businessProfile.companyName}</h4>
 
-                    <button
-                      type="button"
-                      className={styles.viewDocumentBtn}
-                      onClick={() =>
-                        openDocument(businessProfile.gstCertificate.file)
-                      }
-                    >
-                      View
-                    </button>
+                  <FaBuilding className={styles.cardIcon} />
+                </div>
+
+                <div className={styles.card}>
+                  <span>Phone Number</span>
+
+                  {editMode ? (
+                    <input
+                      type="text"
+                      name="phoneNumber"
+                      value={formData.phoneNumber}
+                      onChange={handleChange}
+                    />
+                  ) : (
+                    <h4>{businessProfile.phoneNumber}</h4>
+                  )}
+
+                  <FaPhoneAlt className={styles.cardIcon} />
+                </div>
+
+                <div className={styles.card}>
+                  <span>GST Number</span>
+
+                  <h4>{businessProfile.gstNumber}</h4>
+
+                  <FaIdCard className={styles.cardIcon} />
+                </div>
+
+                <div className={styles.card}>
+                  <span>PAN Number</span>
+
+                  <h4>{businessProfile.panNumber}</h4>
+
+                  <FaIdCard className={styles.cardIcon} />
+                </div>
+
+                <div className={styles.card}>
+                  <span>Billing Address</span>
+
+                  {editMode ? (
+                    <textarea
+                      name="billingAddress"
+                      value={formData.billingAddress}
+                      onChange={handleChange}
+                    />
+                  ) : (
+                    <h4>{businessProfile.billingAddress}</h4>
+                  )}
+
+                  <FaHome className={styles.cardIcon} />
+                </div>
+
+                <div className={styles.card}>
+                  <span>Shipping Address</span>
+
+                  {editMode ? (
+                    <textarea
+                      name="shippingAddress"
+                      value={formData.shippingAddress}
+                      onChange={handleChange}
+                    />
+                  ) : (
+                    <h4>{businessProfile.shippingAddress}</h4>
+                  )}
+
+                  <FaHome className={styles.cardIcon} />
+                </div>
+              </div>
+
+              {/* INTERESTED PRODUCTS */}
+
+              <div className={styles.section}>
+                <div className={styles.sectionTitle}>
+                  <FaFileAlt />
+                  <h2>Interested Products</h2>
+                </div>
+
+                {editMode ? (
+                  <div className={styles.checkboxGrid}>
+                    {productOptions.map((product) => (
+                      <label key={product} className={styles.checkboxLabel}>
+                        <input
+                          type="checkbox"
+                          checked={formData.interestedProducts.includes(
+                            product,
+                          )}
+                          onChange={() => handleProductCheckbox(product)}
+                        />
+
+                        <span>{product}</span>
+                      </label>
+                    ))}
                   </div>
-                )}
-
-                {businessProfile.panCertificate?.file && (
-                  <div className={styles.documentCard}>
-                    <div>
-                      <h4>PAN Certificate</h4>
-
-                      <p>Protected Document</p>
-                    </div>
-
-                    <button
-                      type="button"
-                      className={styles.viewDocumentBtn}
-                      onClick={() =>
-                        openDocument(businessProfile.panCertificate.file)
-                      }
-                    >
-                      View
-                    </button>
+                ) : (
+                  <div className={styles.productsWrapper}>
+                    {businessProfile.interestedProducts?.length > 0 ? (
+                      businessProfile.interestedProducts.map(
+                        (product, index) => (
+                          <span key={index} className={styles.productTag}>
+                            {product}
+                          </span>
+                        ),
+                      )
+                    ) : (
+                      <p className={styles.emptyText}>
+                        No interested products added
+                      </p>
+                    )}
                   </div>
                 )}
               </div>
-            </div>
+
+              {/* DOCUMENTS */}
+
+              {(businessProfile.gstCertificate?.file ||
+                businessProfile.panCertificate?.file) && (
+                <div className={styles.section}>
+                  <div className={styles.sectionTitle}>
+                    <FaFileAlt />
+                    <h2>Uploaded Documents</h2>
+                  </div>
+
+                  <div className={styles.grid}>
+                    {businessProfile.gstCertificate?.file && (
+                      <div className={styles.documentCard}>
+                        <div>
+                          <h4>GST Certificate</h4>
+
+                          <p>Protected Document</p>
+                        </div>
+
+                        <button
+                          type="button"
+                          className={styles.viewDocumentBtn}
+                          onClick={() =>
+                            openDocument(businessProfile.gstCertificate.file)
+                          }
+                        >
+                          View
+                        </button>
+                      </div>
+                    )}
+
+                    {businessProfile.panCertificate?.file && (
+                      <div className={styles.documentCard}>
+                        <div>
+                          <h4>PAN Certificate</h4>
+
+                          <p>Protected Document</p>
+                        </div>
+
+                        <button
+                          type="button"
+                          className={styles.viewDocumentBtn}
+                          onClick={() =>
+                            openDocument(businessProfile.panCertificate.file)
+                          }
+                        >
+                          View
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </>
           )}
+        </div>
       </div>
     </div>
   );
