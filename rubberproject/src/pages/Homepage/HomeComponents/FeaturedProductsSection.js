@@ -265,7 +265,7 @@ function FeaturedProductsSection() {
             </div>
 
             <div>
-              <h5>Global Shipping</h5>
+              <h5>Nation-wide Shipping</h5>
 
               <p>Fast & reliable delivery country wide</p>
             </div>
