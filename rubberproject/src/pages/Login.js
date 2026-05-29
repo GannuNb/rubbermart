@@ -8,6 +8,7 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useDispatch, useSelector } from "react-redux";
 import { loginThunk, googleLoginThunk } from "../redux/slices/authThunk";
+import { clearAuthMessages } from "../redux/slices/authSlice";
 import CustomAlert from "../components/alert/CustomAlert";
 
 function Login() {
@@ -147,12 +148,14 @@ function Login() {
           type={alertData.type}
           title={alertData.title}
           message={alertData.message}
-          onClose={() =>
+          onClose={() => {
             setAlertData((prev) => ({
               ...prev,
               show: false,
-            }))
-          }
+            }));
+
+            dispatch(clearAuthMessages());
+          }}
         />
       )}
 

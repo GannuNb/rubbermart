@@ -23,6 +23,7 @@ import styles from "./FeaturedProductsSection.module.css";
 import bgImage from "../../../assests/fp7.png";
 
 import tyreImg from "../../../assests/categoryimages/Tyre.jpeg";
+import { fetchProfileThunk } from "../../../redux/slices/profileThunk";
 
 function FeaturedProductsSection() {
   const scrollRef = useRef(null);
@@ -34,6 +35,8 @@ function FeaturedProductsSection() {
   const { featuredProducts, featuredProductsLoading } = useSelector(
     (state) => state.buyerProducts,
   );
+
+  const { user } = useSelector((state) => state.auth);
 
   /* =====================================
       FETCH PRODUCTS
@@ -60,6 +63,12 @@ function FeaturedProductsSection() {
       });
     }
   };
+
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      dispatch(fetchProfileThunk());
+    }
+  }, [dispatch]);
 
   return (
     <section className={styles.sectionWrapper}>
@@ -195,7 +204,11 @@ function FeaturedProductsSection() {
 
                       if (!token) {
                         navigate("/login");
+                        return;
+                      }
 
+                      if (user && !user.businessProfileCompleted) {
+                        navigate("/business-profile");
                         return;
                       }
 

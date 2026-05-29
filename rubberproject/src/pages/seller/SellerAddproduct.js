@@ -11,9 +11,14 @@ import addstyles from "../../styles/Seller/SellerAddProduct.module.css";
 import CustomAlert from "../../components/alert/CustomAlert";
 
 import { resetProductState } from "../../redux/slices/sellerProductSlice";
+import { useNavigate } from "react-router-dom";
+import { fetchProfileThunk } from "../../redux/slices/profileThunk";
 
 function SellerAddproduct() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { user } = useSelector((state) => state.auth);
 
   const { addProductLoading, addProductError, addProductSuccess } = useSelector(
     (state) => state.sellerProduct,
@@ -84,6 +89,10 @@ function SellerAddproduct() {
 
     "Rubber Crumb Steel": "72042900",
   };
+
+  useEffect(() => {
+    dispatch(fetchProfileThunk());
+  }, [dispatch]);
 
   useEffect(() => {
     if (addProductSuccess) {
@@ -247,6 +256,40 @@ function SellerAddproduct() {
     dispatch(addProductThunk(data));
   };
 
+  if (
+    user &&
+    user.role === "seller" &&
+    user.businessProfileCompleted === false
+  ) {
+    return (
+      <div className={addstyles.container}>
+        <div
+          style={{
+            textAlign: "center",
+            padding: "60px 20px",
+          }}
+        >
+          <h2>Business Profile Required</h2>
+
+          <p
+            style={{
+              marginTop: "10px",
+              marginBottom: "20px",
+            }}
+          >
+            Please complete your business profile before adding products.
+          </p>
+
+          <button
+            className={addstyles.button}
+            onClick={() => navigate("/business-profile")}
+          >
+            Complete Business Profile
+          </button>
+        </div>
+      </div>
+    );
+  }
   return (
     <>
       {alertData.show && (

@@ -38,6 +38,10 @@ function BusinessProfile() {
   }, [navigate]);
 
   useEffect(() => {
+  dispatch(resetBusinessProfileState());
+}, [dispatch]);
+
+  useEffect(() => {
     if (createBusinessProfileSuccessMessage) {
       setAlertData({
         show: true,

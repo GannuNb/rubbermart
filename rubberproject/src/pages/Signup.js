@@ -8,9 +8,9 @@ import { useGoogleLogin } from "@react-oauth/google";
 import { useDispatch, useSelector } from "react-redux";
 import { signupThunk, googleSignupThunk } from "../redux/slices/authThunk";
 import CustomAlert from "../components/alert/CustomAlert";
+import { clearAuthMessages } from "../redux/slices/authSlice";
 
 function Signup() {
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -21,11 +21,11 @@ function Signup() {
 
   const queryParams = new URLSearchParams(location.search);
 
-const roleFromUrl = queryParams.get("role");
+  const roleFromUrl = queryParams.get("role");
 
-const [role, setRole] = useState(
-  roleFromUrl === "seller" ? "seller" : "buyer"
-);
+  const [role, setRole] = useState(
+    roleFromUrl === "seller" ? "seller" : "buyer",
+  );
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -46,12 +46,12 @@ const [role, setRole] = useState(
   });
 
   useEffect(() => {
-  if (roleFromUrl === "seller") {
-    setRole("seller");
-  } else {
-    setRole("buyer");
-  }
-}, [roleFromUrl]);
+    if (roleFromUrl === "seller") {
+      setRole("seller");
+    } else {
+      setRole("buyer");
+    }
+  }, [roleFromUrl]);
 
   useEffect(() => {
     if (signupSuccessMessage) {
@@ -172,6 +172,8 @@ const [role, setRole] = useState(
             }));
 
             if (alertData.type === "success") {
+              dispatch(clearAuthMessages());
+
               navigate("/business-profile");
             }
           }}

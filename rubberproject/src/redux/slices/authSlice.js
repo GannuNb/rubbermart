@@ -70,6 +70,12 @@ const authSlice = createSlice({
     setLoginSuccessMessage: (state, action) => {
       state.loginSuccessMessage = action.payload;
     },
+    clearAuthMessages: (state) => {
+      state.signupError = null;
+      state.signupSuccessMessage = null;
+      state.loginError = null;
+      state.loginSuccessMessage = null;
+    },
 
     setUser: (state, action) => {
       state.user = action.payload;
@@ -103,6 +109,8 @@ export const {
   setLoginError,
   setLoginSuccessMessage,
 
+  clearAuthMessages,
+  
   setUser,
   setToken,
   logoutUser,
