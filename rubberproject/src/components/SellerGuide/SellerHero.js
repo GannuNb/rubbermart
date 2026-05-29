@@ -40,7 +40,7 @@ const SellerHero = ({ onTabClick, refs }) => {
           
           <p className={styles.desc}>
             Everything you need to list your scrap, manage inventory, and get 
-            paid securely. Join hundreds of verified suppliers reaching global 
+            paid securely. Join hundreds of verified suppliers reaching Country wide
             buyers on Rubberscrapmart.
           </p>
 

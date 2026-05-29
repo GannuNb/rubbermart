@@ -22,7 +22,7 @@ function HowItWorksSection() {
     {
       icon: <UserPlus size={22} />,
       title: "Get Started",
-      desc: "Create your profile and access global rubber markets as a buyer or seller.",
+      desc: "Create your profile and start trading with trusted rubber businesses across India.",
       theme: "purple",
     },
 
@@ -85,11 +85,10 @@ function HowItWorksSection() {
               <div className={styles.stepCard}>
                 <div
                   className={`${styles.iconBox}
-                  ${
-                    step.theme === "green"
+                  ${step.theme === "green"
                       ? styles.greenIcon
                       : styles.purpleIcon
-                  }`}
+                    }`}
                 >
                   {step.icon}
                 </div>
@@ -98,11 +97,10 @@ function HowItWorksSection() {
 
                 <div
                   className={`${styles.smallLine}
-                  ${
-                    step.theme === "green"
+                  ${step.theme === "green"
                       ? styles.greenLine
                       : styles.purpleLine
-                  }`}
+                    }`}
                 ></div>
 
                 <p>{step.desc}</p>
@@ -169,7 +167,7 @@ function HowItWorksSection() {
               <div className={styles.guideText}>
                 <h5 className={styles.greenText}>Seller Guide</h5>
 
-                <p>Learn how to sell and grow your business globally.</p>
+                <p>Learn how to expand your rubber business and reach buyers across India.</p>
               </div>
             </div>
 

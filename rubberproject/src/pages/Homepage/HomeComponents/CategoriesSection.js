@@ -117,8 +117,7 @@ function CategoriesSection() {
                 </h2>
 
                 <p className={styles.subText}>
-                  Browse high-quality rubber derived products from verified
-                  global suppliers.
+                  Browse high-quality rubber derived products from verified suppliers across India.
                 </p>
               </div>
 

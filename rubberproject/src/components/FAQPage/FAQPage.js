@@ -70,7 +70,7 @@ const FAQPage = () => {
             num: "07",
             category: "Buying & Orders",
             question: "Can I track my order?",
-            answer: "Yes, every transaction automatically outputs milestone status trackers linked directly to global carrier logistics numbers or bulk container waybills visible directly on your dashboard."
+            answer: "Yes, every transaction automatically outputs milestone status trackers linked directly to Nation wide carrier logistics numbers or bulk container waybills visible directly on your dashboard."
         },
         {
             id: 8,
