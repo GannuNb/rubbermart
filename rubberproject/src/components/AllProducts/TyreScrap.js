@@ -30,61 +30,61 @@ const TyreScrap = () => {
     ];
 
     const allProducts = [
-        { 
-            id: 1, 
-            name: "Baled Tyres PCR", 
-            category: "Baled", 
-            image: baledtyrespcr, 
-            featured: false, 
-            desc: "Passenger Car Radial, high-density baling for export and clean processing." 
+        {
+            id: 1,
+            name: "Baled Tyres PCR",
+            category: "Baled",
+            image: baledtyrespcr,
+            featured: false,
+            desc: "Passenger Car Radial, high-density baling for export and clean processing."
         },
-        { 
-            id: 2, 
-            name: "Baled Tyres TBR", 
-            category: "Baled", 
-            image: baledtyrestbr, 
-            featured: true, 
-            desc: "Truck/Bus Radial. Maximum wire and rubber yield for Pyrolysis plants." 
+        {
+            id: 2,
+            name: "Baled Tyres TBR",
+            category: "Baled",
+            image: baledtyrestbr,
+            featured: true,
+            desc: "Truck/Bus Radial. Maximum wire and rubber yield for Pyrolysis plants."
         },
-        { 
-            id: 3, 
-            name: "Three Piece PCR", 
-            category: "Cut", 
-            image: threepiecepcr, 
-            featured: false, 
-            desc: "Car tyres cut into three sections for optimized reactor loading and storage." 
+        {
+            id: 3,
+            name: "Three Piece PCR",
+            category: "Cut",
+            image: threepiecepcr,
+            featured: false,
+            desc: "Car tyres cut into three sections for optimized reactor loading and storage."
         },
-        { 
-            id: 4, 
-            name: "Three Piece TBR", 
-            category: "Cut", 
-            image: threepiecetbr, 
-            featured: true, 
-            desc: "Heavy-duty truck tyres cut for optimized shipping weight and easy handling." 
+        {
+            id: 4,
+            name: "Three Piece TBR",
+            category: "Cut",
+            image: threepiecetbr,
+            featured: true,
+            desc: "Heavy-duty truck tyres cut for optimized shipping weight and easy handling."
         },
-        { 
-            id: 5, 
-            name: "Tyre Shreds", 
-            category: "Processed", 
-            image: shreds, 
-            featured: false, 
-            desc: "TDF-ready shredded rubber pieces optimized for industrial furnace fuel." 
+        {
+            id: 5,
+            name: "Tyre Shreds",
+            category: "Processed",
+            image: shreds,
+            featured: false,
+            desc: "TDF-ready shredded rubber pieces optimized for industrial furnace fuel."
         },
-        { 
-            id: 6, 
-            name: "Rubber Granules/Crumb", 
-            category: "Processed", 
-            image: rubbergranules, 
-            featured: true, 
-            desc: "99.9% pure wire-free crumb rubber granules for manufacturing and tracks." 
+        {
+            id: 6,
+            name: "Rubber Granules/Crumb",
+            category: "Processed",
+            image: rubbergranules,
+            featured: true,
+            desc: "99.9% pure wire-free crumb rubber granules for manufacturing and tracks."
         },
-        { 
-            id: 7, 
-            name: "PCR Mulch", 
-            category: "Processed", 
-            image: mulch, 
-            featured: false, 
-            desc: "Safety-grade rubber mulch ideal for landscaping and playground surfaces." 
+        {
+            id: 7,
+            name: "PCR Mulch",
+            category: "Processed",
+            image: mulch,
+            featured: false,
+            desc: "Safety-grade rubber mulch ideal for landscaping and playground surfaces."
         }
     ];
 
@@ -106,7 +106,7 @@ const TyreScrap = () => {
 
                             <p>
                                 Powering the future of alternative fuels and recycled manufacturing.
-                                Access a global network of high-quality waste tyre products tailored
+                                Access a Pan India network of high-quality waste tyre products tailored
                                 to your specific industrial requirements.
                             </p>
 
@@ -196,7 +196,7 @@ const TyreScrap = () => {
                                     <p>{product.desc}</p>
                                     <div className={styles.cardFooter}>
                                         <Link to="/our-products" className={styles.quoteBtn}>
-                                             View More <FiArrowRight />
+                                            View More <FiArrowRight />
                                         </Link>
                                     </div>
                                 </div>
@@ -222,7 +222,7 @@ const TyreScrap = () => {
                                 <GiRecycle className={styles.featureIcon} />
                                 <div>
                                     <h4>Sustainable Logistics</h4>
-                                    <p>Certified global shipping and eco-friendly waste management.</p>
+                                    <p>Reliable nationwide shipping and eco-friendly waste management.</p>
                                 </div>
                             </div>
                         </div>

@@ -97,7 +97,7 @@ function AdminUsers() {
       <div className={styles.adminUsersHeader}>
         <h1 className={styles.adminUsersTitle}>Users Management</h1>
         <p className={styles.adminUsersSubtitle}>
-          View platform administrators, registered buyers, and active global sellers
+          View platform administrators, registered buyers, and active sellers
         </p>
       </div>
 

@@ -99,7 +99,7 @@ export default function TopHero() {
           transition={{ delay: 0.4 }}
           className="text-xl md:text-2xl text-gray-400 max-w-2xl mb-10 font-medium"
         >
-          The premier B2B marketplace connecting the global <br className="hidden md:block" /> recycled rubber supply chain.
+          The premier B2B marketplace connecting the Nation Wide <br className="hidden md:block" /> recycled rubber supply chain.
         </motion.p>
 
         <motion.button 

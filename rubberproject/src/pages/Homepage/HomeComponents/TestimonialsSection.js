@@ -58,9 +58,8 @@ const TestimonialsSection = () => {
   return (
     <section
       ref={sectionRef}
-      className={`${styles.testimonialSection} ${
-        isVisible ? styles.animateIn : ""
-      }`}
+      className={`${styles.testimonialSection} ${isVisible ? styles.animateIn : ""
+        }`}
     >
 
       {/* BACKGROUND GLOW */}
@@ -84,8 +83,7 @@ const TestimonialsSection = () => {
           </h2>
 
           <p className={styles.subtitle}>
-            Real experiences from verified buyers and sellers
-            using RubberScrapMart across global markets.
+            Real experiences from verified buyers and sellers using RubberScrapMart across India.
           </p>
 
         </div>

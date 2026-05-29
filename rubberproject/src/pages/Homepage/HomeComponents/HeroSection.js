@@ -101,7 +101,7 @@ const HeroSection = () => {
     {
       icon: <Globe size={20} />,
       value: 50,
-      label: "Countries",
+      label: "Cities",
       color: "#6366f1",
     },
   ];
@@ -133,8 +133,7 @@ const HeroSection = () => {
             </h1>
 
             <p className={styles.subText}>
-              The Premier B2B marketplace connecting the global recycled rubber
-              supply chain.
+              The Premier B2B marketplace connecting the recycled rubber supply chain.
             </p>
 
             {/* BUTTONS */}
