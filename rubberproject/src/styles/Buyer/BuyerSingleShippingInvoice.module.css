@@ -97,14 +97,11 @@
   border: 1px solid #ddd6fe;
   border-radius: 12px;
   padding: 12px 18px;
-
   display: flex;
   gap: 6px;
   align-items: center;
-
   font-size: 14px;
   font-weight: 600;
-
   white-space: nowrap; /* keep inline */
 }
 
@@ -145,7 +142,6 @@
   align-items: center;
   gap: 14px;
   min-height: 72px;
-
   min-width: 0; /* ⭐ prevents breaking */
 }
 
@@ -509,7 +505,6 @@
   font-size: 16px;
   font-weight: 700;
   color: #111827;
-
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -798,7 +793,6 @@
   font-weight: 700;
   color: #111827;
   margin: 0 0 4px;
-
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -817,11 +811,9 @@
 
 .centerCell {
   text-align: center;
-
   font-size: 14px;
   font-weight: 600;
   color: #374151;
-
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -950,7 +942,6 @@
     minmax(160px, 1.2fr)
     minmax(120px, 1fr)
     minmax(200px, 1.5fr);
-
   min-width: 520px; /* ⭐ enables horizontal scroll */
   align-items: center;
 }
@@ -1013,12 +1004,10 @@
   cursor: pointer;
   font-size: 13px;
   font-weight: 700;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-
   transition: 0.2s;
 }
 
@@ -1062,7 +1051,6 @@
   cursor: pointer;
   font-size: 13px;
   font-weight: 700;
-
   display: flex;
   align-items: center;
   justify-content: center;

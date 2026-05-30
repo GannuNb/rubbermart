@@ -61,15 +61,11 @@ h1{
   width: 100%;
   height: 100%;
   border-radius: 50%;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   background: linear-gradient(135deg, #7b2ff7, #5f19dd);
-
   color: white;
-
   font-size: 18px;
   font-weight: 700;
 }
@@ -239,24 +235,17 @@ h1{
 }
 .cancelledShippingBtn {
   border: 1px solid #fca5a5;
-
   color: #dc2626;
-
   background: #fef2f2;
-
   padding: 8px 14px;
-
   border-radius: 6px;
-
   font-weight: 600;
-
   cursor: not-allowed;
 }
 
 
 .cancelledProgressFill {
   height: 100%;
-
   background: linear-gradient(
     90deg,
     #ef4444,
@@ -266,21 +255,13 @@ h1{
 
 .cancelledProgressText {
   margin-top: 8px;
-
   text-align: center;
-
   color: #dc2626;
-
   font-size: 13px;
-
   font-weight: 700;
 }
 /* =========================
    PROGRESS
-========================= */
-
-/* =========================
-   PROGRESS (FINAL FIX)
 ========================= */
 
 .progressSection {

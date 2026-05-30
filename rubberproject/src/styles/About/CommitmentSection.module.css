@@ -4,13 +4,10 @@
   position: relative;
   width: 100%;
   padding: 85px 0;
-  
-  /* Background properties */
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
   background-attachment: absolute;
-  
   overflow: hidden;
 }
 

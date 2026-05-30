@@ -4,25 +4,15 @@
   position: relative;
   width: 100%;
   padding: 85px 0;
-  
-  /* Background properties */
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  
-  /* 'fixed' creates a high-end parallax effect; change to 'scroll' if you want it static */
   background-attachment: absolute; 
-  
   overflow: hidden;
   display: flex;
   align-items: center;
 }
 
-/* 
-   ADJUSTED OVERLAY 
-   Decreased alpha to 0.75 so the image is more visible than before.
-   If it's still too transparent, try 0.50 or 0.40.
-*/
 .overlay {
   position: absolute;
   inset: 0;

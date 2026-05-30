@@ -17,13 +17,9 @@
 .ctaWrapper {
   position: relative;
   overflow: hidden;
-
   background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%);
-
   border-radius: 34px;
-
   padding: 55px 60px;
-
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -34,30 +30,22 @@
 
 .ctaWrapper::before {
   content: "";
-
   position: absolute;
   width: 320px;
   height: 320px;
-
   border-radius: 50%;
-
   background: rgba(255, 255, 255, 0.08);
-
   top: -140px;
   right: -120px;
 }
 
 .ctaWrapper::after {
   content: "";
-
   position: absolute;
   width: 220px;
   height: 220px;
-
   border-radius: 50%;
-
   background: rgba(255, 255, 255, 0.06);
-
   bottom: -100px;
   left: -80px;
 }
@@ -67,7 +55,6 @@
 .leftContent {
   position: relative;
   z-index: 2;
-
   max-width: 760px;
 }
 
@@ -75,26 +62,17 @@
 
 .badge {
   width: fit-content;
-
   background: rgba(255, 255, 255, 0.14);
-
   border: 1px solid rgba(255, 255, 255, 0.15);
-
   color: #ffffff;
-
   padding: 10px 16px;
-
   border-radius: 999px;
-
   display: flex;
   align-items: center;
   gap: 8px;
-
   font-size: 13px;
   font-weight: 700;
-
   margin-bottom: 22px;
-
   backdrop-filter: blur(10px);
 }
 
@@ -105,9 +83,7 @@
   line-height: 1.18;
   font-weight: 800;
   color: #ffffff;
-
   margin-bottom: 18px;
-
   letter-spacing: -1.5px;
 }
 
@@ -116,13 +92,10 @@
 }
 
 /* TEXT */
-
 .leftContent p {
   max-width: 700px;
-
   font-size: 16px;
   line-height: 1.95;
-
   color: rgba(255, 255, 255, 0.88);
 }
 
@@ -136,24 +109,17 @@
 .ctaButton {
   border: none;
   outline: none;
-
   height: 62px;
   padding: 0 30px;
-
   border-radius: 18px;
-
   background: #ffffff;
   color: #7c3aed;
-
   font-size: 16px;
   font-weight: 800;
-
   display: inline-flex;
   align-items: center;
   gap: 10px;
-
   cursor: pointer;
-
   transition: all 0.3s ease;
 }
 

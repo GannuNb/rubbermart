@@ -122,7 +122,6 @@
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -154,7 +153,6 @@
   font-size: 14px;
   font-weight: 700;
   cursor: default;
-
   display: flex;
   align-items: center;
   justify-content: center;

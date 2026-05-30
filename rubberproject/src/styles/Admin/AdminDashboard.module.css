@@ -6,7 +6,6 @@
   padding: 28px;
   background: #f4f0fa;
   min-height: 100vh;
-
   overflow-x: hidden;
 }
 
@@ -29,14 +28,10 @@
 .adminDashboardMiddle {
   display: grid;
   grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr);
-
   gap: 24px;
-
   margin-top: 24px;
   margin-bottom: 24px;
-
   align-items: start;
-
   width: 100%;
 }
 

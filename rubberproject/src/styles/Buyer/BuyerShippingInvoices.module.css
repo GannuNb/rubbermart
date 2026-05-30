@@ -111,12 +111,10 @@
   border: 1px solid #ece7fa;
   border-radius: 0.9rem;
   padding: clamp(1rem, 2.5vw, 1.5rem);
-
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1.2rem;
-
   box-shadow: 0 0.3rem 0.9rem rgba(0, 0, 0, 0.04);
 }
 
@@ -127,9 +125,7 @@
 .cardLeft {
   display: flex;
   align-items: center;
-
   gap: clamp(1rem, 2.5vw, 2.5rem); /* ⭐ responsive spacing */
-
   flex: 1;
   flex-wrap: nowrap;
 }
@@ -142,7 +138,6 @@
   display: flex;
   align-items: center;
   gap: 0.7rem;
-
   min-width: 0;
 }
 
@@ -171,7 +166,6 @@
   font-size: 0.9rem;
   font-weight: 700;
   color: #111827;
-
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -205,12 +199,10 @@
   font-weight: 700;
   cursor: pointer;
   min-width: 8.5rem;
-
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-
   transition: 0.2s;
 }
 
@@ -223,7 +215,6 @@
 ========================= */
 
 @media (max-width: 992px) {
-
   .invoiceCard {
     flex-direction: column;
     align-items: flex-start;
@@ -247,7 +238,6 @@
 }
 
 @media (max-width: 768px) {
-
   .container {
     padding: 1rem;
   }

@@ -5,20 +5,13 @@
 .wrapper {
   display: flex;
   gap: 12px;
-
   width: 100%;
-
   overflow-x: auto;
   overflow-y: hidden;
-
   -webkit-overflow-scrolling: touch;
-
   scroll-behavior: smooth;
-
   padding-bottom: 4px;
-
   scrollbar-width: none;
-
   scroll-snap-type: x mandatory;
 }
 
@@ -32,29 +25,17 @@
 
 .card {
   min-width: 135px;
-
   flex-shrink: 0;
-
   height: 70px;
-
   padding: 0 16px;
-
   border-radius: 14px;
-
   border: 1px solid #e5e7eb;
-
   background: #ffffff;
-
   display: flex;
-
   align-items: center;
-
   gap: 12px;
-
   cursor: pointer;
-
   transition: 0.2s;
-
   scroll-snap-align: start;
 }
 
@@ -68,23 +49,14 @@
 
 .iconBox {
   width: 42px;
-
   height: 42px;
-
   border-radius: 10px;
-
   background: rgba(105, 44, 160, 0.08);
-
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
   font-size: 16px;
-
   color: #692ca0;
-
   flex-shrink: 0;
 }
 
@@ -94,27 +66,20 @@
 
 .content {
   display: flex;
-
   flex-direction: column;
-
   gap: 4px;
-
   min-width: 0;
 }
 
 .label {
   font-size: 13px;
-
   color: #6b7280;
-
   white-space: nowrap;
 }
 
 .count {
   font-size: 18px;
-
   font-weight: 700;
-
   color: #111827;
 }
 
@@ -124,13 +89,11 @@
 
 .active {
   border-color: #692ca0;
-
   background: rgba(105, 44, 160, 0.05);
 }
 
 .active .iconBox {
   background: #692ca0;
-
   color: white;
 }
 
@@ -145,23 +108,18 @@
 @media (max-width: 768px) {
   .wrapper {
     gap: 10px;
-
     padding-bottom: 2px;
   }
 
   .card {
     min-width: 150px;
-
     height: 64px;
-
     padding: 0 14px;
   }
 
   .iconBox {
     width: 38px;
-
     height: 38px;
-
     font-size: 15px;
   }
 

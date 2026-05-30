@@ -4,14 +4,11 @@
 
 .wrapper {
   margin-top: 20px;
-
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   gap: 12px;
   flex-wrap: wrap;        /* ⭐ allows stacking */
-
   width: 100%;
 }
 
@@ -33,7 +30,6 @@
   display: flex;
   align-items: center;
   gap: 10px;
-
   flex-shrink: 0;
 }
 
@@ -44,11 +40,9 @@
 .navBtn {
   height: 36px;
   padding: 0 14px;
-
   border: 1px solid #d8d8d8;
   background: white;
   border-radius: 8px;
-
   font-size: 13px;
   cursor: pointer;
   transition: 0.2s;
@@ -69,12 +63,10 @@
 .activePage {
   min-width: 36px;
   height: 36px;
-
   border: none;
   border-radius: 8px;
   background: #5b2be0;
   color: white;
-
   font-size: 13px;
   font-weight: 600;
 }
@@ -84,7 +76,6 @@
 ========================= */
 
 @media (max-width: 768px) {
-
   .wrapper {
     flex-direction: column;
     align-items: flex-start;
@@ -111,7 +102,6 @@
 ========================= */
 
 @media (max-width: 480px) {
-
   .leftSection {
     font-size: 12px;
   }

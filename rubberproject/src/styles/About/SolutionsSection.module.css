@@ -58,10 +58,8 @@
   display: flex;
   align-items: flex-start;
   gap: 18px;
-
   padding: 22px 18px;
   border-bottom: 1px solid #efefef;
-
   transition: 0.3s ease;
 }
 
@@ -79,11 +77,9 @@
   height: 56px;
   border-radius: 16px;
   background: #f5efff;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   color: #7c3aed;
   flex-shrink: 0;
 }
@@ -106,7 +102,6 @@
 .solutionsRight {
   background: linear-gradient(180deg, #faf7ff 0%, #f5efff 100%);
   border-radius: 28px;
-
   padding: 45px;
 }
 
@@ -138,7 +133,6 @@
 
 .solutionStats {
   margin-top: 42px;
-
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
@@ -147,10 +141,8 @@
 .statCard {
   background: rgba(255, 255, 255, 0.7);
   border-radius: 22px;
-
   padding: 24px 20px;
   text-align: center;
-
   backdrop-filter: blur(10px);
 }
 
@@ -159,13 +151,10 @@
   height: 58px;
   border-radius: 18px;
   background: #ffffff;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   color: #7c3aed;
-
   margin: 0 auto 18px;
 }
 

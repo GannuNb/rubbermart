@@ -6,7 +6,6 @@
   display: flex;
   align-items: center;
   gap: 8px;
-
   flex-wrap: nowrap;        /* ⭐ NEVER BREAK */
   max-width: 100%;
 }
@@ -27,7 +26,7 @@
 
 /* LABEL */
 .label {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   color: #374151;
 }
@@ -36,27 +35,22 @@
 .dateInput {
   width: 105px;             /* ⭐ tighter */
   height: 36px;
-
   border: 1px solid #d8d8d8;
   border-radius: 8px;
   padding: 0 6px;
-
-  font-size: 12px;
+  font-size: 14px;
 }
 
 /* BUTTON */
 .filterBtn {
   height: 36px;
   padding: 0 12px;
-
   background: #692ca0;
   color: white;
   border: none;
   border-radius: 8px;
-
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
-
   white-space: nowrap;      /* ⭐ prevent breaking */
 }
 
@@ -65,7 +59,6 @@
 ========================= */
 
 @media (max-width: 768px) {
-
   .filterRow {
     flex-direction: column;
     align-items: stretch;

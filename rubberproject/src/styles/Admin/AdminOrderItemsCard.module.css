@@ -8,7 +8,6 @@
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   padding: 22px;
-
   overflow-x: auto;
   width: 100%;
   max-width: 100%;
@@ -47,7 +46,6 @@
 .tableHeader,
 .itemRow {
   display: grid;
-
   grid-template-columns: 
     minmax(220px, 2fr)   /* Product */
     100px                /* Quantity */
@@ -55,9 +53,7 @@
     120px                /* Price */
     120px                /* Total */
     170px;               /* Button */
-
   gap: 16px;
-
   width: 100%;
   box-sizing: border-box;
 }
@@ -69,7 +65,6 @@
 .tableHeader {
   padding: 14px 0;
   border-bottom: 1px solid #e5e7eb;
-
   font-size: 14px;
   font-weight: 600;
   color: #692ca0;
@@ -82,9 +77,7 @@
 .itemRow {
   align-items: center;
   padding: 18px 0;
-
   border-bottom: 1px solid #f3f4f6;
-
   font-size: 14px;
   color: #111827;
 }
@@ -173,18 +166,14 @@
 .invoiceBtn {
   height: 36px;
   padding: 0 12px;
-
   border: 1px solid #d8c7ff;
   background: #ffffff;
   color: #692ca0;
-
   border-radius: 8px;
   font-size: 11px;
   font-weight: 600;
-
   cursor: pointer;
   transition: 0.2s;
-
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -200,7 +189,6 @@
 .summarySection {
   width: 320px;
   min-width: 280px;
-
   margin-left: auto;
   margin-top: 24px;
 }
@@ -209,11 +197,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   padding: 10px 0;
   font-size: 14px;
   color: #374151;
-
   border-bottom: 1px solid #f3f4f6;
 }
 
@@ -231,13 +217,10 @@
   background: #f8f5ff;
   border: 1px solid #e9ddff;
   border-radius: 10px;
-
   padding: 14px 16px;
-
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   font-size: 14px;
   font-weight: 700;
   color: #111827;
