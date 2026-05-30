@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 // Hero Import
 import TyreHero from '../../assests/Tyrescrapbg.png';
 
-// Category Image Imports from src/assests/categoryimages/
+// Category Image Imports
 import baledtyrespcr from '../../assests/categoryimages/baledtyrespcr.jpg';
 import baledtyrestbr from '../../assests/categoryimages/baledtyrestbr.jpg';
 import threepiecepcr from '../../assests/categoryimages/threepiecepcr.png';
@@ -35,7 +35,6 @@ const TyreScrap = () => {
             name: "Baled Tyres PCR",
             category: "Baled",
             image: baledtyrespcr,
-            featured: false,
             desc: "Passenger Car Radial, high-density baling for export and clean processing."
         },
         {
@@ -43,7 +42,6 @@ const TyreScrap = () => {
             name: "Baled Tyres TBR",
             category: "Baled",
             image: baledtyrestbr,
-            featured: true,
             desc: "Truck/Bus Radial. Maximum wire and rubber yield for Pyrolysis plants."
         },
         {
@@ -51,7 +49,6 @@ const TyreScrap = () => {
             name: "Three Piece PCR",
             category: "Cut",
             image: threepiecepcr,
-            featured: false,
             desc: "Car tyres cut into three sections for optimized reactor loading and storage."
         },
         {
@@ -59,7 +56,6 @@ const TyreScrap = () => {
             name: "Three Piece TBR",
             category: "Cut",
             image: threepiecetbr,
-            featured: true,
             desc: "Heavy-duty truck tyres cut for optimized shipping weight and easy handling."
         },
         {
@@ -67,7 +63,6 @@ const TyreScrap = () => {
             name: "Tyre Shreds",
             category: "Processed",
             image: shreds,
-            featured: false,
             desc: "TDF-ready shredded rubber pieces optimized for industrial furnace fuel."
         },
         {
@@ -75,7 +70,6 @@ const TyreScrap = () => {
             name: "Rubber Granules/Crumb",
             category: "Processed",
             image: rubbergranules,
-            featured: true,
             desc: "99.9% pure wire-free crumb rubber granules for manufacturing and tracks."
         },
         {
@@ -83,7 +77,6 @@ const TyreScrap = () => {
             name: "PCR Mulch",
             category: "Processed",
             image: mulch,
-            featured: false,
             desc: "Safety-grade rubber mulch ideal for landscaping and playground surfaces."
         }
     ];
@@ -96,18 +89,24 @@ const TyreScrap = () => {
 
     return (
         <div className={styles.pageWrapper}>
-            {/* 1. HERO SECTION */}
+
+            {/* HERO SECTION */}
             <section className={styles.heroSection}>
                 <div className={styles.container}>
                     <div className={styles.heroGrid}>
+
                         <div className={styles.heroContent}>
-                            <span className={styles.tag}>Raw Material Excellence</span>
-                            <h1>Premium <span>Tyre Scrap</span> Solutions</h1>
+                            <span className={styles.tag}>Tyre Scrap Product Range</span>
+
+                            <h1>
+                                Explore Our <span>Tyre Scrap Products</span>
+                            </h1>
 
                             <p>
-                                Powering the future of alternative fuels and recycled manufacturing.
-                                Access a Pan India network of high-quality waste tyre products tailored
-                                to your specific industrial requirements.
+                                We offer a complete range of high-quality tyre scrap materials including
+                                baled tyres, cut sections, shredded rubber, and processed granules.
+                                These materials are sourced, processed, and supplied for recycling,
+                                energy recovery, and industrial manufacturing applications.
                             </p>
 
                             <ul className={styles.valueList}>
@@ -117,27 +116,37 @@ const TyreScrap = () => {
                             </ul>
 
                             <div className={styles.heroBtns}>
-                                <a href="#marketplace" className={styles.primaryBtn}>Explore Marketplace</a>
+                                <a href="#marketplace" className={styles.primaryBtn}>
+                                    View Products
+                                </a>
                             </div>
                         </div>
+
                         <div className={styles.heroImageWrapper}>
-                            <img src={TyreHero} alt="Tyre Scrap Processing" className={styles.heroImg} />
+                            <img
+                                src={TyreHero}
+                                alt="Tyre Scrap Products"
+                                className={styles.heroImg}
+                            />
+
                             <div className={styles.experienceBadge}>
-                                <strong>10+</strong>
-                                <span> Years Quality</span>
+                                <strong>7+</strong>
+                                <span> Product Types</span>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </section>
 
-            {/* 2. TECHNICAL BENTO GRID */}
+            {/* TECHNICAL SPECIFICATIONS */}
             <section className={styles.specSection}>
                 <div className={styles.container}>
                     <div className={styles.sectionHeader}>
                         <h2>Technical <span>Specifications</span></h2>
                         <p>Industry-leading quality standards for recycling and energy recovery.</p>
                     </div>
+
                     <div className={styles.bentoGrid}>
                         {technicalSpecs.map((spec, index) => (
                             <div key={index} className={styles.specCard}>
@@ -150,7 +159,7 @@ const TyreScrap = () => {
                 </div>
             </section>
 
-            {/* 3. MARKETPLACE FILTER BAR */}
+            {/* MARKETPLACE FILTER */}
             <section id="marketplace" className={styles.topBar}>
                 <div className={styles.container}>
                     <div className={styles.searchNav}>
@@ -162,6 +171,7 @@ const TyreScrap = () => {
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </div>
+
                         <div className={styles.filterGroup}>
                             {["All", "Baled", "Cut", "Processed"].map((tab) => (
                                 <button
@@ -177,23 +187,25 @@ const TyreScrap = () => {
                 </div>
             </section>
 
-            {/* 4. MARKETPLACE GRID */}
+            {/* PRODUCT GRID */}
             <div className={styles.marketplaceWrapper}>
                 <div className={styles.container}>
                     <div className={styles.gridHeader}>
-                        <h2>Showing {filteredProducts.length} <span>Inventory Results</span></h2>
+                        <h2>Available <span>Tyre Scrap Products</span></h2>
                     </div>
+
                     <div className={styles.marketplaceGrid}>
                         {filteredProducts.map((product) => (
-                            <div key={product.id} className={`${styles.productCard} ${product.featured ? styles.featured : ''}`}>
+                            <div key={product.id} className={styles.productCard}>
                                 <div className={styles.imageContainer}>
                                     <img src={product.image} alt={product.name} />
-                                    {product.featured && <span className={styles.premiumBadge}><FiStar /> Featured</span>}
                                 </div>
+
                                 <div className={styles.cardContent}>
                                     <span className={styles.categoryTag}>{product.category}</span>
                                     <h3>{product.name}</h3>
                                     <p>{product.desc}</p>
+
                                     <div className={styles.cardFooter}>
                                         <Link to="/our-products" className={styles.quoteBtn}>
                                             View More <FiArrowRight />
@@ -206,10 +218,11 @@ const TyreScrap = () => {
                 </div>
             </div>
 
-            {/* 5. FOOTER CTA */}
+            {/* FOOTER CTA */}
             <section className={styles.featureSection}>
                 <div className={styles.container}>
                     <div className={styles.contentSplit}>
+
                         <div className={styles.featureList}>
                             <div className={styles.featureItem}>
                                 <GiCircularSaw className={styles.featureIcon} />
@@ -218,6 +231,7 @@ const TyreScrap = () => {
                                     <p>Consistent monthly supply to meet large-scale industrial demands.</p>
                                 </div>
                             </div>
+
                             <div className={styles.featureItem}>
                                 <GiRecycle className={styles.featureIcon} />
                                 <div>
@@ -234,9 +248,11 @@ const TyreScrap = () => {
                                 Contact Us <FiArrowRight />
                             </Link>
                         </div>
+
                     </div>
                 </div>
             </section>
+
         </div>
     );
 };

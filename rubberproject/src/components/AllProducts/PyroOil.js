@@ -4,10 +4,11 @@ import { GiOilDrum, GiFactory } from 'react-icons/gi';
 import { Link } from 'react-router-dom';
 import styles from "../../styles/AllProducts/Tyrescrap.module.css";
 
-// Asset Imports
-import OilHero from '../../assests/categoryimages/pyrooil.png'; // Updated to specific pyro oil image
+// Asset
+import OilHero from '../../assests/categoryimages/pyrooil.png';
 
 const PyroOil = () => {
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -21,49 +22,64 @@ const PyroOil = () => {
 
   return (
     <div className={styles.pageWrapper}>
+
       {/* 1. HERO SECTION */}
       <section className={styles.heroSection}>
         <div className={styles.container}>
           <div className={styles.heroGrid}>
+
             <div className={styles.heroContent}>
-              <span className={styles.tag}>Alternative Energy</span>
-              <h1>Sustainable <span>Pyrolysis Oil</span></h1>
+              <span className={styles.tag}>Alternative Fuel Product Range</span>
+
+              <h1>
+                Explore Our <span>Pyrolysis Oil Products</span>
+              </h1>
 
               <p>
-                Optimize your industrial energy costs with high-yield Tyre Derived Oil (TDO).
-                A carbon-efficient alternative to heavy furnace oil, perfect for
-                high-output burners, kilns, and power generation.
+                We supply high-quality Tyre Derived Oil (TDO) for industrial energy applications.
+                Our pyrolysis oil is processed, filtered, and optimized for efficient combustion
+                in kilns, boilers, and power systems.
               </p>
 
               <ul className={styles.valueList}>
-                <li>✓ High Calorific Value (9,000+ kcal/kg)</li>
-                <li>✓ Filtered to Minimize Moisture & Ash</li>
-                <li>✓ Eco-Friendly Waste-to-Energy Solution</li>
+                <li>✓ High Calorific Value Industrial Fuel</li>
+                <li>✓ Filtered & Moisture-Controlled Oil</li>
+                <li>✓ Bulk Supply & Export Available</li>
               </ul>
 
               <div className={styles.heroBtns}>
-                <a href="#inventory" className={styles.primaryBtn}>Explore Inventory</a>
+                <a href="#inventory" className={styles.primaryBtn}>
+                  View Products
+                </a>
               </div>
             </div>
+
             <div className={styles.heroImageWrapper}>
-              {/* Using the actual pyro oil drum/liquid image from assets */}
-              <img src={OilHero} alt="Pyrolysis Oil Production" className={styles.heroImg} />
+              <img
+                src={OilHero}
+                alt="Pyrolysis Oil"
+                className={styles.heroImg}
+              />
+
               <div className={styles.experienceBadge}>
-                <strong>High</strong>
-                <span> Calorific</span>
+                <strong>Industrial</strong>
+                <span> Grade Fuel</span>
               </div>
             </div>
+
           </div>
         </div>
       </section>
 
-      {/* 2. TECHNICAL SPECS BENTO */}
+      {/* 2. TECHNICAL SPECS */}
       <section className={styles.specSection}>
         <div className={styles.container}>
+
           <div className={styles.sectionHeader}>
-            <h2>Fuel <span>Specifications</span></h2>
-            <p>Laboratory tested standards for high-efficiency combustion.</p>
+            <h2>Technical <span>Specifications</span></h2>
+            <p>Consistent quality standards for industrial combustion efficiency.</p>
           </div>
+
           <div className={styles.bentoGrid}>
             {technicalSpecs.map((spec, index) => (
               <div key={index} className={styles.specCard}>
@@ -73,25 +89,34 @@ const PyroOil = () => {
               </div>
             ))}
           </div>
+
         </div>
       </section>
 
-      {/* 3. CENTERED PRODUCT DISPLAY */}
+      {/* 3. MARKETPLACE SECTION */}
       <div id="inventory" className={styles.marketplaceWrapper}>
         <div className={styles.container}>
-          <div className={styles.gridHeader} style={{ textAlign: 'center' }}>
-            <h2>Available <span>Product</span></h2>
+
+          <div className={styles.gridHeader}>
+            <h2>Available <span>Pyrolysis Oil Products</span></h2>
           </div>
+
           <div className={styles.marketplaceGrid}>
-            <div className={`${styles.productCard} ${styles.featured}`}>
+
+            <div className={styles.productCard}>
               <div className={styles.imageContainer}>
-                {/* Displaying the oil asset here as well */}
-                <img src={OilHero} alt="Industrial Pyrolysis Oil" />
+                <img src={OilHero} alt="Pyrolysis Oil" />
               </div>
+
               <div className={styles.cardContent}>
-                <span className={styles.categoryTag}>Liquid Fuel</span>
-                <h3>Standard Pyrolysis Oil (TPO)</h3>
-                <p>Triple-filtered and de-watered TPO optimized for industrial heating, cement kilns, and energy recovery systems.</p>
+                <span className={styles.categoryTag}>Industrial Fuel</span>
+                <h3>Tyre Derived Pyrolysis Oil (TDO)</h3>
+
+                <p>
+                  High-efficiency liquid fuel derived from waste tyres,
+                  optimized for industrial burners, cement plants, and thermal systems.
+                </p>
+
                 <div className={styles.cardFooter}>
                   <Link to="/our-products" className={styles.quoteBtn}>
                     View More <FiArrowRight />
@@ -99,40 +124,49 @@ const PyroOil = () => {
                 </div>
               </div>
             </div>
+
           </div>
         </div>
       </div>
 
-      {/* 4. FOOTER FEATURES & CTA */}
+      {/* 4. FOOTER CTA */}
       <section className={styles.featureSection}>
         <div className={styles.container}>
           <div className={styles.contentSplit}>
+
             <div className={styles.featureList}>
+
               <div className={styles.featureItem}>
                 <GiOilDrum className={styles.featureIcon} />
                 <div>
-                  <h4>Bulk Logistics</h4>
-                  <p>Flexible delivery options ranging from 20-ton tankers to flexitanks for global export.</p>
+                  <h4>Bulk Supply Network</h4>
+                  <p>Reliable tanker and industrial-scale delivery across regions.</p>
                 </div>
               </div>
+
               <div className={styles.featureItem}>
                 <GiFactory className={styles.featureIcon} />
                 <div>
-                  <h4>Industrial Grade</h4>
-                  <p>Consistently maintained viscosity and moisture levels for seamless burner operation.</p>
+                  <h4>Consistent Quality</h4>
+                  <p>Controlled processing ensures stable combustion performance.</p>
                 </div>
               </div>
+
             </div>
+
             <div className={styles.ctaBox}>
               <h3>Consult an Expert</h3>
-              <p>Discuss bulk contract pricing and chemical analysis reports with our energy team.</p>
+              <p>Get bulk pricing, lab reports, and supply chain details.</p>
+
               <Link to="/contactus" className={styles.ctaBtn}>
                 Contact Us <FiArrowRight />
               </Link>
             </div>
+
           </div>
         </div>
       </section>
+
     </div>
   );
 };

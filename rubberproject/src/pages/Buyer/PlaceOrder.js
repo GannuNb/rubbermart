@@ -1,13 +1,10 @@
 // src/pages/Buyer/PlaceOrder.js
 
 import React, { useMemo, useState } from "react";
-
 import { useNavigate } from "react-router-dom";
-
 import { useDispatch, useSelector } from "react-redux";
-
+import CustomAlert from "../../components/alert/CustomAlert"; // Update this path to match your folder structure
 import { clearOrderSummary } from "../../redux/slices/orderSummarySlice";
-
 import {
   FaClipboardList,
   FaStore,
@@ -24,12 +21,11 @@ import {
   FaReceipt,
   FaShieldAlt,
 } from "react-icons/fa";
-
 import styles from "../../styles/Buyer/PlaceOrder.module.css";
 
 function PlaceOrder() {
   const navigate = useNavigate();
-
+  const [alert, setAlert] = useState({ show: false, type: "", title: "", message: "" });
   const dispatch = useDispatch();
 
   /*
@@ -104,6 +100,15 @@ function PlaceOrder() {
   */
 
   const handleConfirmOrder = async () => {
+    if (!agreeTerms) {
+      setAlert({
+        show: true,
+        type: "warning",
+        title: "Action Required",
+        message: "Please agree to the terms and confirm the details first."
+      });
+      return;
+    }
     try {
       setLoading(true);
 
@@ -224,6 +229,7 @@ function PlaceOrder() {
 
   if (!orderItems || orderItems.length === 0) {
     return (
+      
       <div className={styles.emptyState}>
         <div className={styles.emptyCard}>
           <h2>No Order Data Found</h2>
@@ -243,9 +249,14 @@ function PlaceOrder() {
 
   return (
     <>
-      {/* =====================================
-      PAGE HEADER
-      ===================================== */}
+      {alert.show && (
+      <CustomAlert
+        type={alert.type}
+        title={alert.title}
+        message={alert.message}
+        onClose={() => setAlert({ ...alert, show: false })}
+      />
+    )}
 
       <div className={styles.pageHeader}>
         <div className={styles.pageHeaderLeft}>
@@ -568,13 +579,13 @@ function PlaceOrder() {
 
             {/* BUTTON */}
 
+            {/* Change the button code to this: */}
             <button
               className={styles.confirmButton}
-              disabled={!agreeTerms || loading}
+              disabled={loading} // Only disable while loading, not based on the checkbox
               onClick={handleConfirmOrder}
             >
               <FaShieldAlt />
-
               {loading ? "Placing Order..." : "Confirm Order"}
             </button>
           </div>

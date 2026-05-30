@@ -10,23 +10,33 @@ const sellerSectionsData = {
   // TIMELINE VARIANT
   fulfillment: {
     type: "timeline",
-    title: "Order Fulfillment",
+    title: "Order Fulfillment Workflow",
     items: [
       {
         icon: <ClipboardList size={24} />,
-        title: "Review Buyer Request",
-        desc: "Check buyer requirements including material type, grade, and quantity before confirming availability."
+        title: "Confirm Order Request",
+        desc: "Review buyer requirements, including material grade and quantity, and confirm availability in your dashboard."
       },
       {
         icon: <LayoutDashboard size={24} />,
-        title: "Update Inventory",
-        desc: "Maintain accurate stock records to avoid mismatches and order cancellations."
+        title: "Inventory Allocation",
+        desc: "Allocate the specified stock to the order immediately to ensure inventory accuracy and avoid cancellations."
       },
       {
         icon: <ShieldCheck size={24} />,
-        title: "Material Verification",
-        desc: "Ensure scrap quality and grading match listing details before preparing for dispatch."
+        title: "Quality Verification",
+        desc: "Perform a final quality check to ensure material grade, moisture, and cleanliness match the original listing."
       },
+      {
+        icon: <Package size={24} />,
+        title: "Standardized Packaging",
+        desc: "Pack and secure the material according to safety guidelines to prevent damage or contamination during transit."
+      },
+      {
+        icon: <Truck size={24} />,
+        title: "Dispatch Readiness",
+        desc: "Prepare the shipment for pickup. Once ready, update the portal with your transporter details or confirm assigned transport."
+      }
     ]
   },
 
@@ -63,45 +73,33 @@ const sellerSectionsData = {
   },
 
   // WHITE CARDS VARIANT
-  logistics: {
+logistics: {
     type: "whiteCards",
-    title: "Logistics & Shipping",
+    title: "Logistics & Shipping Support",
     items: [
       {
         icon: <Truck size={24} />,
         color: "blue",
-        title: "Arrange Transport",
-        desc: "Sellers must arrange transportation using their preferred logistics or local transport providers."
-      },
-      {
-        icon: <TrendingUp size={24} />,
-        color: "purple",
-        title: "Prepare for Dispatch",
-        desc: "Ensure materials are packed, weighed, and ready before pickup to avoid delays."
-      },
-      {
-        icon: <Package size={24} />,
-        color: "orange",
-        title: "Secure Packaging",
-        desc: "Pack materials properly to avoid damage, contamination, or weight loss during transit."
+        title: "Managed Transport",
+        desc: "We prioritize assigning verified transporters to your orders automatically whenever available."
       },
       {
         icon: <MapPin size={24} />,
-        color: "green",
-        title: "Accurate Pickup Details",
-        desc: "Provide correct pickup address and contact information for smooth coordination."
+        color: "orange",
+        title: "Self-Arranged Transport",
+        desc: "If marketplace transport is unavailable, you are responsible for arranging your own logistics provider."
       },
       {
         icon: <FileCheck size={24} />,
-        color: "blue",
-        title: "Dispatch Update",
-        desc: "Update shipment details immediately after dispatch for verification."
+        color: "purple",
+        title: "Provider Details",
+        desc: "You must manually enter the transporter's contact and vehicle details into the portal for tracking."
       },
       {
         icon: <ShieldCheck size={24} />,
-        color: "orange",
-        title: "Handling Guidelines",
-        desc: "Follow safe handling practices to maintain material quality during movement."
+        color: "green",
+        title: "Centralized Tracking",
+        desc: "Whether we assign the transporter or you arrange it, all shipment updates are managed via your dashboard."
       }
     ]
   },

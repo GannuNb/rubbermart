@@ -17,6 +17,7 @@ import RoleNavbar from "./components/navbar/RoleNavbar";
 import ProtectedRoute from "./components/protectroute/ProtectedRoute";
 import TermsAndConditions from "./components/Terms&Conditions/TermsAndConditions";
 import RoleFooter from "./components/footer/RoleFooter";
+import PublicRoute from "./components/protectroute/PublicRoute";
 
 //seller
 import SellerDashboard from "./pages/seller/SellerDashboard/SellerDashboard";
@@ -69,6 +70,7 @@ import AdminRejectedProducts from "./pages/admin/AdminRejectedProducts";
 import SellerApprovedProducts from "./pages/seller/SellerApprovedProducts";
 import SellerRejectedProducts from "./pages/seller/SellerRejectedProducts";
 
+
 function AppContent() {
   const location = useLocation();
   const hideNavbarRoutes = ["/business-profile"];
@@ -96,8 +98,8 @@ function AppContent() {
             return <Homepage />;
           })()}
         />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element= {<PublicRoute><Signup /></PublicRoute>} />
+        <Route path="/login" element={<PublicRoute> <Login /> </PublicRoute>} />
         <Route path="/business-profile" element={<BusinessProfile />} />
         <Route path="/about" element={<About />} />
         <Route path="/contactus" element={<Contactus />} />

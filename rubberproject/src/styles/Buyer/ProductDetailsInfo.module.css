@@ -150,7 +150,7 @@
 .infoCard span,
 .businessBox span {
   display: block;
-  font-size: 12px;
+  font-size: 16px;
   color: #6f7d8d;
   margin-bottom: 4px;
 }
@@ -179,7 +179,7 @@
 .descriptionBox p {
   color: #5f6b7a;
   line-height: 1.8;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .rightSection {

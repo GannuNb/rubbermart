@@ -147,9 +147,11 @@ function ProductReviewsSection({ singleProduct }) {
             <div className={styles.galleryTop}>
               <h3>Customer Reviews ({reviews.length})</h3>
 
+              {/* Change this part in your JSX */}
               {reviews.length > 0 && (
                 <button
                   className={styles.viewAllBtn}
+                  // Clicking "View all" explicitly sets index to 0 (the first review)
                   onClick={() => openPreview(0)}
                 >
                   View all reviews
@@ -203,102 +205,52 @@ function ProductReviewsSection({ singleProduct }) {
       {selectedReview && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
-            {/* CLOSE */}
+            <button className={styles.closeBtn} onClick={closePreview}><FaTimes /></button>
 
-            <button className={styles.closeBtn} onClick={closePreview}>
-              <FaTimes />
-            </button>
-
-            {/* HEADER */}
-
-            <div className={styles.modalHeader}>
-              <h2>Customer Reviews ({reviews.length})</h2>
-            </div>
-
-            {/* BODY */}
+            {/* CAROUSEL NAVIGATION */}
+            {reviews.length > 1 && (
+              <>
+                <button className={styles.arrowLeft} onClick={prevReview}><FaChevronLeft /></button>
+                <button className={styles.arrowRight} onClick={nextReview}><FaChevronRight /></button>
+              </>
+            )}
 
             <div className={styles.modalBody}>
-              {/* LEFT */}
-
-              {reviews.length > 1 && (
-                <button className={styles.arrowBtn} onClick={prevReview}>
-                  <FaChevronLeft />
-                </button>
+              {/* 1. IMAGE */}
+              {selectedReview.image && (
+                <div className={styles.modalCenter}>
+                  <img src={selectedReview.image} alt="review" className={styles.mainPreviewImage} />
+                </div>
               )}
 
-              {/* CENTER */}
+              {/* 2. COMMENT */}
+              <p className={styles.reviewComment}>{selectedReview.comment}</p>
 
-              <div className={styles.modalCenter}>
-                {/* IMAGE */}
-
-                {selectedReview.image && (
-                  <img
-                    src={selectedReview.image}
-                    alt="review"
-                    className={styles.mainPreviewImage}
-                  />
-                )}
-
-                {/* REVIEW DETAILS */}
-
-                <div className={styles.reviewDetails}>
-                  {/* PROFILE */}
-
-                  <div className={styles.profileRow}>
-                    {selectedReview.user?.profileImage ? (
-                      <img
-                        src={selectedReview.user.profileImage}
-                        alt="user"
-                        className={styles.profileImage}
-                      />
-                    ) : (
-                      <div className={styles.userCircle}>
-                        {selectedReview.user?.fullName
-                          ?.charAt(0)
-                          ?.toUpperCase() || "U"}
-                      </div>
-                    )}
-
-                    <div>
-                      <h4>{selectedReview.user?.fullName || "User"}</h4>
-
-                      <div className={styles.reviewMeta}>
-                        <span className={styles.verified}>
-                          <FaCheckCircle />
-                          Verified Purchase
-                        </span>
-
-                        <span>
-                          {new Date(
-                            selectedReview.createdAt,
-                          ).toLocaleDateString()}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* STARS */}
-
-                  <div className={styles.modalStars}>
-                    {"★".repeat(selectedReview.rating)}
-                    {"☆".repeat(5 - selectedReview.rating)}
-                  </div>
-
-                  {/* COMMENT */}
-
-                  <p className={styles.reviewComment}>
-                    {selectedReview.comment}
-                  </p>
-                </div>
+              {/* 3. STARS */}
+              <div className={styles.modalStars}>
+                {"★".repeat(selectedReview.rating)}{"☆".repeat(5 - selectedReview.rating)}
               </div>
 
-              {/* RIGHT */}
+              {/* 4. USER INFO */}
+              <div className={styles.profileRow}>
+                <div className={styles.userCircle}>
+                  {selectedReview.user?.fullName?.charAt(0).toUpperCase() || "U"}
+                </div>
+                <div>
+                  <h4 className={styles.userName}>{selectedReview.user?.fullName || "User"}</h4>
 
-              {reviews.length > 1 && (
-                <button className={styles.arrowBtn} onClick={nextReview}>
-                  <FaChevronRight />
-                </button>
-              )}
+                  <div className={styles.metaInfo}>
+                    <span className={styles.verified}>
+                      <FaCheckCircle /> Verified Purchase
+                    </span>
+
+                    {/* Date display */}
+                    <span className={styles.postedOn}>
+                      Posted on {new Date(selectedReview.createdAt).toLocaleDateString()}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

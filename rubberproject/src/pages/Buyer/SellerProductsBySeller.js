@@ -5,14 +5,15 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
-
+// Add this line with your other imports
+import CustomAlert from "../../components/alert/CustomAlert";
 import { updateOrderItems } from "../../redux/slices/orderSummarySlice";
 
 import styles from "../../styles/Seller/SellerProductsBySeller.module.css";
 
 function SellerProductsBySeller() {
   const { sellerId } = useParams();
-
+  const [alert, setAlert] = useState({ show: false, type: "", title: "", message: "" });
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
@@ -90,8 +91,7 @@ function SellerProductsBySeller() {
     const quantity = Number(selectedQuantities[product._id]);
 
     if (!quantity || quantity <= 0) {
-      alert("Please enter valid quantity");
-
+      setAlert({ show: true, type: "warning", title: "Invalid Input", message: "Please enter a valid quantity." });
       return;
     }
 
@@ -135,11 +135,11 @@ function SellerProductsBySeller() {
       };
     } else {
 
-    /*
-    -----------------------------------------
-    NEW PRODUCT
-    -----------------------------------------
-    */
+      /*
+      -----------------------------------------
+      NEW PRODUCT
+      -----------------------------------------
+      */
       updatedOrderItems.push({
         product: product._id,
 
@@ -178,14 +178,18 @@ function SellerProductsBySeller() {
     */
 
     dispatch(updateOrderItems(updatedOrderItems));
+    // ADD THIS SUCCESS ALERT
+    setAlert({
+      show: true,
+      type: "success",
+      title: "Added Successfully",
+      message: "Product has been added to your order."
+    });
 
-    /*
-    =========================================
-    NAVIGATE
-    =========================================
-    */
-
-    navigate("/order-summary");
+    // A small delay allows the alert to show before navigation
+    setTimeout(() => {
+      navigate("/order-summary");
+    }, 1000);
   };
 
   /*
@@ -200,15 +204,32 @@ function SellerProductsBySeller() {
 
   return (
     <div className={styles.pageWrapper}>
-      {/* HEADER */}
+      {/* ADD THIS BLOCK RIGHT HERE */}
+      {alert.show && (
+        <CustomAlert
+          type={alert.type}
+          title={alert.title}
+          message={alert.message}
+          onClose={() => setAlert({ ...alert, show: false })}
+        />
+      )}
 
       <div className={styles.headerSection}>
-        <h1>More Products From {sellerName}</h1>
-
-        <p>
-          Select additional products from this seller and add them to the same
-          order.
-        </p>
+        <h1>
+          More Products From{" "}
+          {products.length > 0 && products[0].seller?.businessProfile?.companyId
+            ? (
+              <>
+                <span className={styles.subtitleLabel}> </span>{" "}
+                <span className={styles.companyIdHighlight}>
+                  {products[0].seller.businessProfile.companyId}
+                </span>
+              </>
+            )
+            : `Seller: ${sellerId}`
+          }
+        </h1>
+        <p>Select additional products from this seller and add them to the same order.</p>
       </div>
 
       {/* PRODUCTS */}

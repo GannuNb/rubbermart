@@ -36,14 +36,14 @@ HEADER
 }
 
 .headerSection h1 {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
   color: #111827;
   margin-bottom: 4px;
 }
 
 .headerSection p {
-  font-size: 13px;
+  font-size: 15px;
   color: #6b7280;
 }
 
@@ -73,7 +73,7 @@ TOP GRID
 }
 
 .infoCard h3 {
-  font-size: 17px;
+  font-size: 20px;
   font-weight: 700;
   color: #111827;
 }
@@ -126,12 +126,12 @@ INFO ROWS
 }
 
 .infoLabel {
-  font-size: 13px;
+  font-size: 15px;
   color: #6b7280;
 }
 
 .infoValue {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
   color: #111827;
   line-height: 1.6;
@@ -166,7 +166,7 @@ PRODUCTS SECTION
 }
 
 .productsTitle {
-  font-size: 17px;
+  font-size: 20px;
   font-weight: 700;
   color: #111827;
 }
@@ -206,7 +206,7 @@ PRODUCT CARD
 }
 
 .productDetails h3 {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
   color: #111827;
   margin-bottom: 12px;
@@ -224,7 +224,7 @@ PRODUCT CARD
   color: #7d3cb5;
   padding: 4px 9px;
   border-radius: 30px;
-  font-size: 10px;
+  font-size: 14px;
   font-weight: 600;
 }
 
@@ -233,7 +233,7 @@ PRODUCT CARD
 }
 
 .priceLabel {
-  font-size: 11px;
+  font-size: 14px;
   color: #6b7280;
   margin-bottom: 4px;
   display: block;
@@ -247,7 +247,7 @@ PRODUCT CARD
 
 .quantityWrapper label {
   display: block;
-  font-size: 11px;
+  font-size: 14px;
   color: #6b7280;
   margin-bottom: 8px;
 }
@@ -258,7 +258,7 @@ PRODUCT CARD
   border: 1px solid #d1d5db;
   border-radius: 8px;
   padding: 6px 10px;
-  font-size: 13px;
+  font-size: 15px;
   outline: none;
   background: #ffffff;
 }
@@ -280,7 +280,7 @@ PRODUCT ACTIONS
 }
 
 .subtotalLabel {
-  font-size: 13px;
+  font-size: 18px;
   color: #6b7280;
   margin-bottom: 4px;
 }
@@ -300,7 +300,7 @@ PRODUCT ACTIONS
   color: #dc2626;
   padding: 9px 14px;
   border-radius: 9px;
-  font-size: 11px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   transition: 0.2s ease;
@@ -325,11 +325,10 @@ ADD MORE BUTTON
   background: #f5f1fa;
   color: #7d3cb5;
   border-radius: 12px;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   cursor: pointer;
   transition: 0.2s ease;
-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -354,7 +353,7 @@ SUMMARY CARD
 }
 
 .summaryCard h3 {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
   color: #111827;
 }
@@ -366,7 +365,7 @@ SUMMARY CARD
   padding-bottom: 14px;
   margin-bottom: 14px;
   border-bottom: 1px solid #ececec;
-  font-size: 13px;
+  font-size: 16px;
   color: #4b5563;
 }
 
@@ -401,7 +400,7 @@ SUMMARY CARD
   border-radius: 10px;
   background: #7d3cb5;
   color: #ffffff;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   cursor: pointer;
   transition: 0.2s ease;

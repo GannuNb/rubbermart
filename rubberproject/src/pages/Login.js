@@ -45,39 +45,29 @@ function Login() {
     }
   }, [loginSuccessMessage]);
 
-  // ✅ Show error alert
+// 1. WATCH FOR ALERTS (Success or Error)
   useEffect(() => {
-    if (loginError) {
-      setAlertData({
-        show: true,
-        type: "error",
-        title: "Login Failed",
-        message: loginError,
-      });
+    if (loginSuccessMessage) {
+      setAlertData({ show: true, type: "success", title: "Login Successful", message: loginSuccessMessage });
+    } else if (loginError) {
+      setAlertData({ show: true, type: "error", title: "Login Failed", message: loginError });
     }
-  }, [loginError]);
+  }, [loginSuccessMessage, loginError]);
 
-  // ✅ 🔥 MAIN FIX: Navigate when user is set
+  // 2. WATCH FOR NAVIGATION (The "Guard")
   useEffect(() => {
-    if (user) {
+    // Only navigate if a user exists AND an alert is NOT currently blocking the screen
+    if (user && !alertData.show) { 
       const timer = setTimeout(() => {
-        if (user.role === "admin") {
-          navigate("/admin-dashboard");
-        } else if (
-          (user.role === "buyer" || user.role === "seller") &&
-          !user.businessProfileCompleted
-        ) {
-          navigate("/business-profile");
-        } else if (user.role === "seller") {
-          navigate("/seller-dashboard");
-        } else {
-          navigate("/");
-        }
-      }, 3000); // wait for alert
+        if (user.role === "admin") navigate("/admin-dashboard");
+        else if ((user.role === "buyer" || user.role === "seller") && !user.businessProfileCompleted) navigate("/business-profile");
+        else if (user.role === "seller") navigate("/seller-dashboard");
+        else navigate("/");
+      }, 1500); // Wait 1.5s to let the user see the alert
 
       return () => clearTimeout(timer);
     }
-  }, [user, navigate]);
+  }, [user, navigate, alertData.show]);
 
   // ✅ Handle input change
   const handleChange = (e) => {

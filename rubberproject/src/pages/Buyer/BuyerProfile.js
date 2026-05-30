@@ -258,8 +258,7 @@ function BuyerProfile() {
               </div>
 
               <div className={styles.profileInfo}>
-                <h1>{user?.fullName || "Buyer"}</h1>
-
+                <h1>{businessProfile.companyName || user?.fullName}</h1>
                 <p>{user?.email || "-"}</p>
 
                 <div className={styles.badges}>

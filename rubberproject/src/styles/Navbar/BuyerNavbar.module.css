@@ -11,8 +11,6 @@
 .navContainer {
   display: flex;
   align-items: center;
-  /* Buyer links often sit on the bottom navbar, 
-     so we use a standard flex-start/center approach */
   justify-content: flex-start; 
   gap: 60px;
   width: 100%;
@@ -29,11 +27,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px; /* Space between icon and description */
+  gap: 10px;
   background: transparent;
   border: 1px solid transparent;
   color: #444;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   transition: all 0.3s ease;
   text-decoration: none !important;
@@ -57,13 +55,11 @@
 }
 
 .active {
-  /* Using your green-to-purple brand gradient */
   background: linear-gradient(135deg, #7d3cb5, #38b44a);
   color: white !important;
   box-shadow: 0 10px 24px rgba(125, 60, 181, 0.18);
 }
 
-/* Ensure no underlines appear on hover or active */
 .active::after {
   display: none !important;
 }
@@ -72,7 +68,6 @@
    RESPONSIVENESS
 ========================= */
 
-/* Desktop Narrowing */
 @media (max-width: 1200px) {
   .navContainer {
     gap: 12px;
@@ -82,27 +77,24 @@
   }
 }
 
-/* Mobile / Tablet (Drawer View) */
 @media (max-width: 992px) {
   .buyerNavWrapper {
     width: 100%;
   }
 
   .navContainer {
-    flex-direction: column; /* Vertical stack for mobile drawer */
+    flex-direction: column; 
     align-items: stretch;
     gap: 8px;
   }
 
   .navLink {
-    justify-content: flex-start; /* Left-align icons and text in drawer */
     padding: 14px 20px;
     width: 100%;
     min-height: 55px;
   }
   
-  /* Remove backgrounds on mobile links unless active 
-     to keep the drawer looking "neat and simple" */
+
   .navLink:not(.active) {
     border: none;
   }

@@ -13,8 +13,8 @@ const faqData = [
     answer: "Registration is free. We charge a nominal transaction fee only when a deal is successfully closed. You can view the full fee breakdown in your Seller Dashboard." 
   },
   { 
-    question: "How do I handle shipping and logistics?", 
-    answer: "Sellers can choose to manage their own logistics or opt for RubberScrapMart's verified logistics partners. Once an order is confirmed, you can generate shipping labels directly from the portal." 
+    question: "Who is responsible for arranging transport?", 
+    answer: "Our priority is to provide marketplace-managed transport for all orders. However, if our logistics partners are unavailable for your specific route, you will be notified through the dashboard to arrange your own transport. We ensure the process remains smooth and trackable regardless of the provider." 
   },
   {
   question: "How do I list my scrap?",

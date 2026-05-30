@@ -18,22 +18,22 @@ const steps = [
   { 
     icon: <PlusCircle size={34} />, 
     title: "List Material", 
-    desc: "Upload photos and details of your scrap (grade, moisture, quantity)." 
+    desc: "Upload photos and details of your scrap (location, category, quantity)." 
   },
   { 
     icon: <ShieldCheck size={34} />, 
     title: "Listing Approved", 
-    desc: "Your material is reviewed and published on the platform." 
+    desc: "Your material is reviewed and published to buyers on the platform." 
   },
   { 
     icon: <Truck size={34} />, 
-    title: "Ship Material", 
-    desc: "Arrange logistics and update tracking details on the platform." 
+    title: "Logistics Coordination", 
+    desc: "We prioritize marketplace transport. If unavailable, you must arrange your own and provide details." 
   },
   { 
     icon: <BadgeCheck size={34} />, 
-    title: "Get Paid", 
-    desc: "Receive secure payment once the transaction is completed." 
+    title: "Secure Payment", 
+    desc: "Ensure loading is completed correctly to receive your payment promptly upon delivery." 
   },
 ];
 
