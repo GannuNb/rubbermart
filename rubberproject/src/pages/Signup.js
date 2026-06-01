@@ -23,9 +23,11 @@ function Signup() {
 
   const roleFromUrl = queryParams.get("role");
 
-  const [role, setRole] = useState(
-    roleFromUrl === "seller" ? "seller" : "buyer",
-  );
+  const [role, setRole] = useState(() => {
+    if (roleFromUrl === "seller") return "seller";
+    if (roleFromUrl === "transporter") return "transporter";
+    return "buyer";
+  });
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -48,6 +50,8 @@ function Signup() {
   useEffect(() => {
     if (roleFromUrl === "seller") {
       setRole("seller");
+    } else if (roleFromUrl === "transporter") {
+      setRole("transporter");
     } else {
       setRole("buyer");
     }
@@ -182,11 +186,19 @@ function Signup() {
 
       <div className={signupstyles.buyerSignupPage}>
         <div className={signupstyles.buyerSignupContent}>
-          <h1>{role === "seller" ? "Sign Up as Seller" : "Sign Up"}</h1>
+          <h1>
+            {role === "seller"
+              ? "Sign Up as Seller"
+              : role === "transporter"
+                ? "Sign Up as Transporter"
+                : "Sign Up"}
+          </h1>
           <p>
             {role === "seller"
               ? "Create your seller account to continue"
-              : "Create your account to continue"}
+              : role === "transporter"
+                ? "Create your transporter account to continue"
+                : "Create your account to continue"}
           </p>
 
           <form
@@ -270,12 +282,12 @@ function Signup() {
 
             <button type="submit" className={signupstyles.signupBtn}>
               {signupLoading
-                ? role === "seller"
-                  ? "Signing Up as Seller..."
-                  : "Signing Up..."
+                ? `Signing Up as ${role.charAt(0).toUpperCase() + role.slice(1)}...`
                 : role === "seller"
                   ? "Sign Up as Seller"
-                  : "Sign Up"}
+                  : role === "transporter"
+                    ? "Sign Up as Transporter"
+                    : "Sign Up"}
             </button>
 
             <div className={signupstyles.divider}>
@@ -298,16 +310,37 @@ function Signup() {
               <span onClick={() => navigate("/login")}>Login here</span>
             </p>
 
-            <button
-              type="button"
-              className={signupstyles.sellerBtn}
-              onClick={() => setRole(role === "buyer" ? "seller" : "buyer")}
+            <div
+              style={{
+                display: "flex",
+                gap: "10px",
+                flexDirection: "column",
+              }}
             >
-              <HiOutlineBuildingStorefront
-                className={signupstyles.sellerIcon}
-              />
-              {role === "buyer" ? "Sign Up as a Seller" : "Continue as Buyer"}
-            </button>
+              <button
+                type="button"
+                className={signupstyles.sellerBtn}
+                onClick={() => setRole("buyer")}
+              >
+                Continue as Buyer
+              </button>
+
+              <button
+                type="button"
+                className={signupstyles.sellerBtn}
+                onClick={() => setRole("seller")}
+              >
+                Sign Up as Seller
+              </button>
+
+              <button
+                type="button"
+                className={signupstyles.sellerBtn}
+                onClick={() => setRole("transporter")}
+              >
+                Sign Up as Transporter
+              </button>
+            </div>
           </form>
         </div>
       </div>

@@ -38,8 +38,8 @@ function BusinessProfile() {
   }, [navigate]);
 
   useEffect(() => {
-  dispatch(resetBusinessProfileState());
-}, [dispatch]);
+    dispatch(resetBusinessProfileState());
+  }, [dispatch]);
 
   useEffect(() => {
     if (createBusinessProfileSuccessMessage) {
@@ -175,8 +175,9 @@ function BusinessProfile() {
     if (!formData.phoneNumber.trim())
       validationErrors.phoneNumber = "Phone number is required";
     if (!formData.email.trim()) validationErrors.email = "Email is required";
-    if (!formData.gstNumber.trim())
+    if (user?.role !== "transporter" && !formData.gstNumber.trim()) {
       validationErrors.gstNumber = "GST number is required";
+    }
     if (!formData.panNumber.trim())
       validationErrors.panNumber = "PAN number is required";
     if (!formData.billingAddress.trim())
@@ -186,9 +187,10 @@ function BusinessProfile() {
     }
 
     // Validate mandatory file fields (PAN certificate validation removed here)
-    if (!formData.gstCertificate)
+    if (user?.role !== "transporter" && !formData.gstCertificate) {
       validationErrors.gstCertificate =
         "GST certificate is required (Max 1 MB)";
+    }
 
     // Validate Terms checkbox
     if (!formData.agreeTerms)
@@ -227,7 +229,9 @@ function BusinessProfile() {
       );
     }
 
-    submitData.append("gstCertificate", formData.gstCertificate);
+    if (formData.gstCertificate) {
+      submitData.append("gstCertificate", formData.gstCertificate);
+    }
 
     // Append PAN certificate if it exists, otherwise send empty/null value smoothly
     if (formData.panCertificate) {
@@ -275,7 +279,9 @@ function BusinessProfile() {
         <h1>
           {user?.role === "seller"
             ? "Create Seller Business Profile"
-            : "Create Buyer Business Profile"}
+            : user?.role === "transporter"
+              ? "Create Transporter Business Profile"
+              : "Create Buyer Business Profile"}
         </h1>
 
         <p>
@@ -406,7 +412,16 @@ function BusinessProfile() {
 
           <div className={styles.formGrid}>
             <div className={styles.formGroup}>
-              <label>Upload GST Certificate</label>
+              <label>
+                Upload GST Certificate
+                {user?.role === "transporter" && (
+                  <span
+                    style={{color: "#64748b", fontSize: "12px",  fontWeight: "normal", }}>
+                    {" "}
+                    (Optional)
+                  </span>
+                )}
+              </label>
               <input
                 type="file"
                 name="gstCertificate"
@@ -511,7 +526,9 @@ function BusinessProfile() {
               ? "Creating Profile..."
               : user?.role === "seller"
                 ? "Create Seller Profile"
-                : "Create Buyer Profile"}
+                : user?.role === "transporter"
+                  ? "Create Transporter Profile"
+                  : "Create Buyer Profile"}
           </button>
         </form>
       </div>
