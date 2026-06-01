@@ -66,9 +66,11 @@
 }
 
 .gradientText {
-  background: linear-gradient(135deg, #059669, #10b981);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+    background: linear-gradient(135deg, #059669, #10b981);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
 }
 
 .heroSub {
@@ -154,7 +156,9 @@
   margin: 10px 0;
   letter-spacing: -0.05em;
   background: linear-gradient(to bottom, #ffffff, #94a3b8);
-  -webkit-background-clip: text;
+  background-clip: text;          /* standard property */
+  -webkit-background-clip: text; /* Safari/Chrome */
+  color: transparent;            /* standard */
   -webkit-text-fill-color: transparent;
 }
 
