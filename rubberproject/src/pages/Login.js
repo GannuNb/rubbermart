@@ -45,25 +45,46 @@ function Login() {
     }
   }, [loginSuccessMessage]);
 
-// 1. WATCH FOR ALERTS (Success or Error)
+  // 1. WATCH FOR ALERTS (Success or Error)
   useEffect(() => {
     if (loginSuccessMessage) {
-      setAlertData({ show: true, type: "success", title: "Login Successful", message: loginSuccessMessage });
+      setAlertData({
+        show: true,
+        type: "success",
+        title: "Login Successful",
+        message: loginSuccessMessage,
+      });
     } else if (loginError) {
-      setAlertData({ show: true, type: "error", title: "Login Failed", message: loginError });
+      setAlertData({
+        show: true,
+        type: "error",
+        title: "Login Failed",
+        message: loginError,
+      });
     }
   }, [loginSuccessMessage, loginError]);
 
   // 2. WATCH FOR NAVIGATION (The "Guard")
   useEffect(() => {
-    // Only navigate if a user exists AND an alert is NOT currently blocking the screen
-    if (user && !alertData.show) { 
+    if (user && !alertData.show) {
       const timer = setTimeout(() => {
-        if (user.role === "admin") navigate("/admin-dashboard");
-        else if ((user.role === "buyer" || user.role === "seller") && !user.businessProfileCompleted) navigate("/business-profile");
-        else if (user.role === "seller") navigate("/seller-dashboard");
-        else navigate("/");
-      }, 1500); // Wait 1.5s to let the user see the alert
+        if (user.role === "admin") {
+          navigate("/admin-dashboard");
+        } else if (
+          (user.role === "buyer" ||
+            user.role === "seller" ||
+            user.role === "transporter") &&
+          !user.businessProfileCompleted
+        ) {
+          navigate("/business-profile");
+        } else if (user.role === "seller") {
+          navigate("/seller-dashboard");
+        } else if (user.role === "transporter") {
+          navigate("/transporter-dashboard");
+        } else {
+          navigate("/");
+        }
+      }, 1500);
 
       return () => clearTimeout(timer);
     }

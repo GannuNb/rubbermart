@@ -17,22 +17,7 @@ export const createBusinessProfile = async (req, res) => {
       interestedProducts,
     } = req.body;
 
-    if (
-      !companyName ||
-      !phoneNumber ||
-      !email ||
-      !gstNumber ||
-      !panNumber ||
-      !billingAddress
-    ) {
-      return res.status(400).json({
-        success: false,
-        message: "Please fill all required fields",
-      });
-    }
-
     const user = await User.findById(req.user._id);
-
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -40,10 +25,31 @@ export const createBusinessProfile = async (req, res) => {
       });
     }
 
-    const counterName =
-      user.role === "seller"
-        ? "sellerCompanyCounter"
-        : "buyerCompanyCounter";
+    const isTransporter = user?.role === "transporter";
+
+    if (
+      !companyName ||
+      !phoneNumber ||
+      !email ||
+      !panNumber ||
+      !billingAddress ||
+      (!isTransporter && !gstNumber)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Please fill all required fields",
+      });
+    }
+
+    let counterName;
+
+    if (user.role === "seller") {
+      counterName = "sellerCompanyCounter";
+    } else if (user.role === "transporter") {
+      counterName = "transporterCompanyCounter";
+    } else {
+      counterName = "buyerCompanyCounter";
+    }
 
     const counter = await CompanyIdCounter.findOneAndUpdate(
       {
@@ -57,7 +63,7 @@ export const createBusinessProfile = async (req, res) => {
       {
         new: true,
         upsert: true,
-      }
+      },
     );
 
     const companyPrefix = companyName
@@ -65,10 +71,18 @@ export const createBusinessProfile = async (req, res) => {
       .toUpperCase()
       .slice(0, 3);
 
-    const rolePrefix = user.role === "seller" ? "S" : "B";
+    let rolePrefix;
+
+    if (user.role === "seller") {
+      rolePrefix = "S";
+    } else if (user.role === "transporter") {
+      rolePrefix = "T";
+    } else {
+      rolePrefix = "B";
+    }
 
     const companyId = `RSM${companyPrefix}_${rolePrefix}${String(
-      counter.sequenceValue
+      counter.sequenceValue,
     ).padStart(2, "0")}`;
 
     let parsedInterestedProducts = [];
@@ -84,15 +98,14 @@ export const createBusinessProfile = async (req, res) => {
       companyName,
       phoneNumber,
       email,
-      gstNumber,
+      gstNumber: gstNumber || "",
       panNumber,
       billingAddress,
       shippingAddress,
       sameAsBillingAddress:
         sameAsBillingAddress === "true" || sameAsBillingAddress === true,
 
-      interestedProducts:
-        user.role === "buyer" ? parsedInterestedProducts : [],
+      interestedProducts: user.role === "buyer" ? parsedInterestedProducts : [],
 
       gstCertificate: req.files?.gstCertificate?.[0]
         ? {
