@@ -15,13 +15,16 @@ function useNavbarRole(user) {
   const isAdmin =
     user?.role === "admin";
 
+  const isTransporter =
+    user?.role === "transporter";
+
 
   /* =========================
       DASHBOARD USER
   ========================== */
 
   const isDashboardUser =
-    isSeller || isAdmin;
+  isSeller || isAdmin || isTransporter;
 
 
   /* =========================
@@ -42,6 +45,10 @@ function useNavbarRole(user) {
       return "/seller-dashboard";
     }
 
+    if (isTransporter) {
+      return "/transporter-dashboard";
+    }
+
     return "/";
   };
 
@@ -55,6 +62,8 @@ function useNavbarRole(user) {
     isSeller,
 
     isAdmin,
+    
+    isTransporter,
 
     isDashboardUser,
 

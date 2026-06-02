@@ -5,7 +5,9 @@ import styles from "../../styles/Navbar/UserProfileCard.module.css";
 
 function UserProfileCard({ user }) {
   // Safety check to ensure name exists before splitting
-  const firstName = user?.name ? user.name.split(" ")[0] : "User";
+  const firstName = user?.fullName
+  ? user.fullName.split(" ")[0]
+  : "User";
 
   return (
     <div className={styles.profileWrapper}>

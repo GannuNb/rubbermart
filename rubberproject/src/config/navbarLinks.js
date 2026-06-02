@@ -16,27 +16,26 @@ import {
   FaPlusCircle,
   FaCheckCircle,
   FaClock,
+  FaTruck,
 } from "react-icons/fa";
-
 
 /* =========================
     GUEST NAV LINKS
 ========================= */
 
 export const guestLinks = [
-
   {
     label: "Home",
     path: "/",
     icon: FaHome,
   },
 
-    {
+  {
     label: "About",
     path: "/about",
     icon: FaUsers,
   },
-  
+
   {
     label: "Browse Products",
     path: "/our-products",
@@ -55,8 +54,6 @@ export const guestLinks = [
     icon: FaStore,
   },
 
-
-
   {
     label: "Contact",
     path: "/contactus",
@@ -64,20 +61,18 @@ export const guestLinks = [
   },
 ];
 
-
 /* =========================
     BUYER NAV LINKS
 ========================= */
 
 export const buyerLinks = [
-
   {
     label: "Home",
     path: "/",
     icon: FaHome,
   },
 
-    {
+  {
     label: "About",
     path: "/about",
     icon: FaUsers,
@@ -95,35 +90,29 @@ export const buyerLinks = [
     icon: FaShoppingCart,
   },
 
-
-
   {
     label: "Buyer Guide",
     path: "/buyer-guide",
     icon: FaBookOpen,
   },
 
-
-
   {
     label: "Contact",
     path: "/contactus",
     icon: FaRegAddressBook,
   },
-    {
+  {
     label: "My Profile",
     path: "/buyer/profile",
     icon: FaUserCircle,
   },
 ];
 
-
 /* =========================
     SELLER NAV LINKS
 ========================= */
 
 export const sellerLinks = [
-
   {
     label: "Dashboard",
     path: "/seller-dashboard",
@@ -157,6 +146,42 @@ export const sellerLinks = [
     label: "Orders",
     path: "/seller/orders",
     icon: FaClipboardList,
+  },
+];
+
+/* =========================
+    TRANSPORTER NAV LINKS
+========================= */
+
+export const transporterLinks = [
+  {
+    label: "Dashboard",
+    path: "/transporter-dashboard",
+    icon: FaTruck,
+  },
+
+  {
+    label: "Available Shipments",
+    path: "/transporter-shipments",
+    icon: FaClipboardList,
+  },
+
+  {
+    label: "Accepted Deliveries",
+    path: "/transporter-active-deliveries",
+    icon: FaBoxOpen,
+  },
+
+  {
+    label: "Completed Deliveries",
+    path: "/transporter-completed-deliveries",
+    icon: FaCheckCircle,
+  },
+
+  {
+    label: "My Profile",
+    path: "/transporter-profile",
+    icon: FaUserCircle,
   },
 ];
 

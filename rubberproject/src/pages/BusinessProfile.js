@@ -268,6 +268,8 @@ function BusinessProfile() {
 
               if (user?.role === "seller") {
                 navigate("/seller-dashboard");
+              } else if (user?.role === "transporter") {
+                navigate("/transporter-dashboard");
               } else {
                 navigate("/");
               }
@@ -416,7 +418,12 @@ function BusinessProfile() {
                 Upload GST Certificate
                 {user?.role === "transporter" && (
                   <span
-                    style={{color: "#64748b", fontSize: "12px",  fontWeight: "normal", }}>
+                    style={{
+                      color: "#64748b",
+                      fontSize: "12px",
+                      fontWeight: "normal",
+                    }}
+                  >
                     {" "}
                     (Optional)
                   </span>

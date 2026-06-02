@@ -64,11 +64,15 @@ import FAQPage from "./components/FAQPage/FAQPage";
 
 // scrollto top arrow
 import ScrollToTopArrow from "./components/ScrollToTop/ScrollToTopArrow";
+
 import AdminApprovedProducts from "./pages/admin/AdminApprovedProducts";
 import AdminPendingProducts from "./pages/admin/AdminPendingProducts";
 import AdminRejectedProducts from "./pages/admin/AdminRejectedProducts";
 import SellerApprovedProducts from "./pages/seller/SellerApprovedProducts";
 import SellerRejectedProducts from "./pages/seller/SellerRejectedProducts";
+
+//transporter
+import TransporterDashboard from "./pages/transporter/TransporterDashboard";
 
 
 function AppContent() {
@@ -95,6 +99,9 @@ function AppContent() {
             if (user?.role === "seller") {
               return <Navigate to="/seller-dashboard" replace />;
             }
+            if (user?.role === "transporter") {
+              return <Navigate to="/transporter-dashboard" replace />;
+            }
             return <Homepage />;
           })()}
         />
@@ -120,6 +127,9 @@ function AppContent() {
         <Route path="/buyer/order/:orderId/shipping/:itemName" element={<BuyerShippingInvoices />} />
         <Route path="/buyer/order/:orderId/shipping-invoice/:shipmentId" element={<BuyerSingleShippingInvoice />} />
         <Route path="/buyer-guide" element={<BuyerGuide />} />
+
+        {/* transporter */}
+        <Route  path="/transporter-dashboard"  element={<TransporterDashboard />}/>
 
         {/* seller */}
         <Route path="/seller-dashboard" element={<ProtectedRoute allowedRole="seller"><SellerDashboard /></ProtectedRoute>} />

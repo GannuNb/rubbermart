@@ -10,6 +10,7 @@ import styles from "../../styles/Navbar/RoleNavbar.module.css";
 import GuestNavbar from "./GuestNavbar";
 import BuyerNavbar from "./BuyerNavbar";
 import SellerNavbar from "./SellerNavbar";
+import TransporterNavbar from "./TransporterNavbar";
 import AdminNavbar from "./AdminNavbar";
 import NavbarSearch from "./NavbarSearch";
 import BuyerProfileMenu from "./BuyerProfileMenu";
@@ -25,12 +26,19 @@ function RoleNavbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
-  
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user } = useSelector((state) => state.auth);
 
   useAutoLogout();
-  const { isGuest, isBuyer, isSeller, isDashboardUser, getLogoPath } = useNavbarRole(user);
+  const {
+    isGuest,
+    isBuyer,
+    isSeller,
+    isTransporter,
+    isDashboardUser,
+    getLogoPath,
+  } = useNavbarRole(user);
 
   // Auto-close mobile menu on route change
   useEffect(() => {
@@ -46,8 +54,14 @@ function RoleNavbar() {
   // --- FAILSALFE GREETING LOGIC ---
   const getUserGreetingName = () => {
     // 1. Check all common profile name fields from Redux state
-    const rawName = user?.username || user?.name || user?.fullName || user?.companyName || user?.role || "User";
-    
+    const rawName =
+      user?.username ||
+      user?.name ||
+      user?.fullName ||
+      user?.companyName ||
+      user?.role ||
+      "User";
+
     // 2. Clean it up, grab the first name/word
     const firstName = rawName.trim().split(" ")[0];
 
@@ -61,11 +75,10 @@ function RoleNavbar() {
       <div className={styles.topNavbar}>
         <div className={styles.navInner}>
           <div className={styles.headerMainRow}>
-            
             {/* LEFT: Mobile Toggle + Logo */}
             <div className={styles.leftSection}>
-              <button 
-                className={styles.mobileMenuBtn} 
+              <button
+                className={styles.mobileMenuBtn}
                 onClick={() => setMobileMenuOpen(true)}
               >
                 <FaBars />
@@ -85,7 +98,10 @@ function RoleNavbar() {
               {/* Dashboard links for Admin/Seller on Desktop */}
               <div className={styles.desktopDashboardLinks}>
                 {isSeller && <SellerNavbar location={location} />}
-                {user?.role === 'admin' && <AdminNavbar location={location} />}
+
+                {isTransporter && <TransporterNavbar location={location} />}
+
+                {user?.role === "admin" && <AdminNavbar location={location} />}
               </div>
 
               {!isGuest ? (
@@ -123,15 +139,24 @@ function RoleNavbar() {
       {(isGuest || isBuyer) && (
         <nav className={styles.bottomNavbarDesktop}>
           <div className={styles.bottomInner}>
-            {isGuest ? <GuestNavbar location={location} /> : <BuyerNavbar location={location} />}
+            {isGuest ? (
+              <GuestNavbar location={location} />
+            ) : (
+              <BuyerNavbar location={location} />
+            )}
           </div>
         </nav>
       )}
 
       {/* --- MOBILE FULLSCREEN OVERLAY --- */}
-      <div className={`${styles.mobileOverlay} ${mobileMenuOpen ? styles.mobileMenuOpen : ""}`}>
+      <div
+        className={`${styles.mobileOverlay} ${mobileMenuOpen ? styles.mobileMenuOpen : ""}`}
+      >
         <div className={styles.overlayHeader}>
-          <button className={styles.closeBtn} onClick={() => setMobileMenuOpen(false)}>
+          <button
+            className={styles.closeBtn}
+            onClick={() => setMobileMenuOpen(false)}
+          >
             <FaTimes />
           </button>
         </div>
@@ -140,22 +165,38 @@ function RoleNavbar() {
           {/* Mobile Profile Display */}
           {!isGuest && (
             <div className={styles.mobileProfileCard}>
-               {isBuyer ? <BuyerProfileMenu user={user} /> : <UserProfileCard user={user} />}
+              {isBuyer ? (
+                <BuyerProfileMenu user={user} />
+              ) : (
+                <UserProfileCard user={user} />
+              )}
             </div>
           )}
 
           {/* Mobile Vertical Navigation */}
           <nav className={styles.mobileVerticalNav}>
             {isDashboardUser ? (
-              isSeller ? <SellerNavbar location={location} /> : <AdminNavbar location={location} />
+              isSeller ? (
+                <SellerNavbar location={location} />
+              ) : isTransporter ? (
+                <TransporterNavbar location={location} />
+              ) : (
+                <AdminNavbar location={location} />
+              )
+            ) : isGuest ? (
+              <GuestNavbar location={location} />
             ) : (
-              isGuest ? <GuestNavbar location={location} /> : <BuyerNavbar location={location} />
+              <BuyerNavbar location={location} />
             )}
           </nav>
 
           {/* Mobile Action Footer */}
           <div className={styles.mobileActionFooter}>
-            {isGuest ? <GuestActions /> : <LogoutButton onLogout={handleLogout} />}
+            {isGuest ? (
+              <GuestActions />
+            ) : (
+              <LogoutButton onLogout={handleLogout} />
+            )}
           </div>
         </div>
       </div>
