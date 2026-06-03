@@ -12,6 +12,8 @@ function TransporterDashboard() {
       <p>Transporter can also accept or reject the delivery or also self accepting the delivery</p>
       <p>Transporter will recieve the payment from seller/admin?</p>
       <p>Transorter can manage their profile</p>
+      <p>Transporter can  deliver or seller will deliver </p>
+      <p>Transporter can accept the deliveries or admin can also assign</p>
       <p>Transporter</p>
     </div>
   );
