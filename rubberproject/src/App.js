@@ -1,5 +1,5 @@
 import React from "react";
-import {  BrowserRouter as Router,  Routes,  Route,  useLocation,  Navigate,} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate, } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 //pages
@@ -70,6 +70,7 @@ import AdminPendingProducts from "./pages/admin/AdminPendingProducts";
 import AdminRejectedProducts from "./pages/admin/AdminRejectedProducts";
 import SellerApprovedProducts from "./pages/seller/SellerApprovedProducts";
 import SellerRejectedProducts from "./pages/seller/SellerRejectedProducts";
+import TransporterGuide from "./components/TransporterGuide/TransporterGuide";
 
 //transporter
 import TransporterDashboard from "./pages/transporter/TransporterDashboard";
@@ -110,7 +111,7 @@ function AppContent() {
             return <Homepage />;
           })()}
         />
-        <Route path="/signup" element= {<PublicRoute><Signup /></PublicRoute>} />
+        <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
         <Route path="/login" element={<PublicRoute> <Login /> </PublicRoute>} />
         <Route path="/business-profile" element={<BusinessProfile />} />
         <Route path="/about" element={<About />} />
@@ -174,6 +175,8 @@ function AppContent() {
         {/* faq */}
         <Route path="/faq" element={<FAQPage />} />
 
+        {/* Transporter */}
+        <Route path="/transporter-guide" element={<TransporterGuide/>} />
 
       </Routes>
       <ScrollToTopArrow />

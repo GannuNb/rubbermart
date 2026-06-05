@@ -1,0 +1,19 @@
+.pageWrapper {
+  min-height: 100vh;
+  background-color: #ffffff;
+}
+
+.sectionsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 5rem;
+}
+
+/* CRITICAL STEP FOR PERFECT NAVIGATION:
+  Gives your content target points a vertical offset buffer so they do 
+  not slam into or dock tightly underneath header menus during smooth scrolling action movements.
+*/
+.scrollTarget {
+  scroll-margin-top: 50px;
+  transition: all 0.4s ease-in-out;
+}

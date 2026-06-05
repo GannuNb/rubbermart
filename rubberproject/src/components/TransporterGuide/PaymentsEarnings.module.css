@@ -1,0 +1,110 @@
+.sectionContainer {
+  padding: 0px 0;
+  width: 100%;
+  background: #ffffff;
+}
+
+/* DECORATIVE HEADER THEME COLOR CONFIGURATIONS */
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 35px;
+}
+
+.headerTitle {
+  font-size: 25px;
+  font-weight: 900;
+  color: #0b0f1d;
+  margin: 0;
+  letter-spacing: -0.3px;
+}
+
+.dots {
+  color: #6d28d9;
+  font-size: 16px;
+  letter-spacing: 2px;
+  font-weight: bold;
+}
+
+/* FIGMA SOLID VIVID PURPLE CARDS */
+.earningCard {
+  background: linear-gradient(135deg, #743ad3 0%, #6d28d9 100%);
+  border-radius: 20px;
+  padding: 30px 24px;
+  width: 100%;
+  box-shadow: 0 10px 25px rgba(58, 25, 183, 0.15);
+  transition: transform 0.25s ease;
+}
+
+.earningCard:hover {
+  transform: translateY(-3px);
+}
+
+/* SIDE-BY-SIDE INLINE LAYOUT FRAMEWORK */
+.cardFlexWrapper {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  height: 100%;
+}
+
+/* ICON GRAPHIC POSITIONING CELL */
+.iconContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+}
+
+.svgGraphic {
+  width: 100%;
+  height: auto;
+}
+
+/* TEXT NODE WRAPPERS */
+.textContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.cardTitle {
+  font-size: 17px;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+
+.cardDesc {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.82);
+  margin: 0;
+  font-weight: 500;
+}
+
+/* RESPONSIVE SCALER BREAKPOINTS */
+@media (max-width: 1199px) and (min-width: 992px) {
+  .cardFlexWrapper {
+    gap: 12px;
+  }
+  .cardTitle {
+    font-size: 15px;
+  }
+  .cardDesc {
+    font-size: 11.5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cardFlexWrapper {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+}

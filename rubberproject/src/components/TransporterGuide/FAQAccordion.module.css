@@ -1,0 +1,350 @@
+/* ================= GLOBAL WRAPPER ================= */
+.pageWrapper {
+  max-width: 2200px; /* Keeps the wide container capability */
+  width: 100%;
+  margin: 30px auto;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  box-sizing: border-box;
+}
+
+/* ================= MAIN CARD SECTION ================= */
+.mainCard {
+  background: linear-gradient(180deg, #6226b3 0%, #4a1d8a 100%);
+  border-radius: 24px; /* Slightly tighter radius for a sharper edge */
+  position: relative;
+  overflow: hidden;
+  padding: 50px 50px; /* Normalized padding so it doesn't swallow vertical space */
+  box-shadow: 0 30px 70px rgba(53, 22, 163, 0.2);
+}
+
+.gridOverlay {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1.2px, transparent 1.2px);
+  background-size: 30px 30px;
+  pointer-events: none;
+}
+
+.layout {
+  display: flex;
+  align-items: center;
+  gap: 50px; /* Balanced space between visual asset and questions */
+  position: relative;
+  z-index: 2;
+} 
+
+/* ================= ILLUSTRATION SIDE ================= */
+.illustrationSide {
+  flex: 0.8; /* Slightly smaller ratio so it doesn't dominate the wide screen */
+  position: relative;
+  height: 320px; /* Brought height down from 450px */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bgGlow {
+  position: absolute;
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(124, 94, 255, 0.12) 0%, transparent 70%);
+  filter: blur(40px);
+  left: -20px;
+  z-index: 0;
+}
+
+.purpleBubble {
+  width: 160px; /* Reset to regular, snappy sizing */
+  height: 160px;
+  background: linear-gradient(180deg, #9d7cff 0%, #6333f2 100%);
+  border-radius: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  transform: rotate(-6deg);
+  box-shadow: 
+    0 25px 50px rgba(0, 0, 0, 0.35),
+    inset -6px -6px 15px rgba(0, 0, 0, 0.2),
+    inset 6px 6px 15px rgba(255, 255, 255, 0.2);
+}
+
+.questionMark {
+  font-size: 90px; /* Cleaner look over the massive 130px size */
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.yellowBubble {
+  width: 110px;
+  height: 85px;
+  background: linear-gradient(135deg, #ffca28 0%, #f57f17 100%);
+  border-radius: 28px;
+  position: absolute;
+  right: 18%;
+  bottom: 18%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  transform: rotate(10deg);
+  box-shadow: 15px 20px 35px rgba(0, 0, 0, 0.25);
+}
+
+.dots {
+  display: flex;
+  gap: 6px;
+}
+
+.dots span {
+  width: 9px;
+  height: 9px;
+  background: #ffffff;
+  border-radius: 50%;
+}
+
+/* ================= FAQ CONTENT SIDE ================= */
+.contentSide {
+  flex: 2.2;
+}
+
+.header {
+  text-align: left;
+  margin-bottom: 35px;
+}
+
+.topBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 6px 14px;
+  border-radius: 100px;
+  color: white;
+  font-size: 11px;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.heading {
+  color: white;
+  font-size: 32px; /* Fixed neat headline size instead of clamp text blowouts */
+  font-weight: 700;
+  margin: 0 0 10px 0;
+  letter-spacing: -0.3px;
+}
+
+.subHeading {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 15px;
+  max-width: 650px;
+}
+
+/* ================= ACCORDION STYLE ================= */
+.faqList {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  backdrop-filter: blur(15px);
+  width: 100%;
+}
+
+.faqItemWrapper {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.faqItemWrapper:last-child {
+  border-bottom: none;
+}
+
+.faqItem {
+  padding: 20px 28px; /* Snappy, precise padding */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.faqText {
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 15px; /* Clean, standard reading size */
+  font-weight: 500;
+  padding-right: 20px;
+}
+
+.plusCircle {
+  width: 26px;
+  height: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.plusCircle.active {
+  background: white;
+  color: #6d28d9;
+  border-color: white;
+}
+
+.answerWrapper {
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.answerWrapper.open {
+  max-height: 250px;
+}
+
+.answerText {
+  padding: 0 28px 20px 28px;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* ================= SUPPORT BAR ================= */
+.supportBar {
+  margin-top: 35px;
+  background: #7d3cb5;
+  border-radius: 24px;
+  padding: 24px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+}
+
+.supportLeft {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.headphoneBox {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 14px;
+  border-radius: 16px;
+  flex-shrink: 0;
+}
+
+.supportText h3 {
+  color: white;
+  margin: 0 0 4px 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.supportText p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+  margin: 0;
+}
+
+.chatBtn {
+  background: white;
+  color: #6d28d9;
+  padding: 12px 24px;
+  border-radius: 12px; /* Matches layout look better than capsule pill shapes */
+  border: none;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.chatBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* ================= RESPONSIVE DESIGN ================= */
+@media (max-width: 1400px) {
+  .layout {
+    gap: 30px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .layout {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .illustrationSide {
+    height: 260px;
+    width: 100%;
+  }
+
+  .yellowBubble {
+    right: 30%;
+  }
+
+  .contentSide {
+    width: 100%;
+  }
+  
+  .header {
+    text-align: center;
+  }
+}
+
+@media (max-width: 992px) {
+  .pageWrapper {
+    padding: 0 15px;
+  }
+
+  .supportBar {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+    padding: 30px 20px;
+  }
+
+  .supportLeft {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .mainCard {
+    padding: 35px 20px;
+    border-radius: 20px;
+  }
+
+  .heading {
+    font-size: 26px;
+  }
+
+  .faqItem {
+    padding: 18px 20px;
+  }
+
+  .answerText {
+    padding: 0 20px 18px 20px;
+  }
+
+  .illustrationSide {
+    transform: scale(0.8);
+    height: 220px;
+  }
+}
+
+@media (max-width: 480px) {
+  .illustrationSide {
+    display: none;
+  }
+}
