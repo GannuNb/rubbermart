@@ -1,7 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { getSellerSingleOrderThunk, confirmSellerOrderThunk, rejectSellerOrderThunk, } from "../../redux/slices/sellerOrderThunk";
+import {
+  getSellerSingleOrderThunk,
+  confirmSellerOrderThunk,
+  rejectSellerOrderThunk,
+} from "../../redux/slices/sellerOrderThunk";
 import { clearSellerOrderMessages } from "../../redux/slices/sellerOrderSlice";
 import SellerPaymentSection from "../../components/orders/SellerPaymentSection";
 import SellerShipmentSection from "../../components/orders/SellerShipmentSection";
@@ -22,6 +26,8 @@ const Sellerordermanage = () => {
   const { orderId } = useParams();
 
   const [cancellationReason, setCancellationReason] = useState("");
+  const [transportMode, setTransportMode] = useState("self_transport");
+
   const [alert, setAlert] = useState({
     show: false,
     type: "",
@@ -107,7 +113,12 @@ const Sellerordermanage = () => {
   }, [rejectOrderError]);
 
   const handleConfirmOrder = () => {
-    dispatch(confirmSellerOrderThunk(orderId));
+    dispatch(
+      confirmSellerOrderThunk({
+        orderId,
+        transportMode,
+      }),
+    );
   };
 
   const handleRejectOrder = () => {
@@ -267,11 +278,11 @@ const Sellerordermanage = () => {
             const productImage =
               item?.productImage?.data?.data && item?.productImage?.contentType
                 ? `data:${item.productImage.contentType};base64,${btoa(
-                  new Uint8Array(item.productImage.data.data).reduce(
-                    (data, byte) => data + String.fromCharCode(byte),
-                    "",
-                  ),
-                )}`
+                    new Uint8Array(item.productImage.data.data).reduce(
+                      (data, byte) => data + String.fromCharCode(byte),
+                      "",
+                    ),
+                  )}`
                 : null;
 
             return (
@@ -393,7 +404,19 @@ const Sellerordermanage = () => {
                 Please confirm the order after reviewing all order details. Once
                 confirmed, the buyer will be notified.
               </p>
+              <label className={styles.inputLabel}>Transport Mode *</label>
 
+              <select
+                className={styles.select}
+                value={transportMode}
+                onChange={(e) => setTransportMode(e.target.value)}
+              >
+                <option value="self_transport">Self Transport</option>
+
+                <option value="marketplace_transport">
+                  Marketplace Transport
+                </option>
+              </select>
               <button
                 className={styles.confirmButton}
                 onClick={handleConfirmOrder}

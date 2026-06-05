@@ -74,22 +74,14 @@ const AdminOrdersTable = ({ orders }) => {
       }
 
       const base64String = btoa(
-        new Uint8Array(byteArray).reduce(
-          (data, byte) => {
-            return (
-              data + String.fromCharCode(byte)
-            );
-          },
-          ""
-        )
+        new Uint8Array(byteArray).reduce((data, byte) => {
+          return data + String.fromCharCode(byte);
+        }, ""),
       );
 
       return `data:${image.contentType};base64,${base64String}`;
     } catch (error) {
-      console.log(
-        "Image Conversion Error:",
-        error
-      );
+      console.log("Image Conversion Error:", error);
       return null;
     }
   };
@@ -157,19 +149,22 @@ const AdminOrdersTable = ({ orders }) => {
               const imageSrc = getImageSrc(firstImage);
               const formattedDate = formatDate(order.createdAt);
 
-             return (
-  <tr 
-    key={order._id} 
-    className={styles.tableRow}
-    onClick={() => navigate(`/admin/order-details/${order._id}`)}
-    style={{ cursor: "pointer" }}
-  >
-                  
+              return (
+                <tr
+                  key={order._id}
+                  className={styles.tableRow}
+                  onClick={() => navigate(`/admin/order-details/${order._id}`)}
+                  style={{ cursor: "pointer" }}
+                >
                   {/* ORDER */}
                   <td data-label="Order">
                     <div className={styles.orderCell}>
                       {imageSrc ? (
-                        <img src={imageSrc} alt="product" className={styles.productImage} />
+                        <img
+                          src={imageSrc}
+                          alt="product"
+                          className={styles.productImage}
+                        />
                       ) : (
                         <div className={styles.placeholderImage} />
                       )}
@@ -196,7 +191,9 @@ const AdminOrdersTable = ({ orders }) => {
 
                   {/* STATUS */}
                   <td data-label="Status">
-                    <span className={`${styles.statusBadge} ${getStatusClass(order?.orderStatus)}`}>
+                    <span
+                      className={`${styles.statusBadge} ${getStatusClass(order?.orderStatus)}`}
+                    >
                       {order?.orderStatus?.replaceAll("_", " ") || "-"}
                     </span>
                   </td>

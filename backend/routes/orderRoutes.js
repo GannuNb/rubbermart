@@ -8,7 +8,9 @@ import { uploadDocumentsErrorHandler } from "../middlewares/uploadDocumentsError
 import { createOrder,getSellerOrders,  getSellerSingleOrder,  confirmSellerOrder,rejectSellerOrder,addShipmentToOrder,getBuyerOrders,
     getBuyerSingleOrder, uploadBuyerPayment ,getAdminAllOrders,getAdminSingleOrderDetails,approveBuyerPayment, uploadAdminToSellerPayment,
     markShipmentDeliveredByAdmin,downloadProformaInvoice,downloadShippingInvoice,downloadBuyReport,markShipmentDeliveredBySeller,
-    cancelBuyerOrder, } from "../controllers/orderController.js";
+    cancelBuyerOrder,getOpenTransportShipments,submitTransportQuote,getTransporterQuotes,getShipmentQuotes,
+    assignTransporterToShipment,adminDirectAssignTransporter,getAllTransporters,getTransporterPendingAssignments,
+     transporterAcceptAssignment,transporterRejectAssignment,markShipmentShippedBySeller,} from "../controllers/orderController.js";
 
 import { submitOrderReview } from "../controllers/reviewController.js";
 
@@ -32,16 +34,34 @@ router.get("/seller-orders", protectUser, getSellerOrders);
 router.get("/seller-orders/:orderId",  protectUser,  getSellerSingleOrder);
 router.put("/seller-orders/:orderId/confirm",  protectUser,  confirmSellerOrder);
 router.put("/seller-orders/:orderId/reject",  protectUser,  rejectSellerOrder);
-router.post("/seller-orders/:orderId/shipment",  protectUser,  uploadDocuments.single("shipmentFile"),  addShipmentToOrder);
+router.post("/seller-orders/:orderId/shipment",protectUser,uploadDocuments.fields([{name: "packedItemPhoto",maxCount: 1, }, { name: "weightTicket",maxCount: 1,},]),addShipmentToOrder);
 router.put("/seller-orders/:orderId/shipment/:shipmentId/delivered",  protectUser,  markShipmentDeliveredBySeller);
+router.put( "/seller-orders/:orderId/shipment/:shipmentId/shipped", protectUser, markShipmentShippedBySeller,);
 
 
 //admin
 router.get("/admin/all-orders",  protectUser, protectAdmin,  getAdminAllOrders);
+router.get(  "/admin/transporters",  protectUser,  protectAdmin,  getAllTransporters,);//alltransporters
 router.get("/admin/:orderId",  protectUser,  protectAdmin,  getAdminSingleOrderDetails);
 router.put("/admin/:orderId/payment/:paymentId/approve",  protectUser,  protectAdmin,  approveBuyerPayment);
 router.post("/admin/:orderId/seller-payment",  protectUser,  protectAdmin,  uploadDocuments.single("file"),  uploadAdminToSellerPayment);
 // router.put(  "/admin/:orderId/shipment/:shipmentId/approve",  protectUser,  protectAdmin,  approveShipmentByAdmin);
 router.put(  "/admin/:orderId/shipment/:shipmentId/delivered",  protectUser,  protectAdmin,  markShipmentDeliveredByAdmin);
+router.get(  "/admin/shipment/:shipmentId/quotes",  protectUser,  protectAdmin,  getShipmentQuotes,); //transporters
+router.put(  "/admin/:orderId/shipment/:shipmentId/assign-transporter/:quoteId",  protectUser,  protectAdmin,  assignTransporterToShipment,); //assigning transporter
+router.put(  "/admin/:orderId/shipment/:shipmentId/direct-assign",  protectUser,  protectAdmin,  adminDirectAssignTransporter,); //directassign
+
+
+
+//transporter
+router.get( "/transporter/open-shipments",protectUser, getOpenTransportShipments);
+router.post("/transporter/:orderId/shipment/:shipmentId/quote", protectUser, submitTransportQuote);
+router.get( "/transporter/my-quotes",protectUser,getTransporterQuotes,);
+router.get(  "/transporter/pending-assignments",  protectUser,  getTransporterPendingAssignments,);
+router.put(  "/transporter/:orderId/shipment/:shipmentId/accept-assignment",  protectUser,  transporterAcceptAssignment,);
+router.put(  "/transporter/:orderId/shipment/:shipmentId/reject-assignment",  protectUser,  transporterRejectAssignment,);
+
+
+
 
 export default router;

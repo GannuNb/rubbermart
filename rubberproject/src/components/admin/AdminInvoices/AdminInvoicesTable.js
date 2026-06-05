@@ -9,8 +9,12 @@ const AdminInvoicesTable = ({ order, itemName }) => {
 
   const shipments =
     order?.shipments?.filter(
-      (shipment) => shipment?.selectedItem === itemName
+      (shipment) => shipment?.selectedItem === itemName,
     ) || [];
+
+  const isMarketplaceShipment = (shipment) => {
+    return shipment?.transportMode === "marketplace_transport";
+  };
 
   return (
     <div className={styles.tableWrapper}>
@@ -19,11 +23,23 @@ const AdminInvoicesTable = ({ order, itemName }) => {
       ========================= */}
       <div className={styles.tableHeader}>
         <div>Shipment ID</div>
-        <div>Vehicle No</div>
-        <div>Driver Name</div>
+
+        <div>
+          {shipments.some(isMarketplaceShipment) ? "Quotes" : "Vehicle No"}
+        </div>
+
+        <div>
+          {shipments.some(isMarketplaceShipment)
+            ? "Transporter"
+            : "Driver Name"}
+        </div>
+
         <div>Shipped Qty</div>
+
         <div>Shipment From</div>
+
         <div>Status</div>
+
         <div>Action</div>
       </div>
 
@@ -44,31 +60,37 @@ const AdminInvoicesTable = ({ order, itemName }) => {
           key={item?._id || index}
           className={styles.tableRow}
           onClick={() =>
-            navigate(
-              `/admin/order/${order?._id}/shipping-invoice/${item?._id}`
-            )
+            navigate(`/admin/order/${order?._id}/shipping-invoice/${item?._id}`)
           }
           style={{ cursor: "pointer" }}
         >
-          <div data-label="Shipment ID">
-            {item?.shipmentInvoiceId || "-"}
+          <div data-label="Shipment ID">{item?.shipmentInvoiceId || "-"}</div>
+
+          <div
+            data-label={isMarketplaceShipment(item) ? "Quotes" : "Vehicle No"}
+          >
+            {isMarketplaceShipment(item)
+              ? item?.transportStatus === "quotes_received"
+                ? "Quotes Received"
+                : item?.transportStatus === "transporter_assigned"
+                  ? "Assigned"
+                  : "Open"
+              : item?.vehicleNumber || "-"}
           </div>
 
-          <div data-label="Vehicle No">
-            {item?.vehicleNumber || "-"}
+          <div
+            data-label={
+              isMarketplaceShipment(item) ? "Transporter" : "Driver Name"
+            }
+          >
+            {isMarketplaceShipment(item)
+              ? item?.assignedTransporter?.fullName || "-"
+              : item?.driverName || "-"}
           </div>
 
-          <div data-label="Driver Name">
-            {item?.driverName || "-"}
-          </div>
+          <div data-label="Shipped Qty">{item?.shippedQuantity || 0} MT</div>
 
-          <div data-label="Shipped Qty">
-            {item?.shippedQuantity || 0} MT
-          </div>
-
-          <div data-label="Shipment From">
-            {item?.shipmentFrom || "-"}
-          </div>
+          <div data-label="Shipment From">{item?.shipmentFrom || "-"}</div>
 
           <div data-label="Status">
             <span className={styles.statusPill}>

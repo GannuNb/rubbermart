@@ -3,13 +3,107 @@ import uploadedFileSchema from "./uploadedFileSchema.js";
 
 const shipmentSchema = new mongoose.Schema(
   {
+    /* =========================
+       SHIPMENT IDENTITY
+    ========================= */
+
     shipmentInvoiceId: {
+      type: String,
+    },
+
+    /* =========================
+       ITEM DETAILS
+    ========================= */
+
+    orderItemId: {
       type: String,
     },
 
     selectedItem: {
       type: String,
     },
+
+    selectedSubProducts: [
+      {
+        type: String,
+      },
+    ],
+
+    shippedQuantity: {
+      type: Number,
+      default: 0,
+    },
+
+    /* =========================
+       TRANSPORT MODE
+    ========================= */
+
+    transportMode: {
+      type: String,
+      enum: ["self_transport", "marketplace_transport"],
+      default: "self_transport",
+    },
+
+    /* =========================
+       SHIPMENT STATUS
+    ========================= */
+
+    shipmentStatus: {
+      type: String,
+      enum: [
+        "pending",
+        "packed",
+        "assigned",
+        "shipped",
+        "in_transit",
+        "delivered",
+        "completed",
+        "cancelled",
+      ],
+      default: "pending",
+    },
+
+    /* =========================
+       TRANSPORT WORKFLOW STATUS
+    ========================= */
+
+    transportStatus: {
+      type: String,
+      enum: [
+        "not_required",
+        "open_for_quotes",
+        "quotes_received",
+        "admin_assignment_pending",
+        "transporter_assigned",
+        "admin_assignment_rejected",
+        "completed",
+      ],
+      default: "not_required",
+    },
+
+    /* =========================
+       LOCATION DETAILS
+    ========================= */
+
+    shipmentFrom: {
+      type: String,
+    },
+
+    shipmentTo: {
+      type: String,
+    },
+
+    /* =========================
+       SHIPMENT PROOF FILES
+    ========================= */
+
+    packedItemPhoto: uploadedFileSchema,
+
+    weightTicket: uploadedFileSchema,
+
+    /* =========================
+       SELF TRANSPORT DETAILS
+    ========================= */
 
     vehicleNumber: {
       type: String,
@@ -23,51 +117,58 @@ const shipmentSchema = new mongoose.Schema(
       type: String,
     },
 
-    shipmentFile: uploadedFileSchema,
+    /* =========================
+       TRANSPORTER ASSIGNMENT
+    ========================= */
 
-    shippedQuantity: {
-      type: Number,
-      default: 0,
+    assignedTransporter: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
 
-    shipmentStatus: {
+    selectedQuoteId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "ShipmentTransportQuote",
+    },
+
+    assignmentMethod: {
       type: String,
-      enum: [
-        "pending",
-        "shipped",
-        "delivered",
-        "rejected",
-      ],
-      default: "pending",
+      enum: ["self_transport", "quote_selection", "admin_direct_assignment"],
+      default: "self_transport",
     },
 
+    /* =========================
+       TIMELINE
+    ========================= */
 
-    shipmentFrom: {
-      type: String,
+    packedAt: {
+      type: Date,
     },
 
-    shipmentTo: {
-      type: String,
+    assignedAt: {
+      type: Date,
     },
 
-    selectedSubProducts: [
-      {
-        type: String,
-      },
-    ],
+    pickedUpAt: {
+      type: Date,
+    },
 
-    shippedAt: {
+    inTransitAt: {
       type: Date,
     },
 
     deliveredAt: {
       type: Date,
     },
+
+    completedAt: {
+      type: Date,
+    },
   },
   {
     _id: true,
     timestamps: true,
-  }
+  },
 );
 
 export default shipmentSchema;

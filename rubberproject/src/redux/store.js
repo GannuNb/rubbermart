@@ -8,6 +8,8 @@ import adminOrderReducer from "./slices/adminOrders/adminOrderSlice";
 import buyerOrderReducer from "./slices/buyerOrderSlice";
 import sellerDashboardReducer from "./slices/sellerDashboardSlice";
 import orderSummaryReducer from "./slices/orderSummarySlice";
+import transporterReducer from "./slices/transporter/transporterSlice";
+
 
 export const store = configureStore({
   reducer: {
@@ -20,5 +22,7 @@ export const store = configureStore({
     buyerOrders: buyerOrderReducer,
     sellerDashboard:sellerDashboardReducer,
     orderSummary: orderSummaryReducer,
+    transporter: transporterReducer,
+
   },
 });

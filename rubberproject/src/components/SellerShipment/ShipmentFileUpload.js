@@ -1,22 +1,44 @@
 import React from "react";
+
 import styles from "../../styles/Seller/SellerShipmentForm.module.css";
 
 const ShipmentFileUpload = ({
-  fileInputRef,
+  packedItemPhotoRef,
+
+  weightTicketRef,
+
   handleChange,
 }) => {
   return (
-    <div className={styles.field}>
-      <label>Upload Weight Ticket</label>
+    <>
+      {/* PACKED ITEM PHOTO */}
 
-      <input
-        ref={fileInputRef}
-        type="file"
-        name="shipmentFile"
-        accept=".jpg,.jpeg,.png,.pdf"
-        onChange={handleChange}
-      />
-    </div>
+      <div className={styles.field}>
+        <label>Upload Packed Item Photo</label>
+
+        <input
+          ref={packedItemPhotoRef}
+          type="file"
+          name="packedItemPhoto"
+          accept=".jpg,.jpeg,.png,.pdf"
+          onChange={handleChange}
+        />
+      </div>
+
+      {/* WEIGHT TICKET */}
+
+      <div className={styles.field}>
+        <label>Upload Weight Ticket</label>
+
+        <input
+          ref={weightTicketRef}
+          type="file"
+          name="weightTicket"
+          accept=".jpg,.jpeg,.png,.pdf"
+          onChange={handleChange}
+        />
+      </div>
+    </>
   );
 };
 

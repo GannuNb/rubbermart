@@ -1,6 +1,6 @@
-import React, {
-  useState,
-} from "react";
+// src/components/seller/ShipmentCard.js
+
+import React, { useState } from "react";
 
 import styles from "../../styles/Seller/ShipmentCard.module.css";
 
@@ -9,103 +9,66 @@ import {
   FiChevronDown,
   FiChevronUp,
   FiCheckCircle,
+  FiPackage,
 } from "react-icons/fi";
 
-import {
-  useDispatch,
-  useSelector,
-} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import {
   markShipmentDeliveredBySellerThunk,
+  markShipmentShippedBySellerThunk,
 } from "../../redux/slices/sellerOrderThunk";
 
-const ShipmentCard = ({
-  shipment,
-  orderId,
-}) => {
-  const dispatch =
-    useDispatch();
+const ShipmentCard = ({ shipment, orderId }) => {
+  const dispatch = useDispatch();
 
-  const [showDetails, setShowDetails] =
-    useState(false);
+  const [showDetails, setShowDetails] = useState(false);
 
-  const {
-    markDeliveredLoading,
-  } = useSelector(
-    (state) =>
-      state.sellerOrders
+  const { markDeliveredLoading, markShippedLoading } = useSelector(
+    (state) => state.sellerOrders,
   );
 
-  const isDelivered =
-    shipment.shipmentStatus ===
-    "delivered";
-
   /* =========================
-     VIEW FILE
+     STATUS
   ========================= */
 
-  const handleViewShipmentFile = (
-    file
-  ) => {
-    if (
-      !file ||
-      !file.data
-    ) {
-      alert(
-        "Shipment file not found"
-      );
+  const isDelivered = shipment.shipmentStatus === "delivered";
+
+  const isShipped = shipment.shipmentStatus === "shipped";
+
+  /* =========================
+     OPEN FILE
+  ========================= */
+
+  const handleOpenFile = (file, fileName) => {
+    if (!file?.data) {
+      alert(`${fileName} not found`);
 
       return;
     }
 
     try {
-      const byteArray =
-        file.data.data;
+      const byteArray = file.data.data;
 
-      if (
-        !byteArray ||
-        !Array.isArray(byteArray)
-      ) {
-        alert(
-          "Invalid shipment file data"
-        );
+      if (!byteArray || !Array.isArray(byteArray)) {
+        alert(`Invalid ${fileName}`);
 
         return;
       }
 
-      const uint8Array =
-        new Uint8Array(
-          byteArray
-        );
+      const uint8Array = new Uint8Array(byteArray);
 
-      const blob = new Blob(
-        [uint8Array],
-        {
-          type:
-            file.contentType ||
-            "application/pdf",
-        }
-      );
+      const blob = new Blob([uint8Array], {
+        type: file.contentType || "application/pdf",
+      });
 
-      const fileURL =
-        window.URL.createObjectURL(
-          blob
-        );
+      const fileURL = window.URL.createObjectURL(blob);
 
-      window.open(
-        fileURL,
-        "_blank"
-      );
+      window.open(fileURL, "_blank");
     } catch (error) {
-      console.log(
-        "View Shipment File Error:",
-        error
-      );
+      console.log("Open File Error:", error);
 
-      alert(
-        "Failed to open shipment file"
-      );
+      alert(`Failed to open ${fileName}`);
     }
   };
 
@@ -113,270 +76,259 @@ const ShipmentCard = ({
      MARK DELIVERED
   ========================= */
 
-  const handleMarkDelivered =
-    () => {
-      dispatch(
-        markShipmentDeliveredBySellerThunk(
-          {
-            orderId,
-            shipmentId:
-              shipment._id,
-          }
-        )
-      );
-    };
+  const handleMarkDelivered = () => {
+    dispatch(
+      markShipmentDeliveredBySellerThunk({
+        orderId,
 
+        shipmentId: shipment._id,
+      }),
+    );
+  };
+  const handleMarkShipped = () => {
+    dispatch(
+      markShipmentShippedBySellerThunk({
+        orderId,
+        shipmentId: shipment._id,
+      }),
+    );
+  };
   return (
     <div className={styles.card}>
-      {/* HEADER */}
+      {/* =========================
+          HEADER
+      ========================= */}
 
-      <div
-        className={
-          styles.cardHeader
-        }
-      >
+      <div className={styles.cardHeader}>
         <div>
           <h3>
             <FiTruck />
 
-            {shipment.selectedItem ||
-              "Shipment"}
+            {shipment.selectedItem || "Shipment"}
           </h3>
 
-          <p>
-            {shipment.shipmentInvoiceId ||
-              "N/A"}
-          </p>
+          <p>{shipment.shipmentInvoiceId || "N/A"}</p>
         </div>
 
         <button
-          className={
-            styles.toggleButton
-          }
-          onClick={() =>
-            setShowDetails(
-              !showDetails
-            )
-          }
+          className={styles.toggleButton}
+          onClick={() => setShowDetails(!showDetails)}
         >
           {showDetails ? (
             <>
-              Hide Details{" "}
-              <FiChevronUp />
+              Hide Details <FiChevronUp />
             </>
           ) : (
             <>
-              View Shipping
-              Details{" "}
-              <FiChevronDown />
+              View Shipping Details <FiChevronDown />
             </>
           )}
         </button>
       </div>
 
-      {/* DETAILS */}
+      {/* =========================
+          DETAILS
+      ========================= */}
 
       {showDetails && (
-        <div
-          className={
-            styles.details
-          }
-        >
-          <div
-            className={
-              styles.row
-            }
-          >
-            <span>
-              Vehicle Number
-            </span>
+        <div className={styles.details}>
+          {/* QUANTITY */}
+
+          <div className={styles.row}>
+            <span>Shipped Quantity</span>
+
+            <strong>{shipment.shippedQuantity || 0} MT</strong>
+          </div>
+
+          {/* FROM */}
+
+          <div className={styles.row}>
+            <span>Shipment From</span>
+
+            <strong>{shipment.shipmentFrom || "N/A"}</strong>
+          </div>
+
+          {/* TO */}
+
+          <div className={styles.row}>
+            <span>Shipment To</span>
+
+            <strong>{shipment.shipmentTo || "N/A"}</strong>
+          </div>
+
+          {/* SHIPMENT STATUS */}
+
+          <div className={styles.row}>
+            <span>Shipment Status</span>
+
+            <strong className={styles.status}>
+              {shipment.shipmentStatus || "pending"}
+            </strong>
+          </div>
+
+          {/* TRANSPORT STATUS */}
+
+          <div className={styles.row}>
+            <span>Transport Status</span>
+
+            <strong className={styles.status}>
+              {shipment.transportStatus || "N/A"}
+            </strong>
+          </div>
+
+          {/* TRANSPORT MODE */}
+
+          <div className={styles.row}>
+            <span>Transport Mode</span>
 
             <strong>
-              {shipment.vehicleNumber ||
-                "N/A"}
+              {shipment.transportMode?.replaceAll("_", " ") || "N/A"}
             </strong>
           </div>
 
-          <div
-            className={
-              styles.row
-            }
-          >
-            <span>
-              Driver Name
-            </span>
+          {/* =========================
+              SELF TRANSPORT
+          ========================= */}
 
-            <strong>
-              {shipment.driverName ||
-                "N/A"}
-            </strong>
-          </div>
+          {shipment.transportMode === "self_transport" && (
+            <>
+              <div className={styles.row}>
+                <span>Vehicle Number</span>
 
-          <div
-            className={
-              styles.row
-            }
-          >
-            <span>
-              Driver Contact
-            </span>
+                <strong>{shipment.vehicleNumber || "N/A"}</strong>
+              </div>
 
-            <strong>
-              {shipment.driverMobile ||
-                "N/A"}
-            </strong>
-          </div>
+              <div className={styles.row}>
+                <span>Driver Name</span>
 
-          <div
-            className={
-              styles.row
-            }
-          >
-            <span>
-              Shipped
-              Quantity
-            </span>
+                <strong>{shipment.driverName || "N/A"}</strong>
+              </div>
 
-            <strong>
-              {shipment.shippedQuantity ||
-                0}
-            </strong>
-          </div>
+              <div className={styles.row}>
+                <span>Driver Contact</span>
 
-          <div
-            className={
-              styles.row
-            }
-          >
-            <span>
-              Shipment From
-            </span>
+                <strong>{shipment.driverMobile || "N/A"}</strong>
+              </div>
+            </>
+          )}
 
-            <strong>
-              {shipment.shipmentFrom ||
-                "N/A"}
-            </strong>
-          </div>
+          {/* =========================
+              MARKETPLACE TRANSPORT
+          ========================= */}
 
-          <div
-            className={
-              styles.row
-            }
-          >
-            <span>
-              Shipment To
-            </span>
+          {shipment.transportMode === "marketplace_transport" && (
+            <>
+              <div className={styles.row}>
+                <span>Assigned Transporter</span>
 
-            <strong>
-              {shipment.shipmentTo ||
-                "N/A"}
-            </strong>
-          </div>
+                <strong>
+                  {shipment?.assignedTransporter?.fullName || "Not Assigned"}
+                </strong>
+              </div>
 
-          <div
-            className={
-              styles.row
-            }
-          >
-            <span>Status</span>
+              <div className={styles.row}>
+                <span>Assignment Method</span>
 
-            <strong
-              className={
-                styles.status
-              }
-            >
-              {shipment.shipmentStatus ||
-                "pending"}
-            </strong>
-          </div>
+                <strong>
+                  {shipment.assignmentMethod?.replaceAll("_", " ") || "N/A"}
+                </strong>
+              </div>
+            </>
+          )}
 
-          {/* SUB PRODUCTS */}
+          {/* =========================
+              SUB PRODUCTS
+          ========================= */}
 
-          {shipment
-            .selectedSubProducts
-            ?.length > 0 && (
-            <div
-              className={
-                styles.subProducts
-              }
-            >
-              <span>
-                Sub Products
-              </span>
+          {shipment.selectedSubProducts?.length > 0 && (
+            <div className={styles.subProducts}>
+              <span>Sub Products</span>
 
-              <div
-                className={
-                  styles.tags
-                }
-              >
-                {shipment.selectedSubProducts.map(
-                  (
-                    subProduct,
-                    index
-                  ) => (
-                    <div
-                      key={
-                        index
-                      }
-                      className={
-                        styles.tag
-                      }
-                    >
-                      {
-                        subProduct
-                      }
-                    </div>
-                  )
-                )}
+              <div className={styles.tags}>
+                {shipment.selectedSubProducts.map((subProduct, index) => (
+                  <div key={index} className={styles.tag}>
+                    {subProduct}
+                  </div>
+                ))}
               </div>
             </div>
           )}
 
-          {/* VIEW FILE */}
+          {/* =========================
+              FILE BUTTONS
+          ========================= */}
 
-          {shipment
-            ?.shipmentFile
-            ?.data && (
-            <button
-              type="button"
-              className={
-                styles.viewButton
-              }
-              onClick={() =>
-                handleViewShipmentFile(
-                  shipment.shipmentFile
-                )
-              }
-            >
-              View Weight
-              Ticket
-            </button>
-          )}
+          <div className={styles.fileButtons}>
+            {/* WEIGHT TICKET */}
 
-          {/* DELIVERED BUTTON */}
+            {shipment?.weightTicket?.data && (
+              <button
+                type="button"
+                className={styles.viewButton}
+                onClick={() =>
+                  handleOpenFile(shipment.weightTicket, "Weight Ticket")
+                }
+              >
+                View Weight Ticket
+              </button>
+            )}
+
+            {/* PACKED PHOTO */}
+
+            {shipment?.packedItemPhoto?.data && (
+              <button
+                type="button"
+                className={styles.viewButton}
+                onClick={() =>
+                  handleOpenFile(shipment.packedItemPhoto, "Packed Item Photo")
+                }
+              >
+                View Packed Photo
+              </button>
+            )}
+          </div>
+
+          {/* =========================
+              SHIPPED STATUS
+          ========================= */}
+
+          {shipment.transportMode === "marketplace_transport" &&
+            shipment.transportStatus === "transporter_assigned" && (
+              <button
+                type="button"
+                className={styles.shippedButton}
+                onClick={handleMarkShipped}
+                disabled={isShipped || isDelivered || markShippedLoading}
+              >
+                <FiPackage />
+
+                {markShippedLoading
+                  ? "Updating..."
+                  : isShipped
+                    ? "Shipment Shipped"
+                    : "Mark As Shipped"}
+              </button>
+            )}
+
+          {/* =========================
+              DELIVERED BUTTON
+          ========================= */}
 
           <button
             type="button"
             className={
-              isDelivered
-                ? styles.deliveredButton
-                : styles.deliverButton
+              isDelivered ? styles.deliveredButton : styles.deliverButton
             }
-            onClick={
-              handleMarkDelivered
-            }
-            disabled={
-              isDelivered ||
-              markDeliveredLoading
-            }
+            onClick={handleMarkDelivered}
+            disabled={isDelivered || markDeliveredLoading}
           >
             <FiCheckCircle />
 
             {markDeliveredLoading
               ? "Updating..."
               : isDelivered
-              ? "Delivered"
-              : "Mark As Delivered"}
+                ? "Delivered"
+                : "Mark As Delivered"}
           </button>
         </div>
       )}

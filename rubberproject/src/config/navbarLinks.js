@@ -167,9 +167,15 @@ export const transporterLinks = [
   },
 
   {
-    label: "Accepted Deliveries",
-    path: "/transporter-active-deliveries",
+    label: "My Quotes",
+    path: "/transporter-my-quotes",
     icon: FaBoxOpen,
+  },
+
+  {
+    label: "Pending Requests",
+    path: "/transporter-pending-assignments",
+    icon: FaClock,
   },
 
   {

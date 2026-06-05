@@ -1,5 +1,7 @@
 import React, { useRef, useState } from "react";
+
 import { useDispatch, useSelector } from "react-redux";
+
 import { addShipmentToOrderThunk } from "../../redux/slices/sellerOrderThunk";
 
 import ShipmentItemSelector from "./ShipmentItemSelector";
@@ -13,7 +15,10 @@ import styles from "../../styles/Seller/SellerShipmentForm.module.css";
 
 const SellerShipmentForm = ({ selectedOrder }) => {
   const dispatch = useDispatch();
-  const fileInputRef = useRef(null);
+
+  const packedItemPhotoRef = useRef(null);
+
+  const weightTicketRef = useRef(null);
 
   const { shipmentLoading, shipmentError, shipmentSuccess } = useSelector(
     (state) => state.sellerOrders,
@@ -21,13 +26,23 @@ const SellerShipmentForm = ({ selectedOrder }) => {
 
   const [formData, setFormData] = useState({
     selectedItem: "",
+
     shippedQuantity: "",
+
     vehicleNumber: "",
+
     driverName: "",
+
     driverMobile: "",
+
     shipmentFrom: "",
+
     shipmentFromType: "",
-    shipmentFile: null,
+
+    packedItemPhoto: null,
+
+    weightTicket: null,
+
     selectedSubProducts: [],
   });
 
@@ -48,8 +63,11 @@ const SellerShipmentForm = ({ selectedOrder }) => {
 
   const shipmentFromOptions = [
     selectedOrderItem?.loadingLocation,
+
     selectedOrderItem?.product?.loadingLocation,
+
     selectedOrder?.seller?.businessProfile?.billingAddress,
+
     selectedOrder?.seller?.businessProfile?.shippingAddress,
   ]
     .filter(
@@ -59,22 +77,37 @@ const SellerShipmentForm = ({ selectedOrder }) => {
     .map((address) => address.trim())
     .filter((address, index, self) => self.indexOf(address) === index);
 
+  /* =========================
+     HANDLE CHANGE
+  ========================= */
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
-    if (name === "shipmentFile") {
+    /* FILES */
+
+    if (name === "packedItemPhoto" || name === "weightTicket") {
       setFormData((prev) => ({
         ...prev,
-        shipmentFile: files[0],
+
+        [name]: files[0],
       }));
+
       return;
     }
 
+    /* TEXT */
+
     setFormData((prev) => ({
       ...prev,
+
       [name]: value,
     }));
   };
+
+  /* =========================
+     SELECT ITEM
+  ========================= */
 
   const handleSelectItem = (e) => {
     const selectedValue = e.target.value;
@@ -92,13 +125,22 @@ const SellerShipmentForm = ({ selectedOrder }) => {
 
     setFormData((prev) => ({
       ...prev,
+
       selectedItem: selectedValue,
+
       shipmentFrom: defaultShipmentFrom,
+
       shipmentFromType: defaultShipmentFrom ? "dropdown" : "",
+
       selectedSubProducts: [],
+
       shippedQuantity: "",
     }));
   };
+
+  /* =========================
+     SHIPMENT FROM
+  ========================= */
 
   const handleShipmentFromChange = (e) => {
     const value = e.target.value;
@@ -106,17 +148,25 @@ const SellerShipmentForm = ({ selectedOrder }) => {
     if (value === "custom") {
       setFormData((prev) => ({
         ...prev,
+
         shipmentFrom: "",
+
         shipmentFromType: "custom",
       }));
     } else {
       setFormData((prev) => ({
         ...prev,
+
         shipmentFrom: value,
+
         shipmentFromType: "dropdown",
       }));
     }
   };
+
+  /* =========================
+     SUBMIT
+  ========================= */
 
   const handleSubmit = () => {
     if (!formData.selectedItem) {
@@ -127,20 +177,37 @@ const SellerShipmentForm = ({ selectedOrder }) => {
       return alert("Please enter shipped quantity");
     }
 
-    if (!formData.vehicleNumber) {
+    if (!formData.weightTicket) {
+      return alert("Please upload weight ticket");
+    }
+
+    if (!formData.packedItemPhoto) {
+      return alert("Please upload packed item photo");
+    }
+
+    if (
+      selectedOrder.transportMode === "self_transport" &&
+      !formData.vehicleNumber
+    ) {
       return alert("Please enter vehicle number");
     }
 
-    if (!formData.driverName) {
+    if (
+      selectedOrder.transportMode === "self_transport" &&
+      !formData.driverName
+    ) {
       return alert("Please enter driver name");
     }
 
-    if (!formData.driverMobile) {
+    if (
+      selectedOrder.transportMode === "self_transport" &&
+      !formData.driverMobile
+    ) {
       return alert("Please enter driver contact");
     }
 
     if (!formData.shipmentFrom) {
-      return alert("Please select or enter shipment from address");
+      return alert("Please select shipment from address");
     }
 
     if (
@@ -155,10 +222,15 @@ const SellerShipmentForm = ({ selectedOrder }) => {
     const shipmentData = new FormData();
 
     shipmentData.append("selectedItem", formData.selectedItem);
+
     shipmentData.append("shippedQuantity", formData.shippedQuantity);
+
     shipmentData.append("vehicleNumber", formData.vehicleNumber);
+
     shipmentData.append("driverName", formData.driverName);
+
     shipmentData.append("driverMobile", formData.driverMobile);
+
     shipmentData.append("shipmentFrom", formData.shipmentFrom);
 
     shipmentData.append(
@@ -171,31 +243,46 @@ const SellerShipmentForm = ({ selectedOrder }) => {
       JSON.stringify(formData.selectedSubProducts),
     );
 
-    if (formData.shipmentFile) {
-      shipmentData.append("shipmentFile", formData.shipmentFile);
-    }
+    shipmentData.append("packedItemPhoto", formData.packedItemPhoto);
+
+    shipmentData.append("weightTicket", formData.weightTicket);
 
     dispatch(
       addShipmentToOrderThunk({
         orderId: selectedOrder._id,
+
         shipmentData,
       }),
     ).then((result) => {
       if (result.meta.requestStatus === "fulfilled") {
         setFormData({
           selectedItem: "",
+
           shippedQuantity: "",
+
           vehicleNumber: "",
+
           driverName: "",
+
           driverMobile: "",
+
           shipmentFrom: "",
+
           shipmentFromType: "",
-          shipmentFile: null,
+
+          packedItemPhoto: null,
+
+          weightTicket: null,
+
           selectedSubProducts: [],
         });
 
-        if (fileInputRef.current) {
-          fileInputRef.current.value = "";
+        if (packedItemPhotoRef.current) {
+          packedItemPhotoRef.current.value = "";
+        }
+
+        if (weightTicketRef.current) {
+          weightTicketRef.current.value = "";
         }
       }
     });
@@ -232,7 +319,12 @@ const SellerShipmentForm = ({ selectedOrder }) => {
           remainingQuantity={remainingQuantity}
         />
 
-        <ShipmentBasicFields formData={formData} handleChange={handleChange} />
+        {selectedOrder.transportMode === "self_transport" && (
+          <ShipmentBasicFields
+            formData={formData}
+            handleChange={handleChange}
+          />
+        )}
 
         <ShipmentAddressField
           formData={formData}
@@ -244,7 +336,8 @@ const SellerShipmentForm = ({ selectedOrder }) => {
         />
 
         <ShipmentFileUpload
-          fileInputRef={fileInputRef}
+          packedItemPhotoRef={packedItemPhotoRef}
+          weightTicketRef={weightTicketRef}
           handleChange={handleChange}
         />
       </div>
