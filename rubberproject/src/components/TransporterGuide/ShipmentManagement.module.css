@@ -1,0 +1,127 @@
+.sectionContainer {
+  padding: 0px 0;
+  width: 100%;
+  background: #ffffff;
+}
+
+/* DECORATIVE HEADER CONFIGURATION */
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 36px;
+}
+
+.headerTitle {
+  font-size: 25px;
+  font-weight: 900;
+  color: #0c0f1d;
+  margin: 0;
+  letter-spacing: -0.3px;
+}
+
+.dots {
+  color: #6d28d9;
+  font-size: 16px;
+  letter-spacing: 2px;
+  font-weight: bold;
+}
+
+/* UNIFORM DESIGN CARD SYSTEM */
+.managementCard {
+  background: #f7f5ff; /* Soft lavender tint wash background across all 4 cards */
+  border: 1px solid #efebe9; 
+  border-radius: 20px;
+  padding: 28px 22px;
+  width: 100%;
+  box-shadow: 0 4px 20px rgba(75, 38, 209, 0.01);
+}
+
+.cardFlexLayout {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  height: 100%;
+}
+
+/* VECTOR PLACEMENT GRID BOX */
+.graphicAssetBox {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* INTERIOR BOX STRATIFICATION */
+.textColumnBody {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  height: 100%;
+  width: 100%;
+}
+
+.cardTitle {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0c0f1d;
+  margin-bottom: 8px;
+  line-height: 1.25;
+}
+
+.cardDesc {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #4d5464;
+  margin-bottom: 22px;
+  font-weight: 500;
+}
+
+/* UNIFORM COMPACT BUTTON STYLE - ALL CARDS MATCHING */
+.exactOutlineBtn {
+  background: #ffffff;
+  border: 1px solid #b7a6ff; /* Soft uniform purple border ring */
+  color: #6d28d9;
+  padding: 6px 18px;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto; /* Push button to bottom alignment layout lines */
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.exactOutlineBtn:hover {
+  background: #6821da;
+  color: #ffffff;
+  border-color: #661ddb;
+  box-shadow: 0 4px 12px rgba(75, 38, 209, 0.15);
+}
+
+.btnArrow {
+  transition: transform 0.2s ease;
+}
+
+.exactOutlineBtn:hover .btnArrow {
+  transform: translateX(2px);
+}
+
+/* RESPONSIVE DESIGN FOR SMARTPHONES */
+@media (max-width: 575px) {
+  .cardFlexLayout {
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .textColumnBody {
+    align-items: center;
+  }
+}

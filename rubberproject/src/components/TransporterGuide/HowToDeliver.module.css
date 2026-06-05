@@ -1,0 +1,114 @@
+.sectionWrapper {
+  padding: 20px 0;
+  width: 100%;
+}
+
+/* HEADER STYLE GRAPHIC */
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 45px;
+}
+
+.headerTitle {
+  font-size: 28px;
+  font-weight: 900;
+  color: #111827; /* Dark charcoal text */
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.headerDots {
+  color: #6d28d9; /* Royal theme blue-purple */
+  font-size: 20px;
+  letter-spacing: 3px;
+  font-weight: bold;
+}
+
+/* FIGMA BASE STEP CARD CAPSULED LAYOUT */
+.stepCard {
+  background: #ffffff;
+  border: 1px solid #f0edf8;
+  border-radius: 24px;
+  padding: 34px 20px 28px 20px;
+  text-align: center;
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 12px 30px rgba(71, 36, 184, 0.03);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stepCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 35px rgba(71, 36, 184, 0.07);
+}
+
+/* CORNER BADGE CAP */
+.stepNumberBadge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: linear-gradient(135deg, #6d28d9, #7c3aed);
+  color: #ffffff;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ROUNDED ICON BOX */
+.iconContainer {
+  background: #f4f0ff;
+  color: #5b21b6;
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 22px;
+}
+
+/* TEXT CONTENT */
+.cardTitle {
+  font-size: 16px;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.3;
+  margin-bottom: 12px;
+}
+
+.cardDesc {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #6b7280; /* Neutral gray styling */
+  margin: 0;
+  font-weight: 500;
+}
+
+/* CONNECTOR ARROWS */
+.arrowWrapper {
+  padding: 0;
+  width: 16px;
+}
+
+.connectorArrow {
+  color: #3b22cc;
+  opacity: 0.7;
+}
+
+/* RESPONSIVE TIMELINE MODIFICATIONS */
+@media (max-width: 1199px) {
+  .stepCard {
+    padding: 30px 24px;
+  }
+}

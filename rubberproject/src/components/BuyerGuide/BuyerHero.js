@@ -44,12 +44,12 @@ const BuyerHero = ({ onTabClick, refs }) => {
             guide.
           </p>
 
-         <div className={styles.buttonGroup}>
-  <Link to="/our-products" className={styles.primaryBtn} style={{ textDecoration: 'none', display: 'inline-flex' }}>
-    Start Browsing
-    <ArrowRight size={17} />
-  </Link>
-</div>
+          <div className={styles.buttonGroup}>
+            <Link to="/our-products" className={styles.primaryBtn} style={{ textDecoration: 'none', display: 'inline-flex' }}>
+              Start Browsing
+              <ArrowRight size={17} />
+            </Link>
+          </div>
         </div>
 
         {/* RIGHT */}
@@ -71,9 +71,8 @@ const BuyerHero = ({ onTabClick, refs }) => {
       <div className={styles.tabsWrapper}>
         <div className={styles.tabs}>
           <div
-            className={`${styles.tab} ${
-              activeTab === "How to Buy" ? styles.active : ""
-            }`}
+            className={`${styles.tab} ${activeTab === "How to Buy" ? styles.active : ""
+              }`}
             onClick={() => handleTabAction("How to Buy", refs.howToBuyRef)}
           >
             <BookOpen size={16} />
@@ -81,9 +80,8 @@ const BuyerHero = ({ onTabClick, refs }) => {
           </div>
 
           <div
-            className={`${styles.tab} ${
-              activeTab === "Order Process" ? styles.active : ""
-            }`}
+            className={`${styles.tab} ${activeTab === "Order Process" ? styles.active : ""
+              }`}
             onClick={() =>
               handleTabAction("Order Process", refs.orderProcessRef)
             }
@@ -93,9 +91,8 @@ const BuyerHero = ({ onTabClick, refs }) => {
           </div>
 
           <div
-            className={`${styles.tab} ${
-              activeTab === "Payment & Safety" ? styles.active : ""
-            }`}
+            className={`${styles.tab} ${activeTab === "Payment & Safety" ? styles.active : ""
+              }`}
             onClick={() =>
               handleTabAction("Payment & Safety", refs.paymentSafetyRef)
             }
@@ -105,9 +102,8 @@ const BuyerHero = ({ onTabClick, refs }) => {
           </div>
 
           <div
-            className={`${styles.tab} ${
-              activeTab === "Shipping & Delivery" ? styles.active : ""
-            }`}
+            className={`${styles.tab} ${activeTab === "Shipping & Delivery" ? styles.active : ""
+              }`}
             onClick={() =>
               handleTabAction("Shipping & Delivery", refs.shippingRef)
             }
@@ -117,9 +113,8 @@ const BuyerHero = ({ onTabClick, refs }) => {
           </div>
 
           <div
-            className={`${styles.tab} ${
-              activeTab === "Tips & Best Practices" ? styles.active : ""
-            }`}
+            className={`${styles.tab} ${activeTab === "Tips & Best Practices" ? styles.active : ""
+              }`}
             onClick={() =>
               handleTabAction("Tips & Best Practices", refs.tipsRef)
             }
@@ -129,9 +124,8 @@ const BuyerHero = ({ onTabClick, refs }) => {
           </div>
 
           <div
-            className={`${styles.tab} ${
-              activeTab === "FAQs" ? styles.active : ""
-            }`}
+            className={`${styles.tab} ${activeTab === "FAQs" ? styles.active : ""
+              }`}
             onClick={() => handleTabAction("FAQs", refs.faqsRef)}
           >
             <HelpCircle size={16} />
