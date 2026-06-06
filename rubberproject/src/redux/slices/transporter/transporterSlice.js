@@ -114,12 +114,7 @@ const transporterSlice = createSlice({
 
       .addCase(submitTransportQuoteThunk.fulfilled, (state, action) => {
         state.submitQuoteLoading = false;
-
         state.submitQuoteSuccess = "Quote submitted successfully";
-
-        state.openShipments = state.openShipments.filter(
-          (item) => item.shipment._id !== action.payload.shipmentId,
-        );
       })
 
       .addCase(submitTransportQuoteThunk.rejected, (state, action) => {

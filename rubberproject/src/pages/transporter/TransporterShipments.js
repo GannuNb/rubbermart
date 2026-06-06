@@ -1,5 +1,3 @@
-// src/pages/transporter/TransporterShipments.jsx
-
 import React, { useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -7,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getOpenTransportShipmentsThunk,
   submitTransportQuoteThunk,
+  getTransporterQuotesThunk,
 } from "../../redux/slices/transporter/transporterThunk";
 
 function TransporterShipments() {
@@ -20,9 +19,13 @@ function TransporterShipments() {
     openShipmentsError,
 
     submitQuoteLoading,
+
+    myQuotes,
   } = useSelector((state) => state.transporter);
 
   const [quoteData, setQuoteData] = useState({});
+
+  const [activeShipmentId, setActiveShipmentId] = useState(null);
 
   /* =========================
      FETCH SHIPMENTS
@@ -30,6 +33,8 @@ function TransporterShipments() {
 
   useEffect(() => {
     dispatch(getOpenTransportShipmentsThunk());
+
+    dispatch(getTransporterQuotesThunk());
   }, [dispatch]);
 
   /* =========================
@@ -61,6 +66,8 @@ function TransporterShipments() {
       return alert("Please enter quote price");
     }
 
+    setActiveShipmentId(shipmentId);
+
     dispatch(
       submitTransportQuoteThunk({
         orderId: item.orderId,
@@ -69,7 +76,11 @@ function TransporterShipments() {
 
         quoteData: quote,
       }),
-    );
+    ).then(() => {
+      dispatch(getTransporterQuotesThunk());
+
+      setActiveShipmentId(null);
+    });
   };
 
   return (
@@ -117,111 +128,135 @@ function TransporterShipments() {
       ========================= */}
 
       <div className="row g-4">
-        {openShipments.map((item) => (
-          <div key={item.shipment._id} className="col-lg-6">
-            <div className="card border-0 shadow-sm h-100">
-              <div className="card-body">
-                {/* =========================
-                      HEADER
-                  ========================= */}
+        {openShipments.map((item) => {
+          const alreadySubmitted = myQuotes.some(
+            (quote) => quote.shipmentId === item.shipment._id,
+          );
 
-                <div className="d-flex justify-content-between align-items-start mb-3">
-                  <div>
-                    <h5 className="fw-bold mb-1">
-                      {item.shipment.shipmentInvoiceId}
-                    </h5>
+          return (
+            <div key={item.shipment._id} className="col-lg-6">
+              <div className="card border-0 shadow-sm h-100">
+                <div className="card-body">
+                  {/* =========================
+                        HEADER
+                    ========================= */}
 
-                    <small className="text-muted">
-                      Order ID: {item.orderInvoiceId}
-                    </small>
+                  <div className="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                      <h5 className="fw-bold mb-1">
+                        {item.shipment.shipmentInvoiceId}
+                      </h5>
+
+                      <small className="text-muted">
+                        Order ID: {item.orderInvoiceId}
+                      </small>
+                    </div>
+
+                    <span className="badge bg-dark">Open</span>
                   </div>
 
-                  <span className="badge bg-dark">Open</span>
-                </div>
+                  {/* =========================
+                        SHIPMENT DETAILS
+                    ========================= */}
 
-                {/* =========================
-                      SHIPMENT DETAILS
-                  ========================= */}
+                  <div className="mb-2">
+                    <strong>Item:</strong> {item.shipment.selectedItem}
+                  </div>
 
-                <div className="mb-2">
-                  <strong>Item:</strong> {item.shipment.selectedItem}
-                </div>
+                  <div className="mb-2">
+                    <strong>Quantity:</strong> {item.shipment.shippedQuantity}{" "}
+                    MT
+                  </div>
 
-                <div className="mb-2">
-                  <strong>Quantity:</strong> {item.shipment.shippedQuantity} MT
-                </div>
+                  <div className="mb-2">
+                    <strong>From:</strong> {item.shipment.shipmentFrom}
+                  </div>
 
-                <div className="mb-2">
-                  <strong>From:</strong> {item.shipment.shipmentFrom}
-                </div>
+                  <div className="mb-4">
+                    <strong>To:</strong> {item.shipment.shipmentTo}
+                  </div>
 
-                <div className="mb-4">
-                  <strong>To:</strong> {item.shipment.shipmentTo}
-                </div>
+                  {/* =========================
+                        QUOTE SECTION
+                    ========================= */}
 
-                {/* =========================
-                      QUOTE FORM
-                  ========================= */}
+                  <div className="border-top pt-3">
+                    {alreadySubmitted ? (
+                      <div className="alert alert-success mb-0">
+                        Quote already submitted for this shipment
+                      </div>
+                    ) : (
+                      <>
+                        <h6 className="fw-semibold mb-3">Submit Quote</h6>
 
-                <div className="border-top pt-3">
-                  <h6 className="fw-semibold mb-3">Submit Quote</h6>
+                        <input
+                          type="number"
+                          placeholder="Enter quote price"
+                          value={
+                            quoteData[item.shipment._id]?.quotedPrice || ""
+                          }
+                          onChange={(e) =>
+                            handleQuoteChange(
+                              item.shipment._id,
+                              "quotedPrice",
+                              e.target.value,
+                            )
+                          }
+                          className="form-control mb-3"
+                        />
 
-                  <input
-                    type="number"
-                    placeholder="Enter quote price"
-                    value={quoteData[item.shipment._id]?.quotedPrice || ""}
-                    onChange={(e) =>
-                      handleQuoteChange(
-                        item.shipment._id,
-                        "quotedPrice",
-                        e.target.value,
-                      )
-                    }
-                    className="form-control mb-3"
-                  />
+                        <input
+                          type="number"
+                          placeholder="Estimated delivery days"
+                          value={
+                            quoteData[item.shipment._id]
+                              ?.estimatedDeliveryDays || ""
+                          }
+                          onChange={(e) =>
+                            handleQuoteChange(
+                              item.shipment._id,
+                              "estimatedDeliveryDays",
+                              e.target.value,
+                            )
+                          }
+                          className="form-control mb-3"
+                        />
 
-                  <input
-                    type="number"
-                    placeholder="Estimated delivery days"
-                    value={
-                      quoteData[item.shipment._id]?.estimatedDeliveryDays || ""
-                    }
-                    onChange={(e) =>
-                      handleQuoteChange(
-                        item.shipment._id,
-                        "estimatedDeliveryDays",
-                        e.target.value,
-                      )
-                    }
-                    className="form-control mb-3"
-                  />
+                        <textarea
+                          placeholder="Additional note"
+                          value={quoteData[item.shipment._id]?.note || ""}
+                          onChange={(e) =>
+                            handleQuoteChange(
+                              item.shipment._id,
+                              "note",
+                              e.target.value,
+                            )
+                          }
+                          className="form-control mb-3"
+                          rows={3}
+                        />
 
-                  <textarea
-                    placeholder="Additional note"
-                    value={quoteData[item.shipment._id]?.note || ""}
-                    onChange={(e) =>
-                      handleQuoteChange(
-                        item.shipment._id,
-                        "note",
-                        e.target.value,
-                      )
-                    }
-                    className="form-control mb-3"
-                    rows={3}
-                  />
-
-                  <button
-                    className="btn btn-dark w-100"
-                    onClick={() => handleSubmitQuote(item)}
-                    disabled={submitQuoteLoading}
-                  >
-                    {submitQuoteLoading ? "Submitting..." : "Submit Quote"}
-                  </button>
+                        <button
+                          className="btn btn-dark w-100"
+                          onClick={() => handleSubmitQuote(item)}
+                          disabled={
+                            submitQuoteLoading &&
+                            activeShipmentId === item.shipment._id
+                          }
+                        >
+                          {submitQuoteLoading &&
+                          activeShipmentId === item.shipment._id
+                            ? "Submitting..."
+                            : "Submit Quote"}
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

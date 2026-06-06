@@ -816,7 +816,14 @@ export const getOpenTransportShipments = async (req, res) => {
         $elemMatch: {
           transportMode: "marketplace_transport",
 
-          transportStatus: "open_for_quotes",
+          transportStatus: {
+            $in: [
+              "open_for_quotes",
+              "quotes_received",
+              "admin_assignment_pending",
+              "admin_assignment_rejected",
+            ],
+          },
         },
       },
     })
@@ -841,7 +848,12 @@ export const getOpenTransportShipments = async (req, res) => {
       order.shipments.forEach((shipment) => {
         if (
           shipment.transportMode === "marketplace_transport" &&
-          shipment.transportStatus === "open_for_quotes"
+          [
+            "open_for_quotes",
+            "quotes_received",
+            "admin_assignment_pending",
+            "admin_assignment_rejected",
+          ].includes(shipment.transportStatus)
         ) {
           openShipments.push({
             orderId: order._id,
@@ -880,52 +892,93 @@ export const submitTransportQuote = async (req, res) => {
 
     const { quotedPrice, note, estimatedDeliveryDays } = req.body;
 
+    /* =========================
+       FIND ORDER
+    ========================= */
+
     const order = await Order.findOne({
       _id: orderId,
+
       isDeleted: false,
     });
 
     if (!order) {
       return res.status(404).json({
         success: false,
+
         message: "Order not found",
       });
     }
+
+    /* =========================
+       FIND SHIPMENT
+    ========================= */
 
     const shipment = order.shipments.id(shipmentId);
 
     if (!shipment) {
       return res.status(404).json({
         success: false,
+
         message: "Shipment not found",
       });
     }
 
+    /* =========================
+       VALIDATE MARKETPLACE
+    ========================= */
+
     if (shipment.transportMode !== "marketplace_transport") {
       return res.status(400).json({
         success: false,
+
         message: "This shipment is not marketplace transport",
       });
     }
 
-    if (shipment.transportStatus !== "open_for_quotes") {
+    /* =========================
+       ALLOW QUOTES FOR THESE STATES
+    ========================= */
+
+    if (
+      ![
+        "open_for_quotes",
+
+        "quotes_received",
+
+        "admin_assignment_pending",
+
+        "admin_assignment_rejected",
+      ].includes(shipment.transportStatus)
+    ) {
       return res.status(400).json({
         success: false,
+
         message: "Quotes are closed for this shipment",
       });
     }
 
+    /* =========================
+       PREVENT DUPLICATE QUOTE
+    ========================= */
+
     const existingQuote = await ShipmentTransportQuote.findOne({
       shipmentId,
+
       transporter: transporterId,
     });
 
     if (existingQuote) {
       return res.status(400).json({
         success: false,
+
         message: "You already submitted quote for this shipment",
       });
     }
+
+    /* =========================
+       CREATE QUOTE
+    ========================= */
 
     const quote = await ShipmentTransportQuote.create({
       orderId,
@@ -941,12 +994,23 @@ export const submitTransportQuote = async (req, res) => {
       estimatedDeliveryDays,
     });
 
-    shipment.transportStatus = "quotes_received";
+    /* =========================
+       UPDATE STATUS
+    ========================= */
+
+    if (shipment.transportStatus === "open_for_quotes") {
+      shipment.transportStatus = "quotes_received";
+    }
 
     await order.save();
 
+    /* =========================
+       RESPONSE
+    ========================= */
+
     return res.status(201).json({
       success: true,
+
       message: "Quote submitted successfully",
 
       quote,
@@ -956,6 +1020,7 @@ export const submitTransportQuote = async (req, res) => {
 
     return res.status(500).json({
       success: false,
+
       message: "Failed to submit quote",
     });
   }
@@ -1658,6 +1723,46 @@ export const transporterAcceptAssignment = async (req, res) => {
     shipment.transportStatus = "transporter_assigned";
 
     shipment.shipmentStatus = "assigned";
+
+    /* =========================
+   SELECT ACCEPTED QUOTE
+========================= */
+
+    await ShipmentTransportQuote.updateOne(
+      {
+        shipmentId: shipment._id,
+
+        transporter: transporterId,
+      },
+      {
+        $set: {
+          quoteStatus: "selected",
+
+          selectedAt: new Date(),
+        },
+      },
+    );
+
+    /* =========================
+        REJECT OTHER QUOTES
+      ========================= */
+
+    await ShipmentTransportQuote.updateMany(
+      {
+        shipmentId: shipment._id,
+
+        transporter: {
+          $ne: transporterId,
+        },
+      },
+      {
+        $set: {
+          quoteStatus: "rejected",
+
+          rejectedAt: new Date(),
+        },
+      },
+    );
 
     await order.save();
 

@@ -145,7 +145,6 @@ function AppContent() {
         <Route  path="/transporter-completed-deliveries"  element={<TransporterCompletedDeliveries />}/>
 
 
-
         {/* seller */}
         <Route path="/seller-dashboard" element={<ProtectedRoute allowedRole="seller"><SellerDashboard /></ProtectedRoute>} />
         <Route path="/seller-add-products" element={<ProtectedRoute allowedRole="seller"><SellerAddproduct /></ProtectedRoute>} />
