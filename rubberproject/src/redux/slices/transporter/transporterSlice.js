@@ -11,74 +11,71 @@ import { getPendingAssignmentsThunk } from "./getPendingAssignmentsThunk";
 import { acceptAssignmentThunk } from "./acceptAssignmentThunk";
 
 import { rejectAssignmentThunk } from "./rejectAssignmentThunk";
-
+import { getAssignedShipmentsThunk } from "./getAssignedShipmentsThunk";
+import { getCompletedDeliveriesThunk } from "./getCompletedDeliveriesThunk";
 
 const initialState = {
   /* =========================
      OPEN SHIPMENTS
   ========================= */
-
   openShipments: [],
-
   openShipmentsLoading: false,
-
   openShipmentsError: null,
 
   /* =========================
      SUBMIT QUOTE
   ========================= */
-
   submitQuoteLoading: false,
-
   submitQuoteError: null,
-
   submitQuoteSuccess: null,
 
   /* =========================
      MY QUOTES
   ========================= */
-
   myQuotes: [],
-
   myQuotesLoading: false,
-
   myQuotesError: null,
 
   /* =========================
    PENDING ASSIGNMENTS
 ========================= */
-
   pendingAssignments: [],
-
   pendingAssignmentsLoading: false,
-
   pendingAssignmentsError: null,
 
   /* =========================
    ASSIGNMENT ACTIONS
 ========================= */
 
-assignmentActionLoading: false,
+  assignmentActionLoading: false,
+  assignmentActionError: null,
 
-assignmentActionError: null,
+  /* =========================
+   ASSIGNED SHIPMENTS
+========================= */
+  assignedShipments: [],
+  assignedShipmentsLoading: false,
+  assignedShipmentsError: null,
 
+  /* =========================
+   COMPLETED DELIVERIES
+========================= */
+
+  completedDeliveries: [],
+  completedDeliveriesLoading: false,
+  completedDeliveriesError: null,
 };
 
 const transporterSlice = createSlice({
   name: "transporter",
-
   initialState,
 
   reducers: {
     clearTransporterMessages: (state) => {
       state.submitQuoteError = null;
-
       state.submitQuoteSuccess = null;
-
       state.openShipmentsError = null;
-
       state.myQuotesError = null;
-
       state.pendingAssignmentsError = null;
     },
   },
@@ -92,19 +89,16 @@ const transporterSlice = createSlice({
 
       .addCase(getOpenTransportShipmentsThunk.pending, (state) => {
         state.openShipmentsLoading = true;
-
         state.openShipmentsError = null;
       })
 
       .addCase(getOpenTransportShipmentsThunk.fulfilled, (state, action) => {
         state.openShipmentsLoading = false;
-
         state.openShipments = action.payload;
       })
 
       .addCase(getOpenTransportShipmentsThunk.rejected, (state, action) => {
         state.openShipmentsLoading = false;
-
         state.openShipmentsError = action.payload;
       })
 
@@ -114,9 +108,7 @@ const transporterSlice = createSlice({
 
       .addCase(submitTransportQuoteThunk.pending, (state) => {
         state.submitQuoteLoading = true;
-
         state.submitQuoteError = null;
-
         state.submitQuoteSuccess = null;
       })
 
@@ -132,7 +124,6 @@ const transporterSlice = createSlice({
 
       .addCase(submitTransportQuoteThunk.rejected, (state, action) => {
         state.submitQuoteLoading = false;
-
         state.submitQuoteError = action.payload;
       })
 
@@ -142,124 +133,116 @@ const transporterSlice = createSlice({
 
       .addCase(getTransporterQuotesThunk.pending, (state) => {
         state.myQuotesLoading = true;
-
         state.myQuotesError = null;
       })
 
       .addCase(getTransporterQuotesThunk.fulfilled, (state, action) => {
         state.myQuotesLoading = false;
-
         state.myQuotes = action.payload;
       })
 
       .addCase(getTransporterQuotesThunk.rejected, (state, action) => {
         state.myQuotesLoading = false;
-
         state.myQuotesError = action.payload;
       })
       /* =========================
-   GET PENDING ASSIGNMENTS
-========================= */
+          GET PENDING ASSIGNMENTS
+        ========================= */
 
       .addCase(getPendingAssignmentsThunk.pending, (state) => {
         state.pendingAssignmentsLoading = true;
-
         state.pendingAssignmentsError = null;
       })
 
       .addCase(getPendingAssignmentsThunk.fulfilled, (state, action) => {
         state.pendingAssignmentsLoading = false;
-
         state.pendingAssignments = action.payload || [];
       })
 
       .addCase(getPendingAssignmentsThunk.rejected, (state, action) => {
         state.pendingAssignmentsLoading = false;
-
         state.pendingAssignmentsError = action.payload;
       })
+
       /* =========================
-   ACCEPT ASSIGNMENT
-========================= */
+          GET ASSIGNED SHIPMENTS
+        ========================= */
 
-.addCase(
-  acceptAssignmentThunk.pending,
-  (state) => {
-    state.assignmentActionLoading =
-      true;
+      .addCase(getAssignedShipmentsThunk.pending, (state) => {
+        state.assignedShipmentsLoading = true;
+        state.assignedShipmentsError = null;
+      })
 
-    state.assignmentActionError =
-      null;
-  },
-)
+      .addCase(getAssignedShipmentsThunk.fulfilled, (state, action) => {
+        state.assignedShipmentsLoading = false;
+        state.assignedShipments = action.payload || [];
+      })
 
-.addCase(
-  acceptAssignmentThunk.fulfilled,
-  (state, action) => {
-    state.assignmentActionLoading =
-      false;
+      .addCase(getAssignedShipmentsThunk.rejected, (state, action) => {
+        state.assignedShipmentsLoading = false;
+        state.assignedShipmentsError = action.payload;
+      })
 
-    state.pendingAssignments =
-      state.pendingAssignments.filter(
-        (item) =>
-          item.shipment._id !==
-          action.payload.shipmentId,
-      );
-  },
-)
+      /* =========================
+          GET COMPLETED DELIVERIES
+        ========================= */
 
-.addCase(
-  acceptAssignmentThunk.rejected,
-  (state, action) => {
-    state.assignmentActionLoading =
-      false;
+      .addCase(getCompletedDeliveriesThunk.pending, (state) => {
+        state.completedDeliveriesLoading = true;
+        state.completedDeliveriesError = null;
+      })
 
-    state.assignmentActionError =
-      action.payload;
-  },
-)
+      .addCase(getCompletedDeliveriesThunk.fulfilled, (state, action) => {
+        state.completedDeliveriesLoading = false;
+        state.completedDeliveries = action.payload || [];
+      })
 
-/* =========================
-   REJECT ASSIGNMENT
-========================= */
+      .addCase(getCompletedDeliveriesThunk.rejected, (state, action) => {
+        state.completedDeliveriesLoading = false;
+        state.completedDeliveriesError = action.payload;
+      })
+      /* =========================
+          ACCEPT ASSIGNMENT
+        ========================= */
 
-.addCase(
-  rejectAssignmentThunk.pending,
-  (state) => {
-    state.assignmentActionLoading =
-      true;
+      .addCase(acceptAssignmentThunk.pending, (state) => {
+        state.assignmentActionLoading = true;
+        state.assignmentActionError = null;
+      })
 
-    state.assignmentActionError =
-      null;
-  },
-)
+      .addCase(acceptAssignmentThunk.fulfilled, (state, action) => {
+        state.assignmentActionLoading = false;
 
-.addCase(
-  rejectAssignmentThunk.fulfilled,
-  (state, action) => {
-    state.assignmentActionLoading =
-      false;
+        state.pendingAssignments = state.pendingAssignments.filter(
+          (item) => item.shipment._id !== action.payload.shipmentId,
+        );
+      })
 
-    state.pendingAssignments =
-      state.pendingAssignments.filter(
-        (item) =>
-          item.shipment._id !==
-          action.payload.shipmentId,
-      );
-  },
-)
+      .addCase(acceptAssignmentThunk.rejected, (state, action) => {
+        state.assignmentActionLoading = false;
+        state.assignmentActionError = action.payload;
+      })
 
-.addCase(
-  rejectAssignmentThunk.rejected,
-  (state, action) => {
-    state.assignmentActionLoading =
-      false;
+      /* =========================
+          REJECT ASSIGNMENT
+        ========================= */
 
-    state.assignmentActionError =
-      action.payload;
-  },
-);
+      .addCase(rejectAssignmentThunk.pending, (state) => {
+        state.assignmentActionLoading = true;
+        state.assignmentActionError = null;
+      })
 
+      .addCase(rejectAssignmentThunk.fulfilled, (state, action) => {
+        state.assignmentActionLoading = false;
+        state.pendingAssignments = state.pendingAssignments.filter(
+          (item) => item.shipment._id !== action.payload.shipmentId,
+        );
+      })
+
+      .addCase(rejectAssignmentThunk.rejected, (state, action) => {
+        state.assignmentActionLoading = false;
+        state.assignmentActionError = action.payload;
+      });
   },
 });
 
