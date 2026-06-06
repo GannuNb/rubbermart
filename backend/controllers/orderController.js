@@ -991,10 +991,7 @@ export const markShipmentShippedBySeller = async (req, res) => {
   try {
     const sellerId = req.user._id;
 
-    const {
-      orderId,
-      shipmentId,
-    } = req.params;
+    const { orderId, shipmentId } = req.params;
 
     /* =========================
        FIND ORDER
@@ -1017,10 +1014,7 @@ export const markShipmentShippedBySeller = async (req, res) => {
        FIND SHIPMENT
     ========================= */
 
-    const shipment =
-      order.shipments.id(
-        shipmentId,
-      );
+    const shipment = order.shipments.id(shipmentId);
 
     if (!shipment) {
       return res.status(404).json({
@@ -1033,10 +1027,7 @@ export const markShipmentShippedBySeller = async (req, res) => {
        VALIDATE TRANSPORT
     ========================= */
 
-    if (
-      shipment.transportMode !==
-      "marketplace_transport"
-    ) {
+    if (shipment.transportMode !== "marketplace_transport") {
       return res.status(400).json({
         success: false,
         message:
@@ -1048,14 +1039,10 @@ export const markShipmentShippedBySeller = async (req, res) => {
        VALIDATE ASSIGNMENT
     ========================= */
 
-    if (
-      shipment.transportStatus !==
-      "transporter_assigned"
-    ) {
+    if (shipment.transportStatus !== "transporter_assigned") {
       return res.status(400).json({
         success: false,
-        message:
-          "Transporter not assigned yet",
+        message: "Transporter not assigned yet",
       });
     }
 
@@ -1063,14 +1050,10 @@ export const markShipmentShippedBySeller = async (req, res) => {
        VALIDATE STATUS
     ========================= */
 
-    if (
-      shipment.shipmentStatus ===
-      "shipped"
-    ) {
+    if (shipment.shipmentStatus === "shipped") {
       return res.status(400).json({
         success: false,
-        message:
-          "Shipment already marked as shipped",
+        message: "Shipment already marked as shipped",
       });
     }
 
@@ -1078,30 +1061,167 @@ export const markShipmentShippedBySeller = async (req, res) => {
        UPDATE SHIPMENT
     ========================= */
 
-    shipment.shipmentStatus =
-      "shipped";
+    shipment.shipmentStatus = "shipped";
 
-    shipment.shippedAt =
-      new Date();
+    shipment.shippedAt = new Date();
 
     await order.save();
 
     return res.status(200).json({
       success: true,
-      message:
-        "Shipment marked as shipped successfully",
+      message: "Shipment marked as shipped successfully",
       order,
     });
   } catch (error) {
-    console.log(
-      "Mark Shipment Shipped Error:",
-      error,
-    );
+    console.log("Mark Shipment Shipped Error:", error);
 
     return res.status(500).json({
       success: false,
-      message:
-        "Failed to mark shipment shipped",
+      message: "Failed to mark shipment shipped",
+    });
+  }
+};
+
+export const getTransporterAssignedShipments = async (req, res) => {
+  try {
+    const transporterId = req.user._id;
+
+    /* =========================
+       FIND ORDERS
+    ========================= */
+
+    const orders = await Order.find({
+      "shipments.assignedTransporter": transporterId,
+
+      isDeleted: false,
+    })
+      .populate(
+        "seller",
+        `
+            fullName
+            email
+            businessProfile
+          `,
+      )
+      .populate(
+        "shipments.assignedTransporter",
+        `
+            fullName
+            email
+            businessProfile
+          `,
+      );
+
+    /* =========================
+       FILTER SHIPMENTS
+    ========================= */
+
+    const assignedShipments = [];
+
+    orders.forEach((order) => {
+      order.shipments.forEach((shipment) => {
+        if (
+          shipment?.assignedTransporter?._id?.toString() ===
+            transporterId.toString() &&
+          shipment.shipmentStatus !== "delivered"
+        ) {
+          assignedShipments.push({
+            orderId: order._id,
+
+            orderInvoiceId: order.orderId,
+
+            seller: order.seller,
+
+            shipment,
+          });
+        }
+      });
+    });
+
+    return res.status(200).json({
+      success: true,
+
+      assignedShipments,
+    });
+  } catch (error) {
+    console.log("Get Transporter Assigned Shipments Error:", error);
+
+    return res.status(500).json({
+      success: false,
+
+      message: "Failed to fetch assigned shipments",
+    });
+  }
+};
+
+export const getTransporterCompletedDeliveries = async (req, res) => {
+  try {
+    const transporterId = req.user._id;
+
+    /* =========================
+         FIND ORDERS
+      ========================= */
+
+    const orders = await Order.find({
+      "shipments.assignedTransporter": transporterId,
+
+      isDeleted: false,
+    })
+      .populate(
+        "seller",
+        `
+              fullName
+              email
+              businessProfile
+            `,
+      )
+      .populate(
+        "shipments.assignedTransporter",
+        `
+              fullName
+              email
+              businessProfile
+            `,
+      );
+
+    /* =========================
+         FILTER DELIVERED
+      ========================= */
+
+    const completedDeliveries = [];
+
+    orders.forEach((order) => {
+      order.shipments.forEach((shipment) => {
+        if (
+          shipment?.assignedTransporter?._id?.toString() ===
+            transporterId.toString() &&
+          shipment.shipmentStatus === "delivered"
+        ) {
+          completedDeliveries.push({
+            orderId: order._id,
+
+            orderInvoiceId: order.orderId,
+
+            seller: order.seller,
+
+            shipment,
+          });
+        }
+      });
+    });
+
+    return res.status(200).json({
+      success: true,
+
+      completedDeliveries,
+    });
+  } catch (error) {
+    console.log("Get Transporter Completed Deliveries Error:", error);
+
+    return res.status(500).json({
+      success: false,
+
+      message: "Failed to fetch completed deliveries",
     });
   }
 };

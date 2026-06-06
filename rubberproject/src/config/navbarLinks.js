@@ -161,7 +161,7 @@ export const transporterLinks = [
   },
 
   {
-    label: "Available Shipments",
+    label: "Shipments",
     path: "/transporter-shipments",
     icon: FaClipboardList,
   },
@@ -173,19 +173,25 @@ export const transporterLinks = [
   },
 
   {
-    label: "Pending Requests",
+    label: "Requests",
     path: "/transporter-pending-assignments",
     icon: FaClock,
   },
 
   {
-    label: "Completed Deliveries",
+    label: "Assigned",
+    path: "/transporter-assigned-shipments",
+    icon: FaTruck,
+  },
+
+  {
+    label: "Completed",
     path: "/transporter-completed-deliveries",
     icon: FaCheckCircle,
   },
 
   {
-    label: "My Profile",
+    label: "Profile",
     path: "/transporter-profile",
     icon: FaUserCircle,
   },

@@ -76,6 +76,8 @@ import TransporterDashboard from "./pages/transporter/TransporterDashboard";
 import TransporterShipments from "./pages/transporter/TransporterShipments";
 import TransporterMyQuotes from "./pages/transporter/TransporterMyQuotes";
 import TransporterPendingAssignments from "./pages/transporter/TransporterPendingAssignments";
+import TransporterAssignedShipments from "./pages/transporter/TransporterAssignedShipments";
+import TransporterCompletedDeliveries from "./pages/transporter/TransporterCompletedDeliveries";
 
 
 
@@ -138,6 +140,8 @@ function AppContent() {
         <Route  path="/transporter-shipments" element={ <ProtectedRoute allowedRoles={["transporter"]} ><TransporterShipments /></ProtectedRoute>}/>
         <Route  path="/transporter-my-quotes"  element={ <ProtectedRoute  allowedRoles={[ "transporter", ]}> <TransporterMyQuotes /></ProtectedRoute> }/>
         <Route  path="/transporter-pending-assignments"  element={<ProtectedRoute allowedRole="transporter"><TransporterPendingAssignments /></ProtectedRoute>}/>
+        <Route  path="/transporter-assigned-shipments"  element={<TransporterAssignedShipments />}/>
+        <Route  path="/transporter-completed-deliveries"  element={<TransporterCompletedDeliveries />}/>
 
 
 
