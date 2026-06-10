@@ -11,6 +11,7 @@ import generateShippingInvoicePdf from "../utils/pdf/shipping/generateShippingIn
 import generateBuyReportPdf from "../utils/pdf/buyReport/generateBuyReportPdf.js";
 import ShipmentTransportQuote from "../models/ShipmentTransportQuote.js";
 
+//buyer--->buyerordercreation
 export const createOrder = async (req, res) => {
   try {
     const buyerId = req.user._id;
@@ -211,6 +212,7 @@ REDUCE PRODUCT STOCK
   }
 };
 
+//seller-->ordersforsellers
 export const getSellerOrders = async (req, res) => {
   try {
     const sellerId = req.user._id;
@@ -256,6 +258,7 @@ export const getSellerOrders = async (req, res) => {
   }
 };
 
+//seller--->getsingleorder
 export const getSellerSingleOrder = async (req, res) => {
   try {
     const sellerId = req.user._id;
@@ -334,6 +337,7 @@ export const getSellerSingleOrder = async (req, res) => {
   }
 };
 
+//seller--->confirmorder
 export const confirmSellerOrder = async (req, res) => {
   try {
     const sellerId = req.user._id;
@@ -438,6 +442,7 @@ export const confirmSellerOrder = async (req, res) => {
   }
 };
 
+//seller ---> rejectorder
 export const rejectSellerOrder = async (req, res) => {
   try {
     const sellerId = req.user._id;
@@ -529,6 +534,7 @@ export const rejectSellerOrder = async (req, res) => {
   }
 };
 
+//seller ---> addingshipment/packed
 export const addShipmentToOrder = async (req, res) => {
   try {
     const sellerId = req.user._id;
@@ -807,6 +813,7 @@ export const addShipmentToOrder = async (req, res) => {
   }
 };
 
+//transporter ---> getallpackeditems
 export const getOpenTransportShipments = async (req, res) => {
   try {
     const orders = await Order.find({
@@ -884,6 +891,7 @@ export const getOpenTransportShipments = async (req, res) => {
   }
 };
 
+//transporter --->submitquote
 export const submitTransportQuote = async (req, res) => {
   try {
     const transporterId = req.user._id;
@@ -1026,6 +1034,7 @@ export const submitTransportQuote = async (req, res) => {
   }
 };
 
+//transporters --> myquotes
 export const getTransporterQuotes = async (req, res) => {
   try {
     const transporterId = req.user._id;
@@ -1052,6 +1061,7 @@ export const getTransporterQuotes = async (req, res) => {
   }
 };
 
+//seller ---> markasship
 export const markShipmentShippedBySeller = async (req, res) => {
   try {
     const sellerId = req.user._id;
@@ -1147,6 +1157,7 @@ export const markShipmentShippedBySeller = async (req, res) => {
   }
 };
 
+//transporters ---> asignedshipments
 export const getTransporterAssignedShipments = async (req, res) => {
   try {
     const transporterId = req.user._id;
@@ -1219,6 +1230,7 @@ export const getTransporterAssignedShipments = async (req, res) => {
   }
 };
 
+//transporters ---> completed/history
 export const getTransporterCompletedDeliveries = async (req, res) => {
   try {
     const transporterId = req.user._id;
@@ -1291,8 +1303,7 @@ export const getTransporterCompletedDeliveries = async (req, res) => {
   }
 };
 
-//admin -> transports
-
+//admin -> transportersquotes
 export const getShipmentQuotes = async (req, res) => {
   try {
     const { shipmentId } = req.params;
@@ -1344,6 +1355,7 @@ export const getShipmentQuotes = async (req, res) => {
   }
 };
 
+//admin ---> assigntoshipment
 export const assignTransporterToShipment = async (req, res) => {
   try {
     const {
@@ -1463,15 +1475,12 @@ export const assignTransporterToShipment = async (req, res) => {
   }
 };
 
+//admin ---> admindirectassign/manual
 export const adminDirectAssignTransporter = async (req, res) => {
   try {
-    const {
-      orderId,
+    const { orderId, shipmentId } = req.params;
 
-      shipmentId,
-    } = req.params;
-
-    const { transporterId } = req.body;
+    const { transporterId, adminPrice, adminNote } = req.body;
 
     /* =========================
          FIND ORDER
@@ -1538,6 +1547,11 @@ export const adminDirectAssignTransporter = async (req, res) => {
     shipment.assignmentMethod = "admin_direct_assignment";
 
     shipment.assignedAt = new Date();
+    shipment.adminAssignedPrice = adminPrice;
+
+    shipment.adminAssignmentNote = adminNote;
+
+    shipment.adminAssignedAt = new Date();
 
     await order.save();
 
@@ -1568,6 +1582,7 @@ export const adminDirectAssignTransporter = async (req, res) => {
   }
 };
 
+//admin ---> dropdownselection
 export const getAllTransporters = async (req, res) => {
   try {
     const transporters = await User.find({
@@ -1596,6 +1611,7 @@ export const getAllTransporters = async (req, res) => {
   }
 };
 
+//transporter --> pendingassignments
 export const getTransporterPendingAssignments = async (req, res) => {
   try {
     const transporterId = req.user._id;
@@ -1660,6 +1676,7 @@ export const getTransporterPendingAssignments = async (req, res) => {
   }
 };
 
+//transporter ---> fromadminrequest-accept
 export const transporterAcceptAssignment = async (req, res) => {
   try {
     const transporterId = req.user._id;
@@ -1725,8 +1742,44 @@ export const transporterAcceptAssignment = async (req, res) => {
     shipment.shipmentStatus = "assigned";
 
     /* =========================
-   SELECT ACCEPTED QUOTE
+   CREATE QUOTE FOR
+   DIRECT ASSIGNMENT
 ========================= */
+
+    if (
+      shipment.assignmentMethod === "admin_direct_assignment" &&
+      shipment.adminAssignedPrice
+    ) {
+      const existingQuote = await ShipmentTransportQuote.findOne({
+        shipmentId: shipment._id,
+
+        transporter: transporterId,
+      });
+
+      if (!existingQuote) {
+        await ShipmentTransportQuote.create({
+          orderId: order._id,
+
+          shipmentId: shipment._id,
+
+          transporter: transporterId,
+
+          quotedPrice: shipment.adminAssignedPrice,
+
+          note: shipment.adminAssignmentNote || "Direct admin assignment",
+
+          estimatedDeliveryDays: 1,
+
+          quoteStatus: "selected",
+
+          selectedAt: new Date(),
+        });
+      }
+    }
+
+    /* =========================
+        SELECT ACCEPTED QUOTE
+      ========================= */
 
     await ShipmentTransportQuote.updateOne(
       {
@@ -1784,6 +1837,7 @@ export const transporterAcceptAssignment = async (req, res) => {
   }
 };
 
+//transporter ---> rejectadminrequest
 export const transporterRejectAssignment = async (req, res) => {
   try {
     const transporterId = req.user._id;
@@ -1860,6 +1914,7 @@ export const transporterRejectAssignment = async (req, res) => {
   }
 };
 
+//buyer ---> buyerorders
 export const getBuyerOrders = async (req, res) => {
   try {
     const buyerId = req.user._id;
@@ -2071,6 +2126,7 @@ export const getBuyerOrders = async (req, res) => {
   }
 };
 
+//buyer ---> cancelorder
 export const cancelBuyerOrder = async (req, res) => {
   try {
     const { orderId } = req.params;
@@ -2146,6 +2202,7 @@ export const cancelBuyerOrder = async (req, res) => {
   }
 };
 
+//buyer ---> singleorder
 export const getBuyerSingleOrder = async (req, res) => {
   try {
     const buyerId = req.user._id;
@@ -2232,6 +2289,7 @@ export const getBuyerSingleOrder = async (req, res) => {
   }
 };
 
+//buyer ---> uploadpaymenttoadmin
 export const uploadBuyerPayment = async (req, res) => {
   try {
     const buyerId = req.user._id;
@@ -2335,6 +2393,7 @@ export const uploadBuyerPayment = async (req, res) => {
   }
 };
 
+//buyer --> shipinginvoice
 export const downloadShippingInvoice = async (req, res) => {
   try {
     const { orderId, shipmentId } = req.params;
@@ -2407,6 +2466,7 @@ export const downloadShippingInvoice = async (req, res) => {
   }
 };
 
+//buyer --> downloadbuyreport
 export const downloadBuyReport = async (req, res) => {
   try {
     const { orderId } = req.params;
@@ -2483,8 +2543,7 @@ export const downloadBuyReport = async (req, res) => {
   }
 };
 
-// admin
-
+// admin --> allordersfrombuyer
 export const getAdminAllOrders = async (req, res) => {
   try {
     const {
@@ -2645,6 +2704,7 @@ export const getAdminAllOrders = async (req, res) => {
   }
 };
 
+//admin --->singleorder
 export const getAdminSingleOrderDetails = async (req, res) => {
   try {
     const { orderId } = req.params;
@@ -2682,7 +2742,16 @@ export const getAdminSingleOrderDetails = async (req, res) => {
       .populate("buyerPaymentReceipts.uploadedBy", "fullName")
       .populate("buyerPaymentReceipts.verifiedBy", "fullName")
       .populate("sellerPaymentReceipts.uploadedBy", "fullName")
-      .populate("sellerPaymentReceipts.verifiedBy", "fullName");
+      .populate("sellerPaymentReceipts.verifiedBy", "fullName")
+      .populate(
+        "shipments.assignedTransporter",
+        `
+    fullName
+    email
+    businessProfile.companyName
+    businessProfile.phoneNumber
+  `,
+      );
 
     if (!order) {
       return res.status(404).json({
@@ -2706,6 +2775,7 @@ export const getAdminSingleOrderDetails = async (req, res) => {
   }
 };
 
+//admin ---> approvepayment
 export const approveBuyerPayment = async (req, res) => {
   try {
     const { orderId, paymentId } = req.params;
@@ -2824,6 +2894,7 @@ export const approveBuyerPayment = async (req, res) => {
   }
 };
 
+//admin ---> paymenttoseller
 export const uploadAdminToSellerPayment = async (req, res) => {
   try {
     const { orderId } = req.params;
@@ -2964,6 +3035,7 @@ export const uploadAdminToSellerPayment = async (req, res) => {
   }
 };
 
+//admin ---> markdelivered
 export const markShipmentDeliveredByAdmin = async (req, res) => {
   try {
     const { orderId, shipmentId } = req.params;
@@ -3066,6 +3138,7 @@ export const markShipmentDeliveredByAdmin = async (req, res) => {
   }
 };
 
+//seller ---> markdelivered
 export const markShipmentDeliveredBySeller = async (req, res) => {
   try {
     const sellerId = req.user._id;
@@ -3171,6 +3244,7 @@ export const markShipmentDeliveredBySeller = async (req, res) => {
   }
 };
 
+//buyer ---> proformainvoice
 export const downloadProformaInvoice = async (req, res) => {
   try {
     const { orderId } = req.params;

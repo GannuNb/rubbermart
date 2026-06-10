@@ -125,6 +125,17 @@ const shipmentSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+    adminAssignedPrice: {
+      type: Number,
+    },
+
+    adminAssignmentNote: {
+      type: String,
+    },
+
+    adminAssignedAt: {
+      type: Date,
+    },
 
     selectedQuoteId: {
       type: mongoose.Schema.Types.ObjectId,

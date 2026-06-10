@@ -49,6 +49,7 @@ const initialState = {
 
   assignmentActionLoading: false,
   assignmentActionError: null,
+  activeAssignmentShipmentId: null,
 
   /* =========================
    ASSIGNED SHIPMENTS
@@ -200,13 +201,17 @@ const transporterSlice = createSlice({
           ACCEPT ASSIGNMENT
         ========================= */
 
-      .addCase(acceptAssignmentThunk.pending, (state) => {
+      .addCase(acceptAssignmentThunk.pending, (state, action) => {
         state.assignmentActionLoading = true;
+
         state.assignmentActionError = null;
+
+        state.activeAssignmentShipmentId = action.meta.arg.shipmentId;
       })
 
       .addCase(acceptAssignmentThunk.fulfilled, (state, action) => {
         state.assignmentActionLoading = false;
+        state.activeAssignmentShipmentId = null;
 
         state.pendingAssignments = state.pendingAssignments.filter(
           (item) => item.shipment._id !== action.payload.shipmentId,
@@ -216,19 +221,24 @@ const transporterSlice = createSlice({
       .addCase(acceptAssignmentThunk.rejected, (state, action) => {
         state.assignmentActionLoading = false;
         state.assignmentActionError = action.payload;
+        state.activeAssignmentShipmentId = null;
       })
 
       /* =========================
           REJECT ASSIGNMENT
         ========================= */
 
-      .addCase(rejectAssignmentThunk.pending, (state) => {
+      .addCase(rejectAssignmentThunk.pending, (state, action) => {
         state.assignmentActionLoading = true;
+
         state.assignmentActionError = null;
+
+        state.activeAssignmentShipmentId = action.meta.arg.shipmentId;
       })
 
       .addCase(rejectAssignmentThunk.fulfilled, (state, action) => {
         state.assignmentActionLoading = false;
+        state.activeAssignmentShipmentId = null;
         state.pendingAssignments = state.pendingAssignments.filter(
           (item) => item.shipment._id !== action.payload.shipmentId,
         );
@@ -236,6 +246,7 @@ const transporterSlice = createSlice({
 
       .addCase(rejectAssignmentThunk.rejected, (state, action) => {
         state.assignmentActionLoading = false;
+        state.activeAssignmentShipmentId = null;
         state.assignmentActionError = action.payload;
       });
   },

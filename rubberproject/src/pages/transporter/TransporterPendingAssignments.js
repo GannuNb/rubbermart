@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -11,6 +11,10 @@ import { rejectAssignmentThunk } from "../../redux/slices/transporter/rejectAssi
 function TransporterPendingAssignments() {
   const dispatch = useDispatch();
 
+  const [activeShipmentId, setActiveShipmentId] = useState(null);
+
+  const [actionType, setActionType] = useState("");
+
   const {
     pendingAssignments,
 
@@ -21,6 +25,7 @@ function TransporterPendingAssignments() {
     assignmentActionLoading,
 
     assignmentActionError,
+    activeAssignmentShipmentId,
   } = useSelector((state) => state.transporter);
 
   /* =========================
@@ -36,13 +41,21 @@ function TransporterPendingAssignments() {
   ========================= */
 
   const handleAccept = (item) => {
+    setActiveShipmentId(item.shipment._id);
+
+    setActionType("accept");
+
     dispatch(
       acceptAssignmentThunk({
         orderId: item.orderId,
 
         shipmentId: item.shipment._id,
       }),
-    );
+    ).then(() => {
+      setActiveShipmentId(null);
+
+      setActionType("");
+    });
   };
 
   /* =========================
@@ -50,13 +63,21 @@ function TransporterPendingAssignments() {
   ========================= */
 
   const handleReject = (item) => {
+    setActiveShipmentId(item.shipment._id);
+
+    setActionType("reject");
+
     dispatch(
       rejectAssignmentThunk({
         orderId: item.orderId,
 
         shipmentId: item.shipment._id,
       }),
-    );
+    ).then(() => {
+      setActiveShipmentId(null);
+
+      setActionType("");
+    });
   };
 
   return (
@@ -151,6 +172,15 @@ function TransporterPendingAssignments() {
                 <div className="mb-4">
                   <strong>To:</strong> {item.shipment?.shipmentTo}
                 </div>
+                <div className="mb-2">
+                  <strong>Admin Offered Price:</strong> ₹
+                  {item.shipment?.adminAssignedPrice || 0}
+                </div>
+
+                <div className="mb-4">
+                  <strong>Admin Note:</strong>{" "}
+                  {item.shipment?.adminAssignmentNote || "No note"}
+                </div>
 
                 {/* =========================
                       ACTION BUTTONS
@@ -160,17 +190,33 @@ function TransporterPendingAssignments() {
                   <button
                     className="btn btn-success flex-grow-1"
                     onClick={() => handleAccept(item)}
-                    disabled={assignmentActionLoading}
+                    disabled={
+                      assignmentActionLoading &&
+                      activeAssignmentShipmentId === item.shipment._id &&
+                      actionType === "accept"
+                    }
                   >
-                    {assignmentActionLoading ? "Processing..." : "Accept"}
+                    {assignmentActionLoading &&
+                    activeAssignmentShipmentId === item.shipment._id &&
+                    actionType === "accept"
+                      ? "Accepting..."
+                      : "Accept"}
                   </button>
 
                   <button
                     className="btn btn-danger flex-grow-1"
                     onClick={() => handleReject(item)}
-                    disabled={assignmentActionLoading}
+                    disabled={
+                      assignmentActionLoading &&
+                      activeAssignmentShipmentId === item.shipment._id &&
+                      actionType === "reject"
+                    }
                   >
-                    {assignmentActionLoading ? "Processing..." : "Reject"}
+                    {assignmentActionLoading &&
+                    activeAssignmentShipmentId === item.shipment._id &&
+                    actionType === "reject"
+                      ? "Rejecting..."
+                      : "Reject"}
                   </button>
                 </div>
               </div>

@@ -25,6 +25,11 @@ function AdminTransportQuotesCard({ shipment }) {
 
   const [selectedTransporter, setSelectedTransporter] = useState("");
 
+  const [activeQuoteId, setActiveQuoteId] = useState(null);
+
+  const [adminPrice, setAdminPrice] = useState("");
+
+  const [adminNote, setAdminNote] = useState("");
   /* =========================
      SHIPMENT QUOTES
   ========================= */
@@ -59,13 +64,19 @@ function AdminTransportQuotesCard({ shipment }) {
   ========================= */
 
   const handleAssignTransporter = (quoteId) => {
+    setActiveQuoteId(quoteId);
+
     dispatch(
       assignTransporterToShipment({
         orderId: shipment?.orderId,
+
         shipmentId: shipment?._id,
+
         quoteId,
       }),
-    );
+    ).then(() => {
+      setActiveQuoteId(null);
+    });
   };
 
   /* =========================
@@ -80,8 +91,14 @@ function AdminTransportQuotesCard({ shipment }) {
     dispatch(
       adminDirectAssignTransporter({
         orderId: shipment?.orderId,
+
         shipmentId: shipment?._id,
+
         transporterId: selectedTransporter,
+
+        adminPrice,
+
+        adminNote,
       }),
     );
   };
@@ -153,9 +170,11 @@ function AdminTransportQuotesCard({ shipment }) {
                   <button
                     className={styles.deliverBtn}
                     onClick={() => handleAssignTransporter(quote._id)}
-                    disabled={assignTransporterLoading}
+                    disabled={
+                      assignTransporterLoading && activeQuoteId === quote._id
+                    }
                   >
-                    {assignTransporterLoading
+                    {assignTransporterLoading && activeQuoteId === quote._id
                       ? "Assigning..."
                       : "Assign Transporter"}
                   </button>
@@ -194,12 +213,50 @@ function AdminTransportQuotesCard({ shipment }) {
           >
             <option value="">Select Transporter</option>
 
-            {transporters.map((transporter) => (
-              <option key={transporter._id} value={transporter._id}>
-                {transporter.fullName}
-              </option>
-            ))}
+            {transporters.map((transporter) => {
+              const alreadyQuoted = quotes.some(
+                (quote) => quote?.transporter?._id === transporter._id,
+              );
+
+              return (
+                <option
+                  key={transporter._id}
+                  value={transporter._id}
+                  disabled={alreadyQuoted}
+                >
+                  {transporter.fullName}
+
+                  {alreadyQuoted ? " (Already Quoted)" : ""}
+                </option>
+              );
+            })}
           </select>
+ 
+          <input
+            type="number"
+            placeholder="Enter transport price"
+            value={adminPrice}
+            onChange={(e) => setAdminPrice(e.target.value)}
+            className={styles.input}
+            style={{
+              width: "100%",
+              padding: "10px",
+              marginTop: "15px",
+            }}
+          />
+
+          <textarea
+            placeholder="Assignment note"
+            value={adminNote}
+            onChange={(e) => setAdminNote(e.target.value)}
+            className={styles.input}
+            rows={3}
+            style={{
+              width: "100%",
+              padding: "10px",
+              marginTop: "15px",
+            }}
+          />
 
           <button
             className={styles.deliverBtn}

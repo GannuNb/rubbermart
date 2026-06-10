@@ -411,13 +411,15 @@
   display: grid;
 
   /* 🔥 PERFECT BALANCE */
-  grid-template-columns:
-    2fr        /* Product */
-    1.4fr      /* Location */
-    1.2fr      /* Ordered */
-    1.2fr      /* Shipped */
-    1fr        /* Price */
-    1.2fr;     /* Total (important) */
+grid-template-columns:
+  2fr        /* Product */
+  1.3fr      /* Loading */
+  1.3fr      /* Shipment From */
+  1.3fr      /* Shipment To */
+  1fr        /* Ordered */
+  1fr        /* Shipped */
+  1fr        /* Price */
+  1.2fr;     /* Total */
 
   gap: 12px;
   align-items: center;
@@ -476,21 +478,20 @@
 }
 
 /* center quantities */
-.productTableHeader div:nth-child(3),
-.productTableHeader div:nth-child(4),
-.tableRow div:nth-child(3),
-.tableRow div:nth-child(4) {
-  justify-content: center;
-}
-
-/* right align money */
 .productTableHeader div:nth-child(5),
 .productTableHeader div:nth-child(6),
 .tableRow div:nth-child(5),
 .tableRow div:nth-child(6) {
-  justify-content: flex-end;
+  justify-content: center;
 }
 
+/* right align money */
+.productTableHeader div:nth-child(7),
+.productTableHeader div:nth-child(8),
+.tableRow div:nth-child(7),
+.tableRow div:nth-child(8) {
+  justify-content: flex-end;
+}
 /* =========================
    SUMMARY
 ========================= */
