@@ -11,7 +11,8 @@ import { createOrder,getSellerOrders,  getSellerSingleOrder,  confirmSellerOrder
     cancelBuyerOrder,getOpenTransportShipments,submitTransportQuote,getTransporterQuotes,getShipmentQuotes,
     assignTransporterToShipment,adminDirectAssignTransporter,getAllTransporters,getTransporterPendingAssignments,
      transporterAcceptAssignment,transporterRejectAssignment,markShipmentShippedBySeller,
-    getTransporterAssignedShipments,getTransporterCompletedDeliveries,} from "../controllers/orderController.js";
+    getTransporterAssignedShipments,getTransporterCompletedDeliveries, markShipmentShippedByTransporter,markShipmentShippedByAdmin,
+} from "../controllers/orderController.js";
 
 import { submitOrderReview } from "../controllers/reviewController.js";
 
@@ -51,7 +52,7 @@ router.put(  "/admin/:orderId/shipment/:shipmentId/delivered",  protectUser,  pr
 router.get(  "/admin/shipment/:shipmentId/quotes",  protectUser,  protectAdmin,  getShipmentQuotes,); //transporters
 router.put(  "/admin/:orderId/shipment/:shipmentId/assign-transporter/:quoteId",  protectUser,  protectAdmin,  assignTransporterToShipment,); //assigning transporter
 router.put(  "/admin/:orderId/shipment/:shipmentId/direct-assign",  protectUser,  protectAdmin,  adminDirectAssignTransporter,); //directassign
-
+router.put(  "/admin/:orderId/shipment/:shipmentId/shipped",  protectUser,  protectAdmin,  markShipmentShippedByAdmin,);
 
 
 //transporter
@@ -63,6 +64,7 @@ router.get(  "/transporter/assigned-shipments",  protectUser,  getTransporterAss
 router.get(  "/transporter/completed-deliveries",  protectUser,  getTransporterCompletedDeliveries,);
 router.put(  "/transporter/:orderId/shipment/:shipmentId/accept-assignment",  protectUser,  transporterAcceptAssignment,);
 router.put(  "/transporter/:orderId/shipment/:shipmentId/reject-assignment",  protectUser,  transporterRejectAssignment,);
+router.put(  "/transporter/:orderId/shipment/:shipmentId/shipped",  protectUser,  markShipmentShippedByTransporter,);
 
 
 

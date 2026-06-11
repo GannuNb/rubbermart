@@ -13,6 +13,7 @@ import { acceptAssignmentThunk } from "./acceptAssignmentThunk";
 import { rejectAssignmentThunk } from "./rejectAssignmentThunk";
 import { getAssignedShipmentsThunk } from "./getAssignedShipmentsThunk";
 import { getCompletedDeliveriesThunk } from "./getCompletedDeliveriesThunk";
+import { markShipmentShippedThunk } from "./markShipmentShippedThunk";
 
 const initialState = {
   /* =========================
@@ -65,6 +66,10 @@ const initialState = {
   completedDeliveries: [],
   completedDeliveriesLoading: false,
   completedDeliveriesError: null,
+
+  markShippedLoading: false,
+
+  markShippedError: null,
 };
 
 const transporterSlice = createSlice({
@@ -248,6 +253,44 @@ const transporterSlice = createSlice({
         state.assignmentActionLoading = false;
         state.activeAssignmentShipmentId = null;
         state.assignmentActionError = action.payload;
+      })
+        /* =========================
+              MARK SHIPPED
+          ========================= */
+
+      .addCase(markShipmentShippedThunk.pending, (state) => {
+        state.markShippedLoading = true;
+
+        state.markShippedError = null;
+      })
+
+      .addCase(markShipmentShippedThunk.fulfilled, (state, action) => {
+        state.markShippedLoading = false;
+
+        const updatedOrder = action.payload.order;
+
+        state.assignedShipments = state.assignedShipments.map((item) => {
+          if (item.orderId === updatedOrder._id) {
+            const updatedShipment = updatedOrder.shipments.find(
+              (shipment) =>
+                shipment._id.toString() === item.shipment._id.toString(),
+            );
+
+            return {
+              ...item,
+
+              shipment: updatedShipment,
+            };
+          }
+
+          return item;
+        });
+      })
+
+      .addCase(markShipmentShippedThunk.rejected, (state, action) => {
+        state.markShippedLoading = false;
+
+        state.markShippedError = action.payload;
       });
   },
 });

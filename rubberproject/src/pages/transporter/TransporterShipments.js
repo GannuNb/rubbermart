@@ -175,6 +175,10 @@ function TransporterShipments() {
                   <div className="mb-4">
                     <strong>To:</strong> {item.shipment.shipmentTo}
                   </div>
+                  <div className="mb-4">
+                    <strong>Transport HSN:</strong>{" "}
+                    {item.shipment?.transportHSNCode}
+                  </div>
 
                   {/* =========================
                         QUOTE SECTION

@@ -43,7 +43,14 @@ const shipmentSchema = new mongoose.Schema(
       enum: ["self_transport", "marketplace_transport"],
       default: "self_transport",
     },
+    /* =========================
+          TRANSPORT TAX DETAILS
+       ========================= */
 
+    transportHSNCode: {
+      type: String,
+      default: "9965",
+    },
     /* =========================
        SHIPMENT STATUS
     ========================= */

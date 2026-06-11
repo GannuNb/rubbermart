@@ -11,6 +11,7 @@ import { getShipmentQuotes } from "./adminShipmentQuotesThunk";
 import { assignTransporterToShipment } from "./assignTransporterThunk";
 import { getAllTransporters } from "./getAllTransportersThunk";
 import { adminDirectAssignTransporter } from "./adminDirectAssignTransporterThunk";
+import { markShipmentShippedByAdminThunk } from "./markShipmentShippedByAdminThunk";
 
 const initialState = {
   /* =========================
@@ -90,6 +91,12 @@ const initialState = {
   directAssignLoading: false,
 
   directAssignError: null,
+
+  markShipmentShippedLoading: false,
+
+  markShipmentShippedError: null,
+
+  activeShipmentId: null,
 };
 
 const adminOrderSlice = createSlice({
@@ -325,6 +332,42 @@ const adminOrderSlice = createSlice({
         state.markDeliveredLoading = false;
 
         state.markDeliveredError = action.payload;
+      })
+
+      /* =========================
+    MARK SHIPPED BY ADMIN
+========================= */
+
+      .addCase(markShipmentShippedByAdminThunk.pending, (state, action) => {
+        state.markShipmentShippedLoading = true;
+
+        state.markShipmentShippedError = null;
+
+        state.activeShipmentId = action.meta.arg.shipmentId;
+      })
+
+      .addCase(markShipmentShippedByAdminThunk.fulfilled, (state, action) => {
+        state.markShipmentShippedLoading = false;
+
+        state.activeShipmentId = null;
+
+        const updatedOrder = action.payload.order;
+
+        /* =========================
+       UPDATE SINGLE ORDER
+    ========================= */
+
+        if (state.singleOrder?._id === updatedOrder._id) {
+          state.singleOrder = updatedOrder;
+        }
+      })
+
+      .addCase(markShipmentShippedByAdminThunk.rejected, (state, action) => {
+        state.markShipmentShippedLoading = false;
+
+        state.activeShipmentId = null;
+
+        state.markShipmentShippedError = action.payload;
       });
   },
 });

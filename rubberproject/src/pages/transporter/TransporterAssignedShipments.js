@@ -1,11 +1,17 @@
-import React, { useEffect } from "react";
+// src/pages/transporter/TransporterAssignedShipments.jsx
+
+import React, { useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 
 import { getAssignedShipmentsThunk } from "../../redux/slices/transporter/getAssignedShipmentsThunk";
 
+import { markShipmentShippedThunk } from "../../redux/slices/transporter/markShipmentShippedThunk";
+
 function TransporterAssignedShipments() {
   const dispatch = useDispatch();
+
+  const [activeShipmentId, setActiveShipmentId] = useState(null);
 
   const {
     assignedShipments,
@@ -13,6 +19,8 @@ function TransporterAssignedShipments() {
     assignedShipmentsLoading,
 
     assignedShipmentsError,
+
+    markShippedLoading,
   } = useSelector((state) => state.transporter);
 
   /* =========================
@@ -22,6 +30,24 @@ function TransporterAssignedShipments() {
   useEffect(() => {
     dispatch(getAssignedShipmentsThunk());
   }, [dispatch]);
+
+  /* =========================
+     MARK SHIPPED
+  ========================= */
+
+  const handleMarkShipped = (item) => {
+    setActiveShipmentId(item.shipment._id);
+
+    dispatch(
+      markShipmentShippedThunk({
+        orderId: item.orderId,
+
+        shipmentId: item.shipment._id,
+      }),
+    ).then(() => {
+      setActiveShipmentId(null);
+    });
+  };
 
   /* =========================
      OPEN FILE
@@ -136,6 +162,10 @@ function TransporterAssignedShipments() {
                 <div className="mb-2">
                   <strong>Quantity:</strong> {item.shipment?.shippedQuantity} MT
                 </div>
+                <div className="mb-2">
+                  <strong>Transport HSN:</strong>{" "}
+                  {item.shipment?.transportHSNCode}
+                </div>
 
                 {/* FROM */}
 
@@ -151,7 +181,7 @@ function TransporterAssignedShipments() {
 
                 {/* FILE BUTTONS */}
 
-                <div className="d-flex gap-2 flex-wrap">
+                <div className="d-flex gap-2 flex-wrap mb-3">
                   {/* WEIGHT */}
 
                   {item.shipment?.weightTicket?.data && (
@@ -184,6 +214,28 @@ function TransporterAssignedShipments() {
                     </button>
                   )}
                 </div>
+
+                {/* SHIPPED BUTTON */}
+
+                {item.shipment?.shipmentStatus === "shipped" ? (
+                  <button className="btn btn-secondary w-100" disabled>
+                    Shipment Shipped
+                  </button>
+                ) : (
+                  <button
+                    className="btn btn-dark w-100"
+                    onClick={() => handleMarkShipped(item)}
+                    disabled={
+                      markShippedLoading &&
+                      activeShipmentId === item.shipment._id
+                    }
+                  >
+                    {markShippedLoading &&
+                    activeShipmentId === item.shipment._id
+                      ? "Updating..."
+                      : "Mark As Shipped"}
+                  </button>
+                )}
               </div>
             </div>
           </div>

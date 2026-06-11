@@ -4,6 +4,8 @@ import { getShipmentQuotes } from "../../../redux/slices/adminOrders/adminShipme
 import { assignTransporterToShipment } from "../../../redux/slices/adminOrders/assignTransporterThunk";
 import { getAllTransporters } from "../../../redux/slices/adminOrders/getAllTransportersThunk";
 import { adminDirectAssignTransporter } from "../../../redux/slices/adminOrders/adminDirectAssignTransporterThunk";
+
+import { markShipmentShippedByAdminThunk } from "../../../redux/slices/adminOrders/markShipmentShippedByAdminThunk";
 import styles from "../../../styles/Admin/AdminSingleShippingInvoice.module.css";
 
 function AdminTransportQuotesCard({ shipment }) {
@@ -17,6 +19,8 @@ function AdminTransportQuotesCard({ shipment }) {
     transporters,
     transportersLoading,
     directAssignLoading,
+    markShipmentShippedLoading,
+    activeShipmentId,
   } = useSelector((state) => state.adminOrders);
 
   /* =========================
@@ -99,6 +103,15 @@ function AdminTransportQuotesCard({ shipment }) {
         adminPrice,
 
         adminNote,
+      }),
+    );
+  };
+  const handleMarkShipped = () => {
+    dispatch(
+      markShipmentShippedByAdminThunk({
+        orderId: shipment?.orderId,
+
+        shipmentId: shipment?._id,
       }),
     );
   };
@@ -231,7 +244,7 @@ function AdminTransportQuotesCard({ shipment }) {
               );
             })}
           </select>
- 
+
           <input
             type="number"
             placeholder="Enter transport price"
@@ -300,6 +313,46 @@ function AdminTransportQuotesCard({ shipment }) {
               </p>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* =========================
+    MARK SHIPPED
+========================= */}
+
+      {shipment?.transportStatus === "transporter_assigned" && (
+        <div
+          style={{
+            marginTop: "20px",
+          }}
+        >
+          {shipment?.shipmentStatus === "shipped" ? (
+            <button
+              className={styles.deliverBtn}
+              disabled
+              style={{
+                width: "100%",
+                background: "#6b7280",
+              }}
+            >
+              Shipment Shipped
+            </button>
+          ) : (
+            <button
+              className={styles.deliverBtn}
+              onClick={handleMarkShipped}
+              disabled={
+                markShipmentShippedLoading && activeShipmentId === shipment?._id
+              }
+              style={{
+                width: "100%",
+              }}
+            >
+              {markShipmentShippedLoading && activeShipmentId === shipment?._id
+                ? "Updating..."
+                : "Mark As Shipped"}
+            </button>
+          )}
         </div>
       )}
     </div>

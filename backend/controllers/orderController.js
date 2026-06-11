@@ -1913,7 +1913,166 @@ export const transporterRejectAssignment = async (req, res) => {
     });
   }
 };
+//transporter ---> updating shipedstatus
+export const markShipmentShippedByTransporter = async (req, res) => {
+  try {
+    const transporterId = req.user._id;
 
+    const {
+      orderId,
+
+      shipmentId,
+    } = req.params;
+
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+
+        message: "Order not found",
+      });
+    }
+
+    const shipment = order.shipments.id(shipmentId);
+
+    if (!shipment) {
+      return res.status(404).json({
+        success: false,
+
+        message: "Shipment not found",
+      });
+    }
+
+    /* =========================
+           VALIDATE TRANSPORTER
+        ========================= */
+
+    if (
+      shipment?.assignedTransporter?.toString() !== transporterId.toString()
+    ) {
+      return res.status(403).json({
+        success: false,
+
+        message: "Unauthorized transporter",
+      });
+    }
+
+    /* =========================
+           VALIDATE STATUS
+        ========================= */
+
+    if (shipment.shipmentStatus === "shipped") {
+      return res.status(400).json({
+        success: false,
+
+        message: "Shipment already shipped",
+      });
+    }
+
+    /* =========================
+           UPDATE STATUS
+        ========================= */
+
+    shipment.shipmentStatus = "shipped";
+
+    shipment.pickedUpAt = new Date();
+
+    await order.save();
+
+    return res.status(200).json({
+      success: true,
+
+      message: "Shipment marked as shipped",
+
+      order,
+    });
+  } catch (error) {
+    console.log("Mark Shipment Shipped By Transporter Error:", error);
+
+    return res.status(500).json({
+      success: false,
+
+      message: "Failed to update shipment",
+    });
+  }
+};
+
+//admin ---> updating shiped status
+export const markShipmentShippedByAdmin = async (req, res) => {
+  try {
+    const {
+      orderId,
+
+      shipmentId,
+    } = req.params;
+
+    const order = await Order.findById(orderId).populate(
+      "shipments.assignedTransporter",
+      `
+          fullName
+          email
+          businessProfile
+          `,
+    );
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+
+        message: "Order not found",
+      });
+    }
+
+    const shipment = order.shipments.id(shipmentId);
+
+    if (!shipment) {
+      return res.status(404).json({
+        success: false,
+
+        message: "Shipment not found",
+      });
+    }
+
+    /* =========================
+           VALIDATE STATUS
+        ========================= */
+
+    if (shipment.shipmentStatus === "shipped") {
+      return res.status(400).json({
+        success: false,
+
+        message: "Shipment already shipped",
+      });
+    }
+
+    /* =========================
+           UPDATE STATUS
+        ========================= */
+
+    shipment.shipmentStatus = "shipped";
+
+    shipment.pickedUpAt = new Date();
+
+    await order.save();
+
+    return res.status(200).json({
+      success: true,
+
+      message: "Shipment marked as shipped",
+
+      order,
+    });
+  } catch (error) {
+    console.log("Admin Mark Shipment Shipped Error:", error);
+
+    return res.status(500).json({
+      success: false,
+
+      message: "Failed to update shipment",
+    });
+  }
+};
 //buyer ---> buyerorders
 export const getBuyerOrders = async (req, res) => {
   try {
@@ -3112,7 +3271,7 @@ export const markShipmentDeliveredByAdmin = async (req, res) => {
     /* =========================
          UPDATE MAIN ORDER STATUS
       ========================= */
-
+      
     if (allItemsDelivered) {
       order.orderStatus = "delivered";
 
@@ -3121,6 +3280,7 @@ export const markShipmentDeliveredByAdmin = async (req, res) => {
 
     await order.save();
 
+    
     return res.status(200).json({
       success: true,
       message: "Shipment marked as delivered",
