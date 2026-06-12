@@ -3777,3 +3777,373 @@ export const uploadTransportPaymentReceipt = async (req, res) => {
     });
   }
 };
+
+export const verifyBuyerTransportPayment = async (req, res) => {
+  try {
+    const adminId = req.user._id;
+
+    const { orderId, shipmentId, receiptId } = req.params;
+
+    const { action } = req.body;
+
+    /* =========================
+         VALIDATE ACTION
+      ========================= */
+
+    if (!["verified", "rejected"].includes(action)) {
+      return res.status(400).json({
+        success: false,
+
+        message: "Invalid action",
+      });
+    }
+
+    /* =========================
+         FIND ORDER
+      ========================= */
+
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+
+        message: "Order not found",
+      });
+    }
+
+    /* =========================
+         FIND SHIPMENT
+      ========================= */
+
+    const shipment = order.shipments.id(shipmentId);
+
+    if (!shipment) {
+      return res.status(404).json({
+        success: false,
+
+        message: "Shipment not found",
+      });
+    }
+
+    /* =========================
+         FIND RECEIPT
+      ========================= */
+
+    const receipt = shipment.transportPaymentReceipts.id(receiptId);
+
+    if (!receipt) {
+      return res.status(404).json({
+        success: false,
+
+        message: "Payment receipt not found",
+      });
+    }
+
+    /* =========================
+         PREVENT RE-VERIFY
+      ========================= */
+
+    if (receipt.status === "verified" && action === "verified") {
+      return res.status(400).json({
+        success: false,
+
+        message: "Payment already verified",
+      });
+    }
+
+    /* =========================
+         UPDATE STATUS
+      ========================= */
+
+    receipt.status = action;
+
+    receipt.verifiedBy = adminId;
+
+    receipt.verifiedAt = new Date();
+
+    /* =========================
+         VERIFIED TOTAL
+      ========================= */
+
+    const verifiedAmount = shipment.transportPaymentReceipts
+      .filter((r) => r.status === "verified")
+      .reduce((sum, r) => sum + Number(r.amount || 0), 0);
+
+    /* =========================
+         PAYMENT STATUS
+      ========================= */
+
+    if (verifiedAmount <= 0) {
+      shipment.transportPaymentStatus = "unpaid";
+    } else if (verifiedAmount < shipment.transportFinalAmount) {
+      shipment.transportPaymentStatus = "partial_paid";
+    } else {
+      shipment.transportPaymentStatus = "paid";
+    }
+
+    /* =========================
+         SAVE
+      ========================= */
+
+    await order.save();
+
+    return res.status(200).json({
+      success: true,
+
+      message:
+        action === "verified"
+          ? "Payment verified successfully"
+          : "Payment rejected successfully",
+
+      order,
+    });
+  } catch (error) {
+    console.log("Verify Buyer Transport Payment Error:", error);
+
+    return res.status(500).json({
+      success: false,
+
+      message: "Failed to verify payment",
+
+      error: error.message,
+    });
+  }
+};
+
+export const uploadAdminTransportPayment = async (req, res) => {
+  try {
+    const adminId = req.user._id;
+
+    const { orderId, shipmentId } = req.params;
+
+    const {
+      amount,
+      paymentMode,
+      transactionId,
+      note,
+    } = req.body;
+
+    /* =========================
+       FIND ORDER
+    ========================= */
+
+    const order =
+      await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+
+        message: "Order not found",
+      });
+    }
+
+    /* =========================
+       FIND SHIPMENT
+    ========================= */
+
+    const shipment =
+      order.shipments.id(
+        shipmentId,
+      );
+
+    if (!shipment) {
+      return res.status(404).json({
+        success: false,
+
+        message: "Shipment not found",
+      });
+    }
+
+    /* =========================
+       VALIDATE TRANSPORTER
+    ========================= */
+
+    if (
+      !shipment?.assignedTransporter
+    ) {
+      return res.status(400).json({
+        success: false,
+
+        message:
+          "Transporter not assigned",
+      });
+    }
+
+    /* =========================
+       VALIDATE AMOUNT
+    ========================= */
+
+    const paidAmount =
+      Number(amount);
+
+    if (
+      !paidAmount ||
+      paidAmount <= 0
+    ) {
+      return res.status(400).json({
+        success: false,
+
+        message:
+          "Invalid payment amount",
+      });
+    }
+
+    /* =========================
+       VERIFIED ADMIN PAYMENTS
+    ========================= */
+
+    const adminPaidAmount =
+      (
+        shipment?.adminTransportPaymentReceipts ||
+        []
+      )
+        .filter(
+          (r) =>
+            r.status ===
+            "verified",
+        )
+        .reduce(
+          (sum, r) =>
+            sum +
+            Number(
+              r.amount || 0,
+            ),
+          0,
+        );
+
+    /* =========================
+       TOTAL TRANSPORT AMOUNT
+    ========================= */
+
+    const totalTransportAmount =
+      Number(
+        shipment?.transportFinalAmount ||
+          0,
+      );
+
+    /* =========================
+       REMAINING AMOUNT
+    ========================= */
+
+    const remainingAmount =
+      totalTransportAmount -
+      adminPaidAmount;
+
+    /* =========================
+       PREVENT OVERPAY
+    ========================= */
+
+    if (
+      paidAmount >
+      remainingAmount
+    ) {
+      return res.status(400).json({
+        success: false,
+
+        message:
+          "Amount exceeds transport total amount",
+      });
+    }
+
+    /* =========================
+       FILE
+    ========================= */
+
+    const paymentFile =
+      req.file
+        ? {
+            data:
+              req.file.buffer,
+
+            contentType:
+              req.file.mimetype,
+
+            originalName:
+              req.file
+                .originalname,
+          }
+        : null;
+
+    /* =========================
+       CREATE RECEIPT
+    ========================= */
+
+    const newReceipt = {
+      file: paymentFile,
+
+      amount: paidAmount,
+
+      paymentMode,
+
+      transactionId,
+
+      note,
+
+      uploadedBy: adminId,
+
+      paymentFor:
+        "admin_to_transporter",
+
+      status: "verified",
+
+      verifiedBy: adminId,
+
+      verifiedAt:
+        new Date(),
+
+      totalPaidTillNow:
+        adminPaidAmount,
+
+      remainingAmount:
+        remainingAmount -
+        paidAmount,
+
+      isPartialPayment:
+        paidAmount <
+        remainingAmount,
+
+      isFinalPayment:
+        paidAmount ===
+        remainingAmount,
+    };
+
+    /* =========================
+       PUSH RECEIPT
+    ========================= */
+
+    shipment.adminTransportPaymentReceipts.push(
+      newReceipt,
+    );
+
+    /* =========================
+       SAVE
+    ========================= */
+
+    await order.save();
+
+    return res.status(200).json({
+      success: true,
+
+      message:
+        "Transporter payment uploaded successfully",
+
+      order,
+    });
+  } catch (error) {
+    console.log(
+      "Upload Admin Transport Payment Error:",
+      error,
+    );
+
+    return res.status(500).json({
+      success: false,
+
+      message:
+        "Failed to upload transporter payment",
+
+      error: error.message,
+    });
+  }
+};

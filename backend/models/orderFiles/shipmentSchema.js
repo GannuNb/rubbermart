@@ -89,7 +89,8 @@ const shipmentSchema = new mongoose.Schema(
       enum: [
         "unpaid",
         "payment_submitted",
-        "payment_verified",
+        "partial_paid",
+        "paid",
         "payment_rejected",
       ],
 
@@ -97,6 +98,13 @@ const shipmentSchema = new mongoose.Schema(
     },
 
     transportPaymentReceipts: [paymentReceiptSchema],
+    /*  =========================
+          ADMIN → TRANSPORTER PAYMENTS
+        ========================= */
+
+        adminTransportPaymentReceipts: [
+          paymentReceiptSchema,
+        ],
 
     /* =========================
        SHIPMENT STATUS
