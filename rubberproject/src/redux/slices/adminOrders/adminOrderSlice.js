@@ -87,16 +87,29 @@ const initialState = {
   /* =========================
    ADMIN DIRECT ASSIGN
 ========================= */
-
   directAssignLoading: false,
-
   directAssignError: null,
-
   markShipmentShippedLoading: false,
-
   markShipmentShippedError: null,
-
   activeShipmentId: null,
+
+  /* =========================
+   VERIFY BUYER PAYMENT
+========================= */
+
+  verifyTransportPaymentLoading: false,
+  verifyTransportPaymentError: null,
+  verifyTransportPaymentSuccess: null,
+
+  /* =========================
+   ADMIN TRANSPORT PAYMENT
+========================= */
+
+  adminTransportPaymentLoading: false,
+
+  adminTransportPaymentError: null,
+
+  adminTransportPaymentSuccess: null,
 };
 
 const adminOrderSlice = createSlice({
@@ -122,6 +135,11 @@ const adminOrderSlice = createSlice({
 
     clearMarkDeliveredError: (state) => {
       state.markDeliveredError = null;
+    },
+    uploadAdminTransportPaymentReset: (state) => {
+      state.adminTransportPaymentError = null;
+
+      state.adminTransportPaymentSuccess = null;
     },
   },
 
@@ -269,8 +287,8 @@ const adminOrderSlice = createSlice({
       })
 
       /* =========================
-   GET ALL TRANSPORTERS
-========================= */
+          GET ALL TRANSPORTERS
+        ========================= */
 
       .addCase(getAllTransporters.pending, (state) => {
         state.transportersLoading = true;
@@ -291,8 +309,8 @@ const adminOrderSlice = createSlice({
       })
 
       /* =========================
-   ADMIN DIRECT ASSIGN
-========================= */
+            ADMIN DIRECT ASSIGN
+          ========================= */
 
       .addCase(adminDirectAssignTransporter.pending, (state) => {
         state.directAssignLoading = true;
@@ -335,8 +353,8 @@ const adminOrderSlice = createSlice({
       })
 
       /* =========================
-    MARK SHIPPED BY ADMIN
-========================= */
+            MARK SHIPPED BY ADMIN
+        ========================= */
 
       .addCase(markShipmentShippedByAdminThunk.pending, (state, action) => {
         state.markShipmentShippedLoading = true;
@@ -354,8 +372,8 @@ const adminOrderSlice = createSlice({
         const updatedOrder = action.payload.order;
 
         /* =========================
-       UPDATE SINGLE ORDER
-    ========================= */
+            UPDATE SINGLE ORDER
+          ========================= */
 
         if (state.singleOrder?._id === updatedOrder._id) {
           state.singleOrder = updatedOrder;
@@ -368,7 +386,70 @@ const adminOrderSlice = createSlice({
         state.activeShipmentId = null;
 
         state.markShipmentShippedError = action.payload;
-      });
+      })
+
+      /* =========================
+   VERIFY BUYER TRANSPORT PAYMENT
+========================= */
+
+      .addCase("adminOrders/verifyBuyerTransportPaymentPending", (state) => {
+        state.verifyTransportPaymentLoading = true;
+
+        state.verifyTransportPaymentError = null;
+
+        state.verifyTransportPaymentSuccess = null;
+      })
+
+      .addCase(
+        "adminOrders/verifyBuyerTransportPaymentSuccess",
+        (state, action) => {
+          state.verifyTransportPaymentLoading = false;
+
+          state.verifyTransportPaymentSuccess = action.payload.message;
+
+          state.singleOrder = action.payload.order;
+        },
+      )
+
+      .addCase(
+        "adminOrders/verifyBuyerTransportPaymentFail",
+        (state, action) => {
+          state.verifyTransportPaymentLoading = false;
+
+          state.verifyTransportPaymentError = action.payload;
+        },
+      )
+      /* =========================
+   UPLOAD ADMIN TRANSPORT PAYMENT
+========================= */
+
+      .addCase("adminOrders/uploadAdminTransportPaymentPending", (state) => {
+        state.adminTransportPaymentLoading = true;
+
+        state.adminTransportPaymentError = null;
+
+        state.adminTransportPaymentSuccess = null;
+      })
+
+      .addCase(
+        "adminOrders/uploadAdminTransportPaymentSuccess",
+        (state, action) => {
+          state.adminTransportPaymentLoading = false;
+
+          state.adminTransportPaymentSuccess = action.payload.message;
+
+          state.singleOrder = action.payload.order;
+        },
+      )
+
+      .addCase(
+        "adminOrders/uploadAdminTransportPaymentFail",
+        (state, action) => {
+          state.adminTransportPaymentLoading = false;
+
+          state.adminTransportPaymentError = action.payload;
+        },
+      );
   },
 });
 
@@ -378,6 +459,7 @@ export const {
   clearApprovePaymentError,
   clearUploadSellerPaymentError,
   clearMarkDeliveredError,
+  uploadAdminTransportPaymentReset,
 } = adminOrderSlice.actions;
 
 export default adminOrderSlice.reducer;

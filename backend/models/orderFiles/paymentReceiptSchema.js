@@ -50,10 +50,13 @@ const paymentReceiptSchema = new mongoose.Schema(
 
     paymentFor: {
       type: String,
+
       enum: [
         "buyer_to_admin",
         "admin_to_seller",
+        "admin_to_transporter",
       ],
+
       required: true,
     },
 

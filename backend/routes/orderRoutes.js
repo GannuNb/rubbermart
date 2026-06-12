@@ -12,7 +12,7 @@ import { createOrder,getSellerOrders,  getSellerSingleOrder,  confirmSellerOrder
     assignTransporterToShipment,adminDirectAssignTransporter,getAllTransporters,getTransporterPendingAssignments,
      transporterAcceptAssignment,transporterRejectAssignment,markShipmentShippedBySeller,
     getTransporterAssignedShipments,getTransporterCompletedDeliveries, markShipmentShippedByTransporter,markShipmentShippedByAdmin,
-    uploadTransportPaymentReceipt, } from "../controllers/orderController.js";
+    uploadTransportPaymentReceipt,uploadAdminTransportPayment,verifyBuyerTransportPayment } from "../controllers/orderController.js";
 
 import { submitOrderReview } from "../controllers/reviewController.js";
 
@@ -54,6 +54,8 @@ router.get(  "/admin/shipment/:shipmentId/quotes",  protectUser,  protectAdmin, 
 router.put(  "/admin/:orderId/shipment/:shipmentId/assign-transporter/:quoteId",  protectUser,  protectAdmin,  assignTransporterToShipment,); //assigning transporter
 router.put(  "/admin/:orderId/shipment/:shipmentId/direct-assign",  protectUser,  protectAdmin,  adminDirectAssignTransporter,); //directassign
 router.put(  "/admin/:orderId/shipment/:shipmentId/shipped",  protectUser,  protectAdmin,  markShipmentShippedByAdmin,);
+router.put(  "/admin/orders/:orderId/shipment/:shipmentId/transport-payment/:receiptId/verify",  protectUser,  protectAdmin,  verifyBuyerTransportPayment,);
+router.post(  "/admin/orders/:orderId/shipment/:shipmentId/transport-payment", protectUser,protectAdmin,  uploadDocuments.single("receipt"),  uploadAdminTransportPayment,);
 
 
 //transporter

@@ -1,0 +1,574 @@
+.wrapper {
+  margin-top: 24px;
+
+  background: #ffffff;
+
+  border-radius: 24px;
+
+  padding: 28px;
+
+  border: 1px solid #ede9fe;
+
+  box-shadow: 0 6px 24px rgba(109, 40, 217, 0.08);
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.header {
+  display: flex;
+
+  align-items: center;
+
+  gap: 16px;
+
+  margin-bottom: 28px;
+}
+
+.headerIcon {
+  font-size: 30px;
+
+  color: #6d28d9;
+}
+
+.header h2 {
+  font-size: 24px;
+
+  font-weight: 800;
+
+  color: #111827;
+
+  margin-bottom: 4px;
+}
+
+.header p {
+  color: #6b7280;
+
+  font-size: 14px;
+}
+
+/* =========================
+   SUMMARY GRID
+========================= */
+
+.summaryGrid {
+  display: grid;
+
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+
+  gap: 18px;
+
+  margin-bottom: 32px;
+}
+
+.summaryCard {
+  background: linear-gradient(
+    135deg,
+    #faf5ff,
+    #f5f3ff
+  );
+
+  border: 1px solid #e9d5ff;
+
+  border-radius: 20px;
+
+  padding: 22px;
+
+  transition: 0.25s ease;
+
+  box-shadow: 0 4px 16px rgba(109, 40, 217, 0.06);
+}
+
+.summaryCard:hover {
+  transform: translateY(-2px);
+
+  box-shadow: 0 10px 24px rgba(109, 40, 217, 0.12);
+}
+
+.summaryCard p {
+  font-size: 13px;
+
+  font-weight: 600;
+
+  color: #6b7280;
+
+  margin-bottom: 10px;
+}
+
+.summaryCard h3 {
+  font-size: 28px;
+
+  font-weight: 800;
+
+  color: #6d28d9;
+}
+
+/* =========================
+   FORM CARD
+========================= */
+
+.formCard {
+  background: #fafaff;
+
+  border: 1px solid #e9d5ff;
+
+  border-radius: 22px;
+
+  padding: 24px;
+
+  margin-bottom: 34px;
+}
+
+.formHeader {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin-bottom: 24px;
+}
+
+.formHeader svg {
+  color: #6d28d9;
+
+  font-size: 20px;
+}
+
+.formHeader h3 {
+  font-size: 20px;
+
+  font-weight: 700;
+
+  color: #111827;
+}
+
+/* =========================
+   FORM GRID
+========================= */
+
+.formGrid {
+  display: grid;
+
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 18px;
+}
+
+.formGroup {
+  margin-bottom: 18px;
+}
+
+.formGroup label {
+  display: block;
+
+  margin-bottom: 8px;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  color: #374151;
+}
+
+.formGroup input,
+.formGroup select,
+.formGroup textarea {
+  width: 100%;
+
+  padding: 14px 16px;
+
+  border-radius: 14px;
+
+  border: 1px solid #ddd6fe;
+
+  background: #ffffff;
+
+  font-size: 14px;
+
+  outline: none;
+
+  transition: 0.25s ease;
+}
+
+.formGroup input:focus,
+.formGroup select:focus,
+.formGroup textarea:focus {
+  border-color: #6d28d9;
+
+  box-shadow: 0 0 0 4px rgba(109, 40, 217, 0.08);
+}
+
+.formGroup textarea {
+  resize: vertical;
+
+  min-height: 110px;
+}
+
+/* =========================
+   BUTTON
+========================= */
+
+.uploadBtn {
+  width: 100%;
+
+  border: none;
+
+  border-radius: 16px;
+
+  background: linear-gradient(
+    135deg,
+    #7c3aed,
+    #6d28d9
+  );
+
+  color: white;
+
+  padding: 15px;
+
+  font-size: 15px;
+
+  font-weight: 700;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 10px;
+
+  cursor: pointer;
+
+  transition: 0.25s ease;
+}
+
+.uploadBtn:hover {
+  transform: translateY(-2px);
+
+  box-shadow: 0 10px 24px rgba(109, 40, 217, 0.25);
+}
+
+.uploadBtn:disabled {
+  opacity: 0.7;
+
+  cursor: not-allowed;
+}
+
+/* =========================
+   ALERTS
+========================= */
+
+.errorBox {
+  background: #fef2f2;
+
+  border: 1px solid #fecaca;
+
+  color: #dc2626;
+
+  padding: 14px;
+
+  border-radius: 14px;
+
+  margin-bottom: 18px;
+
+  font-size: 14px;
+
+  font-weight: 600;
+}
+
+.successBox {
+  background: #ecfdf5;
+
+  border: 1px solid #bbf7d0;
+
+  color: #059669;
+
+  padding: 14px;
+
+  border-radius: 14px;
+
+  margin-bottom: 18px;
+
+  font-size: 14px;
+
+  font-weight: 600;
+}
+
+/* =========================
+   SECTION
+========================= */
+
+.sectionBlock {
+  margin-top: 34px;
+}
+
+.sectionTitle {
+  font-size: 22px;
+
+  font-weight: 800;
+
+  color: #111827;
+
+  margin-bottom: 20px;
+}
+
+/* =========================
+   EMPTY
+========================= */
+
+.emptyBox {
+  background: #f9fafb;
+
+  border: 1px dashed #d1d5db;
+
+  border-radius: 18px;
+
+  padding: 30px;
+
+  text-align: center;
+
+  color: #6b7280;
+
+  font-weight: 600;
+}
+
+/* =========================
+   CARDS GRID
+========================= */
+
+.cardsGrid {
+  display: grid;
+
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+
+  gap: 20px;
+}
+
+/* =========================
+   PAYMENT CARD
+========================= */
+
+.paymentCard {
+  background: #ffffff;
+
+  border: 1px solid #ede9fe;
+
+  border-radius: 20px;
+
+  padding: 22px;
+
+  box-shadow: 0 4px 18px rgba(109, 40, 217, 0.06);
+
+  transition: 0.25s ease;
+}
+
+.paymentCard:hover {
+  transform: translateY(-2px);
+
+  box-shadow: 0 10px 26px rgba(109, 40, 217, 0.12);
+}
+
+.cardTop {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: flex-start;
+
+  gap: 12px;
+
+  margin-bottom: 18px;
+}
+
+.cardTop h3 {
+  font-size: 28px;
+
+  font-weight: 800;
+
+  color: #111827;
+
+  margin-bottom: 6px;
+}
+
+.cardTop p {
+  font-size: 14px;
+
+  color: #6b7280;
+}
+
+/* =========================
+   BADGES
+========================= */
+
+.verifiedBadge,
+.pendingBadge,
+.rejectedBadge {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  padding: 8px 12px;
+
+  border-radius: 999px;
+
+  font-size: 12px;
+
+  font-weight: 700;
+}
+
+.verifiedBadge {
+  background: #ecfdf5;
+
+  color: #059669;
+}
+
+.pendingBadge {
+  background: #fef3c7;
+
+  color: #d97706;
+}
+
+.rejectedBadge {
+  background: #fef2f2;
+
+  color: #dc2626;
+}
+
+/* =========================
+   BODY
+========================= */
+
+.cardBody {
+  margin-bottom: 18px;
+}
+
+.cardBody p {
+  font-size: 14px;
+
+  color: #374151;
+
+  margin-bottom: 10px;
+
+  line-height: 1.5;
+}
+
+/* =========================
+   RECEIPT BUTTON
+========================= */
+
+.receiptBtn {
+  width: 100%;
+
+  border: none;
+
+  border-radius: 14px;
+
+  padding: 13px;
+
+  background: #f5f3ff;
+
+  color: #6d28d9;
+
+  font-weight: 700;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 8px;
+
+  cursor: pointer;
+
+  margin-bottom: 14px;
+
+  transition: 0.25s ease;
+}
+
+.receiptBtn:hover {
+  background: #ede9fe;
+}
+
+/* =========================
+   ACTIONS
+========================= */
+
+.actionsRow {
+  display: flex;
+
+  gap: 12px;
+}
+
+.verifyBtn,
+.rejectBtn {
+  flex: 1;
+
+  border: none;
+
+  border-radius: 14px;
+
+  padding: 13px;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.25s ease;
+}
+
+.verifyBtn {
+  background: #16a34a;
+
+  color: white;
+}
+
+.verifyBtn:hover {
+  background: #15803d;
+}
+
+.rejectBtn {
+  background: #dc2626;
+
+  color: white;
+}
+
+.rejectBtn:hover {
+  background: #b91c1c;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+  .wrapper {
+    padding: 18px;
+  }
+
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .cardsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .cardTop {
+    flex-direction: column;
+  }
+
+  .actionsRow {
+    flex-direction: column;
+  }
+
+  .summaryCard h3 {
+    font-size: 24px;
+  }
+}

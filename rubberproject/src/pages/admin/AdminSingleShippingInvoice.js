@@ -11,6 +11,7 @@ import AdminDriverDetailsCard from "../../components/admin/AdminSingleShipping/A
 import AdminShipmentSummaryCard from "../../components/admin/AdminSingleShipping/AdminShipmentSummaryCard";
 import AdminShipmentActionsCard from "../../components/admin/AdminSingleShipping/AdminShipmentActionsCard";
 import AdminTransportQuotesCard from "../../components/admin/AdminSingleShipping/AdminTransportQuotesCard";
+import AdminTransportPaymentsSection from "../../components/admin/AdminSingleShipping/AdminTransportPaymentsSection";
 
 import { getAdminSingleOrderDetails } from "../../redux/slices/adminOrders/adminSingleOrderThunk";
 
@@ -42,11 +43,8 @@ const AdminSingleShippingInvoice = () => {
      FIND SHIPMENT
   ========================= */
 
- const shipment =
-  order?.shipments?.find(
-    (item) =>
-      item?._id?.toString() ===
-      shipmentId?.toString(),
+  const shipment = order?.shipments?.find(
+    (item) => item?._id?.toString() === shipmentId?.toString(),
   );
 
   /* =========================
@@ -153,6 +151,7 @@ const AdminSingleShippingInvoice = () => {
 
         <AdminShipmentSummaryCard shipment={shipment} />
       </div>
+      <AdminTransportPaymentsSection shipment={shipment} order={order} />
 
       {/* ACTIONS */}
 
