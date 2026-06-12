@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import uploadedFileSchema from "./uploadedFileSchema.js";
+import paymentReceiptSchema from "./paymentReceiptSchema.js";
 
 const shipmentSchema = new mongoose.Schema(
   {
@@ -51,6 +52,52 @@ const shipmentSchema = new mongoose.Schema(
       type: String,
       default: "9965",
     },
+
+    /*  =========================
+          TRANSPORT PAYMENT
+        ========================= */
+
+    transportPrice: {
+      type: Number,
+      default: 0,
+    },
+
+    transportGSTPercent: {
+      type: Number,
+      default: 5,
+    },
+    transportGSTType: {
+      type: String,
+
+      enum: ["igst", "cgst_sgst"],
+
+      default: "igst",
+    },
+    transportGSTAmount: {
+      type: Number,
+      default: 0,
+    },
+
+    transportFinalAmount: {
+      type: Number,
+      default: 0,
+    },
+
+    transportPaymentStatus: {
+      type: String,
+
+      enum: [
+        "unpaid",
+        "payment_submitted",
+        "payment_verified",
+        "payment_rejected",
+      ],
+
+      default: "unpaid",
+    },
+
+    transportPaymentReceipts: [paymentReceiptSchema],
+
     /* =========================
        SHIPMENT STATUS
     ========================= */

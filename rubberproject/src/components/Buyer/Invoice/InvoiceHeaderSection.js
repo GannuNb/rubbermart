@@ -11,97 +11,80 @@ import { downloadShippingInvoiceThunk } from "../../../redux/slices/buyerOrderTh
 import styles from "../../../styles/Buyer/BuyerSingleShippingInvoice.module.css";
 
 const InvoiceHeaderSection = ({ shipment, order }) => {
-
   const dispatch = useDispatch();
-  
-const handleViewWeightTicket = () => {
-  try {
-    if (!shipment?.shipmentFile?.data) {
-      return alert("Weight ticket not available");
-    }
 
-    let base64 = "";
+  const handleViewWeightTicket = () => {
+    try {
+      if (!shipment?.weightTicket?.data) {
+        return alert("Weight ticket not available");
+      }
 
-    if (typeof shipment.shipmentFile.data === "string") {
-      base64 = shipment.shipmentFile.data;
-    } else if (shipment.shipmentFile.data?.data) {
-      base64 = btoa(
-        new Uint8Array(shipment.shipmentFile.data.data).reduce(
-          (data, byte) => data + String.fromCharCode(byte),
-          ""
-        )
-      );
-    }
+      let base64 = "";
 
-    /*
+      if (typeof shipment.weightTicket.data === "string") {
+        base64 = shipment.weightTicket.data;
+      } else if (shipment.weightTicket.data?.data) {
+        base64 = btoa(
+          new Uint8Array(shipment.weightTicket.data.data).reduce(
+            (data, byte) => data + String.fromCharCode(byte),
+            "",
+          ),
+        );
+      }
+
+      /*
     =========================================
     CONVERT BASE64 TO BLOB
     =========================================
     */
 
-    const byteCharacters = atob(base64);
+      const byteCharacters = atob(base64);
 
-    const byteNumbers = new Array(byteCharacters.length);
+      const byteNumbers = new Array(byteCharacters.length);
 
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] =
-        byteCharacters.charCodeAt(i);
-    }
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
 
-    const byteArray = new Uint8Array(byteNumbers);
+      const byteArray = new Uint8Array(byteNumbers);
 
-    const blob = new Blob([byteArray], {
-      type:
-        shipment.shipmentFile.contentType ||
-        "application/pdf",
-    });
+      const blob = new Blob([byteArray], {
+        type: shipment.weightTicket.contentType || "application/pdf",
+      });
 
-    /*
+      /*
     =========================================
     OPEN BLOB URL
     =========================================
     */
 
-    const blobUrl =
-      URL.createObjectURL(blob);
+      const blobUrl = URL.createObjectURL(blob);
 
-    window.open(blobUrl, "_blank");
+      window.open(blobUrl, "_blank");
 
-    setTimeout(() => {
-      URL.revokeObjectURL(blobUrl);
-    }, 1000);
+      setTimeout(() => {
+        URL.revokeObjectURL(blobUrl);
+      }, 1000);
+    } catch (error) {
+      console.log("Weight Ticket Open Error:", error);
 
-  } catch (error) {
-    console.log(
-      "Weight Ticket Open Error:",
-      error
-    );
+      alert("Failed to open document");
+    }
+  };
 
-    alert("Failed to open document");
-  }
-};
-
-const handleInvoiceDownload = () => {
-  dispatch(
-    downloadShippingInvoiceThunk(
-      order._id,
-      shipment._id
-    )
-  );
-};
+  const handleInvoiceDownload = () => {
+    dispatch(downloadShippingInvoiceThunk(order._id, shipment._id));
+  };
 
   return (
     <>
       {/* TOP TITLE SECTION */}
       <div className={styles.shippingTitleRow}>
         <div>
-          <h2 className={styles.mainTitle}>
-            Shipping Details
-          </h2>
+          <h2 className={styles.mainTitle}>Shipping Details</h2>
 
           <p className={styles.subTitle}>
-            Complete Shipment Information and Tracking
-            Details
+            Complete Shipment Information and Tracking Details
           </p>
         </div>
 
@@ -122,9 +105,7 @@ const handleInvoiceDownload = () => {
 
             <div>
               <p className={styles.label}>Invoice ID</p>
-              <h4>
-                {shipment?.shipmentInvoiceId || "-"}
-              </h4>
+              <h4>{shipment?.shipmentInvoiceId || "-"}</h4>
             </div>
           </div>
 
@@ -135,16 +116,12 @@ const handleInvoiceDownload = () => {
             </div>
 
             <div>
-              <p className={styles.label}>
-                Shipment Date
-              </p>
+              <p className={styles.label}>Picked Up Date</p>
 
               <h4>
-                {shipment?.shippedAt
-                  ? new Date(
-                      shipment.shippedAt
-                    ).toLocaleDateString()
-                  : "-"}
+                {shipment?.pickedUpAt
+                  ? new Date(shipment.pickedUpAt).toLocaleDateString()
+                  : "Pending"}
               </h4>
             </div>
           </div>
@@ -159,8 +136,7 @@ const handleInvoiceDownload = () => {
               <p className={styles.label}>Shipped By</p>
 
               <h4>
-                {order?.seller?.businessProfile
-                  ?.companyName ||
+                {order?.seller?.businessProfile?.companyName ||
                   order?.seller?.fullName ||
                   "-"}
               </h4>
@@ -181,13 +157,9 @@ const handleInvoiceDownload = () => {
               <p className={styles.label}>Invoice</p>
 
               <div className={styles.weightTicketRow}>
-                <h4 className={styles.weightTicketText}>
-                  Invoice PDF
-                </h4>
+                <h4 className={styles.weightTicketText}>Invoice PDF</h4>
 
-                <FaDownload
-                  className={styles.downloadIcon}
-                />
+                <FaDownload className={styles.downloadIcon} />
               </div>
             </div>
           </div>
@@ -203,18 +175,12 @@ const handleInvoiceDownload = () => {
             </div>
 
             <div className={styles.weightTicketBox}>
-              <p className={styles.label}>
-                Documents
-              </p>
+              <p className={styles.label}>Documents</p>
 
               <div className={styles.weightTicketRow}>
-                <h4 className={styles.weightTicketText}>
-                  Weight Ticket
-                </h4>
+                <h4 className={styles.weightTicketText}>Weight Ticket</h4>
 
-                <FaDownload
-                  className={styles.downloadIcon}
-                />
+                <FaDownload className={styles.downloadIcon} />
               </div>
             </div>
           </div>

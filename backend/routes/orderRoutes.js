@@ -12,7 +12,7 @@ import { createOrder,getSellerOrders,  getSellerSingleOrder,  confirmSellerOrder
     assignTransporterToShipment,adminDirectAssignTransporter,getAllTransporters,getTransporterPendingAssignments,
      transporterAcceptAssignment,transporterRejectAssignment,markShipmentShippedBySeller,
     getTransporterAssignedShipments,getTransporterCompletedDeliveries, markShipmentShippedByTransporter,markShipmentShippedByAdmin,
-} from "../controllers/orderController.js";
+    uploadTransportPaymentReceipt, } from "../controllers/orderController.js";
 
 import { submitOrderReview } from "../controllers/reviewController.js";
 
@@ -29,6 +29,7 @@ router.get("/buyer-orders/:orderId/buy-report",  protectUser,  downloadBuyReport
 router.get("/buyer-orders/:orderId/shipment/:shipmentId/invoice",  protectUser,  downloadShippingInvoice);
 router.post("/buyer-orders/:orderId/review",  protectUser,  uploadDocuments.single("image"),  uploadDocumentsErrorHandler,  submitOrderReview);
 router.put("/buyer-orders/:orderId/cancel", protectUser, cancelBuyerOrder);
+router.post("/buyer/:orderId/shipment/:shipmentId/upload-transport-payment", protectUser, uploadDocuments.single("receipt"), uploadTransportPaymentReceipt,);
 
 
 //seller

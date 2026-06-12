@@ -5,24 +5,18 @@ import { FaTruck } from "react-icons/fa";
 import styles from "../../../styles/Buyer/BuyerSingleShippingInvoice.module.css";
 
 const ShipmentProgressSection = ({ shipment, order }) => {
-  const isDelivered =
-    shipment?.shipmentStatus === "delivered";
+  const isDelivered = shipment?.shipmentStatus === "delivered";
 
-  const isShipped =
-    shipment?.shippedAt ? true : false;
+  const isPickedUp = shipment?.pickedUpAt ? true : false;
 
-  const progressWidth = isDelivered
-    ? "100%"
-    : isShipped
-    ? "65%"
-    : "30%";
+  const progressWidth = isDelivered ? "100%" : isPickedUp ? "65%" : "30%";
 
   const getProgressMessage = () => {
     if (isDelivered) {
       return "Your shipment has been successfully delivered";
     }
 
-    if (isShipped) {
+    if (isPickedUp) {
       return "Your shipment is in transit and will be delivered soon";
     }
 
@@ -31,9 +25,7 @@ const ShipmentProgressSection = ({ shipment, order }) => {
 
   return (
     <div className={styles.progressCard}>
-      <h3 className={styles.sectionTitle}>
-        Shipment Progress
-      </h3>
+      <h3 className={styles.sectionTitle}>Shipment Progress</h3>
 
       <div className={styles.progressWrapper}>
         {/* LINE */}
@@ -56,9 +48,7 @@ const ShipmentProgressSection = ({ shipment, order }) => {
 
             <p>
               {order?.createdAt
-                ? new Date(
-                    order.createdAt
-                  ).toLocaleString()
+                ? new Date(order.createdAt).toLocaleString()
                 : "-"}
             </p>
           </div>
@@ -67,21 +57,16 @@ const ShipmentProgressSection = ({ shipment, order }) => {
           <div className={styles.step}>
             <div
               className={
-                isShipped
-                  ? styles.activeCircle
-                  : styles.inactiveCircle
+                isPickedUp ? styles.activeCircle : styles.inactiveCircle
               }
             ></div>
 
             <h4>Shipment Date</h4>
 
             <p>
-              {shipment?.shippedAt
-                ? new Date(
-                    shipment.shippedAt
-                  ).toLocaleString()
-                : "Pending"
-              }
+              {shipment?.pickedUpAt
+                ? new Date(shipment.pickedUpAt).toLocaleString()
+                : "Pending"}
             </p>
           </div>
 
@@ -89,9 +74,7 @@ const ShipmentProgressSection = ({ shipment, order }) => {
           <div className={styles.step}>
             <div
               className={
-                isDelivered
-                  ? styles.activeCircle
-                  : styles.inactiveCircle
+                isDelivered ? styles.activeCircle : styles.inactiveCircle
               }
             ></div>
 
@@ -99,11 +82,8 @@ const ShipmentProgressSection = ({ shipment, order }) => {
 
             <p>
               {shipment?.deliveredAt
-                ? new Date(
-                    shipment.deliveredAt
-                  ).toLocaleString()
-                : "Pending"
-              }
+                ? new Date(shipment.deliveredAt).toLocaleString()
+                : "Pending"}
             </p>
           </div>
         </div>

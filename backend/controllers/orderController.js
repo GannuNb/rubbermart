@@ -1414,6 +1414,34 @@ export const assignTransporterToShipment = async (req, res) => {
     shipment.assignedAt = new Date();
 
     /* =========================
+   TRANSPORT GST
+========================= */
+
+    const transporterGST =
+      selectedQuote?.transporter?.businessProfile?.gstNumber || "";
+
+    const transporterStateCode = transporterGST.substring(0, 2);
+
+    const companyStateCode = "27";
+
+    const gstType =
+      transporterStateCode === companyStateCode ? "cgst_sgst" : "igst";
+
+    const transportPrice = Number(selectedQuote?.quotedPrice || 0);
+
+    const transportGSTAmount = transportPrice * 0.05;
+
+    const transportFinalAmount = transportPrice + transportGSTAmount;
+
+    shipment.transportPrice = transportPrice;
+
+    shipment.transportGSTType = gstType;
+
+    shipment.transportGSTAmount = transportGSTAmount;
+
+    shipment.transportFinalAmount = transportFinalAmount;
+
+    /* =========================
          UPDATE QUOTES
       ========================= */
 
@@ -1740,6 +1768,63 @@ export const transporterAcceptAssignment = async (req, res) => {
     shipment.transportStatus = "transporter_assigned";
 
     shipment.shipmentStatus = "assigned";
+
+    /* =========================
+   TRANSPORT GST CALCULATION
+========================= */
+
+    const transporter = await User.findById(transporterId);
+
+    const transporterGST = transporter?.businessProfile?.gstNumber || "";
+
+    /* =========================
+   STATE CODE
+========================= */
+
+    const transporterStateCode = transporterGST.substring(0, 2);
+
+    /* =========================
+   COMPANY STATE CODE
+========================= */
+
+    const companyStateCode = "27";
+
+    /* =========================
+   GST TYPE
+========================= */
+
+    const gstType =
+      transporterStateCode === companyStateCode ? "cgst_sgst" : "igst";
+
+    /* =========================
+   TRANSPORT PRICE
+========================= */
+
+    const transportPrice = Number(shipment.adminAssignedPrice || 0);
+
+    /* =========================
+   GST (5%)
+========================= */
+
+    const transportGSTAmount = transportPrice * 0.05;
+
+    /* =========================
+   FINAL AMOUNT
+========================= */
+
+    const transportFinalAmount = transportPrice + transportGSTAmount;
+
+    /* =========================
+   SAVE
+========================= */
+
+    shipment.transportPrice = transportPrice;
+
+    shipment.transportGSTType = gstType;
+
+    shipment.transportGSTAmount = transportGSTAmount;
+
+    shipment.transportFinalAmount = transportFinalAmount;
 
     /* =========================
    CREATE QUOTE FOR
@@ -2390,7 +2475,8 @@ export const getBuyerSingleOrder = async (req, res) => {
           application
           loadingLocation
         `,
-      );
+      )
+      .populate("shipments.assignedTransporter", "fullName businessProfile");
 
     if (!order) {
       return res.status(404).json({
@@ -2561,9 +2647,10 @@ export const downloadShippingInvoice = async (req, res) => {
        FETCH ORDER
     ========================= */
 
-    const order = await Order.findById(orderId).populate(
-      "buyer seller",
-      `
+    const order = await Order.findById(orderId)
+      .populate(
+        "buyer seller",
+        `
         fullName
         email
         businessProfile.companyName
@@ -2573,7 +2660,16 @@ export const downloadShippingInvoice = async (req, res) => {
         businessProfile.billingAddress
         businessProfile.shippingAddress
       `,
-    );
+      )
+      .populate(
+        "shipments.assignedTransporter",
+        `
+    fullName
+    businessProfile.companyName
+    businessProfile.phoneNumber
+    businessProfile.gstNumber
+  `,
+      );
 
     if (!order) {
       return res.status(404).json({
@@ -3271,7 +3367,7 @@ export const markShipmentDeliveredByAdmin = async (req, res) => {
     /* =========================
          UPDATE MAIN ORDER STATUS
       ========================= */
-      
+
     if (allItemsDelivered) {
       order.orderStatus = "delivered";
 
@@ -3280,7 +3376,6 @@ export const markShipmentDeliveredByAdmin = async (req, res) => {
 
     await order.save();
 
-    
     return res.status(200).json({
       success: true,
       message: "Shipment marked as delivered",
@@ -3486,6 +3581,198 @@ export const downloadProformaInvoice = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Failed to download proforma invoice",
+      error: error.message,
+    });
+  }
+};
+
+//buyer ---> buyer to admin upload transport payment
+export const uploadTransportPaymentReceipt = async (req, res) => {
+  try {
+    const buyerId = req.user._id;
+
+    const { orderId, shipmentId } = req.params;
+
+    const { amount, paymentMode, transactionId, note } = req.body;
+
+    /* =========================
+       FIND ORDER
+    ========================= */
+
+    const order = await Order.findOne({
+      _id: orderId,
+
+      buyer: buyerId,
+
+      isDeleted: false,
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+
+        message: "Order not found",
+      });
+    }
+
+    /* =========================
+       FIND SHIPMENT
+    ========================= */
+
+    const shipment = order.shipments.id(shipmentId);
+
+    if (!shipment) {
+      return res.status(404).json({
+        success: false,
+
+        message: "Shipment not found",
+      });
+    }
+
+    /* =========================
+       VALIDATE TRANSPORT
+    ========================= */
+
+    if (!shipment.transportFinalAmount || shipment.transportFinalAmount <= 0) {
+      return res.status(400).json({
+        success: false,
+
+        message: "Transport amount not available",
+      });
+    }
+
+    /* =========================
+       VALIDATE PAYMENT
+    ========================= */
+
+    const paidAmount = Number(amount);
+
+    if (!paidAmount || paidAmount <= 0) {
+      return res.status(400).json({
+        success: false,
+
+        message: "Invalid payment amount",
+      });
+    }
+
+    /* =========================
+       VERIFIED PAYMENTS ONLY
+    ========================= */
+
+    const verifiedPaidAmount = (shipment.transportPaymentReceipts || [])
+      .filter((receipt) => receipt.status === "verified")
+      .reduce((sum, receipt) => sum + Number(receipt.amount || 0), 0);
+
+    const remainingAmount = shipment.transportFinalAmount - verifiedPaidAmount;
+
+    /* =========================
+       PREVENT OVERPAY
+    ========================= */
+
+    if (paidAmount > remainingAmount) {
+      return res.status(400).json({
+        success: false,
+
+        message: "Amount exceeds remaining transport amount",
+      });
+    }
+
+    /* =========================
+       FILE
+    ========================= */
+
+    const paymentFile = req.file
+      ? {
+          data: req.file.buffer,
+
+          contentType: req.file.mimetype,
+
+          originalName: req.file.originalname,
+        }
+      : null;
+
+    /* =========================
+       CREATE RECEIPT
+    ========================= */
+
+    const newReceipt = {
+      file: paymentFile,
+
+      amount: paidAmount,
+
+      paymentMode,
+
+      transactionId,
+
+      note,
+
+      uploadedBy: buyerId,
+
+      paymentFor: "buyer_to_admin",
+
+      status: "pending",
+
+      totalPaidTillNow: verifiedPaidAmount,
+
+      remainingAmount: remainingAmount - paidAmount,
+
+      isPartialPayment: paidAmount < remainingAmount,
+
+      isFinalPayment: paidAmount === remainingAmount,
+    };
+
+    /* =========================
+       PUSH RECEIPT
+    ========================= */
+
+    shipment.transportPaymentReceipts.push(newReceipt);
+
+    /* =========================
+       PAYMENT STATUS
+    ========================= */
+
+    shipment.transportPaymentStatus = "payment_submitted";
+
+    /* =========================
+       SAVE
+    ========================= */
+
+    await order.save();
+
+    /* =========================
+       RETURN UPDATED ORDER
+    ========================= */
+
+    const updatedOrder = await Order.findById(orderId)
+      .populate(
+        "shipments.assignedTransporter",
+        `
+          fullName
+          businessProfile.companyName
+          businessProfile.phoneNumber
+          businessProfile.gstNumber
+          `,
+      )
+      .populate(
+        "shipments.transportPaymentReceipts.uploadedBy",
+        "fullName email",
+      );
+
+    return res.status(200).json({
+      success: true,
+
+      message: "Transport payment uploaded successfully",
+
+      order: updatedOrder,
+    });
+  } catch (error) {
+    console.log("Upload Transport Payment Error:", error);
+
+    return res.status(500).json({
+      success: false,
+
+      message: "Failed to upload transport payment",
+
       error: error.message,
     });
   }

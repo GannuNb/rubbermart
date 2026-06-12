@@ -6,6 +6,7 @@ import {
   getBuyerOrdersThunk,
   cancelBuyerOrderThunk,
 } from "./getBuyerOrdersThunk";
+import { uploadTransportPaymentThunk } from "./buyer/uploadTransportPaymentThunk";
 
 const initialState = {
   /* =========================
@@ -38,6 +39,12 @@ const initialState = {
   cancelOrderLoading: false,
   cancelOrderError: null,
   cancelOrderSuccess: null,
+
+  transportPaymentUploadLoading: false,
+
+  transportPaymentUploadError: null,
+
+  transportPaymentUploadSuccess: null,
 };
 
 const buyerOrderSlice = createSlice({
@@ -153,6 +160,27 @@ const buyerOrderSlice = createSlice({
         state.cancelOrderLoading = false;
 
         state.cancelOrderError = action.payload;
+      })
+      .addCase(uploadTransportPaymentThunk.pending, (state) => {
+        state.transportPaymentUploadLoading = true;
+
+        state.transportPaymentUploadError = null;
+
+        state.transportPaymentUploadSuccess = null;
+      })
+
+      .addCase(uploadTransportPaymentThunk.fulfilled, (state, action) => {
+        state.transportPaymentUploadLoading = false;
+
+        state.transportPaymentUploadSuccess = action.payload.message;
+
+        state.singleOrder = action.payload.order;
+      })
+
+      .addCase(uploadTransportPaymentThunk.rejected, (state, action) => {
+        state.transportPaymentUploadLoading = false;
+
+        state.transportPaymentUploadError = action.payload;
       });
   },
 });

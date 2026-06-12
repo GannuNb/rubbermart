@@ -1,14 +1,8 @@
 // src/pages/Buyer/BuyerSingleShippingInvoice.js
 
 import React, { useEffect } from "react";
-import {
-  useNavigate,
-  useParams,
-} from "react-router-dom";
-import {
-  useDispatch,
-  useSelector,
-} from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 import styles from "../../styles/Buyer/BuyerSingleShippingInvoice.module.css";
 
@@ -17,26 +11,18 @@ import ShipmentProgressSection from "../../components/Buyer/Invoice/ShipmentProg
 import DriverShipmentSummarySection from "../../components/Buyer/Invoice/DriverShipmentSummarySection";
 import ShipmentItemsSection from "../../components/Buyer/Invoice/ShipmentItemsSection";
 import ShipmentTrackingActionsSection from "../../components/Buyer/Invoice/ShipmentTrackingActionsSection";
+import BuyerTransportPaymentSection from "../../components/Buyer/Invoice/BuyerTransportPaymentSection";
 
-import {
-  getBuyerSingleOrderThunk,
-} from "../../redux/slices/buyerOrderThunk";
+import { getBuyerSingleOrderThunk } from "../../redux/slices/buyerOrderThunk";
 
 const BuyerSingleShippingInvoice = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const {
-    shipmentId,
-    orderId,
-  } = useParams();
+  const { shipmentId, orderId } = useParams();
 
-  const {
-    singleOrder,
-    singleOrderLoading,
-    singleOrderError,
-  } = useSelector(
-    (state) => state.buyerOrders
+  const { singleOrder, singleOrderLoading, singleOrderError } = useSelector(
+    (state) => state.buyerOrders,
   );
 
   const order = singleOrder;
@@ -47,11 +33,7 @@ const BuyerSingleShippingInvoice = () => {
 
   useEffect(() => {
     if (orderId) {
-      dispatch(
-        getBuyerSingleOrderThunk(
-          orderId
-        )
-      );
+      dispatch(getBuyerSingleOrderThunk(orderId));
     }
   }, [dispatch, orderId]);
 
@@ -59,22 +41,14 @@ const BuyerSingleShippingInvoice = () => {
      FIND SHIPMENT FROM ORDER
   ========================= */
 
-  const shipment =
-    order?.shipments?.find(
-      (item) =>
-        item?._id === shipmentId
-    );
+  const shipment = order?.shipments?.find((item) => item?._id === shipmentId);
 
   /* =========================
      LOADING
   ========================= */
 
   if (singleOrderLoading) {
-    return (
-      <div className={styles.container}>
-        Loading shipment details...
-      </div>
-    );
+    return <div className={styles.container}>Loading shipment details...</div>;
   }
 
   /* =========================
@@ -82,11 +56,7 @@ const BuyerSingleShippingInvoice = () => {
   ========================= */
 
   if (singleOrderError) {
-    return (
-      <div className={styles.container}>
-        {singleOrderError}
-      </div>
-    );
+    return <div className={styles.container}>{singleOrderError}</div>;
   }
 
   /* =========================
@@ -96,57 +66,38 @@ const BuyerSingleShippingInvoice = () => {
   if (!shipment || !order) {
     return (
       <div className={styles.container}>
-        <h2>
-          Shipment details not found
-        </h2>
+        <h2>Shipment details not found</h2>
       </div>
     );
   }
 
   return (
     <div className={styles.container}>
-      <button
-        className={styles.backButton}
-        onClick={() =>
-          navigate(-1)
-        }
-      >
+      <button className={styles.backButton} onClick={() => navigate(-1)}>
         ← Back to Shipping Details
       </button>
 
       {/* Header */}
 
-      <InvoiceHeaderSection
-        shipment={shipment}
-        order={order}
-      />
+      <InvoiceHeaderSection shipment={shipment} order={order} />
 
       {/* Progress */}
 
-      <ShipmentProgressSection
-        shipment={shipment}
-        order={order}
-      />
+      <ShipmentProgressSection shipment={shipment} order={order} />
 
       {/* Driver + Shipment Summary */}
 
-      <DriverShipmentSummarySection
-        shipment={shipment}
-      />
+      <DriverShipmentSummarySection shipment={shipment} />
 
       {/* Items in Shipment */}
 
-      <ShipmentItemsSection
-        shipment={shipment}
-        order={order}
-      />
+      <ShipmentItemsSection shipment={shipment} order={order} />
+
+      <BuyerTransportPaymentSection  shipment={shipment}  order={order}/>
 
       {/* Tracking + Actions */}
 
-      <ShipmentTrackingActionsSection
-        shipment={shipment}
-        order={order}
-      />
+      <ShipmentTrackingActionsSection shipment={shipment} order={order} />
     </div>
   );
 };

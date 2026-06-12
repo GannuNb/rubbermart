@@ -144,8 +144,7 @@ export const downloadShippingInvoiceThunk =
     }
   };
 
-
-  export const submitOrderReviewThunk = createAsyncThunk(
+export const submitOrderReviewThunk = createAsyncThunk(
   "buyerOrders/submitOrderReview",
 
   async ({ orderId, formData }, thunkAPI) => {
@@ -160,15 +159,14 @@ export const downloadShippingInvoiceThunk =
             Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
           },
-        }
+        },
       );
 
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data?.message ||
-          "Failed to submit review"
+        error.response?.data?.message || "Failed to submit review",
       );
     }
-  }
+  },
 );

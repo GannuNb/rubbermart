@@ -79,19 +79,62 @@ export const drawCustomerSection = (doc, order, shipment, startY) => {
     order?.buyer?.businessProfile?.gstNumber || "-",
   ];
 
-  const shippingLabels = [
-    "Ship From",
-    "Vehicle Number",
-    "Driver Name",
-    "Driver Contact",
-  ];
+  /* =========================
+   TRANSPORT DETAILS
+========================= */
 
-  const shippingData = [
-    shipment?.shipmentFrom || "-",
-    shipment?.vehicleNumber || "-",
-    shipment?.driverName || "-",
-    shipment?.driverMobile || "-",
-  ];
+const isMarketplaceTransport =
+  shipment?.transportMode ===
+  "marketplace_transport";
+
+const transporterName =
+  shipment?.assignedTransporter
+    ?.businessProfile?.companyName ||
+  shipment?.assignedTransporter
+    ?.fullName ||
+  "-";
+
+const transporterPhone =
+  shipment?.assignedTransporter
+    ?.businessProfile?.phoneNumber ||
+  "-";
+
+const transporterGST =
+  shipment?.assignedTransporter
+    ?.businessProfile?.gstNumber ||
+  "-";
+
+/* =========================
+   SHIPPING DETAILS
+========================= */
+
+const shippingLabels = isMarketplaceTransport
+  ? [
+      "Ship From",
+      "Transporter",
+      "Phone",
+      "Transporter GST",
+    ]
+  : [
+      "Ship From",
+      "Vehicle Number",
+      "Driver Name",
+      "Driver Contact",
+    ];
+
+const shippingData = isMarketplaceTransport
+  ? [
+      shipment?.shipmentFrom || "-",
+      transporterName,
+      transporterPhone,
+      transporterGST,
+    ]
+  : [
+      shipment?.shipmentFrom || "-",
+      shipment?.vehicleNumber || "-",
+      shipment?.driverName || "-",
+      shipment?.driverMobile || "-",
+    ];
 
   /* =========================
      LEFT TABLE (SAFE HEIGHT)

@@ -4,13 +4,7 @@ import { invoiceColors } from "../../styles.js";
 
 const { primaryPurple, lightPurple, darkPurple, darkText } = invoiceColors;
 
-export const drawHeader = (
-  doc,
-  pageWidth,
-  pageHeight,
-  order,
-  shipment
-) => {
+export const drawHeader = (doc, pageWidth, pageHeight, order, shipment) => {
   const headerGradient = doc.linearGradient(0, 0, pageWidth, 0);
   headerGradient.stop(0, darkPurple);
   headerGradient.stop(0.5, lightPurple);
@@ -67,21 +61,21 @@ export const drawHeader = (
      LOGO
   ========================= */
 
-  const logoPath = path.join( 
+  const logoPath = path.join(
     process.cwd(),
-    "../rubberproject/public/invoice_logo.png"
+    "../rubberproject/public/invoice_logo.png",
   );
 
   const fallbackLogoPath = path.join(
     process.cwd(),
-    "rubberproject/public/invoice_logo.png"
+    "rubberproject/public/invoice_logo.png",
   );
 
   const finalLogo = fs.existsSync(logoPath)
     ? logoPath
     : fs.existsSync(fallbackLogoPath)
-    ? fallbackLogoPath
-    : null;
+      ? fallbackLogoPath
+      : null;
 
   if (finalLogo) {
     doc.image(finalLogo, 5, 0, {
@@ -115,7 +109,7 @@ export const drawHeader = (
     .font("Helvetica")
     .fontSize(7)
     .text(
-        "Office No. 217 ,\n" +
+      "Office No. 217 ,\n" +
         "Skylark Premises Co-operative Society Ltd, \n" +
         "Plot No. 63, Sector 11, CBD Belapur,\n" +
         "Navi Mumbai – 400614, \n" +
@@ -125,48 +119,48 @@ export const drawHeader = (
       {
         width: 280,
         lineGap: 2,
-      }
+      },
     );
 
   /* =========================
    RIGHT SIDE (UPDATED)
 ========================= */
 
-const labelX = 415;
-const colonX = 480;
-const valueX = 495;
+  const labelX = 415;
+  const colonX = 480;
+  const valueX = 495;
 
-const row1Y = 115;
-const row2Y = 135;
-const row3Y = 155;
+  const row1Y = 115;
+  const row2Y = 135;
+  const row3Y = 155;
 
-doc
-  .fillColor(darkText)
-  .font("Helvetica-Bold")
-  .fontSize(9);
+  doc.fillColor(darkText).font("Helvetica-Bold").fontSize(9);
 
-// Labels
-doc.text("Order ID", labelX, row1Y);
-doc.text("Invoice ID", labelX, row2Y);
-doc.text("Ship Date", labelX, row3Y);
+  // Labels
+  doc.text("Order ID", labelX, row1Y);
+  doc.text("Invoice ID", labelX, row2Y);
+  doc.text("Ship Date", labelX, row3Y);
 
-// Colons
-doc.text(":", colonX, row1Y);
-doc.text(":", colonX, row2Y);
-doc.text(":", colonX, row3Y);
+  // Colons
+  doc.text(":", colonX, row1Y);
+  doc.text(":", colonX, row2Y);
+  doc.text(":", colonX, row3Y);
 
-// Values
-doc
-  .font("Helvetica")
-  .text(order?.orderId || "-", valueX, row1Y)
-  .text(shipment?.shipmentInvoiceId || "-", valueX, row2Y)
-  .text(
-    shipment?.shippedAt
-      ? new Date(shipment.shippedAt).toLocaleDateString("en-IN")
-      : "-",
-    valueX,
-    row3Y
-  );  
+
+  // Values
+  doc
+    .font("Helvetica")
+    .text(order?.orderId || "-", valueX, row1Y)
+    .text(shipment?.shipmentInvoiceId || "-", valueX, row2Y)
+    .text(
+      shipment?.pickedUpAt
+        ? new Date(shipment.pickedUpAt).toLocaleDateString("en-IN")
+        : shipment?.assignedAt
+          ? new Date(shipment.assignedAt).toLocaleDateString("en-IN")
+          : "-",
+      valueX,
+      row3Y,
+    );
 
   return 190;
 };

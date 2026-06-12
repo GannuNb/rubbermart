@@ -20,11 +20,9 @@ const BuyerShippingInvoices = () => {
 
   const { orderId, itemName } = useParams();
 
-  const {
-    singleOrder,
-    singleOrderLoading,
-    singleOrderError,
-  } = useSelector((state) => state.buyerOrders);
+  const { singleOrder, singleOrderLoading, singleOrderError } = useSelector(
+    (state) => state.buyerOrders,
+  );
 
   const order = singleOrder;
 
@@ -43,11 +41,7 @@ const BuyerShippingInvoices = () => {
   ========================= */
 
   if (singleOrderLoading) {
-    return (
-      <div className={styles.container}>
-        Loading shipment invoices...
-      </div>
-    );
+    return <div className={styles.container}>Loading shipment invoices...</div>;
   }
 
   /* =========================
@@ -55,11 +49,7 @@ const BuyerShippingInvoices = () => {
   ========================= */
 
   if (singleOrderError) {
-    return (
-      <div className={styles.container}>
-        {singleOrderError}
-      </div>
-    );
+    return <div className={styles.container}>{singleOrderError}</div>;
   }
 
   /* =========================
@@ -82,15 +72,9 @@ const BuyerShippingInvoices = () => {
 
   const shipments =
     order?.shipments?.filter((shipment) => {
-      const shipmentItem = shipment?.selectedItem
-        ?.trim()
-        ?.toLowerCase();
+      const shipmentItem = shipment?.selectedItem?.trim()?.toLowerCase();
 
-      const currentItem = decodeURIComponent(
-        itemName
-      )
-        ?.trim()
-        ?.toLowerCase();
+      const currentItem = decodeURIComponent(itemName)?.trim()?.toLowerCase();
 
       return shipmentItem === currentItem;
     }) || [];
@@ -100,19 +84,14 @@ const BuyerShippingInvoices = () => {
       {/* TOP SECTION */}
 
       <div className={styles.topSection}>
-        <button
-          className={styles.backButton}
-          onClick={() => navigate(-1)}
-        >
+        <button className={styles.backButton} onClick={() => navigate(-1)}>
           <FaArrowLeft />
           Back to Order Details
         </button>
 
         <div className={styles.titleRow}>
           <div>
-            <h1 className={styles.heading}>
-              Shipping Details
-            </h1>
+            <h1 className={styles.heading}>Shipping Details</h1>
 
             <p className={styles.subText}>
               Complete Shipment Invoice Information and Tracking Details
@@ -121,9 +100,7 @@ const BuyerShippingInvoices = () => {
 
           <div className={styles.orderIdBox}>
             <span>Order ID</span>
-            <strong>
-              {order?.orderId || orderId}
-            </strong>
+            <strong>{order?.orderId || orderId}</strong>
           </div>
         </div>
       </div>
@@ -131,9 +108,7 @@ const BuyerShippingInvoices = () => {
       {/* SHIPMENT LIST */}
 
       {shipments.length === 0 ? (
-        <div className={styles.empty}>
-          No shipment invoices found
-        </div>
+        <div className={styles.empty}>No shipment invoices found</div>
       ) : (
         <div className={styles.invoiceList}>
           {shipments.map((shipment) => (
@@ -142,7 +117,7 @@ const BuyerShippingInvoices = () => {
               className={styles.invoiceCard}
               onClick={() =>
                 navigate(
-                  `/buyer/order/${order?._id}/shipping-invoice/${shipment?._id}`
+                  `/buyer/order/${order?._id}/shipping-invoice/${shipment?._id}`,
                 )
               }
               style={{ cursor: "pointer" }}
@@ -154,12 +129,8 @@ const BuyerShippingInvoices = () => {
                   </div>
 
                   <div>
-                    <p className={styles.label}>
-                      Invoice ID
-                    </p>
-                    <h4>
-                      {shipment?.shipmentInvoiceId || "-"}
-                    </h4>
+                    <p className={styles.label}>Invoice ID</p>
+                    <h4>{shipment?.shipmentInvoiceId || "-"}</h4>
                   </div>
                 </div>
 
@@ -169,15 +140,12 @@ const BuyerShippingInvoices = () => {
                   </div>
 
                   <div>
-                    <p className={styles.label}>
-                      Shipment Date
-                    </p>
+                    <p className={styles.label}>Transport Started</p>
+
                     <h4>
-                      {shipment?.shippedAt
-                        ? new Date(
-                          shipment.shippedAt
-                        ).toLocaleDateString()
-                        : "-"}
+                      {shipment?.pickedUpAt
+                        ? new Date(shipment.pickedUpAt).toLocaleDateString()
+                        : "Pending"}
                     </h4>
                   </div>
                 </div>
@@ -188,12 +156,8 @@ const BuyerShippingInvoices = () => {
                   </div>
 
                   <div>
-                    <p className={styles.label}>
-                      Item
-                    </p>
-                    <h4>
-                      {shipment?.selectedItem || "-"}
-                    </h4>
+                    <p className={styles.label}>Item</p>
+                    <h4>{shipment?.selectedItem || "-"}</h4>
                   </div>
                 </div>
 
@@ -205,20 +169,16 @@ const BuyerShippingInvoices = () => {
                   </div>
 
                   <div>
-                    <p className={styles.label}>
-                      Status
-                    </p>
+                    <p className={styles.label}>Status</p>
 
                     <h4
                       className={
-                        shipment?.shipmentStatus ===
-                          "delivered"
+                        shipment?.shipmentStatus === "delivered"
                           ? styles.deliveredStatus
                           : styles.inTransitStatus
                       }
                     >
-                      {shipment?.shipmentStatus ===
-                        "delivered"
+                      {shipment?.shipmentStatus === "delivered"
                         ? "Delivered"
                         : "In Transit"}
                     </h4>

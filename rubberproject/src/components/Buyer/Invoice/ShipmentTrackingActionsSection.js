@@ -12,138 +12,91 @@ import { downloadShippingInvoiceThunk } from "../../../redux/slices/buyerOrderTh
 
 import styles from "../../../styles/Buyer/BuyerSingleShippingInvoice.module.css";
 
-const ShipmentTrackingActionsSection = ({
-  shipment,
-  order,
-}) => {
+const ShipmentTrackingActionsSection = ({ shipment, order }) => {
   const dispatch = useDispatch();
 
   /* =========================
      WEIGHT TICKET
   ========================= */
 
-const handleViewWeightTicket = () => {
-  try {
-    if (!shipment?.shipmentFile?.data) {
-      return alert(
-        "Weight ticket not available"
-      );
-    }
+  const handleViewWeightTicket = () => {
+    try {
+      if (!shipment?.weightTicket?.data) {
+        return alert("Weight ticket not available");
+      }
 
-    let base64 = "";
+      let base64 = "";
 
-    if (
-      typeof shipment.shipmentFile.data ===
-      "string"
-    ) {
-      base64 = shipment.shipmentFile.data;
-    } else if (
-      shipment.shipmentFile.data?.data
-    ) {
-      base64 = btoa(
-        new Uint8Array(
-          shipment.shipmentFile.data.data
-        ).reduce(
-          (data, byte) =>
-            data +
-            String.fromCharCode(byte),
-          ""
-        )
-      );
-    }
+      if (typeof shipment.weightTicket.data === "string") {
+        base64 = shipment.weightTicket.data;
+      } else if (shipment.weightTicket.data?.data) {
+        base64 = btoa(
+          new Uint8Array(shipment.weightTicket.data.data).reduce(
+            (data, byte) => data + String.fromCharCode(byte),
+            "",
+          ),
+        );
+      }
 
-    /*
+      /*
     =========================================
     CONVERT BASE64 TO BLOB
     =========================================
     */
 
-    const byteCharacters =
-      atob(base64);
+      const byteCharacters = atob(base64);
 
-    const byteNumbers =
-      new Array(
-        byteCharacters.length
-      );
+      const byteNumbers = new Array(byteCharacters.length);
 
-    for (
-      let i = 0;
-      i < byteCharacters.length;
-      i++
-    ) {
-      byteNumbers[i] =
-        byteCharacters.charCodeAt(i);
-    }
-
-    const byteArray =
-      new Uint8Array(byteNumbers);
-
-    const blob = new Blob(
-      [byteArray],
-      {
-        type:
-          shipment.shipmentFile
-            .contentType ||
-          "application/pdf",
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
       }
-    );
 
-    /*
+      const byteArray = new Uint8Array(byteNumbers);
+
+      const blob = new Blob([byteArray], {
+        type: shipment.weightTicket.contentType || "application/pdf",
+      });
+
+      /*
     =========================================
     OPEN BLOB URL
     =========================================
     */
 
-    const blobUrl =
-      URL.createObjectURL(blob);
+      const blobUrl = URL.createObjectURL(blob);
 
-    window.open(blobUrl, "_blank");
+      window.open(blobUrl, "_blank");
 
-    setTimeout(() => {
-      URL.revokeObjectURL(blobUrl);
-    }, 1000);
-  } catch (error) {
-    console.log(
-      "Weight Ticket Open Error:",
-      error
-    );
+      setTimeout(() => {
+        URL.revokeObjectURL(blobUrl);
+      }, 1000);
+    } catch (error) {
+      console.log("Weight Ticket Open Error:", error);
 
-    alert("Failed to open document");
-  }
-};
+      alert("Failed to open document");
+    }
+  };
 
   /* =========================
      DOWNLOAD INVOICE
   ========================= */
 
   const handleInvoiceDownload = () => {
-    dispatch(
-      downloadShippingInvoiceThunk(
-        order._id,
-        shipment._id
-      )
-    );
+    dispatch(downloadShippingInvoiceThunk(order._id, shipment._id));
   };
 
   return (
-    <div
-      className={styles.bottomSectionWrapper}
-    >
+    <div className={styles.bottomSectionWrapper}>
       {/* LEFT SIDE */}
 
       <div className={styles.trackingCard}>
-        <h3 className={styles.sectionTitle}>
-          Shipment Tracking History
-        </h3>
+        <h3 className={styles.sectionTitle}>Shipment Tracking History</h3>
 
-        <div
-          className={styles.trackingTable}
-        >
+        <div className={styles.trackingTable}>
           {/* HEADER */}
 
-          <div
-            className={styles.trackingHeader}
-          >
+          <div className={styles.trackingHeader}>
             <div>Date & Time</div>
             <div>Status</div>
             <div>Remarks</div>
@@ -151,68 +104,52 @@ const handleViewWeightTicket = () => {
 
           {/* ROW 1 */}
 
-          <div
-            className={styles.trackingRow}
-          >
+          <div className={styles.trackingRow}>
             <div>
               {shipment?.createdAt
-                ? new Date(
-                    shipment.createdAt
-                  ).toLocaleString()
+                ? new Date(shipment.createdAt).toLocaleString()
                 : "-"}
             </div>
 
-            <div
-              className={
-                styles.successStatus
-              }
-            >
-              ● Order Confirmed
-            </div>
+            <div className={styles.successStatus}>● Order Confirmed</div>
 
-            <div>
-              Order has been confirmed
-              by Seller
-            </div>
+            <div>Order has been confirmed by Seller</div>
           </div>
 
           {/* ROW 2 */}
 
-          <div
-            className={styles.trackingRow}
-          >
+          {/* ROW 2 */}
+
+          <div className={styles.trackingRow}>
             <div>
-              {shipment?.shippedAt
-                ? new Date(
-                    shipment.shippedAt
-                  ).toLocaleString()
-                : "-"}
+              {shipment?.pickedUpAt
+                ? new Date(shipment.pickedUpAt).toLocaleString()
+                : "Pending"}
             </div>
 
             <div
               className={
-                styles.activeStatus
+                shipment?.pickedUpAt
+                  ? styles.activeStatus
+                  : styles.pendingStatus
               }
             >
-              ● Shipped
+              ● Picked Up
             </div>
 
             <div>
-              Shipment picked up by the
-              courier
+              {shipment?.pickedUpAt
+                ? "Shipment picked up by transporter"
+                : "Waiting for transporter pickup"}
             </div>
           </div>
 
           {/* ROW 3 */}
 
-          <div
-            className={styles.trackingRow}
-          >
+          <div className={styles.trackingRow}>
             <div>
               {shipment?.deliveredAt
-                ? new Date(
-                    shipment.deliveredAt
-                  ).toLocaleString()
+                ? new Date(shipment.deliveredAt).toLocaleString()
                 : "Pending"}
             </div>
 
@@ -237,36 +174,22 @@ const handleViewWeightTicket = () => {
 
       {/* RIGHT SIDE */}
 
-      <div
-        className={styles.actionsSideCard}
-      >
-        <h3 className={styles.sectionTitle}>
-          Actions
-        </h3>
+      <div className={styles.actionsSideCard}>
+        <h3 className={styles.sectionTitle}>Actions</h3>
 
         {/* DOWNLOAD INVOICE */}
 
-        <button
-          className={styles.actionBtn}
-          onClick={handleInvoiceDownload}
-        >
+        <button className={styles.actionBtn} onClick={handleInvoiceDownload}>
           <FaFileInvoice />
-
           Download Invoice
-
           <FaDownload />
         </button>
 
         {/* DOWNLOAD WEIGHT TICKET */}
 
-        <button
-          className={styles.actionBtn}
-          onClick={handleViewWeightTicket}
-        >
+        <button className={styles.actionBtn} onClick={handleViewWeightTicket}>
           <FaWeightHanging />
-
           Download Weight-Ticket
-
           <FaDownload />
         </button>
 
@@ -275,14 +198,9 @@ const handleViewWeightTicket = () => {
         <div className={styles.helpCard}>
           <h4>Need help?</h4>
 
-          <p>
-            If you have any issues with
-            your shipment
-          </p>
+          <p>If you have any issues with your shipment</p>
 
-          <button
-            className={styles.supportBtn}
-          >
+          <button className={styles.supportBtn}>
             <FaHeadset />
             Contact Support
           </button>

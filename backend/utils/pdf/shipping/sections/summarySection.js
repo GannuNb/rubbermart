@@ -2,29 +2,41 @@
 
 import { numberToWordsIndian } from "../../../mathHelpers.js";
 
-export const drawSummarySection = (doc, totalAmount, startY) => {
-  const summaryTop = startY + 10;
-
+export const drawSummarySection = (
+  doc,
+  totalAmount,
+  startY,
+) => {
   /* =========================
-     SAFE VALUE
+     POSITION
   ========================= */
 
-  const safeTotal = Number(totalAmount || 0);
+  const summaryTop = startY;
 
   /* =========================
-     BACKGROUND
+     SAFE TOTAL
   ========================= */
 
-  doc
-    .rect(35, summaryTop, 525, 45)
-    .fill("#6859c9");
+  const safeTotal = Number(
+    totalAmount || 0,
+  );
 
   /* =========================
-     WORD CONVERSION
+     AMOUNT IN WORDS
   ========================= */
 
   const words =
-    numberToWordsIndian(Math.round(safeTotal)) || "Zero";
+    numberToWordsIndian(
+      Math.round(safeTotal),
+    ) || "Zero";
+
+  /* =========================
+     COMPACT SUMMARY BOX
+  ========================= */
+
+  doc
+    .rect(35, summaryTop, 525, 28)
+    .fill("#6859c9");
 
   /* =========================
      TEXT
@@ -33,15 +45,16 @@ export const drawSummarySection = (doc, totalAmount, startY) => {
   doc
     .fillColor("#ffffff")
     .font("Helvetica-Bold")
-    .fontSize(9)
-    .text(
-      `Total Amount In words : ${words}`,
-      55,
-      summaryTop + 15,
-      {
-        width: 460,
-      }
-    );
+    .fontSize(8);
 
-  return summaryTop + 55;
+  doc.text(
+    `Amount In Words : ${words}`,
+    45,
+    summaryTop + 10,
+    {
+      width: 470,
+    },
+  );
+
+  return summaryTop + 36;
 };
