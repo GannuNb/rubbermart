@@ -26,6 +26,7 @@ export const uploadAdminTransportPaymentThunk =
       ========================= */
 
       const text = await response.text();
+      
 
       let data;
 

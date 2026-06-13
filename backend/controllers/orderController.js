@@ -3778,12 +3778,11 @@ export const uploadTransportPaymentReceipt = async (req, res) => {
   }
 };
 
+//admin --> adminverifybuyertransportfee
 export const verifyBuyerTransportPayment = async (req, res) => {
   try {
     const adminId = req.user._id;
-
     const { orderId, shipmentId, receiptId } = req.params;
-
     const { action } = req.body;
 
     /* =========================
@@ -3793,7 +3792,6 @@ export const verifyBuyerTransportPayment = async (req, res) => {
     if (!["verified", "rejected"].includes(action)) {
       return res.status(400).json({
         success: false,
-
         message: "Invalid action",
       });
     }
@@ -3807,7 +3805,6 @@ export const verifyBuyerTransportPayment = async (req, res) => {
     if (!order) {
       return res.status(404).json({
         success: false,
-
         message: "Order not found",
       });
     }
@@ -3821,7 +3818,6 @@ export const verifyBuyerTransportPayment = async (req, res) => {
     if (!shipment) {
       return res.status(404).json({
         success: false,
-
         message: "Shipment not found",
       });
     }
@@ -3835,7 +3831,6 @@ export const verifyBuyerTransportPayment = async (req, res) => {
     if (!receipt) {
       return res.status(404).json({
         success: false,
-
         message: "Payment receipt not found",
       });
     }
@@ -3843,11 +3838,9 @@ export const verifyBuyerTransportPayment = async (req, res) => {
     /* =========================
          PREVENT RE-VERIFY
       ========================= */
-
     if (receipt.status === "verified" && action === "verified") {
       return res.status(400).json({
         success: false,
-
         message: "Payment already verified",
       });
     }
@@ -3857,9 +3850,7 @@ export const verifyBuyerTransportPayment = async (req, res) => {
       ========================= */
 
     receipt.status = action;
-
     receipt.verifiedBy = adminId;
-
     receipt.verifiedAt = new Date();
 
     /* =========================
@@ -3890,12 +3881,10 @@ export const verifyBuyerTransportPayment = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-
       message:
         action === "verified"
           ? "Payment verified successfully"
           : "Payment rejected successfully",
-
       order,
     });
   } catch (error) {
@@ -3903,9 +3892,7 @@ export const verifyBuyerTransportPayment = async (req, res) => {
 
     return res.status(500).json({
       success: false,
-
       message: "Failed to verify payment",
-
       error: error.message,
     });
   }
@@ -3914,48 +3901,32 @@ export const verifyBuyerTransportPayment = async (req, res) => {
 export const uploadAdminTransportPayment = async (req, res) => {
   try {
     const adminId = req.user._id;
-
-    const { orderId, shipmentId } = req.params;
-
-    const {
-      amount,
-      paymentMode,
-      transactionId,
-      note,
-    } = req.body;
+    const {orderId,shipmentId} = req.params;
+    const { amount, paymentMode,transactionId,note} = req.body;
 
     /* =========================
        FIND ORDER
     ========================= */
+    const order = await Order.findById(orderId);
 
-    const order =
-      await Order.findById(orderId);
-
-    if (!order) {
+    if (!order){
       return res.status(404).json({
-        success: false,
-
-        message: "Order not found",
+        success:false,
+        message:"order not found",
       });
     }
-
+    
     /* =========================
        FIND SHIPMENT
     ========================= */
+    const shipment = order.shipments.id(shipmentId,);
 
-    const shipment =
-      order.shipments.id(
-        shipmentId,
-      );
-
-    if (!shipment) {
+    if (!shipment){
       return res.status(404).json({
-        success: false,
-
-        message: "Shipment not found",
+        success:false,
+        message:"shipment not found",
       });
     }
-
     /* =========================
        VALIDATE TRANSPORTER
     ========================= */
@@ -3965,7 +3936,6 @@ export const uploadAdminTransportPayment = async (req, res) => {
     ) {
       return res.status(400).json({
         success: false,
-
         message:
           "Transporter not assigned",
       });
@@ -3975,8 +3945,7 @@ export const uploadAdminTransportPayment = async (req, res) => {
        VALIDATE AMOUNT
     ========================= */
 
-    const paidAmount =
-      Number(amount);
+    const paidAmount = Number(amount);
 
     if (
       !paidAmount ||
@@ -3984,7 +3953,6 @@ export const uploadAdminTransportPayment = async (req, res) => {
     ) {
       return res.status(400).json({
         success: false,
-
         message:
           "Invalid payment amount",
       });
@@ -3994,128 +3962,51 @@ export const uploadAdminTransportPayment = async (req, res) => {
        VERIFIED ADMIN PAYMENTS
     ========================= */
 
-    const adminPaidAmount =
-      (
-        shipment?.adminTransportPaymentReceipts ||
-        []
-      )
-        .filter(
-          (r) =>
-            r.status ===
-            "verified",
-        )
-        .reduce(
-          (sum, r) =>
-            sum +
-            Number(
-              r.amount || 0,
-            ),
-          0,
-        );
-
+    const adminPaidAmount =  ( shipment?.adminTransportPaymentReceipts || [] ).filter( (r) => r.status ==="verified",).reduce( (sum, r) => sum +
+            Number( r.amount || 0,), 0, );
     /* =========================
        TOTAL TRANSPORT AMOUNT
     ========================= */
-
-    const totalTransportAmount =
-      Number(
-        shipment?.transportFinalAmount ||
-          0,
-      );
+    const totalTransportAmount = Number(shipment?.transportFinalAmount ||0, );
 
     /* =========================
        REMAINING AMOUNT
     ========================= */
-
-    const remainingAmount =
-      totalTransportAmount -
-      adminPaidAmount;
+    const remainingAmount =   totalTransportAmount -  adminPaidAmount;
 
     /* =========================
        PREVENT OVERPAY
     ========================= */
 
-    if (
-      paidAmount >
-      remainingAmount
-    ) {
+    if ( paidAmount > remainingAmount ) {
       return res.status(400).json({
         success: false,
-
         message:
           "Amount exceeds transport total amount",
       });
     }
-
     /* =========================
        FILE
     ========================= */
-
-    const paymentFile =
-      req.file
-        ? {
-            data:
-              req.file.buffer,
-
-            contentType:
-              req.file.mimetype,
-
-            originalName:
-              req.file
-                .originalname,
-          }
-        : null;
-
+    const paymentFile =  req.file? {  data: req.file.buffer, contentType: req.file.mimetype, originalName: req.file .originalname, } : null;
     /* =========================
        CREATE RECEIPT
     ========================= */
 
-    const newReceipt = {
-      file: paymentFile,
-
-      amount: paidAmount,
-
-      paymentMode,
-
-      transactionId,
-
-      note,
-
-      uploadedBy: adminId,
-
-      paymentFor:
-        "admin_to_transporter",
-
+    const newReceipt = {file: paymentFile, amount: paidAmount,paymentMode,transactionId,note,uploadedBy: adminId,
+       paymentFor:"admin_to_transporter",
       status: "verified",
-
       verifiedBy: adminId,
-
-      verifiedAt:
-        new Date(),
-
-      totalPaidTillNow:
-        adminPaidAmount,
-
-      remainingAmount:
-        remainingAmount -
-        paidAmount,
-
-      isPartialPayment:
-        paidAmount <
-        remainingAmount,
-
-      isFinalPayment:
-        paidAmount ===
-        remainingAmount,
+      verifiedAt: new Date(),
+      totalPaidTillNow:adminPaidAmount,
+      remainingAmount: remainingAmount -paidAmount,
+      isPartialPayment: paidAmount <remainingAmount,
+      isFinalPayment:  paidAmount ===  remainingAmount,
     };
-
     /* =========================
        PUSH RECEIPT
     ========================= */
-
-    shipment.adminTransportPaymentReceipts.push(
-      newReceipt,
-    );
+    shipment.adminTransportPaymentReceipts.push(  newReceipt, );
 
     /* =========================
        SAVE
@@ -4125,10 +4016,7 @@ export const uploadAdminTransportPayment = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-
-      message:
-        "Transporter payment uploaded successfully",
-
+      message:"Transporter payment uploaded successfully",
       order,
     });
   } catch (error) {
@@ -4139,10 +4027,7 @@ export const uploadAdminTransportPayment = async (req, res) => {
 
     return res.status(500).json({
       success: false,
-
-      message:
-        "Failed to upload transporter payment",
-
+      message: "Failed to upload transporter payment",
       error: error.message,
     });
   }
