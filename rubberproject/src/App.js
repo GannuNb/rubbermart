@@ -79,6 +79,7 @@ import TransporterMyQuotes from "./pages/transporter/TransporterMyQuotes";
 import TransporterPendingAssignments from "./pages/transporter/TransporterPendingAssignments";
 import TransporterAssignedShipments from "./pages/transporter/TransporterAssignedShipments";
 import TransporterCompletedDeliveries from "./pages/transporter/TransporterCompletedDeliveries";
+import TransporterPaymentsHistory from "./pages/transporter/TransporterPaymentsHistory";
 
 
 
@@ -143,6 +144,7 @@ function AppContent() {
         <Route  path="/transporter-pending-assignments"  element={<ProtectedRoute allowedRole="transporter"><TransporterPendingAssignments /></ProtectedRoute>}/>
         <Route  path="/transporter-assigned-shipments"  element={<TransporterAssignedShipments />}/>
         <Route  path="/transporter-completed-deliveries"  element={<TransporterCompletedDeliveries />}/>
+        <Route  path="/transporter/payments"  element={<TransporterPaymentsHistory />}/>
 
 
         {/* seller */}

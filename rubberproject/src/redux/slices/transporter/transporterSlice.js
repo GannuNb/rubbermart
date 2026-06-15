@@ -14,6 +14,7 @@ import { rejectAssignmentThunk } from "./rejectAssignmentThunk";
 import { getAssignedShipmentsThunk } from "./getAssignedShipmentsThunk";
 import { getCompletedDeliveriesThunk } from "./getCompletedDeliveriesThunk";
 import { markShipmentShippedThunk } from "./markShipmentShippedThunk";
+import { getTransporterPaymentHistoryThunk } from "./getTransporterPaymentHistoryThunk";
 
 const initialState = {
   /* =========================
@@ -70,21 +71,49 @@ const initialState = {
   markShippedLoading: false,
 
   markShippedError: null,
+
+  paymentHistory: [],
+
+  paymentHistoryLoading: false,
+
+  paymentHistoryError: null,
 };
 
 const transporterSlice = createSlice({
   name: "transporter",
   initialState,
 
-  reducers: {
-    clearTransporterMessages: (state) => {
-      state.submitQuoteError = null;
-      state.submitQuoteSuccess = null;
-      state.openShipmentsError = null;
-      state.myQuotesError = null;
-      state.pendingAssignmentsError = null;
-    },
+reducers: {
+  clearTransporterMessages: (state) => {
+    state.submitQuoteError = null;
+    state.submitQuoteSuccess = null;
+    state.openShipmentsError = null;
+    state.myQuotesError = null;
+    state.pendingAssignmentsError = null;
   },
+
+  /* =========================
+     PAYMENT HISTORY
+  ========================= */
+
+  getTransporterPaymentHistoryPending: (state) => {
+    state.paymentHistoryLoading = true;
+
+    state.paymentHistoryError = null;
+  },
+
+  getTransporterPaymentHistorySuccess: (state, action) => {
+    state.paymentHistoryLoading = false;
+
+    state.paymentHistory = action.payload || [];
+  },
+
+  getTransporterPaymentHistoryFail: (state, action) => {
+    state.paymentHistoryLoading = false;
+
+    state.paymentHistoryError = action.payload;
+  },
+},
 
   extraReducers: (builder) => {
     builder
@@ -254,7 +283,7 @@ const transporterSlice = createSlice({
         state.activeAssignmentShipmentId = null;
         state.assignmentActionError = action.payload;
       })
-        /* =========================
+      /* =========================
               MARK SHIPPED
           ========================= */
 
@@ -292,9 +321,15 @@ const transporterSlice = createSlice({
 
         state.markShippedError = action.payload;
       });
+      
   },
 });
 
-export const { clearTransporterMessages } = transporterSlice.actions;
+export const {
+  clearTransporterMessages,
+  getTransporterPaymentHistoryPending,
+  getTransporterPaymentHistorySuccess,
+  getTransporterPaymentHistoryFail,
+} = transporterSlice.actions;
 
 export default transporterSlice.reducer;

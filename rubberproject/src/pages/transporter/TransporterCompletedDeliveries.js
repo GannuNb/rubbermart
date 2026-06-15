@@ -61,11 +61,15 @@ function TransporterCompletedDeliveries() {
           STATE ALERTS
       ========================= */}
       {completedDeliveriesLoading && (
-        <div className="alert alert-info border-0 shadow-sm">Loading completed deliveries...</div>
+        <div className="alert alert-info border-0 shadow-sm">
+          Loading completed deliveries...
+        </div>
       )}
 
       {completedDeliveriesError && (
-        <div className="alert alert-danger border-0 shadow-sm">{completedDeliveriesError}</div>
+        <div className="alert alert-danger border-0 shadow-sm">
+          {completedDeliveriesError}
+        </div>
       )}
 
       {!completedDeliveriesLoading && completedDeliveries.length === 0 && (
@@ -80,27 +84,51 @@ function TransporterCompletedDeliveries() {
       {!completedDeliveriesLoading && completedDeliveries.length > 0 && (
         <div className={`card ${styles.tableCard}`}>
           <div className="table-responsive">
-            <table className={`table align-middle mb-0 ${styles.tableMinWidth}`}>
+            <table
+              className={`table align-middle mb-0 ${styles.tableMinWidth}`}
+            >
               <thead className={styles.tableHeader}>
                 <tr>
-                  <th className={styles.thText} style={{ width: "18%" }}>Shipment Details</th>
-                  <th className={styles.thText} style={{ width: "14%" }}>Route</th>
-                  <th className={styles.thText} style={{ width: "15%" }}>Package Details</th>
-                  <th className={styles.thText} style={{ width: "22%" }}>Quote Details</th>
-                  <th className={styles.thText} style={{ width: "10%" }}>Delivered On</th>
-                  <th className={styles.thText} style={{ width: "13%" }}>Documents</th>
-                  <th className={styles.thText} style={{ width: "8%" }}>Status</th>
+                  <th className={styles.thText} style={{ width: "18%" }}>
+                    Shipment Details
+                  </th>
+                  <th className={styles.thText} style={{ width: "14%" }}>
+                    Route
+                  </th>
+                  <th className={styles.thText} style={{ width: "15%" }}>
+                    Package Details
+                  </th>
+                  <th className={styles.thText} style={{ width: "22%" }}>
+                    Quote Details
+                  </th>
+                  <th className={styles.thText} style={{ width: "10%" }}>
+                    Delivered On
+                  </th>
+                  <th className={styles.thText} style={{ width: "13%" }}>
+                    Documents
+                  </th>
+                  <th className={styles.thText} style={{ width: "8%" }}>
+                    Status
+                  </th>
                 </tr>
               </thead>
               <tbody style={{ borderTop: "none" }}>
                 {completedDeliveries.map((item) => (
                   <tr key={item.shipment?._id} className={styles.rowBorder}>
-                    
                     {/* SHIPMENT DETAILS */}
                     <td className="px-4 py-4">
                       <div className="d-flex align-items-start gap-2">
                         <div className={styles.iconBoxLarge}>
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9333ea" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="#9333ea"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
                             <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
                             <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
                             <line x1="12" y1="22.08" x2="12" y2="12"></line>
@@ -111,11 +139,10 @@ function TransporterCompletedDeliveries() {
                             Order ID: {item.orderInvoiceId || "N/A"}
                           </div>
                           <div className={styles.invoiceId}>
-                            Invoice ID: {item.shipment?.shipmentInvoiceId || "N/A"}
+                            Invoice ID:{" "}
+                            {item.shipment?.shipmentInvoiceId || "N/A"}
                           </div>
-                          <span className={styles.statusBadge}>
-                            ✓ Packed
-                          </span>
+                          <span className={styles.statusBadge}>✓ Packed</span>
                         </div>
                       </div>
                     </td>
@@ -130,11 +157,15 @@ function TransporterCompletedDeliveries() {
                         </div>
                         <div className="mb-3">
                           <span className={styles.routeLabel}>From: Ex</span>
-                          <span className={styles.routeText}>{item.shipment?.shipmentFrom || "N/A"}</span>
+                          <span className={styles.routeText}>
+                            {item.shipment?.shipmentFrom || "N/A"}
+                          </span>
                         </div>
                         <div>
                           <span className={styles.routeLabel}>To:</span>
-                          <span className={styles.routeText}>{item.shipment?.shipmentTo || "N/A"}</span>
+                          <span className={styles.routeText}>
+                            {item.shipment?.shipmentTo || "N/A"}
+                          </span>
                         </div>
                       </div>
                     </td>
@@ -143,19 +174,29 @@ function TransporterCompletedDeliveries() {
                     <td className="px-3 py-4">
                       <div className="d-flex align-items-start gap-2">
                         <div className={styles.iconBoxSmall}>
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9333ea" strokeWidth="2">
-                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="#9333ea"
+                            strokeWidth="2"
+                          >
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
                           </svg>
                         </div>
                         <div>
                           <div className={styles.packageText}>
-                            <strong className="fw-semibold">Item:</strong> {item.shipment?.selectedItem || "N/A"}
+                            <strong className="fw-semibold">Item:</strong>{" "}
+                            {item.shipment?.selectedItem || "N/A"}
                           </div>
                           <div className={styles.packageSubText}>
-                            <strong className="fw-semibold">Quantity:</strong> {item.shipment?.shippedQuantity} MT
+                            <strong className="fw-semibold">Quantity:</strong>{" "}
+                            {item.shipment?.shippedQuantity} MT
                           </div>
                           <div className={styles.hsnText}>
-                            Transport HSN: {item.shipment?.transportHSNCode || "—"}
+                            Transport HSN:{" "}
+                            {item.shipment?.transportHSNCode || "—"}
                           </div>
                         </div>
                       </div>
@@ -165,16 +206,41 @@ function TransporterCompletedDeliveries() {
                     <td className="px-3 py-4">
                       <div className={styles.quoteBoxWrapper}>
                         <div className={styles.quoteRowItem}>
-                          <span className={styles.quoteLabelText}>Transport Price</span>
-                          <span className={styles.quoteValueTextPurple}>₹ {(item.shipment?.adminAssignedPrice || 0).toLocaleString('en-IN')}</span>
+                          <span className={styles.quoteLabelText}>
+                            Transport Price
+                          </span>
+
+                          <span className={styles.quoteValueTextPurple}>
+                            ₹{" "}
+                            {Number(
+                              item?.transportQuote?.quotedPrice || 0,
+                            ).toLocaleString("en-IN")}
+                          </span>
                         </div>
+
                         <div className={styles.quoteRowItem}>
-                          <span className={styles.quoteLabelText}>Delivery Days</span>
-                          <span className={styles.quoteValueText}>{item.shipment?.estimatedDeliveryDays || "3"} Days</span>
+                          <span className={styles.quoteLabelText}>
+                            Delivery Days
+                          </span>
+
+                          <span className={styles.quoteValueText}>
+                            {item?.transportQuote?.estimatedDeliveryDays
+                              ? `${item.transportQuote.estimatedDeliveryDays} Days`
+                              : "—"}
+                          </span>
                         </div>
-                        <div className={styles.quoteRowItem} style={{ alignItems: 'flex-start' }}>
-                          <span className={styles.quoteLabelText}>Additional Note</span>
-                          <span className={styles.quoteNoteText}>{item.shipment?.adminAssignmentNote || "No note"}</span>
+
+                        <div
+                          className={styles.quoteRowItem}
+                          style={{ alignItems: "flex-start" }}
+                        >
+                          <span className={styles.quoteLabelText}>
+                            Additional Note
+                          </span>
+
+                          <span className={styles.quoteNoteText}>
+                            {item?.transportQuote?.note || "No note"}
+                          </span>
                         </div>
                       </div>
                     </td>
@@ -183,8 +249,22 @@ function TransporterCompletedDeliveries() {
                     <td className="px-3 py-4">
                       <div className="d-flex align-items-start gap-2">
                         <div className={styles.iconBoxSmall}>
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9333ea" strokeWidth="2">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="#9333ea"
+                            strokeWidth="2"
+                          >
+                            <rect
+                              x="3"
+                              y="4"
+                              width="18"
+                              height="18"
+                              rx="2"
+                              ry="2"
+                            ></rect>
                             <line x1="16" y1="2" x2="16" y2="6"></line>
                             <line x1="8" y1="2" x2="8" y2="6"></line>
                             <line x1="3" y1="10" x2="21" y2="10"></line>
@@ -193,14 +273,30 @@ function TransporterCompletedDeliveries() {
                         <div>
                           {item.shipment?.deliveredAt ? (
                             <>
-                              <span className={styles.routeLabel}>Delivered On</span>
+                              <span className={styles.routeLabel}>
+                                Delivered On
+                              </span>
                               <div className={styles.dateText}>
-                                {new Date(item.shipment.deliveredAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                {new Date(
+                                  item.shipment.deliveredAt,
+                                ).toLocaleDateString("en-GB", {
+                                  day: "numeric",
+                                  month: "short",
+                                  year: "numeric",
+                                })}
                               </div>
                               <div className={styles.timeText}>
-                                {new Date(item.shipment.deliveredAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                                {new Date(
+                                  item.shipment.deliveredAt,
+                                ).toLocaleTimeString("en-US", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                  hour12: true,
+                                })}
                               </div>
-                              <div className={styles.tripCompletedText}>Trip Completed</div>
+                              <div className={styles.tripCompletedText}>
+                                Trip Completed
+                              </div>
                             </>
                           ) : (
                             <div className="text-muted">—</div>
@@ -213,63 +309,122 @@ function TransporterCompletedDeliveries() {
                     <td className="px-3 py-4">
                       <div className={styles.docContainerStack}>
                         {/* WEIGHT TICKET */}
+
                         <div className={styles.docItemBlock}>
                           <div className={styles.docMetaWrapper}>
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2">
+                            <svg
+                              width="18"
+                              height="18"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="#6b7280"
+                              strokeWidth="2"
+                            >
                               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+
                               <polyline points="14 2 14 8 20 8"></polyline>
+
                               <line x1="16" y1="13" x2="8" y2="13"></line>
+
                               <line x1="16" y1="17" x2="8" y2="17"></line>
                             </svg>
+
                             <div className="overflow-hidden">
-                              <div className={styles.docTitle} title="Weight Ticket">Weight Ticket</div>
-                              <div className={styles.docSize}>254 KB</div>
+                              <div
+                                className={styles.docTitle}
+                                title="Weight Ticket"
+                              >
+                                Weight Ticket
+                              </div>
+
+                              <div className={styles.docSize}>
+                                {item?.shipment?.weightTicket?.contentType?.includes(
+                                  "image",
+                                )
+                                  ? "Image"
+                                  : "PDF"}
+                              </div>
                             </div>
                           </div>
-                          {item.shipment?.weightTicket?.data ? (
+
+                          {item?.shipment?.weightTicket?.data ? (
                             <button
                               type="button"
                               className={styles.btnDocDownload}
-                              onClick={() => handleOpenFile(item.shipment.weightTicket, "Weight Ticket")}
-                              title="Download Weight Ticket"
+                              onClick={() =>
+                                handleOpenFile(
+                                  item.shipment.weightTicket,
+                                  "Weight Ticket",
+                                )
+                              }
+                              title="View Weight Ticket"
                             >
-                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4"></path>
-                                <polyline points="7 10 12 15 17 10"></polyline>
-                                <line x1="12" y1="15" x2="12" y2="3"></line>
-                              </svg>
+                              View
                             </button>
                           ) : (
-                            <span className="text-muted" style={{ fontSize: '0.75rem' }}>—</span>
+                            <span
+                              className="text-muted"
+                              style={{ fontSize: "0.75rem" }}
+                            >
+                              —
+                            </span>
                           )}
                         </div>
 
                         {/* PACKED PHOTO */}
+
                         <div className={styles.docItemBlock}>
                           <div className={styles.docMetaWrapper}>
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2">
-                              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                            <svg
+                              width="18"
+                              height="18"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="#6b7280"
+                              strokeWidth="2"
+                            >
+                              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4A2 2 0 0 0 21 16z"></path>
                             </svg>
+
                             <div className="overflow-hidden">
-                              <div className={styles.docTitle} title="Packed Photo">Packed Photo</div>
-                              <div className={styles.docSize}>1.2 MB</div>
+                              <div
+                                className={styles.docTitle}
+                                title="Packed Photo"
+                              >
+                                Packed Photo
+                              </div>
+
+                              <div className={styles.docSize}>
+                                {item?.shipment?.packedItemPhoto?.contentType?.includes(
+                                  "image",
+                                )
+                                  ? "Image"
+                                  : "PDF"}
+                              </div>
                             </div>
                           </div>
-                          {item.shipment?.packedItemPhoto?.data ? (
+
+                          {item?.shipment?.packedItemPhoto?.data ? (
                             <button
                               type="button"
                               className={styles.btnDocDownload}
-                              onClick={() => handleOpenFile(item.shipment.packedItemPhoto, "Packed Photo")}
-                              title="Download Packed Photo"
+                              onClick={() =>
+                                handleOpenFile(
+                                  item.shipment.packedItemPhoto,
+                                  "Packed Photo",
+                                )
+                              }
+                              title="View Packed Photo"
                             >
-                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                <polyline points="7 10 12 15 17 10"></polyline>
-                                <line x1="12" y1="15" x2="12" y2="3"></line>
-                              </svg>
+                              View
                             </button>
                           ) : (
-                            <span className="text-muted" style={{ fontSize: '0.75rem' }}>—</span>
+                            <span
+                              className="text-muted"
+                              style={{ fontSize: "0.75rem" }}
+                            >
+                              —
+                            </span>
                           )}
                         </div>
                       </div>
@@ -278,20 +433,40 @@ function TransporterCompletedDeliveries() {
                     {/* STATUS ACTION BADGE */}
                     <td className="px-3 py-4">
                       <span className={styles.completedBadge}>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                        <svg
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="3"
+                        >
                           <polyline points="20 6 9 17 4 12"></polyline>
                         </svg>
                         Completed
                       </span>
                       {item.shipment?.deliveredAt && (
                         <div className={styles.completedMetaText}>
-                          Completed On<br />
-                          {new Date(item.shipment.deliveredAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}<br />
-                          {new Date(item.shipment.deliveredAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                          Completed On
+                          <br />
+                          {new Date(
+                            item.shipment.deliveredAt,
+                          ).toLocaleDateString("en-GB", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          })}
+                          <br />
+                          {new Date(
+                            item.shipment.deliveredAt,
+                          ).toLocaleTimeString("en-US", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true,
+                          })}
                         </div>
                       )}
                     </td>
-
                   </tr>
                 ))}
               </tbody>

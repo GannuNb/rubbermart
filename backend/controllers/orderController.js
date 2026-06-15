@@ -1172,7 +1172,7 @@ export const getTransporterAssignedShipments = async (req, res) => {
       isDeleted: false,
     })
       .populate(
-        "seller",
+        "buyer seller",
         `
             fullName
             email
@@ -1186,7 +1186,8 @@ export const getTransporterAssignedShipments = async (req, res) => {
             email
             businessProfile
           `,
-      );
+      )
+      .populate("shipments.selectedQuoteId");
 
     /* =========================
        FILTER SHIPMENTS
@@ -1206,9 +1207,40 @@ export const getTransporterAssignedShipments = async (req, res) => {
 
             orderInvoiceId: order.orderId,
 
-            seller: order.seller,
+            buyer: {
+              fullName: order?.buyer?.fullName,
+
+              companyName: order?.buyer?.businessProfile?.companyName,
+            },
+
+            seller: {
+              fullName: order?.seller?.fullName,
+
+              companyName: order?.seller?.businessProfile?.companyName,
+            },
 
             shipment,
+
+            /* =========================
+     QUOTE DETAILS
+  ========================= */
+
+            transportQuote: {
+              quotedPrice:
+  shipment?.adminAssignedPrice ||
+  shipment?.transportFinalAmount ||
+  shipment?.transportPrice ||
+  shipment?.selectedQuoteId?.quotedPrice ||
+  0,
+
+              estimatedDeliveryDays:
+                shipment?.selectedQuoteId?.estimatedDeliveryDays || null,
+
+              note:
+                shipment?.adminAssignmentNote ||
+                shipment?.selectedQuoteId?.note ||
+                "",
+            },
           });
         }
       });
@@ -1236,8 +1268,8 @@ export const getTransporterCompletedDeliveries = async (req, res) => {
     const transporterId = req.user._id;
 
     /* =========================
-         FIND ORDERS
-      ========================= */
+       FIND ORDERS
+    ========================= */
 
     const orders = await Order.find({
       "shipments.assignedTransporter": transporterId,
@@ -1245,25 +1277,26 @@ export const getTransporterCompletedDeliveries = async (req, res) => {
       isDeleted: false,
     })
       .populate(
-        "seller",
+        "buyer seller",
         `
-              fullName
-              email
-              businessProfile
-            `,
+          fullName
+          email
+          businessProfile
+        `,
       )
       .populate(
         "shipments.assignedTransporter",
         `
-              fullName
-              email
-              businessProfile
-            `,
-      );
+          fullName
+          email
+          businessProfile
+        `,
+      )
+      .populate("shipments.selectedQuoteId");
 
     /* =========================
-         FILTER DELIVERED
-      ========================= */
+       FILTER DELIVERED
+    ========================= */
 
     const completedDeliveries = [];
 
@@ -1274,14 +1307,84 @@ export const getTransporterCompletedDeliveries = async (req, res) => {
             transporterId.toString() &&
           shipment.shipmentStatus === "delivered"
         ) {
+          /* =========================
+             PAYMENT CALCULATIONS
+          ========================= */
+
+          const payments =
+            shipment?.adminTransportPaymentReceipts?.filter(
+              (p) => p.status === "verified",
+            ) || [];
+
+          const totalReceived = payments.reduce(
+            (sum, p) => sum + Number(p.amount || 0),
+            0,
+          );
+
+          const transportAmount =
+            shipment?.transportFinalAmount ||
+            shipment?.transportPrice ||
+            shipment?.adminAssignedPrice ||
+            shipment?.selectedQuoteId?.quotedPrice ||
+            0;
+
+          const remainingAmount =
+            Number(transportAmount) - Number(totalReceived);
+
           completedDeliveries.push({
             orderId: order._id,
 
             orderInvoiceId: order.orderId,
 
-            seller: order.seller,
+            buyer: {
+              fullName: order?.buyer?.fullName,
+
+              companyName:
+                order?.buyer?.businessProfile?.companyName,
+            },
+
+            seller: {
+              fullName: order?.seller?.fullName,
+
+              companyName:
+                order?.seller?.businessProfile?.companyName,
+            },
 
             shipment,
+
+            /* =========================
+               QUOTE DETAILS
+            ========================= */
+
+            transportQuote: {
+              quotedPrice:
+                shipment?.adminAssignedPrice ||
+                shipment?.transportFinalAmount ||
+                shipment?.transportPrice ||
+                shipment?.selectedQuoteId?.quotedPrice ||
+                0,
+
+              estimatedDeliveryDays:
+                shipment?.selectedQuoteId
+                  ?.estimatedDeliveryDays || null,
+
+              note:
+                shipment?.adminAssignmentNote ||
+                shipment?.selectedQuoteId?.note ||
+                "",
+            },
+
+            /* =========================
+               PAYMENT DETAILS
+            ========================= */
+
+            payments,
+
+            transportAmount,
+
+            totalReceived,
+
+            remainingAmount,
           });
         }
       });
@@ -1293,7 +1396,10 @@ export const getTransporterCompletedDeliveries = async (req, res) => {
       completedDeliveries,
     });
   } catch (error) {
-    console.log("Get Transporter Completed Deliveries Error:", error);
+    console.log(
+      "Get Transporter Completed Deliveries Error:",
+      error,
+    );
 
     return res.status(500).json({
       success: false,
@@ -3901,43 +4007,40 @@ export const verifyBuyerTransportPayment = async (req, res) => {
 export const uploadAdminTransportPayment = async (req, res) => {
   try {
     const adminId = req.user._id;
-    const {orderId,shipmentId} = req.params;
-    const { amount, paymentMode,transactionId,note} = req.body;
+    const { orderId, shipmentId } = req.params;
+    const { amount, paymentMode, transactionId, note } = req.body;
 
     /* =========================
        FIND ORDER
     ========================= */
     const order = await Order.findById(orderId);
 
-    if (!order){
+    if (!order) {
       return res.status(404).json({
-        success:false,
-        message:"order not found",
+        success: false,
+        message: "order not found",
       });
     }
-    
+
     /* =========================
        FIND SHIPMENT
     ========================= */
-    const shipment = order.shipments.id(shipmentId,);
+    const shipment = order.shipments.id(shipmentId);
 
-    if (!shipment){
+    if (!shipment) {
       return res.status(404).json({
-        success:false,
-        message:"shipment not found",
+        success: false,
+        message: "shipment not found",
       });
     }
     /* =========================
        VALIDATE TRANSPORTER
     ========================= */
 
-    if (
-      !shipment?.assignedTransporter
-    ) {
+    if (!shipment?.assignedTransporter) {
       return res.status(400).json({
         success: false,
-        message:
-          "Transporter not assigned",
+        message: "Transporter not assigned",
       });
     }
 
@@ -3947,14 +4050,10 @@ export const uploadAdminTransportPayment = async (req, res) => {
 
     const paidAmount = Number(amount);
 
-    if (
-      !paidAmount ||
-      paidAmount <= 0
-    ) {
+    if (!paidAmount || paidAmount <= 0) {
       return res.status(400).json({
         success: false,
-        message:
-          "Invalid payment amount",
+        message: "Invalid payment amount",
       });
     }
 
@@ -3962,51 +4061,63 @@ export const uploadAdminTransportPayment = async (req, res) => {
        VERIFIED ADMIN PAYMENTS
     ========================= */
 
-    const adminPaidAmount =  ( shipment?.adminTransportPaymentReceipts || [] ).filter( (r) => r.status ==="verified",).reduce( (sum, r) => sum +
-            Number( r.amount || 0,), 0, );
+    const adminPaidAmount = (shipment?.adminTransportPaymentReceipts || [])
+      .filter((r) => r.status === "verified")
+      .reduce((sum, r) => sum + Number(r.amount || 0), 0);
     /* =========================
        TOTAL TRANSPORT AMOUNT
     ========================= */
-    const totalTransportAmount = Number(shipment?.transportFinalAmount ||0, );
+    const totalTransportAmount = Number(shipment?.transportFinalAmount || 0);
 
     /* =========================
        REMAINING AMOUNT
     ========================= */
-    const remainingAmount =   totalTransportAmount -  adminPaidAmount;
+    const remainingAmount = totalTransportAmount - adminPaidAmount;
 
     /* =========================
        PREVENT OVERPAY
     ========================= */
 
-    if ( paidAmount > remainingAmount ) {
+    if (paidAmount > remainingAmount) {
       return res.status(400).json({
         success: false,
-        message:
-          "Amount exceeds transport total amount",
+        message: "Amount exceeds transport total amount",
       });
     }
     /* =========================
        FILE
     ========================= */
-    const paymentFile =  req.file? {  data: req.file.buffer, contentType: req.file.mimetype, originalName: req.file .originalname, } : null;
+    const paymentFile = req.file
+      ? {
+          data: req.file.buffer,
+          contentType: req.file.mimetype,
+          originalName: req.file.originalname,
+        }
+      : null;
     /* =========================
        CREATE RECEIPT
     ========================= */
 
-    const newReceipt = {file: paymentFile, amount: paidAmount,paymentMode,transactionId,note,uploadedBy: adminId,
-       paymentFor:"admin_to_transporter",
+    const newReceipt = {
+      file: paymentFile,
+      amount: paidAmount,
+      paymentMode,
+      transactionId,
+      note,
+      uploadedBy: adminId,
+      paymentFor: "admin_to_transporter",
       status: "verified",
       verifiedBy: adminId,
       verifiedAt: new Date(),
-      totalPaidTillNow:adminPaidAmount,
-      remainingAmount: remainingAmount -paidAmount,
-      isPartialPayment: paidAmount <remainingAmount,
-      isFinalPayment:  paidAmount ===  remainingAmount,
+      totalPaidTillNow: adminPaidAmount,
+      remainingAmount: remainingAmount - paidAmount,
+      isPartialPayment: paidAmount < remainingAmount,
+      isFinalPayment: paidAmount === remainingAmount,
     };
     /* =========================
        PUSH RECEIPT
     ========================= */
-    shipment.adminTransportPaymentReceipts.push(  newReceipt, );
+    shipment.adminTransportPaymentReceipts.push(newReceipt);
 
     /* =========================
        SAVE
@@ -4016,18 +4127,122 @@ export const uploadAdminTransportPayment = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message:"Transporter payment uploaded successfully",
+      message: "Transporter payment uploaded successfully",
       order,
     });
   } catch (error) {
-    console.log(
-      "Upload Admin Transport Payment Error:",
-      error,
-    );
+    console.log("Upload Admin Transport Payment Error:", error);
 
     return res.status(500).json({
       success: false,
       message: "Failed to upload transporter payment",
+      error: error.message,
+    });
+  }
+};
+
+export const getTransporterPaymentHistory = async (req, res) => {
+  try {
+    const transporterId = req.user._id;
+
+    /* =========================
+       FIND ORDERS
+    ========================= */
+
+    const orders = await Order.find({
+      "shipments.assignedTransporter": transporterId,
+    })
+      .populate(
+        "buyer",
+        `
+          fullName
+          businessProfile.companyName
+        `,
+      )
+      .populate(
+        "seller",
+        `
+          fullName
+          businessProfile.companyName
+        `,
+      );
+
+    /* =========================
+       FILTER SHIPMENTS
+    ========================= */
+
+    const transporterShipments = [];
+
+    orders.forEach((order) => {
+      order.shipments.forEach((shipment) => {
+        if (
+          shipment?.assignedTransporter?.toString() === transporterId.toString()
+        ) {
+          /* =========================
+             VERIFIED ADMIN PAYMENTS
+          ========================= */
+
+          const verifiedPayments =
+            shipment.adminTransportPaymentReceipts.filter(
+              (r) => r.status === "verified",
+            );
+
+          const totalReceived = verifiedPayments.reduce(
+            (sum, r) => sum + Number(r.amount || 0),
+            0,
+          );
+
+          transporterShipments.push({
+            orderId: order._id,
+
+            orderNumber: order.orderId,
+
+            buyer:
+              order?.buyer?.businessProfile?.companyName ||
+              order?.buyer?.fullName,
+
+            seller:
+              order?.seller?.businessProfile?.companyName ||
+              order?.seller?.fullName,
+
+            shipmentId: shipment._id,
+
+            shipmentInvoiceId: shipment.shipmentInvoiceId,
+
+            selectedItem: shipment.selectedItem,
+
+            transportAmount: shipment.transportFinalAmount || 0,
+
+            totalReceived,
+
+            remainingAmount:
+              Number(shipment.transportFinalAmount || 0) - totalReceived,
+
+            payments: verifiedPayments,
+
+            shipmentStatus: shipment.shipmentStatus,
+
+            pickedUpAt: shipment.pickedUpAt,
+
+            deliveredAt: shipment.deliveredAt,
+          });
+        }
+      });
+    });
+
+    return res.status(200).json({
+      success: true,
+
+      shipments: transporterShipments,
+    });
+  } catch (error) {
+    console.log("Get Transporter Payment History Error:", error);
+
+    return res.status(500).json({
+      success: false,
+
+      message: "Failed to fetch transporter payments",
+
       error: error.message,
     });
   }
