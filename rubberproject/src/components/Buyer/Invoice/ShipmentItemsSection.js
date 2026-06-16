@@ -54,13 +54,13 @@ const ShipmentItemsSection = ({ shipment, order }) => {
   let productSGST = 0;
 
   if (productGSTType === "igst") {
-    productIGST = productTaxable * 0.18;
+    productIGST = Number((productTaxable * 0.18).toFixed(2));
   }
 
   if (productGSTType === "cgst_sgst") {
-    productCGST = productTaxable * 0.09;
+    productCGST = Number((productTaxable * 0.09).toFixed(2));
 
-    productSGST = productTaxable * 0.09;
+    productSGST = Number((productTaxable * 0.09).toFixed(2));
   }
 
   const productTotal = productTaxable + productIGST + productCGST + productSGST;
@@ -86,18 +86,20 @@ const ShipmentItemsSection = ({ shipment, order }) => {
   }
 
   if (transportGSTType === "cgst_sgst") {
-    transportCGST = transportGSTAmount / 2;
+    transportCGST = Number((transportGSTAmount / 2).toFixed(2));
 
-    transportSGST = transportGSTAmount / 2;
+    transportSGST = Number((transportGSTAmount / 2).toFixed(2));
   }
 
-  const transportTotal = transportPrice + transportGSTAmount;
+  const transportTotal = Number(
+    shipment?.transportFinalAmount || transportPrice + transportGSTAmount || 0,
+  );
 
   /* =========================
      GRAND TOTAL
   ========================= */
 
-  const grandTotal = productTotal + transportTotal;
+  const grandTotal = Number((productTotal + transportTotal).toFixed(2));
 
   return (
     <div className={styles.itemsWrapper}>
@@ -267,7 +269,7 @@ const ShipmentItemsSection = ({ shipment, order }) => {
             </div>
 
             <div className={styles.centerCell}>
-              {shipment?.transportHSNCode}
+              {shipment?.transportHSNCode || "9965"}
             </div>
 
             <div className={styles.centerCell}>

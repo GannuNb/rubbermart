@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import AdminShipmentTopCard from "../../components/admin/AdminSingleShipping/AdminShipmentTopCard";
 import AdminShipmentProductCard from "../../components/admin/AdminSingleShipping/AdminShipmentProductCard";
-import AdminDriverDetailsCard from "../../components/admin/AdminSingleShipping/AdminDriverDetailsCard";
+// import AdminDriverDetailsCard from "../../components/admin/AdminSingleShipping/AdminDriverDetailsCard";
 import AdminShipmentSummaryCard from "../../components/admin/AdminSingleShipping/AdminShipmentSummaryCard";
 import AdminShipmentActionsCard from "../../components/admin/AdminSingleShipping/AdminShipmentActionsCard";
 import AdminTransportQuotesCard from "../../components/admin/AdminSingleShipping/AdminTransportQuotesCard";
@@ -136,21 +136,18 @@ const AdminSingleShippingInvoice = () => {
       {/* BOTTOM GRID */}
 
       <div className={styles.bottomGrid}>
-        {shipment?.transportMode === "marketplace_transport" ? (
-          <AdminTransportQuotesCard
-            shipment={{
-              ...shipment,
+        <AdminTransportQuotesCard
+          shipment={{
+            ...shipment,
 
-              orderId: order?._id,
-            }}
-            order={order}
-          />
-        ) : (
-          <AdminDriverDetailsCard shipment={shipment} />
-        )}
+            orderId: order?._id,
+          }}
+          order={order}
+        />
 
         <AdminShipmentSummaryCard shipment={shipment} />
       </div>
+
       <AdminTransportPaymentsSection shipment={shipment} order={order} />
 
       {/* ACTIONS */}

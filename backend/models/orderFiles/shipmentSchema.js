@@ -36,15 +36,6 @@ const shipmentSchema = new mongoose.Schema(
     },
 
     /* =========================
-       TRANSPORT MODE
-    ========================= */
-
-    transportMode: {
-      type: String,
-      enum: ["self_transport", "marketplace_transport"],
-      default: "self_transport",
-    },
-    /* =========================
           TRANSPORT TAX DETAILS
        ========================= */
 
@@ -97,14 +88,18 @@ const shipmentSchema = new mongoose.Schema(
       default: "unpaid",
     },
 
-    transportPaymentReceipts: [paymentReceiptSchema],
+    transportPaymentReceipts: {
+      type: [paymentReceiptSchema],
+      default: [],
+    },
     /*  =========================
           ADMIN → TRANSPORTER PAYMENTS
         ========================= */
 
-        adminTransportPaymentReceipts: [
-          paymentReceiptSchema,
-        ],
+    adminTransportPaymentReceipts: {
+      type: [paymentReceiptSchema],
+      default: [],
+    },
 
     /* =========================
        SHIPMENT STATUS
@@ -130,18 +125,19 @@ const shipmentSchema = new mongoose.Schema(
     ========================= */
 
     transportStatus: {
-      type: String,
-      enum: [
-        "not_required",
-        "open_for_quotes",
-        "quotes_received",
-        "admin_assignment_pending",
-        "transporter_assigned",
-        "admin_assignment_rejected",
-        "completed",
-      ],
-      default: "not_required",
-    },
+  type: String,
+
+  enum: [
+    "open_for_quotes",
+    "quotes_received",
+    "admin_assignment_pending",
+    "transporter_assigned",
+    "admin_assignment_rejected",
+    "completed",
+  ],
+
+  default: "open_for_quotes",
+},
 
     /* =========================
        LOCATION DETAILS
@@ -164,22 +160,6 @@ const shipmentSchema = new mongoose.Schema(
     weightTicket: uploadedFileSchema,
 
     /* =========================
-       SELF TRANSPORT DETAILS
-    ========================= */
-
-    vehicleNumber: {
-      type: String,
-    },
-
-    driverName: {
-      type: String,
-    },
-
-    driverMobile: {
-      type: String,
-    },
-
-    /* =========================
        TRANSPORTER ASSIGNMENT
     ========================= */
 
@@ -189,6 +169,7 @@ const shipmentSchema = new mongoose.Schema(
     },
     adminAssignedPrice: {
       type: Number,
+      default: 0,
     },
 
     adminAssignmentNote: {
@@ -206,8 +187,8 @@ const shipmentSchema = new mongoose.Schema(
 
     assignmentMethod: {
       type: String,
-      enum: ["self_transport", "quote_selection", "admin_direct_assignment"],
-      default: "self_transport",
+      enum: ["quote_selection", "admin_direct_assignment"],
+      default: "quote_selection",
     },
 
     /* =========================

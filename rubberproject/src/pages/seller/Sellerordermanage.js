@@ -26,7 +26,6 @@ const Sellerordermanage = () => {
   const { orderId } = useParams();
 
   const [cancellationReason, setCancellationReason] = useState("");
-  const [transportMode, setTransportMode] = useState("self_transport");
 
   const [alert, setAlert] = useState({
     show: false,
@@ -116,7 +115,6 @@ const Sellerordermanage = () => {
     dispatch(
       confirmSellerOrderThunk({
         orderId,
-        transportMode,
       }),
     );
   };
@@ -401,22 +399,11 @@ const Sellerordermanage = () => {
               </div>
 
               <p>
-                Please confirm the order after reviewing all order details. Once
-                confirmed, the buyer will be notified.
+                Please confirm the order after reviewing all order details.
+                Marketplace transport workflow will automatically start after
+                confirmation.
               </p>
-              <label className={styles.inputLabel}>Transport Mode *</label>
 
-              <select
-                className={styles.select}
-                value={transportMode}
-                onChange={(e) => setTransportMode(e.target.value)}
-              >
-                <option value="self_transport">Self Transport</option>
-
-                <option value="marketplace_transport">
-                  Marketplace Transport
-                </option>
-              </select>
               <button
                 className={styles.confirmButton}
                 onClick={handleConfirmOrder}

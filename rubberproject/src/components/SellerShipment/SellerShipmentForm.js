@@ -7,7 +7,7 @@ import { addShipmentToOrderThunk } from "../../redux/slices/sellerOrderThunk";
 import ShipmentItemSelector from "./ShipmentItemSelector";
 import ShipmentSubProducts from "./ShipmentSubProducts";
 import ShipmentQuantityInfo from "./ShipmentQuantityInfo";
-import ShipmentBasicFields from "./ShipmentBasicFields";
+// import ShipmentBasicFields from "./ShipmentBasicFields";
 import ShipmentAddressField from "./ShipmentAddressField";
 import ShipmentFileUpload from "./ShipmentFileUpload";
 
@@ -28,12 +28,6 @@ const SellerShipmentForm = ({ selectedOrder }) => {
     selectedItem: "",
 
     shippedQuantity: "",
-
-    vehicleNumber: "",
-
-    driverName: "",
-
-    driverMobile: "",
 
     shipmentFrom: "",
 
@@ -185,27 +179,6 @@ const SellerShipmentForm = ({ selectedOrder }) => {
       return alert("Please upload packed item photo");
     }
 
-    if (
-      selectedOrder.transportMode === "self_transport" &&
-      !formData.vehicleNumber
-    ) {
-      return alert("Please enter vehicle number");
-    }
-
-    if (
-      selectedOrder.transportMode === "self_transport" &&
-      !formData.driverName
-    ) {
-      return alert("Please enter driver name");
-    }
-
-    if (
-      selectedOrder.transportMode === "self_transport" &&
-      !formData.driverMobile
-    ) {
-      return alert("Please enter driver contact");
-    }
-
     if (!formData.shipmentFrom) {
       return alert("Please select shipment from address");
     }
@@ -224,12 +197,6 @@ const SellerShipmentForm = ({ selectedOrder }) => {
     shipmentData.append("selectedItem", formData.selectedItem);
 
     shipmentData.append("shippedQuantity", formData.shippedQuantity);
-
-    shipmentData.append("vehicleNumber", formData.vehicleNumber);
-
-    shipmentData.append("driverName", formData.driverName);
-
-    shipmentData.append("driverMobile", formData.driverMobile);
 
     shipmentData.append("shipmentFrom", formData.shipmentFrom);
 
@@ -259,12 +226,6 @@ const SellerShipmentForm = ({ selectedOrder }) => {
           selectedItem: "",
 
           shippedQuantity: "",
-
-          vehicleNumber: "",
-
-          driverName: "",
-
-          driverMobile: "",
 
           shipmentFrom: "",
 
@@ -318,13 +279,6 @@ const SellerShipmentForm = ({ selectedOrder }) => {
           alreadyShippedQuantity={alreadyShippedQuantity}
           remainingQuantity={remainingQuantity}
         />
-
-        {selectedOrder.transportMode === "self_transport" && (
-          <ShipmentBasicFields
-            formData={formData}
-            handleChange={handleChange}
-          />
-        )}
 
         <ShipmentAddressField
           formData={formData}

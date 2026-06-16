@@ -41,7 +41,10 @@ const BuyerSingleShippingInvoice = () => {
      FIND SHIPMENT FROM ORDER
   ========================= */
 
-  const shipment = order?.shipments?.find((item) => item?._id === shipmentId);
+  const shipment = order?.shipments?.find(
+  (item) =>
+    item?._id?.toString() === shipmentId?.toString(),
+);
 
   /* =========================
      LOADING
