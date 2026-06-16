@@ -15,7 +15,8 @@ import testInvoiceRoute from "./routes/testInvoiceRoute.js";
 import contactRoutes from "./routes/contactRoutes.js";
 import sellerDashboardRoutes from "./routes/sellerDashboardRoutes.js";
 import adminDashboardRoutes from "./routes/adminDashboardRoutes.js";
-
+// 🟢 IMPORTED: Transporter Dashboard Router Module
+import transporterDashboardRoutes from "./routes/transporterDashboardRoutes.js";
 
 dotenv.config();
 
@@ -59,7 +60,8 @@ app.use("/api/test", testInvoiceRoute);
 app.use("/api/contact", contactRoutes);
 app.use("/api/seller-dashboard",  sellerDashboardRoutes);
 app.use("/api/admin-dashboard", adminDashboardRoutes);
-
+// 🟢 REGISTERED: Main API entry point mount configuration 
+app.use("/api/transporter-dashboard", transporterDashboardRoutes);
 
 app.use(uploadDocumentsErrorHandler);
 

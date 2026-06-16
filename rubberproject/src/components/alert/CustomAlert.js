@@ -27,19 +27,21 @@ function CustomAlert({
   };
 
   return (
-    <div className={`${styles.alert} ${styles[type]}`}>
-      <div className={styles.progress}></div>
+    <div className={styles.alertOverlay}>
+      <div className={`${styles.alert} ${styles[type]}`}>
+        <div className={styles.progress}></div>
 
-      <div className={styles.iconWrapper}>{icons[type]}</div>
+        <div className={styles.iconWrapper}>{icons[type]}</div>
 
-      <div className={styles.content}>
-        <h4>{title}</h4>
-        <p>{message}</p>
+        <div className={styles.content}>
+          <h4>{title}</h4>
+          <p>{message}</p>
+        </div>
+
+        <button className={styles.closeBtn} onClick={onClose}>
+          <IoClose />
+        </button>
       </div>
-
-      <button className={styles.closeBtn} onClick={onClose}>
-        <IoClose />
-      </button>
     </div>
   );
 }

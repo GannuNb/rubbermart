@@ -1,0 +1,51 @@
+.dashboardPageWrapper {
+  width: 100%;
+  max-width: 2000px; /* Constrain width for better readability on ultrawide */
+  margin: 0 auto;
+  padding: 40px 32px;
+  background-color: #f8fafc; /* Slightly off-white for contrast */
+  min-height: 100vh;
+}
+
+.header {
+  margin-bottom: 32px;
+  padding-left: 8px;
+}
+
+.header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 8px;
+}
+
+.header p {
+  font-size: 1rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.mainGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 24px; /* Consistent spacing between sections */
+  margin-top: 32px;
+}
+
+.fullWidthSection {
+  background: white;
+  border-radius: 16px; /* Smooth rounded corners */
+  padding: 24px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  border: 1px solid #e2e8f0; /* Subtle border for definition */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .dashboardPageWrapper {
+    padding: 20px 16px;
+  }
+  .fullWidthSection {
+    padding: 16px;
+  }
+}

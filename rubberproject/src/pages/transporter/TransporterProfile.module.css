@@ -1,0 +1,639 @@
+/* =========================
+    PROFILE PAGE
+========================= */
+
+.profilePage {
+  min-height: 100vh;
+  background: #f5f7fb;
+  padding: 40px 20px;
+}
+
+/* =========================
+    CONTAINER
+========================= */
+
+.profileContainer {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* =========================
+    HERO SECTION
+========================= */
+
+.heroSection {
+  position: relative;
+  overflow: hidden;
+  border-radius: 30px;
+  padding: 45px;
+  margin-bottom: 35px;
+  background: #6c2fa4;
+  box-shadow: 0 20px 45px rgba(108, 47, 164, 0.18);
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top right,
+      rgba(255, 255, 255, 0.18),
+      transparent 35%),
+    radial-gradient(circle at bottom left,
+      rgba(255, 255, 255, 0.12),
+      transparent 30%);
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.profileLeft {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+/* =========================
+    PROFILE IMAGE
+========================= */
+
+.profileImageWrapper {
+  width: 125px;
+  height: 125px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #ffffff;
+  border: 5px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+}
+
+.profileImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profileInitials {
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  color: #6c2fa4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+  font-weight: 700;
+}
+
+/* =========================
+    PROFILE INFO
+========================= */
+
+.profileInfo h1 {
+  font-size: 42px;
+  color: #ffffff;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.profileInfo p {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 18px;
+  margin-bottom: 18px;
+}
+
+.badges {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.roleBadge {
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+}
+
+.verifiedBadge {
+  background: #ffffff;
+  color: #6c2fa4;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* =========================
+    EDIT BUTTON
+========================= */
+
+.editBtn {
+  border: none;
+  outline: none;
+  background: #ffffff;
+  color: #6c2fa4;
+  padding: 16px 28px;
+  border-radius: 16px;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.editBtn:hover {
+  transform: translateY(-3px);
+  background: #f8f2ff;
+}
+
+/* =========================
+    SECTION
+========================= */
+
+.section {
+  background: #ffffff;
+  border-radius: 26px;
+  padding: 35px;
+  margin-bottom: 30px;
+  box-shadow: 0 10px 35px rgba(15, 23, 42, 0.05);
+  border: 1px solid #eef2f7;
+}
+
+/* =========================
+    SECTION TITLE
+========================= */
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 30px;
+}
+
+.sectionTitle svg {
+  color: #6c2fa4;
+  font-size: 24px;
+}
+
+.sectionTitle h2 {
+  font-size: 28px;
+  color: #111827;
+  font-weight: 700;
+}
+
+/* =========================
+    GRID
+========================= */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 22px;
+}
+
+/* =========================
+    CARD
+========================= */
+
+.card {
+  position: relative;
+  background: #faf8ff;
+  border: 1px solid #eee7ff;
+  border-radius: 22px;
+  padding: 24px;
+  overflow: hidden;
+  transition: 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(108, 47, 164, 0.08);
+}
+
+.card span {
+  display: block;
+  color: #7c8596;
+  font-size: 13px;
+  margin-bottom: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.card h4 {
+  color: #111827;
+  font-size: 18px;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.cardIcon {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  font-size: 24px;
+  color: #6c2fa4;
+  opacity: 0.25;
+}
+
+/* =========================
+    PRODUCT TAGS
+========================= */
+
+.productsWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.productTag {
+  background: #f2e9ff;
+  color: #6c2fa4;
+  padding: 12px 18px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* =========================
+    EMPTY TEXT
+========================= */
+
+.emptyText {
+  color: #6b7280;
+  font-size: 15px;
+}
+
+/* =========================
+    ADDRESS GRID
+========================= */
+
+.addressGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+/* =========================
+    ADDRESS CARD
+========================= */
+
+.addressCard {
+  background: #faf8ff;
+  border: 1px solid #eee7ff;
+  border-radius: 24px;
+  padding: 24px;
+  transition: 0.3s ease;
+}
+
+.addressCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 15px 35px rgba(108, 47, 164, 0.08);
+}
+
+.addressTop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.addressTop svg {
+  color: #6c2fa4;
+  font-size: 22px;
+}
+
+.addressTop h3 {
+  font-size: 20px;
+  color: #111827;
+  font-weight: 700;
+}
+
+.addressCard p {
+  color: #4b5563;
+  line-height: 1.8;
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+.addressCard span {
+  display: inline-block;
+  margin-top: 12px;
+  color: #6c2fa4;
+  font-weight: 700;
+}
+
+/* =========================
+    DOCUMENT CARD
+========================= */
+
+.documentCard {
+  background: #faf8ff;
+  border: 1px solid #eee7ff;
+  border-radius: 22px;
+  padding: 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.documentCard h4 {
+  color: #111827;
+  font-size: 18px;
+  margin-bottom: 6px;
+}
+
+.documentCard p {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.documentCard a {
+  background: #6c2fa4;
+  color: #ffffff;
+  text-decoration: none;
+  padding: 12px 22px;
+  border-radius: 12px;
+  font-weight: 700;
+  transition: 0.3s ease;
+}
+
+.documentCard a:hover {
+  background: #59258b;
+}
+
+/* =========================
+   DOCUMENT VIEW BUTTON
+========================= */
+
+.viewDocumentBtn {
+  border: none;
+  outline: none;
+  background: #692ca0;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.viewDocumentBtn:hover {
+  background: #5b2490;
+}
+
+.viewDocumentBtn:active {
+  transform: scale(0.98);
+}
+/* =========================
+    RESPONSIVE
+========================= */
+
+@media (max-width: 992px) {
+  .heroSection {
+    padding: 35px 28px;
+  }
+
+  .profileInfo h1 {
+    font-size: 34px;
+  }
+}
+
+@media (max-width: 768px) {
+  .profilePage {
+    padding: 25px 12px;
+  }
+
+  .heroContent {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .profileLeft {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .profileInfo h1 {
+    font-size: 28px;
+  }
+
+  .section {
+    padding: 24px;
+  }
+
+  .sectionTitle h2 {
+    font-size: 24px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .addressGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 500px) {
+  .profileImageWrapper {
+    width: 100px;
+    height: 100px;
+  }
+
+  .profileInfo h1 {
+    font-size: 24px;
+  }
+
+  .editBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.editInput,
+.editTextarea,
+.card input,
+.card textarea {
+  width: 90%;
+  margin-top: 10px;
+  border: 1px solid #d8c8f3;
+  background: white;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 15px;
+  outline: none;
+  transition: 0.2s ease;
+}
+
+.card input:focus,
+.card textarea:focus {
+  border-color: #6c2fa4;
+  box-shadow: 0 0 0 4px rgba(108, 47, 164, 0.08);
+}
+
+.card textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.cancelBtn {
+  border: none;
+  outline: none;
+  background: #e5e7eb;
+  color: #111827;
+  padding: 16px 28px;
+  border-radius: 16px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.checkboxGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #faf8ff;
+  border: 1px solid #eee7ff;
+  border-radius: 16px;
+  padding: 16px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.checkboxLabel:hover {
+  border-color: #6c2fa4;
+}
+
+.checkboxLabel input {
+  width: 18px;
+  height: 18px;
+  accent-color: #6c2fa4;
+}
+
+.checkboxLabel span {
+  color: #111827;
+  font-weight: 600;
+}
+
+.noBusinessProfile {
+  background: #f8fbff;
+  border: 1px dashed #b8cffc;
+  border-radius: 20px;
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.noBusinessIcon {
+  font-size: 52px;
+  color: #2f6fed;
+  margin-bottom: 18px;
+}
+
+.noBusinessProfile h3 {
+  color: #1c2b52;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.noBusinessProfile p {
+  color: #667085;
+  font-size: 15px;
+  margin-bottom: 24px;
+}
+
+.createBusinessBtn {
+  border: none;
+  background: linear-gradient(135deg, #2563eb, #4f46e5);
+  color: white;
+  padding: 14px 26px;
+  border-radius: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.createBusinessBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.2);
+}
+
+
+
+.noBusinessProfileBox {
+  padding: 60px 20px;
+  text-align: center;
+  background: #f8fafc;
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+}
+
+.noBusinessProfileIcon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background: #0f172a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 32px;
+}
+
+.noBusinessProfileTitle {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: #0f172a;
+}
+
+.noBusinessProfileText {
+  color: #64748b;
+  max-width: 600px;
+  margin: 0 auto 30px;
+  line-height: 1.7;
+  font-size: 15px;
+}
+
+.completeProfileBtn {
+  padding: 14px 28px;
+  background: #0f172a;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+  transition: 0.3s ease;
+}
+
+.completeProfileBtn:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}

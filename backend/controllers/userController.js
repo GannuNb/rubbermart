@@ -263,6 +263,8 @@ export const updateProfile = async (req, res) => {
       billingAddress,
       shippingAddress,
       interestedProducts,
+      gstCertificate, // Expected format: { file: "data:image/png;base64,iVBORw..." }
+      panCertificate, // Expected format: { file: "data:image/png;base64,iVBORw..." }
     } = req.body;
 
     const user = await User.findById(req.user._id);
@@ -274,53 +276,61 @@ export const updateProfile = async (req, res) => {
       });
     }
 
-    // =========================
-    // BASIC USER INFO
-    // =========================
-
-    if (fullName !== undefined) {
-      user.fullName = fullName;
-    }
-
-    if (location !== undefined) {
-      user.location = location;
+    if (!user.businessProfile) {
+      user.businessProfile = {};
     }
 
     // =========================
-    // BUSINESS PROFILE INFO
+    // BASIC USER INFO & BUSINESS PROFILE INFO
     // =========================
+    if (fullName !== undefined) user.fullName = fullName;
+    if (location !== undefined) user.location = location;
+    if (phoneNumber !== undefined) user.businessProfile.phoneNumber = phoneNumber;
+    if (billingAddress !== undefined) user.businessProfile.billingAddress = billingAddress;
+    if (shippingAddress !== undefined) user.businessProfile.shippingAddress = shippingAddress;
 
-    if (phoneNumber !== undefined) {
-      user.businessProfile.phoneNumber = phoneNumber;
+    if (user.role === "buyer" && interestedProducts !== undefined) {
+      user.businessProfile.interestedProducts = interestedProducts;
     }
 
-    if (billingAddress !== undefined) {
-      user.businessProfile.billingAddress = billingAddress;
+    // Helper function to convert base64 strings into a Mongoose-compatible schema format
+    const parseBase64Document = (base64Str) => {
+      if (!base64Str || typeof base64Str !== "string" || !base64Str.includes("base64,")) {
+        return null;
+      }
+      const parts = base64Str.split(";base64,");
+      const contentType = parts[0].split(":")[1];
+      const bufferData = Buffer.from(parts[1], "base64");
+
+      return {
+        data: bufferData,
+        contentType: contentType,
+        originalName: `uploaded_document_${Date.now()}.${contentType.split("/")[1] || "dat"}`
+      };
+    };
+
+    // ========================================================
+    // CONDITIONAL DOCUMENT UPLOADS (STRICT APPEND-ONLY REGIME)
+    // ========================================================
+
+    if (gstCertificate && gstCertificate.file) {
+      const parsedGst = parseBase64Document(gstCertificate.file);
+      if (parsedGst) {
+        user.businessProfile.gstCertificate = parsedGst;
+        user.markModified("businessProfile.gstCertificate");
+      }
     }
 
-    if (shippingAddress !== undefined) {
-      user.businessProfile.shippingAddress = shippingAddress;
+    // Check and save PAN Certificate
+    if (panCertificate && panCertificate.file) {
+      const parsedPan = parseBase64Document(panCertificate.file);
+      if (parsedPan) {
+        user.businessProfile.panCertificate = parsedPan;
+        user.markModified("businessProfile.panCertificate");
+      }
     }
 
-    // buyer only
-    if (
-      user.role === "buyer" &&
-      interestedProducts !== undefined
-    ) {
-      user.businessProfile.interestedProducts =
-        interestedProducts;
-    }
-
-    // =========================
-    // IMPORTANT:
-    // NOT ALLOWING UPDATE
-    // =========================
-    // companyName
-    // gstNumber
-    // panNumber
-    // gstCertificate
-    // panCertificate
-
+    user.markModified("businessProfile");
     await user.save();
 
     return res.status(200).json({
@@ -330,7 +340,6 @@ export const updateProfile = async (req, res) => {
     });
   } catch (error) {
     console.log("Update Profile Error:", error);
-
     return res.status(500).json({
       success: false,
       message: "Server error while updating profile",

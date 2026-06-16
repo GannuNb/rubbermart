@@ -1,0 +1,123 @@
+.splitWrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.tableBlock {
+  display: flex;
+  flex-direction: column;
+}
+
+.blockHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.titleWithIcon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #475569;
+  font-size: 16px;
+}
+
+.titleWithIcon h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.tableCard {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  overflow: hidden;
+}
+
+.responsiveTable {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.responsiveTable table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  min-width: 450px;
+}
+
+.responsiveTable th {
+  background: #fafafa;
+  padding: 14px 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.responsiveTable td {
+  padding: 16px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #334155;
+  border-bottom: 1px solid #f8fafc;
+}
+
+.routeColumn {
+  font-weight: 600 !important;
+  color: #0f172a !important;
+}
+
+.pendingBadge {
+  background: #fff7ed;
+  color: #f97316;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.assignedBadge {
+  background: #f0fdf4;
+  color: #16a34a;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.viewAllFooter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px;
+  color: #6366f1;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none !important; 
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+/* Optional: Add hover state */
+.viewAllFooter:hover {
+  text-decoration: none; /* Ensure it stays gone on hover */
+  color: #4f46e5;
+}
+
+.centerText {
+  text-align: center;
+  color: #64748b;
+  padding: 30px !important;
+}
+
+@media (max-width: 992px) {
+  .splitWrapper { grid-template-columns: 1fr; }
+}

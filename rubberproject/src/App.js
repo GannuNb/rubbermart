@@ -73,13 +73,14 @@ import SellerRejectedProducts from "./pages/seller/SellerRejectedProducts";
 import TransporterGuide from "./components/TransporterGuide/TransporterGuide";
 
 //transporter
-import TransporterDashboard from "./pages/transporter/TransporterDashboard";
 import TransporterShipments from "./pages/transporter/TransporterShipments";
 import TransporterMyQuotes from "./pages/transporter/TransporterMyQuotes";
 import TransporterPendingAssignments from "./pages/transporter/TransporterPendingAssignments";
 import TransporterAssignedShipments from "./pages/transporter/TransporterAssignedShipments";
 import TransporterCompletedDeliveries from "./pages/transporter/TransporterCompletedDeliveries";
 import TransporterPaymentsHistory from "./pages/transporter/TransporterPaymentsHistory";
+import TransporterProfile from "./pages/transporter/TransporterProfile";
+import TransporterDashboard from "./pages/transporter/TransporterDashboard/TransporterDashboard";
 
 
 
@@ -138,13 +139,15 @@ function AppContent() {
         <Route path="/buyer-guide" element={<BuyerGuide />} />
 
         {/* transporter */}
-        <Route  path="/transporter-dashboard" element={<TransporterDashboard />}/>       
-        <Route  path="/transporter-shipments" element={ <ProtectedRoute allowedRoles={["transporter"]} ><TransporterShipments /></ProtectedRoute>}/>
-        <Route  path="/transporter-my-quotes"  element={ <ProtectedRoute  allowedRoles={[ "transporter", ]}> <TransporterMyQuotes /></ProtectedRoute> }/>
-        <Route  path="/transporter-pending-assignments"  element={<ProtectedRoute allowedRole="transporter"><TransporterPendingAssignments /></ProtectedRoute>}/>
-        <Route  path="/transporter-assigned-shipments"  element={<TransporterAssignedShipments />}/>
-        <Route  path="/transporter-completed-deliveries"  element={<TransporterCompletedDeliveries />}/>
-        <Route  path="/transporter/payments"  element={<TransporterPaymentsHistory />}/>
+        <Route path="/transporter-shipments" element={<ProtectedRoute allowedRoles={["transporter"]} ><TransporterShipments /></ProtectedRoute>} />
+        <Route path="/transporter-my-quotes" element={<ProtectedRoute allowedRoles={["transporter",]}> <TransporterMyQuotes /></ProtectedRoute>} />
+        <Route path="/transporter-pending-assignments" element={<ProtectedRoute allowedRole="transporter"><TransporterPendingAssignments /></ProtectedRoute>} />
+        <Route path="/transporter-assigned-shipments" element={<TransporterAssignedShipments />} />
+        <Route path="/transporter-completed-deliveries" element={<TransporterCompletedDeliveries />} />
+        <Route path="/transporter/payments" element={<TransporterPaymentsHistory />} />
+        <Route path="/transporter-guide" element={<TransporterGuide />} />
+        <Route path="/transporter-profile" element={<TransporterProfile />} />
+        <Route path="/transporter-dashboard" element={<TransporterDashboard />} />
 
 
         {/* seller */}
@@ -179,9 +182,6 @@ function AppContent() {
 
         {/* faq */}
         <Route path="/faq" element={<FAQPage />} />
-
-        {/* Transporter */}
-        <Route path="/transporter-guide" element={<TransporterGuide/>} />
 
       </Routes>
       <ScrollToTopArrow />
