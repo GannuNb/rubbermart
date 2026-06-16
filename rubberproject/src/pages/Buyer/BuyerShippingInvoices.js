@@ -79,6 +79,8 @@ const BuyerShippingInvoices = () => {
       return shipmentItem === currentItem;
     }) || [];
 
+  shipments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
   return (
     <div className={styles.container}>
       {/* TOP SECTION */}
@@ -143,8 +145,10 @@ const BuyerShippingInvoices = () => {
                     <p className={styles.label}>Transport Started</p>
 
                     <h4>
-                      {shipment?.pickedUpAt
-                        ? new Date(shipment.pickedUpAt).toLocaleDateString()
+                      {shipment?.pickedUpAt || shipment?.shippedAt
+                        ? new Date(
+                            shipment?.pickedUpAt || shipment?.shippedAt,
+                          ).toLocaleDateString()
                         : "Pending"}
                     </h4>
                   </div>
@@ -173,14 +177,26 @@ const BuyerShippingInvoices = () => {
 
                     <h4
                       className={
-                        shipment?.shipmentStatus === "delivered"
+                        ["delivered", "completed"].includes(
+                          shipment?.shipmentStatus,
+                        )
                           ? styles.deliveredStatus
                           : styles.inTransitStatus
                       }
                     >
-                      {shipment?.shipmentStatus === "delivered"
-                        ? "Delivered"
-                        : "In Transit"}
+                      {shipment?.shipmentStatus === "packed"
+                        ? "Packed"
+                        : shipment?.shipmentStatus === "assigned"
+                          ? "Transporter Assigned"
+                          : shipment?.shipmentStatus === "shipped"
+                            ? "Shipped"
+                            : shipment?.shipmentStatus === "in_transit"
+                              ? "In Transit"
+                              : ["delivered", "completed"].includes(
+                                    shipment?.shipmentStatus,
+                                  )
+                                ? "Delivered"
+                                : shipment?.shipmentStatus || "Pending"}
                     </h4>
                   </div>
                 </div>

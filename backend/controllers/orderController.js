@@ -343,19 +343,6 @@ export const confirmSellerOrder = async (req, res) => {
     const sellerId = req.user._id;
     const { orderId } = req.params;
 
-    const { transportMode } = req.body;
-
-    /* =========================
-       VALIDATE TRANSPORT MODE
-    ========================= */
-
-    if (!["self_transport", "marketplace_transport"].includes(transportMode)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid transport mode",
-      });
-    }
-
     const order = await Order.findOne({
       _id: orderId,
       seller: sellerId,
@@ -377,8 +364,8 @@ export const confirmSellerOrder = async (req, res) => {
     }
 
     /* =========================
-       UPDATE ORDER
-    ========================= */
+        UPDATE ORDER
+      ========================= */
 
     await Order.updateOne(
       {
@@ -389,8 +376,6 @@ export const confirmSellerOrder = async (req, res) => {
       {
         $set: {
           orderStatus: "seller_confirmed",
-
-          transportMode,
 
           sellerConfirmedAt: new Date(),
         },
@@ -543,9 +528,6 @@ export const addShipmentToOrder = async (req, res) => {
     const {
       selectedItem,
       shippedQuantity,
-      vehicleNumber,
-      driverName,
-      driverMobile,
       shipmentFrom,
       shipmentTo,
       selectedSubProducts,
@@ -564,33 +546,6 @@ export const addShipmentToOrder = async (req, res) => {
         success: false,
         message: "Order not found",
       });
-    }
-
-    /* =========================
-       SELF TRANSPORT VALIDATION
-    ========================= */
-
-    if (order.transportMode === "self_transport") {
-      if (!vehicleNumber) {
-        return res.status(400).json({
-          success: false,
-          message: "Vehicle number is required",
-        });
-      }
-
-      if (!driverName) {
-        return res.status(400).json({
-          success: false,
-          message: "Driver name is required",
-        });
-      }
-
-      if (!driverMobile) {
-        return res.status(400).json({
-          success: false,
-          message: "Driver mobile is required",
-        });
-      }
     }
 
     /* =========================
@@ -694,35 +649,14 @@ export const addShipmentToOrder = async (req, res) => {
       weightTicket,
 
       /* =========================
-         TRANSPORT LOGIC
+        TRANSPORT WORKFLOW
       ========================= */
 
-      transportMode: order.transportMode,
+      transportStatus: "open_for_quotes",
 
-      transportStatus:
-        order.transportMode === "marketplace_transport"
-          ? "open_for_quotes"
-          : "not_required",
+      assignmentMethod: "quote_selection",
 
-      assignmentMethod:
-        order.transportMode === "marketplace_transport"
-          ? "quote_selection"
-          : "self_transport",
-
-      shipmentStatus:
-        order.transportMode === "marketplace_transport" ? "packed" : "shipped",
-
-      /* =========================
-         SELF TRANSPORT DETAILS
-      ========================= */
-
-      vehicleNumber:
-        order.transportMode === "self_transport" ? vehicleNumber : "",
-
-      driverName: order.transportMode === "self_transport" ? driverName : "",
-
-      driverMobile:
-        order.transportMode === "self_transport" ? driverMobile : "",
+      shipmentStatus: "packed",
 
       /* =========================
          TIMELINE
@@ -730,7 +664,7 @@ export const addShipmentToOrder = async (req, res) => {
 
       packedAt: new Date(),
 
-      shippedAt: order.transportMode === "self_transport" ? new Date() : null,
+      shippedAt: null,
 
       deliveredAt: null,
     };
@@ -760,9 +694,8 @@ export const addShipmentToOrder = async (req, res) => {
 
     let updatedShippedAt = null;
 
-    if (allItemsFullyShipped && order.transportMode === "self_transport") {
-      updatedOrderStatus = "shipped";
-      updatedShippedAt = new Date();
+    if (allItemsFullyShipped) {
+      updatedOrderStatus = "partially_shipped";
     }
 
     /* =========================
@@ -816,13 +749,15 @@ export const addShipmentToOrder = async (req, res) => {
 //transporter ---> getallpackeditems
 export const getOpenTransportShipments = async (req, res) => {
   try {
+    /* =========================
+       FIND ORDERS
+    ========================= */
+
     const orders = await Order.find({
       isDeleted: false,
 
       shipments: {
         $elemMatch: {
-          transportMode: "marketplace_transport",
-
           transportStatus: {
             $in: [
               "open_for_quotes",
@@ -837,24 +772,27 @@ export const getOpenTransportShipments = async (req, res) => {
       .populate(
         "buyer",
         `
-          fullName
-          businessProfile
-          `,
+        fullName
+        businessProfile
+        `,
       )
       .populate(
         "seller",
         `
-          fullName
-          businessProfile
-          `,
+        fullName
+        businessProfile
+        `,
       );
+
+    /* =========================
+       FORMAT SHIPMENTS
+    ========================= */
 
     const openShipments = [];
 
     orders.forEach((order) => {
       order.shipments.forEach((shipment) => {
         if (
-          shipment.transportMode === "marketplace_transport" &&
           [
             "open_for_quotes",
             "quotes_received",
@@ -867,9 +805,17 @@ export const getOpenTransportShipments = async (req, res) => {
 
             orderInvoiceId: order.orderId,
 
-            buyer: order.buyer,
+            buyer: {
+              fullName: order?.buyer?.fullName || "",
 
-            seller: order.seller,
+              companyName: order?.buyer?.businessProfile?.companyName || "",
+            },
+
+            seller: {
+              fullName: order?.seller?.fullName || "",
+
+              companyName: order?.seller?.businessProfile?.companyName || "",
+            },
 
             shipment,
           });
@@ -877,8 +823,13 @@ export const getOpenTransportShipments = async (req, res) => {
       });
     });
 
+    /* =========================
+       RESPONSE
+    ========================= */
+
     return res.status(200).json({
       success: true,
+
       shipments: openShipments,
     });
   } catch (error) {
@@ -886,7 +837,10 @@ export const getOpenTransportShipments = async (req, res) => {
 
     return res.status(500).json({
       success: false,
+
       message: "Failed to fetch transport shipments",
+
+      error: error.message,
     });
   }
 };
@@ -899,6 +853,18 @@ export const submitTransportQuote = async (req, res) => {
     const { orderId, shipmentId } = req.params;
 
     const { quotedPrice, note, estimatedDeliveryDays } = req.body;
+
+    /* =========================
+       VALIDATE INPUTS
+    ========================= */
+
+    if (!quotedPrice || Number(quotedPrice) <= 0) {
+      return res.status(400).json({
+        success: false,
+
+        message: "Valid quoted price is required",
+      });
+    }
 
     /* =========================
        FIND ORDER
@@ -933,29 +899,14 @@ export const submitTransportQuote = async (req, res) => {
     }
 
     /* =========================
-       VALIDATE MARKETPLACE
-    ========================= */
-
-    if (shipment.transportMode !== "marketplace_transport") {
-      return res.status(400).json({
-        success: false,
-
-        message: "This shipment is not marketplace transport",
-      });
-    }
-
-    /* =========================
-       ALLOW QUOTES FOR THESE STATES
+       VALIDATE STATUS
     ========================= */
 
     if (
       ![
         "open_for_quotes",
-
         "quotes_received",
-
         "admin_assignment_pending",
-
         "admin_assignment_rejected",
       ].includes(shipment.transportStatus)
     ) {
@@ -995,22 +946,48 @@ export const submitTransportQuote = async (req, res) => {
 
       transporter: transporterId,
 
-      quotedPrice,
+      quotedPrice: Number(quotedPrice),
 
-      note,
+      note: note || "",
 
-      estimatedDeliveryDays,
+      estimatedDeliveryDays: Number(estimatedDeliveryDays) || 1,
     });
 
     /* =========================
-       UPDATE STATUS
+       UPDATE SHIPMENT STATUS
     ========================= */
 
     if (shipment.transportStatus === "open_for_quotes") {
       shipment.transportStatus = "quotes_received";
     }
 
+    /* =========================
+       UPDATE ORDER STATUS
+    ========================= */
+
+    if (["seller_confirmed", "partially_shipped"].includes(order.orderStatus)) {
+      order.orderStatus = "transport_processing";
+    }
+
+    /* =========================
+       SAVE ORDER
+    ========================= */
+
     await order.save();
+
+    /* =========================
+       FETCH CREATED QUOTE
+    ========================= */
+
+    const createdQuote = await ShipmentTransportQuote.findById(
+      quote._id,
+    ).populate(
+      "transporter",
+      `
+        fullName
+        businessProfile
+        `,
+    );
 
     /* =========================
        RESPONSE
@@ -1021,7 +998,7 @@ export const submitTransportQuote = async (req, res) => {
 
       message: "Quote submitted successfully",
 
-      quote,
+      quote: createdQuote,
     });
   } catch (error) {
     console.log("Submit Transport Quote Error:", error);
@@ -1030,6 +1007,8 @@ export const submitTransportQuote = async (req, res) => {
       success: false,
 
       message: "Failed to submit quote",
+
+      error: error.message,
     });
   }
 };
@@ -1039,24 +1018,88 @@ export const getTransporterQuotes = async (req, res) => {
   try {
     const transporterId = req.user._id;
 
+    /* =========================
+       FIND QUOTES
+    ========================= */
+
     const quotes = await ShipmentTransportQuote.find({
       transporter: transporterId,
     })
-      .populate("orderId", "orderId shipments")
+      .populate(
+        "orderId",
+        `
+          orderId
+          buyer
+          seller
+          shipments
+          `,
+      )
       .sort({
         createdAt: -1,
       });
 
+    /* =========================
+       FORMAT RESPONSE
+    ========================= */
+
+    const formattedQuotes = [];
+
+    quotes.forEach((quote) => {
+      const order = quote.orderId;
+
+      if (!order) return;
+
+      const shipment = order.shipments?.find(
+        (item) => item._id.toString() === quote.shipmentId.toString(),
+      );
+
+      if (!shipment) return;
+
+      formattedQuotes.push({
+        _id: quote._id,
+
+        orderId: order._id,
+
+        orderInvoiceId: order.orderId,
+
+        shipmentId: shipment._id,
+
+        shipment,
+
+        quotedPrice: quote.quotedPrice,
+
+        note: quote.note,
+
+        estimatedDeliveryDays: quote.estimatedDeliveryDays,
+
+        quoteStatus: quote.quoteStatus,
+
+        submittedAt: quote.submittedAt,
+
+        selectedAt: quote.selectedAt,
+
+        rejectedAt: quote.rejectedAt,
+      });
+    });
+
+    /* =========================
+       RESPONSE
+    ========================= */
+
     return res.status(200).json({
       success: true,
-      quotes,
+
+      quotes: formattedQuotes,
     });
   } catch (error) {
     console.log("Get Transporter Quotes Error:", error);
 
     return res.status(500).json({
       success: false,
+
       message: "Failed to fetch transporter quotes",
+
+      error: error.message,
     });
   }
 };
@@ -1174,23 +1217,23 @@ export const getTransporterAssignedShipments = async (req, res) => {
       .populate(
         "buyer seller",
         `
-            fullName
-            email
-            businessProfile
-          `,
+        fullName
+        email
+        businessProfile
+        `,
       )
       .populate(
         "shipments.assignedTransporter",
         `
-            fullName
-            email
-            businessProfile
-          `,
+        fullName
+        email
+        businessProfile
+        `,
       )
       .populate("shipments.selectedQuoteId");
 
     /* =========================
-       FILTER SHIPMENTS
+       FILTER ASSIGNED SHIPMENTS
     ========================= */
 
     const assignedShipments = [];
@@ -1200,38 +1243,121 @@ export const getTransporterAssignedShipments = async (req, res) => {
         if (
           shipment?.assignedTransporter?._id?.toString() ===
             transporterId.toString() &&
-          shipment.shipmentStatus !== "delivered"
+          !["delivered", "completed", "cancelled"].includes(
+            shipment.shipmentStatus,
+          )
         ) {
           assignedShipments.push({
             orderId: order._id,
 
             orderInvoiceId: order.orderId,
 
+            /* =========================
+               BUYER
+            ========================= */
+
             buyer: {
-              fullName: order?.buyer?.fullName,
+              fullName: order?.buyer?.fullName || "",
 
-              companyName: order?.buyer?.businessProfile?.companyName,
+              companyName: order?.buyer?.businessProfile?.companyName || "",
             },
-
-            seller: {
-              fullName: order?.seller?.fullName,
-
-              companyName: order?.seller?.businessProfile?.companyName,
-            },
-
-            shipment,
 
             /* =========================
-     QUOTE DETAILS
-  ========================= */
+               SELLER
+            ========================= */
+
+            seller: {
+              fullName: order?.seller?.fullName || "",
+
+              companyName: order?.seller?.businessProfile?.companyName || "",
+            },
+
+            /* =========================
+               SHIPMENT
+            ========================= */
+
+            shipment: {
+              _id: shipment._id,
+
+              shipmentInvoiceId: shipment.shipmentInvoiceId,
+
+              selectedItem: shipment.selectedItem,
+
+              shippedQuantity: shipment.shippedQuantity,
+
+              shipmentFrom: shipment.shipmentFrom,
+
+              shipmentTo: shipment.shipmentTo,
+
+              shipmentStatus: shipment.shipmentStatus,
+
+              transportStatus: shipment.transportStatus,
+
+              transportHSNCode: shipment.transportHSNCode,
+
+              assignedAt: shipment.assignedAt,
+
+              packedAt: shipment.packedAt,
+
+              createdAt: shipment.createdAt,
+
+              selectedSubProducts: shipment.selectedSubProducts || [],
+
+              assignedTransporter: shipment.assignedTransporter || null,
+
+              transportPrice: shipment.transportPrice || 0,
+
+              transportFinalAmount: shipment.transportFinalAmount || 0,
+
+              adminAssignedPrice: shipment.adminAssignedPrice || 0,
+
+              assignmentMethod: shipment.assignmentMethod || "",
+
+              /* =========================
+                 FILES
+              ========================= */
+
+              packedItemPhoto: shipment.packedItemPhoto
+                ? {
+                    data: shipment.packedItemPhoto.data,
+
+                    contentType: shipment.packedItemPhoto.contentType,
+
+                    originalName: shipment.packedItemPhoto.originalName,
+                  }
+                : null,
+
+              weightTicket: shipment.weightTicket
+                ? {
+                    data: shipment.weightTicket.data,
+
+                    contentType: shipment.weightTicket.contentType,
+
+                    originalName: shipment.weightTicket.originalName,
+                  }
+                : null,
+
+              /* =========================
+                 FINAL PRICE
+              ========================= */
+
+              finalTransportPrice:
+                shipment?.adminAssignedPrice ||
+                shipment?.transportPrice ||
+                shipment?.selectedQuoteId?.quotedPrice ||
+                0,
+            },
+
+            /* =========================
+               QUOTE DETAILS
+            ========================= */
 
             transportQuote: {
               quotedPrice:
-  shipment?.adminAssignedPrice ||
-  shipment?.transportFinalAmount ||
-  shipment?.transportPrice ||
-  shipment?.selectedQuoteId?.quotedPrice ||
-  0,
+                shipment?.adminAssignedPrice ||
+                shipment?.transportPrice ||
+                shipment?.selectedQuoteId?.quotedPrice ||
+                0,
 
               estimatedDeliveryDays:
                 shipment?.selectedQuoteId?.estimatedDeliveryDays || null,
@@ -1240,11 +1366,25 @@ export const getTransporterAssignedShipments = async (req, res) => {
                 shipment?.adminAssignmentNote ||
                 shipment?.selectedQuoteId?.note ||
                 "",
+
+              quoteStatus: shipment?.selectedQuoteId?.quoteStatus || "",
             },
           });
         }
       });
     });
+
+    /* =========================
+       SORT LATEST FIRST
+    ========================= */
+
+    assignedShipments.sort(
+      (a, b) => new Date(b.shipment.createdAt) - new Date(a.shipment.createdAt),
+    );
+
+    /* =========================
+       RESPONSE
+    ========================= */
 
     return res.status(200).json({
       success: true,
@@ -1258,6 +1398,8 @@ export const getTransporterAssignedShipments = async (req, res) => {
       success: false,
 
       message: "Failed to fetch assigned shipments",
+
+      error: error.message,
     });
   }
 };
@@ -1279,57 +1421,79 @@ export const getTransporterCompletedDeliveries = async (req, res) => {
       .populate(
         "buyer seller",
         `
-          fullName
-          email
-          businessProfile
+        fullName
+        email
+        businessProfile
         `,
       )
       .populate(
         "shipments.assignedTransporter",
         `
-          fullName
-          email
-          businessProfile
+        fullName
+        email
+        businessProfile
         `,
       )
       .populate("shipments.selectedQuoteId");
 
     /* =========================
-       FILTER DELIVERED
+       COMPLETED DELIVERIES
     ========================= */
 
     const completedDeliveries = [];
 
     orders.forEach((order) => {
       order.shipments.forEach((shipment) => {
+        /* =========================
+           VALID DELIVERED SHIPMENTS
+        ========================= */
+
         if (
           shipment?.assignedTransporter?._id?.toString() ===
             transporterId.toString() &&
-          shipment.shipmentStatus === "delivered"
+          ["delivered", "completed"].includes(shipment.shipmentStatus)
         ) {
           /* =========================
-             PAYMENT CALCULATIONS
+             VERIFIED PAYMENTS
           ========================= */
 
           const payments =
             shipment?.adminTransportPaymentReceipts?.filter(
-              (p) => p.status === "verified",
+              (payment) => payment.status === "verified",
             ) || [];
 
+          /* =========================
+             TOTAL RECEIVED
+          ========================= */
+
           const totalReceived = payments.reduce(
-            (sum, p) => sum + Number(p.amount || 0),
+            (sum, payment) => sum + Number(payment.amount || 0),
             0,
           );
 
+          /* =========================
+             FINAL TRANSPORT PRICE
+          ========================= */
+
           const transportAmount =
             shipment?.transportFinalAmount ||
-            shipment?.transportPrice ||
-            shipment?.adminAssignedPrice ||
-            shipment?.selectedQuoteId?.quotedPrice ||
-            0;
+            Number(
+              shipment?.adminAssignedPrice ||
+                shipment?.transportPrice ||
+                shipment?.selectedQuoteId?.quotedPrice ||
+                0,
+            ) + Number(shipment?.transportGSTAmount || 0);
+
+          /* =========================
+             REMAINING AMOUNT
+          ========================= */
 
           const remainingAmount =
             Number(transportAmount) - Number(totalReceived);
+
+          /* =========================
+             PUSH DATA
+          ========================= */
 
           completedDeliveries.push({
             orderId: order._id,
@@ -1337,41 +1501,43 @@ export const getTransporterCompletedDeliveries = async (req, res) => {
             orderInvoiceId: order.orderId,
 
             buyer: {
-              fullName: order?.buyer?.fullName,
+              fullName: order?.buyer?.fullName || "",
 
-              companyName:
-                order?.buyer?.businessProfile?.companyName,
+              companyName: order?.buyer?.businessProfile?.companyName || "",
             },
 
             seller: {
-              fullName: order?.seller?.fullName,
+              fullName: order?.seller?.fullName || "",
 
-              companyName:
-                order?.seller?.businessProfile?.companyName,
+              companyName: order?.seller?.businessProfile?.companyName || "",
             },
 
-            shipment,
+            shipment: {
+              ...shipment._doc,
+
+              /* =========================
+                 FINAL PRICE
+              ========================= */
+
+              finalTransportPrice: transportAmount,
+            },
 
             /* =========================
                QUOTE DETAILS
             ========================= */
 
             transportQuote: {
-              quotedPrice:
-                shipment?.adminAssignedPrice ||
-                shipment?.transportFinalAmount ||
-                shipment?.transportPrice ||
-                shipment?.selectedQuoteId?.quotedPrice ||
-                0,
+              quotedPrice: transportAmount,
 
               estimatedDeliveryDays:
-                shipment?.selectedQuoteId
-                  ?.estimatedDeliveryDays || null,
+                shipment?.selectedQuoteId?.estimatedDeliveryDays || null,
 
               note:
                 shipment?.adminAssignmentNote ||
                 shipment?.selectedQuoteId?.note ||
                 "",
+
+              quoteStatus: shipment?.selectedQuoteId?.quoteStatus || "",
             },
 
             /* =========================
@@ -1390,21 +1556,34 @@ export const getTransporterCompletedDeliveries = async (req, res) => {
       });
     });
 
+    /* =========================
+       SORT LATEST FIRST
+    ========================= */
+
+    completedDeliveries.sort(
+      (a, b) =>
+        new Date(b.shipment?.deliveredAt || b.shipment?.createdAt) -
+        new Date(a.shipment?.deliveredAt || a.shipment?.createdAt),
+    );
+
+    /* =========================
+       RESPONSE
+    ========================= */
+
     return res.status(200).json({
       success: true,
 
       completedDeliveries,
     });
   } catch (error) {
-    console.log(
-      "Get Transporter Completed Deliveries Error:",
-      error,
-    );
+    console.log("Get Transporter Completed Deliveries Error:", error);
 
     return res.status(500).json({
       success: false,
 
       message: "Failed to fetch completed deliveries",
+
+      error: error.message,
     });
   }
 };
@@ -1443,7 +1622,8 @@ export const getShipmentQuotes = async (req, res) => {
       )
       .sort({
         quotedPrice: 1,
-      });
+      })
+      .lean();
 
     return res.status(200).json({
       success: true,
@@ -1464,33 +1644,54 @@ export const getShipmentQuotes = async (req, res) => {
 //admin ---> assigntoshipment
 export const assignTransporterToShipment = async (req, res) => {
   try {
-    const {
-      orderId,
+    const { orderId, shipmentId, quoteId } = req.params;
 
-      shipmentId,
-
-      quoteId,
-    } = req.params;
+    /* =========================
+       FIND ORDER
+    ========================= */
 
     const order = await Order.findById(orderId);
 
     if (!order) {
       return res.status(404).json({
         success: false,
-
         message: "Order not found",
       });
     }
+
+    /* =========================
+       FIND SHIPMENT
+    ========================= */
 
     const shipment = order.shipments.id(shipmentId);
 
     if (!shipment) {
       return res.status(404).json({
         success: false,
-
         message: "Shipment not found",
       });
     }
+
+    /* =========================
+       VALIDATE STATUS
+    ========================= */
+
+    if (
+      ![
+        "quotes_received",
+        "open_for_quotes",
+        "admin_assignment_rejected",
+      ].includes(shipment.transportStatus)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Shipment already assigned",
+      });
+    }
+
+    /* =========================
+       FIND SELECTED QUOTE
+    ========================= */
 
     const selectedQuote =
       await ShipmentTransportQuote.findById(quoteId).populate("transporter");
@@ -1498,30 +1699,13 @@ export const assignTransporterToShipment = async (req, res) => {
     if (!selectedQuote) {
       return res.status(404).json({
         success: false,
-
         message: "Quote not found",
       });
     }
 
     /* =========================
-         UPDATE SHIPMENT
-      ========================= */
-
-    shipment.assignedTransporter = selectedQuote.transporter._id;
-
-    shipment.selectedQuoteId = selectedQuote._id;
-
-    shipment.transportStatus = "transporter_assigned";
-
-    shipment.shipmentStatus = "assigned";
-
-    shipment.assignmentMethod = "quote_selection";
-
-    shipment.assignedAt = new Date();
-
-    /* =========================
-   TRANSPORT GST
-========================= */
+       GST CALCULATION
+    ========================= */
 
     const transporterGST =
       selectedQuote?.transporter?.businessProfile?.gstNumber || "";
@@ -1535,11 +1719,41 @@ export const assignTransporterToShipment = async (req, res) => {
 
     const transportPrice = Number(selectedQuote?.quotedPrice || 0);
 
-    const transportGSTAmount = transportPrice * 0.05;
+    const transportGSTPercent = 5;
 
-    const transportFinalAmount = transportPrice + transportGSTAmount;
+    const transportGSTAmount = Number(
+      (transportPrice * (transportGSTPercent / 100)).toFixed(2),
+    );
+
+    const transportFinalAmount = Number(
+      (transportPrice + transportGSTAmount).toFixed(2),
+    );
+
+    /* =========================
+       UPDATE SHIPMENT
+    ========================= */
+
+    shipment.assignedTransporter = selectedQuote.transporter._id;
+
+    shipment.selectedQuoteId = selectedQuote._id;
+
+    shipment.transportStatus = "transporter_assigned";
+
+    shipment.shipmentStatus = "assigned";
+
+    shipment.assignmentMethod = "quote_selection";
+
+    shipment.assignedAt = new Date();
+
+    shipment.adminAssignedAt = new Date();
+
+    /* =========================
+       TRANSPORT AMOUNT
+    ========================= */
 
     shipment.transportPrice = transportPrice;
+
+    shipment.transportGSTPercent = transportGSTPercent;
 
     shipment.transportGSTType = gstType;
 
@@ -1548,12 +1762,20 @@ export const assignTransporterToShipment = async (req, res) => {
     shipment.transportFinalAmount = transportFinalAmount;
 
     /* =========================
-         UPDATE QUOTES
-      ========================= */
+       ADMIN FINAL APPROVAL PRICE
+    ========================= */
+
+    shipment.adminAssignedPrice = transportPrice;
 
     /* =========================
-   REJECT OTHER QUOTES
-========================= */
+       PAYMENT STATUS
+    ========================= */
+
+    shipment.transportPaymentStatus = "unpaid";
+
+    /* =========================
+       REJECT OTHER QUOTES
+    ========================= */
 
     await ShipmentTransportQuote.updateMany(
       {
@@ -1564,23 +1786,206 @@ export const assignTransporterToShipment = async (req, res) => {
         },
       },
       {
-        quoteStatus: "rejected",
+        $set: {
+          quoteStatus: "rejected",
 
-        rejectedAt: new Date(),
+          rejectedAt: new Date(),
+        },
       },
     );
 
     /* =========================
-        SELECT CURRENT QUOTE
-       ========================= */
+       SELECT CURRENT QUOTE
+    ========================= */
 
     await ShipmentTransportQuote.findByIdAndUpdate(quoteId, {
-      quoteStatus: "selected",
+      $set: {
+        quoteStatus: "selected",
 
-      selectedAt: new Date(),
+        selectedAt: new Date(),
+      },
     });
 
+    /* =========================
+       UPDATE ORDER STATUS
+    ========================= */
+
+    if (["seller_confirmed", "partially_shipped"].includes(order.orderStatus)) {
+      order.orderStatus = "transport_processing";
+    }
+
+    /* =========================
+       SAVE ORDER
+    ========================= */
+
     await order.save();
+
+    /* =========================
+       UPDATED ORDER
+    ========================= */
+
+    const updatedOrder = await Order.findById(orderId)
+      .populate(
+        "buyer seller",
+        `
+          fullName
+          email
+          businessProfile
+          `,
+      )
+      .populate(
+        "shipments.assignedTransporter",
+        `
+          fullName
+          email
+          businessProfile
+          `,
+      )
+      .populate("shipments.selectedQuoteId");
+
+    /* =========================
+       RESPONSE
+    ========================= */
+
+    return res.status(200).json({
+      success: true,
+
+      message: "Transporter assigned successfully",
+
+      order: updatedOrder,
+    });
+  } catch (error) {
+    console.log("Assign Transporter Error:", error);
+
+    return res.status(500).json({
+      success: false,
+
+      message: "Failed to assign transporter",
+
+      error: error.message,
+    });
+  }
+};
+
+//admin ---> admindirectassign/manual
+export const adminDirectAssignTransporter = async (req, res) => {
+  try {
+    const { orderId, shipmentId } = req.params;
+
+    const { transporterId, adminPrice, adminNote } = req.body;
+
+    /* =========================
+       FIND ORDER
+    ========================= */
+
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+
+        message: "Order not found",
+      });
+    }
+
+    /* =========================
+       FIND SHIPMENT
+    ========================= */
+
+    const shipment = order.shipments.id(shipmentId);
+
+    if (!shipment) {
+      return res.status(404).json({
+        success: false,
+
+        message: "Shipment not found",
+      });
+    }
+
+    /* =========================
+       FIND TRANSPORTER
+    ========================= */
+
+    const transporter = await User.findById(transporterId);
+
+    if (!transporter || transporter.role !== "transporter") {
+      return res.status(404).json({
+        success: false,
+
+        message: "Transporter not found",
+      });
+    }
+
+    /* =========================
+       GST CALCULATION
+    ========================= */
+
+    const transporterGST = transporter?.businessProfile?.gstNumber || "";
+
+    const transporterStateCode = transporterGST.substring(0, 2);
+
+    const companyStateCode = "27";
+
+    const gstType =
+      transporterStateCode === companyStateCode ? "cgst_sgst" : "igst";
+
+    const transportPrice = Number(adminPrice || 0);
+
+    const transportGSTPercent = 5;
+
+    const transportGSTAmount = Number(
+      (transportPrice * (transportGSTPercent / 100)).toFixed(2),
+    );
+
+    const transportFinalAmount = Number(
+      (transportPrice + transportGSTAmount).toFixed(2),
+    );
+
+    /* =========================
+       ASSIGN TRANSPORTER
+    ========================= */
+
+    shipment.assignedTransporter = transporter._id;
+
+    shipment.transportStatus = "admin_assignment_pending";
+
+    shipment.shipmentStatus = "assigned";
+
+    shipment.assignmentMethod = "admin_direct_assignment";
+
+    shipment.assignedAt = new Date();
+
+    shipment.adminAssignedAt = new Date();
+
+    shipment.adminAssignedPrice = transportPrice;
+
+    shipment.adminAssignmentNote = adminNote;
+
+    /* =========================
+       TRANSPORT AMOUNTS
+    ========================= */
+
+    shipment.transportPrice = transportPrice;
+
+    shipment.transportGSTPercent = transportGSTPercent;
+
+    shipment.transportGSTType = gstType;
+
+    shipment.transportGSTAmount = transportGSTAmount;
+
+    shipment.transportFinalAmount = transportFinalAmount;
+
+    shipment.transportPaymentStatus = "unpaid";
+
+    /* =========================
+       SAVE
+    ========================= */
+
+    await order.save();
+
+    /* =========================
+       UPDATED ORDER
+    ========================= */
 
     const updatedOrder = await Order.findById(orderId).populate(
       "shipments.assignedTransporter",
@@ -1599,119 +2004,14 @@ export const assignTransporterToShipment = async (req, res) => {
       order: updatedOrder,
     });
   } catch (error) {
-    console.log("Assign Transporter Error:", error);
-
-    return res.status(500).json({
-      success: false,
-
-      message: "Failed to assign transporter",
-    });
-  }
-};
-
-//admin ---> admindirectassign/manual
-export const adminDirectAssignTransporter = async (req, res) => {
-  try {
-    const { orderId, shipmentId } = req.params;
-
-    const { transporterId, adminPrice, adminNote } = req.body;
-
-    /* =========================
-         FIND ORDER
-      ========================= */
-
-    const order = await Order.findById(orderId);
-
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-
-        message: "Order not found",
-      });
-    }
-
-    /* =========================
-         FIND SHIPMENT
-      ========================= */
-
-    const shipment = order.shipments.id(shipmentId);
-
-    if (!shipment) {
-      return res.status(404).json({
-        success: false,
-
-        message: "Shipment not found",
-      });
-    }
-
-    /* =========================
-         VALIDATE TRANSPORT MODE
-      ========================= */
-
-    if (shipment.transportMode !== "marketplace_transport") {
-      return res.status(400).json({
-        success: false,
-
-        message: "Not marketplace shipment",
-      });
-    }
-
-    /* =========================
-         FIND TRANSPORTER
-      ========================= */
-
-    const transporter = await User.findById(transporterId);
-
-    if (!transporter || transporter.role !== "transporter") {
-      return res.status(404).json({
-        success: false,
-
-        message: "Transporter not found",
-      });
-    }
-
-    /* =========================
-         ASSIGN REQUEST
-      ========================= */
-
-    shipment.assignedTransporter = transporter._id;
-
-    shipment.transportStatus = "admin_assignment_pending";
-
-    shipment.assignmentMethod = "admin_direct_assignment";
-
-    shipment.assignedAt = new Date();
-    shipment.adminAssignedPrice = adminPrice;
-
-    shipment.adminAssignmentNote = adminNote;
-
-    shipment.adminAssignedAt = new Date();
-
-    await order.save();
-
-    const updatedOrder = await Order.findById(orderId).populate(
-      "shipments.assignedTransporter",
-      `
-          fullName
-          email
-          businessProfile
-          `,
-    );
-
-    return res.status(200).json({
-      success: true,
-
-      message: "Transporter assignment request sent",
-
-      order: updatedOrder,
-    });
-  } catch (error) {
     console.log("Admin Direct Assignment Error:", error);
 
     return res.status(500).json({
       success: false,
 
       message: "Failed to assign transporter",
+
+      error: error.message,
     });
   }
 };
@@ -1719,18 +2019,36 @@ export const adminDirectAssignTransporter = async (req, res) => {
 //admin ---> dropdownselection
 export const getAllTransporters = async (req, res) => {
   try {
+    /* =========================
+       FETCH TRANSPORTERS
+    ========================= */
+
     const transporters = await User.find({
       role: "transporter",
-    }).select(`
+    })
+      .select(
+        `
           fullName
           email
+          mobile
           businessProfile
-        `);
+        `,
+      )
+      .sort({
+        createdAt: -1,
+      })
+      .lean();
 
-    // console.log("Transporters:", transporters);
+    console.log("Transporters:", transporters);
+
+    /* =========================
+       RESPONSE
+    ========================= */
 
     return res.status(200).json({
       success: true,
+
+      totalTransporters: transporters.length,
 
       transporters,
     });
@@ -1741,6 +2059,8 @@ export const getAllTransporters = async (req, res) => {
       success: false,
 
       message: "Failed to fetch transporters",
+
+      error: error.message,
     });
   }
 };
@@ -1750,36 +2070,49 @@ export const getTransporterPendingAssignments = async (req, res) => {
   try {
     const transporterId = req.user._id;
 
-    const orders = await Order.find({
-      "shipments.assignedTransporter": transporterId,
+    /* =========================
+       FIND ORDERS
+    ========================= */
 
-      "shipments.transportStatus": "admin_assignment_pending",
+    const orders = await Order.find({
+      isDeleted: false,
+
+      shipments: {
+        $elemMatch: {
+          assignedTransporter: transporterId,
+
+          transportStatus: "admin_assignment_pending",
+        },
+      },
     })
       .populate(
-        "buyer",
+        "buyer seller",
         `
-            fullName
-            businessProfile
-            `,
+        fullName
+        email
+        businessProfile
+        `,
       )
+      .populate("shipments.selectedQuoteId")
       .populate(
-        "seller",
+        "shipments.assignedTransporter",
         `
-            fullName
-            businessProfile
-            `,
+        fullName
+        email
+        businessProfile
+        `,
       );
 
     /* =========================
-         FILTER SHIPMENTS
-      ========================= */
+       FILTER SHIPMENTS
+    ========================= */
 
     const pendingAssignments = [];
 
     orders.forEach((order) => {
       order.shipments.forEach((shipment) => {
         if (
-          shipment?.assignedTransporter?.toString() ===
+          shipment?.assignedTransporter?._id?.toString() ===
             transporterId.toString() &&
           shipment?.transportStatus === "admin_assignment_pending"
         ) {
@@ -1788,11 +2121,71 @@ export const getTransporterPendingAssignments = async (req, res) => {
 
             orderInvoiceId: order.orderId,
 
-            shipment,
+            buyer: {
+              fullName: order?.buyer?.fullName || "",
+
+              companyName: order?.buyer?.businessProfile?.companyName || "",
+            },
+
+            seller: {
+              fullName: order?.seller?.fullName || "",
+
+              companyName: order?.seller?.businessProfile?.companyName || "",
+            },
+
+            shipment: {
+              ...shipment.toObject(),
+
+              /* =========================
+                   FINAL TRANSPORT PRICE
+                ========================= */
+
+              finalTransportPrice:
+                shipment?.transportFinalAmount ||
+                shipment?.adminAssignedPrice ||
+                shipment?.transportPrice ||
+                shipment?.selectedQuoteId?.quotedPrice ||
+                0,
+            },
+
+            /* =========================
+                 QUOTE DETAILS
+              ========================= */
+
+            transportQuote: {
+              quotedPrice:
+                shipment?.transportFinalAmount ||
+                shipment?.adminAssignedPrice ||
+                shipment?.transportPrice ||
+                shipment?.selectedQuoteId?.quotedPrice ||
+                0,
+
+              estimatedDeliveryDays:
+                shipment?.selectedQuoteId?.estimatedDeliveryDays || null,
+
+              note:
+                shipment?.adminAssignmentNote ||
+                shipment?.selectedQuoteId?.note ||
+                "",
+
+              quoteStatus: shipment?.selectedQuoteId?.quoteStatus || "",
+            },
           });
         }
       });
     });
+
+    /* =========================
+       SORT LATEST FIRST
+    ========================= */
+
+    pendingAssignments.sort(
+      (a, b) => new Date(b.shipment.createdAt) - new Date(a.shipment.createdAt),
+    );
+
+    /* =========================
+       RESPONSE
+    ========================= */
 
     return res.status(200).json({
       success: true,
@@ -1806,6 +2199,8 @@ export const getTransporterPendingAssignments = async (req, res) => {
       success: false,
 
       message: "Failed to fetch assignments",
+
+      error: error.message,
     });
   }
 };
@@ -1815,13 +2210,17 @@ export const transporterAcceptAssignment = async (req, res) => {
   try {
     const transporterId = req.user._id;
 
-    const {
-      orderId,
+    const { orderId, shipmentId } = req.params;
 
-      shipmentId,
-    } = req.params;
+    /* =========================
+       FIND ORDER
+    ========================= */
 
-    const order = await Order.findById(orderId);
+    const order = await Order.findOne({
+      _id: orderId,
+
+      isDeleted: false,
+    });
 
     if (!order) {
       return res.status(404).json({
@@ -1830,6 +2229,10 @@ export const transporterAcceptAssignment = async (req, res) => {
         message: "Order not found",
       });
     }
+
+    /* =========================
+       FIND SHIPMENT
+    ========================= */
 
     const shipment = order.shipments.id(shipmentId);
 
@@ -1842,8 +2245,8 @@ export const transporterAcceptAssignment = async (req, res) => {
     }
 
     /* =========================
-         VALIDATE TRANSPORTER
-      ========================= */
+       VALIDATE TRANSPORTER
+    ========================= */
 
     if (
       shipment?.assignedTransporter?.toString() !== transporterId.toString()
@@ -1856,8 +2259,8 @@ export const transporterAcceptAssignment = async (req, res) => {
     }
 
     /* =========================
-         VALIDATE STATUS
-      ========================= */
+       VALIDATE STATUS
+    ========================= */
 
     if (shipment.transportStatus !== "admin_assignment_pending") {
       return res.status(400).json({
@@ -1868,61 +2271,55 @@ export const transporterAcceptAssignment = async (req, res) => {
     }
 
     /* =========================
-         ACCEPT ASSIGNMENT
-      ========================= */
-
-    shipment.transportStatus = "transporter_assigned";
-
-    shipment.shipmentStatus = "assigned";
-
-    /* =========================
-   TRANSPORT GST CALCULATION
-========================= */
+       GET TRANSPORTER
+    ========================= */
 
     const transporter = await User.findById(transporterId);
 
-    const transporterGST = transporter?.businessProfile?.gstNumber || "";
+    if (!transporter) {
+      return res.status(404).json({
+        success: false,
+
+        message: "Transporter not found",
+      });
+    }
 
     /* =========================
-   STATE CODE
-========================= */
+       GST CALCULATION
+    ========================= */
+
+    const transporterGST = transporter?.businessProfile?.gstNumber || "";
 
     const transporterStateCode = transporterGST.substring(0, 2);
 
-    /* =========================
-   COMPANY STATE CODE
-========================= */
-
     const companyStateCode = "27";
-
-    /* =========================
-   GST TYPE
-========================= */
 
     const gstType =
       transporterStateCode === companyStateCode ? "cgst_sgst" : "igst";
 
     /* =========================
-   TRANSPORT PRICE
-========================= */
+       PRICE
+    ========================= */
 
-    const transportPrice = Number(shipment.adminAssignedPrice || 0);
+    const transportPrice =
+      Number(shipment.adminAssignedPrice) ||
+      Number(shipment.transportPrice) ||
+      Number(shipment?.selectedQuoteId?.quotedPrice) ||
+      0;
 
-    /* =========================
-   GST (5%)
-========================= */
+    const transportGSTAmount = Number((transportPrice * 0.05).toFixed(2));
 
-    const transportGSTAmount = transportPrice * 0.05;
-
-    /* =========================
-   FINAL AMOUNT
-========================= */
-
-    const transportFinalAmount = transportPrice + transportGSTAmount;
+    const transportFinalAmount = Number(
+      (transportPrice + transportGSTAmount).toFixed(2),
+    );
 
     /* =========================
-   SAVE
-========================= */
+       UPDATE SHIPMENT
+    ========================= */
+
+    shipment.transportStatus = "transporter_assigned";
+
+    shipment.shipmentStatus = "assigned";
 
     shipment.transportPrice = transportPrice;
 
@@ -1932,10 +2329,13 @@ export const transporterAcceptAssignment = async (req, res) => {
 
     shipment.transportFinalAmount = transportFinalAmount;
 
+    shipment.assignedAt = new Date();
+    shipment.pickedUpAt = null;
+
     /* =========================
-   CREATE QUOTE FOR
-   DIRECT ASSIGNMENT
-========================= */
+       CREATE QUOTE FOR
+       DIRECT ASSIGNMENT
+    ========================= */
 
     if (
       shipment.assignmentMethod === "admin_direct_assignment" &&
@@ -1948,7 +2348,7 @@ export const transporterAcceptAssignment = async (req, res) => {
       });
 
       if (!existingQuote) {
-        await ShipmentTransportQuote.create({
+        const createdQuote = await ShipmentTransportQuote.create({
           orderId: order._id,
 
           shipmentId: shipment._id,
@@ -1964,13 +2364,17 @@ export const transporterAcceptAssignment = async (req, res) => {
           quoteStatus: "selected",
 
           selectedAt: new Date(),
+          
+          
         });
+
+        shipment.selectedQuoteId = createdQuote._id;
       }
     }
 
     /* =========================
-        SELECT ACCEPTED QUOTE
-      ========================= */
+       SELECT ACCEPTED QUOTE
+    ========================= */
 
     await ShipmentTransportQuote.updateOne(
       {
@@ -1988,8 +2392,8 @@ export const transporterAcceptAssignment = async (req, res) => {
     );
 
     /* =========================
-        REJECT OTHER QUOTES
-      ========================= */
+       REJECT OTHER QUOTES
+    ========================= */
 
     await ShipmentTransportQuote.updateMany(
       {
@@ -2008,14 +2412,36 @@ export const transporterAcceptAssignment = async (req, res) => {
       },
     );
 
+    /* =========================
+       SAVE ORDER
+    ========================= */
     await order.save();
+
+    /* =========================
+       UPDATED ORDER
+    ========================= */
+
+    const updatedOrder = await Order.findById(orderId)
+      .populate(
+        "shipments.assignedTransporter",
+        `
+          fullName
+          email
+          businessProfile
+          `,
+      )
+      .populate("shipments.selectedQuoteId");
+
+    /* =========================
+       RESPONSE
+    ========================= */
 
     return res.status(200).json({
       success: true,
 
       message: "Assignment accepted successfully",
 
-      order,
+      order: updatedOrder,
     });
   } catch (error) {
     console.log("Transporter Accept Assignment Error:", error);
@@ -2024,6 +2450,8 @@ export const transporterAcceptAssignment = async (req, res) => {
       success: false,
 
       message: "Failed to accept assignment",
+
+      error: error.message,
     });
   }
 };
@@ -2033,13 +2461,17 @@ export const transporterRejectAssignment = async (req, res) => {
   try {
     const transporterId = req.user._id;
 
-    const {
-      orderId,
+    const { orderId, shipmentId } = req.params;
 
-      shipmentId,
-    } = req.params;
+    /* =========================
+       FIND ORDER
+    ========================= */
 
-    const order = await Order.findById(orderId);
+    const order = await Order.findOne({
+      _id: orderId,
+
+      isDeleted: false,
+    });
 
     if (!order) {
       return res.status(404).json({
@@ -2048,6 +2480,10 @@ export const transporterRejectAssignment = async (req, res) => {
         message: "Order not found",
       });
     }
+
+    /* =========================
+       FIND SHIPMENT
+    ========================= */
 
     const shipment = order.shipments.id(shipmentId);
 
@@ -2060,11 +2496,12 @@ export const transporterRejectAssignment = async (req, res) => {
     }
 
     /* =========================
-         VALIDATE TRANSPORTER
-      ========================= */
+       VALIDATE TRANSPORTER
+    ========================= */
 
     if (
-      shipment?.assignedTransporter?.toString() !== transporterId.toString()
+      shipment?.assignedTransporter?.toString() !==
+      transporterId.toString()
     ) {
       return res.status(403).json({
         success: false,
@@ -2074,48 +2511,152 @@ export const transporterRejectAssignment = async (req, res) => {
     }
 
     /* =========================
-         REJECT ASSIGNMENT
-      ========================= */
+       VALIDATE STATUS
+    ========================= */
 
-    shipment.transportStatus = "admin_assignment_rejected";
+    if (
+      shipment.transportStatus !==
+      "admin_assignment_pending"
+    ) {
+      return res.status(400).json({
+        success: false,
 
-    shipment.assignedTransporter = null;
+        message:
+          "Assignment already processed",
+      });
+    }
+
+    /* =========================
+       REJECT CURRENT QUOTE
+    ========================= */
+
+    await ShipmentTransportQuote.updateOne(
+      {
+        shipmentId: shipment._id,
+
+        transporter: transporterId,
+      },
+      {
+        $set: {
+          quoteStatus: "rejected",
+
+          rejectedAt: new Date(),
+        },
+      },
+    );
+
+    /* =========================
+       RESET SHIPMENT
+    ========================= */
+
+    shipment.transportStatus =
+      "open_for_quotes";
+
+    shipment.shipmentStatus =
+      "packed";
+
+    shipment.assignedTransporter =
+      null;
+
+    shipment.selectedQuoteId =
+      null;
 
     shipment.assignedAt = null;
 
-    shipment.shipmentStatus = "pending";
+    shipment.adminAssignedAt =
+      null;
+
+    shipment.transportPrice = 0;
+
+    shipment.transportGSTAmount =
+      0;
+
+    shipment.transportGSTType =
+      "igst";
+
+    shipment.transportFinalAmount =
+      0;
+
+    shipment.adminAssignedPrice =
+      0;
+
+    shipment.transportPaymentStatus =
+      "unpaid";
+
+    shipment.adminAssignmentNote =
+      "";
+
+    shipment.pickedUpAt = null;
+
+    /* =========================
+       SAVE ORDER
+    ========================= */
 
     await order.save();
+
+    /* =========================
+       UPDATED ORDER
+    ========================= */
+
+    const updatedOrder =
+      await Order.findById(orderId)
+        .populate(
+          "shipments.assignedTransporter",
+          `
+          fullName
+          email
+          businessProfile
+          `,
+        )
+        .populate(
+          "shipments.selectedQuoteId",
+        );
+
+    /* =========================
+       RESPONSE
+    ========================= */
 
     return res.status(200).json({
       success: true,
 
-      message: "Assignment rejected successfully",
+      message:
+        "Assignment rejected successfully",
 
-      order,
+      order: updatedOrder,
     });
   } catch (error) {
-    console.log("Transporter Reject Assignment Error:", error);
+    console.log(
+      "Transporter Reject Assignment Error:",
+      error,
+    );
 
     return res.status(500).json({
       success: false,
 
-      message: "Failed to reject assignment",
+      message:
+        "Failed to reject assignment",
+
+      error: error.message,
     });
   }
 };
+
 //transporter ---> updating shipedstatus
 export const markShipmentShippedByTransporter = async (req, res) => {
   try {
     const transporterId = req.user._id;
 
-    const {
-      orderId,
+    const { orderId, shipmentId } = req.params;
 
-      shipmentId,
-    } = req.params;
+    /* =========================
+       FIND ORDER
+    ========================= */
 
-    const order = await Order.findById(orderId);
+    const order = await Order.findOne({
+      _id: orderId,
+
+      isDeleted: false,
+    });
 
     if (!order) {
       return res.status(404).json({
@@ -2124,6 +2665,10 @@ export const markShipmentShippedByTransporter = async (req, res) => {
         message: "Order not found",
       });
     }
+
+    /* =========================
+       FIND SHIPMENT
+    ========================= */
 
     const shipment = order.shipments.id(shipmentId);
 
@@ -2136,8 +2681,8 @@ export const markShipmentShippedByTransporter = async (req, res) => {
     }
 
     /* =========================
-           VALIDATE TRANSPORTER
-        ========================= */
+       VALIDATE TRANSPORTER
+    ========================= */
 
     if (
       shipment?.assignedTransporter?.toString() !== transporterId.toString()
@@ -2150,8 +2695,20 @@ export const markShipmentShippedByTransporter = async (req, res) => {
     }
 
     /* =========================
-           VALIDATE STATUS
-        ========================= */
+       VALIDATE TRANSPORT STATUS
+    ========================= */
+
+    if (shipment.transportStatus !== "transporter_assigned") {
+      return res.status(400).json({
+        success: false,
+
+        message: "Transporter not assigned",
+      });
+    }
+
+    /* =========================
+       VALIDATE SHIPMENT STATUS
+    ========================= */
 
     if (shipment.shipmentStatus === "shipped") {
       return res.status(400).json({
@@ -2161,22 +2718,80 @@ export const markShipmentShippedByTransporter = async (req, res) => {
       });
     }
 
+    if (shipment.shipmentStatus === "delivered") {
+      return res.status(400).json({
+        success: false,
+
+        message: "Shipment already delivered",
+      });
+    }
+
     /* =========================
-           UPDATE STATUS
-        ========================= */
+       UPDATE STATUS
+    ========================= */
 
     shipment.shipmentStatus = "shipped";
 
+    shipment.inTransitAt = new Date();
+
     shipment.pickedUpAt = new Date();
 
+    /* =========================
+       UPDATE ORDER STATUS
+    ========================= */
+
+    const allShipmentsShipped = order.shipments.every(
+      (item) =>
+        item.shipmentStatus === "shipped" ||
+        item.shipmentStatus === "delivered" ||
+        item.shipmentStatus === "completed",
+    );
+
+    if (allShipmentsShipped) {
+      order.orderStatus = "shipped";
+
+      order.shippedAt = new Date();
+    }
+
+    /* =========================
+       SAVE ORDER
+    ========================= */
+
     await order.save();
+
+    /* =========================
+       UPDATED ORDER
+    ========================= */
+
+    const updatedOrder = await Order.findById(orderId)
+      .populate(
+        "buyer seller",
+        `
+          fullName
+          email
+          businessProfile
+          `,
+      )
+      .populate(
+        "shipments.assignedTransporter",
+        `
+          fullName
+          email
+          businessProfile
+          `,
+      )
+      .populate("shipments.selectedQuoteId");
+
+    /* =========================
+       RESPONSE
+    ========================= */
 
     return res.status(200).json({
       success: true,
 
       message: "Shipment marked as shipped",
 
-      order,
+      order: updatedOrder,
     });
   } catch (error) {
     console.log("Mark Shipment Shipped By Transporter Error:", error);
@@ -2185,6 +2800,8 @@ export const markShipmentShippedByTransporter = async (req, res) => {
       success: false,
 
       message: "Failed to update shipment",
+
+      error: error.message,
     });
   }
 };
@@ -2192,25 +2809,20 @@ export const markShipmentShippedByTransporter = async (req, res) => {
 //admin ---> updating shiped status
 export const markShipmentShippedByAdmin = async (req, res) => {
   try {
-    const {
-      orderId,
-
-      shipmentId,
-    } = req.params;
+    const { orderId, shipmentId } = req.params;
 
     const order = await Order.findById(orderId).populate(
       "shipments.assignedTransporter",
       `
-          fullName
-          email
-          businessProfile
-          `,
+        fullName
+        email
+        businessProfile
+      `,
     );
 
     if (!order) {
       return res.status(404).json({
         success: false,
-
         message: "Order not found",
       });
     }
@@ -2220,26 +2832,28 @@ export const markShipmentShippedByAdmin = async (req, res) => {
     if (!shipment) {
       return res.status(404).json({
         success: false,
-
         message: "Shipment not found",
       });
     }
 
     /* =========================
-           VALIDATE STATUS
-        ========================= */
+       VALIDATE STATUS
+    ========================= */
 
-    if (shipment.shipmentStatus === "shipped") {
+    if (
+      ["shipped", "in_transit", "delivered", "completed"].includes(
+        shipment.shipmentStatus,
+      )
+    ) {
       return res.status(400).json({
         success: false,
-
-        message: "Shipment already shipped",
+        message: "Shipment already shipped or completed",
       });
     }
 
     /* =========================
-           UPDATE STATUS
-        ========================= */
+       UPDATE STATUS
+    ========================= */
 
     shipment.shipmentStatus = "shipped";
 
@@ -2264,6 +2878,7 @@ export const markShipmentShippedByAdmin = async (req, res) => {
     });
   }
 };
+
 //buyer ---> buyerorders
 export const getBuyerOrders = async (req, res) => {
   try {

@@ -22,8 +22,9 @@ function TransporterCompletedDeliveries() {
   }, [dispatch]);
 
   /* =========================
-      OPEN FILE
-  ========================= */
+   OPEN FILE
+========================= */
+
   const handleOpenFile = (file, fileName) => {
     if (!file?.data) {
       alert(`${fileName} not found`);
@@ -31,16 +32,39 @@ function TransporterCompletedDeliveries() {
     }
 
     try {
-      const byteArray = file.data.data;
+      let byteArray = [];
+
+      /* =========================
+       HANDLE BUFFER FORMATS
+    ========================= */
+
+      if (Array.isArray(file.data)) {
+        byteArray = file.data;
+      } else if (Array.isArray(file.data?.data)) {
+        byteArray = file.data.data;
+      } else if (file.data?.type === "Buffer") {
+        byteArray = file.data.data;
+      } else {
+        alert(`Invalid ${fileName}`);
+        return;
+      }
+
+      /* =========================
+       CREATE FILE
+    ========================= */
+
       const uint8Array = new Uint8Array(byteArray);
+
       const blob = new Blob([uint8Array], {
-        type: file.contentType || "application/pdf",
+        type: file.contentType || "application/octet-stream",
       });
 
       const fileURL = window.URL.createObjectURL(blob);
+
       window.open(fileURL, "_blank");
     } catch (error) {
-      console.log(error);
+      console.log("Open File Error:", error);
+
       alert(`Failed to open ${fileName}`);
     }
   };
@@ -212,9 +236,9 @@ function TransporterCompletedDeliveries() {
 
                           <span className={styles.quoteValueTextPurple}>
                             ₹{" "}
-                            {Number(
-                              item?.transportQuote?.quotedPrice || 0,
-                            ).toLocaleString("en-IN")}
+                            {Number(item?.transportAmount || 0).toLocaleString(
+                              "en-IN",
+                            )}
                           </span>
                         </div>
 

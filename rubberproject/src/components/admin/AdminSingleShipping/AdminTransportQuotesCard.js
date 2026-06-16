@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from "react";
+
 import { useDispatch, useSelector } from "react-redux";
+
 import { getShipmentQuotes } from "../../../redux/slices/adminOrders/adminShipmentQuotesThunk";
+
 import { assignTransporterToShipment } from "../../../redux/slices/adminOrders/assignTransporterThunk";
+
 import { getAllTransporters } from "../../../redux/slices/adminOrders/getAllTransportersThunk";
+
 import { adminDirectAssignTransporter } from "../../../redux/slices/adminOrders/adminDirectAssignTransporterThunk";
 
 import { markShipmentShippedByAdminThunk } from "../../../redux/slices/adminOrders/markShipmentShippedByAdminThunk";
+
 import styles from "../../../styles/Admin/AdminSingleShippingInvoice.module.css";
 
 function AdminTransportQuotesCard({ shipment }) {
@@ -34,6 +40,7 @@ function AdminTransportQuotesCard({ shipment }) {
   const [adminPrice, setAdminPrice] = useState("");
 
   const [adminNote, setAdminNote] = useState("");
+
   /* =========================
      SHIPMENT QUOTES
   ========================= */
@@ -51,11 +58,8 @@ function AdminTransportQuotesCard({ shipment }) {
       shipment?._id &&
       [
         "quotes_received",
-
         "transporter_assigned",
-
         "open_for_quotes",
-
         "admin_assignment_pending",
       ].includes(shipment?.transportStatus)
     ) {
@@ -64,7 +68,7 @@ function AdminTransportQuotesCard({ shipment }) {
   }, [dispatch, shipment?._id, shipment?.transportStatus]);
 
   /* =========================
-     QUOTE ASSIGNMENT
+     ASSIGN TRANSPORTER
   ========================= */
 
   const handleAssignTransporter = (quoteId) => {
@@ -92,6 +96,10 @@ function AdminTransportQuotesCard({ shipment }) {
       return alert("Please select transporter");
     }
 
+    if (!adminPrice) {
+      return alert("Please enter transport price");
+    }
+
     dispatch(
       adminDirectAssignTransporter({
         orderId: shipment?.orderId,
@@ -106,6 +114,11 @@ function AdminTransportQuotesCard({ shipment }) {
       }),
     );
   };
+
+  /* =========================
+     MARK SHIPPED
+  ========================= */
+
   const handleMarkShipped = () => {
     dispatch(
       markShipmentShippedByAdminThunk({
@@ -124,9 +137,17 @@ function AdminTransportQuotesCard({ shipment }) {
           OPEN FOR QUOTES
       ========================= */}
 
-      {shipment?.transportStatus === "open_for_quotes" && (
-        <div className={styles.emptyState}>Waiting for transporter quotes</div>
-      )}
+      {[
+  "open_for_quotes",
+  "quotes_received",
+].includes(
+  shipment?.transportStatus,
+) &&
+  quotes.length === 0 && (
+    <div className={styles.emptyState}>
+      Waiting for transporter quotes
+    </div>
+)}
 
       {/* =========================
           LOADING
@@ -157,13 +178,64 @@ function AdminTransportQuotesCard({ shipment }) {
                   width: "100%",
                 }}
               >
+                {/* TRANSPORTER */}
+
                 <p className={styles.label}>Transporter</p>
-                <h4 className={styles.value}>{quote?.transporter?.fullName}</h4>
+
+                <h4 className={styles.value}>
+                  {quote?.transporter?.fullName || "-"}
+                </h4>
+
+                {/* QUOTE PRICE */}
+
                 <p className={styles.label}>
-                  ₹{quote.quotedPrice} • {quote.estimatedDeliveryDays} Days
+                  Quote Price : ₹
+                  {Number(quote?.quotedPrice || 0).toLocaleString("en-IN")}
                 </p>
 
-                <p className={styles.label}>{quote.note || "No note"}</p>
+                {/* DELIVERY DAYS */}
+
+                <p className={styles.label}>
+                  Delivery Days : {quote?.estimatedDeliveryDays || 0} Days
+                </p>
+
+                {/* GST TYPE */}
+
+                {shipment?.transportGSTType && (
+                  <p className={styles.label}>
+                    GST Type :{" "}
+                    {shipment.transportGSTType === "cgst_sgst"
+                      ? "CGST + SGST"
+                      : "IGST"}
+                  </p>
+                )}
+
+                {/* FINAL AMOUNT */}
+
+                {["transporter_assigned", "admin_assignment_pending"].includes(
+                  shipment?.transportStatus,
+                ) && (
+                  <p className={styles.label}>
+                    Final Transport Amount : ₹
+                    {Number(shipment?.transportFinalAmount || 0).toLocaleString(
+                      "en-IN",
+                    )}
+                  </p>
+                )}
+
+                {/* NOTE */}
+
+                <p className={styles.label}>{quote?.note || "No note"}</p>
+
+                {/* STATUS */}
+
+                <p className={styles.label}>
+                  {shipment?.transportStatus === "admin_assignment_pending"
+                    ? "Waiting for transporter acceptance"
+                    : shipment?.transportStatus === "transporter_assigned"
+                      ? "Transporter assigned successfully"
+                      : "Quote submitted"}
+                </p>
 
                 {/* =========================
                         BUTTONS
@@ -199,7 +271,7 @@ function AdminTransportQuotesCard({ shipment }) {
       )}
 
       {/* =========================
-          MANUAL TRANSPORTER ASSIGN
+          MANUAL ASSIGNMENT
       ========================= */}
 
       {!["transporter_assigned", "admin_assignment_pending"].includes(
@@ -317,8 +389,8 @@ function AdminTransportQuotesCard({ shipment }) {
       )}
 
       {/* =========================
-    MARK SHIPPED
-========================= */}
+          MARK SHIPPED
+      ========================= */}
 
       {shipment?.transportStatus === "transporter_assigned" && (
         <div
@@ -326,7 +398,9 @@ function AdminTransportQuotesCard({ shipment }) {
             marginTop: "20px",
           }}
         >
-          {shipment?.shipmentStatus === "shipped" ? (
+          {["shipped", "in_transit", "delivered", "completed"].includes(
+            shipment?.shipmentStatus,
+          ) ? (
             <button
               className={styles.deliverBtn}
               disabled

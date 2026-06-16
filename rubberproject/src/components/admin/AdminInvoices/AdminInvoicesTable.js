@@ -12,10 +12,6 @@ const AdminInvoicesTable = ({ order, itemName }) => {
       (shipment) => shipment?.selectedItem === itemName,
     ) || [];
 
-  const isMarketplaceShipment = (shipment) => {
-    return shipment?.transportMode === "marketplace_transport";
-  };
-
   return (
     <div className={styles.tableWrapper}>
       {/* =========================
@@ -24,15 +20,9 @@ const AdminInvoicesTable = ({ order, itemName }) => {
       <div className={styles.tableHeader}>
         <div>Shipment ID</div>
 
-        <div>
-          {shipments.some(isMarketplaceShipment) ? "Quotes" : "Vehicle No"}
-        </div>
+        <div>Transport Status</div>
 
-        <div>
-          {shipments.some(isMarketplaceShipment)
-            ? "Transporter"
-            : "Driver Name"}
-        </div>
+        <div>Transporter</div>
 
         <div>Shipped Qty</div>
 
@@ -66,26 +56,18 @@ const AdminInvoicesTable = ({ order, itemName }) => {
         >
           <div data-label="Shipment ID">{item?.shipmentInvoiceId || "-"}</div>
 
-          <div
-            data-label={isMarketplaceShipment(item) ? "Quotes" : "Vehicle No"}
-          >
-            {isMarketplaceShipment(item)
-              ? item?.transportStatus === "quotes_received"
-                ? "Quotes Received"
-                : item?.transportStatus === "transporter_assigned"
-                  ? "Assigned"
-                  : "Open"
-              : item?.vehicleNumber || "-"}
+          <div data-label="Transport Status">
+            {item?.transportStatus === "quotes_received"
+              ? "Quotes Received"
+              : item?.transportStatus === "transporter_assigned"
+                ? "Assigned"
+                : item?.transportStatus === "completed"
+                  ? "Completed"
+                  : "Open"}
           </div>
 
-          <div
-            data-label={
-              isMarketplaceShipment(item) ? "Transporter" : "Driver Name"
-            }
-          >
-            {isMarketplaceShipment(item)
-              ? item?.assignedTransporter?.fullName || "-"
-              : item?.driverName || "-"}
+          <div data-label="Transporter">
+            {item?.assignedTransporter?.fullName || "Not Assigned"}
           </div>
 
           <div data-label="Shipped Qty">{item?.shippedQuantity || 0} MT</div>

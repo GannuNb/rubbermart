@@ -1,12 +1,12 @@
 import React from "react";
 
-import { FaUserAlt, FaClipboardList, FaTruck } from "react-icons/fa";
+import { FaClipboardList, FaTruck } from "react-icons/fa";
 
 import styles from "../../../styles/Buyer/BuyerSingleShippingInvoice.module.css";
 
 const DriverShipmentSummarySection = ({ shipment }) => {
-  const isMarketplaceTransport =
-    shipment?.transportMode === "marketplace_transport";
+  const transporterAssigned =
+    shipment?.transportStatus === "transporter_assigned";
 
   const transporter = shipment?.assignedTransporter;
 
@@ -18,15 +18,9 @@ const DriverShipmentSummarySection = ({ shipment }) => {
 
       <div className={styles.driverCard}>
         <div className={styles.cardHeading}>
-          {isMarketplaceTransport ? (
-            <FaTruck className={styles.headingIcon} />
-          ) : (
-            <FaUserAlt className={styles.headingIcon} />
-          )}
+          <FaTruck className={styles.headingIcon} />
 
-          <h3>
-            {isMarketplaceTransport ? "Transporter Details" : "Driver Details"}
-          </h3>
+          <h3>Transporter Details</h3>
         </div>
 
         <div className={styles.driverContent}>
@@ -35,16 +29,16 @@ const DriverShipmentSummarySection = ({ shipment }) => {
           <div className={styles.driverImageBox}>
             <img
               src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
-              alt="driver"
+              alt="transporter"
               className={styles.driverImage}
             />
           </div>
 
           {/* =========================
-              MARKETPLACE TRANSPORT
+              TRANSPORTER DETAILS
           ========================= */}
 
-          {isMarketplaceTransport ? (
+          {transporterAssigned ? (
             <div className={styles.driverInfo}>
               <div>
                 <p className={styles.label}>Transporter Name</p>
@@ -59,9 +53,9 @@ const DriverShipmentSummarySection = ({ shipment }) => {
               </div>
 
               <div>
-                <p className={styles.label}>Phone Number</p>
+                <p className={styles.label}>Mobile Number</p>
 
-                <h4>{transporter?.businessProfile?.phoneNumber || "-"}</h4>
+                <h4>{transporter?.mobile || "-"}</h4>
               </div>
 
               <div>
@@ -71,33 +65,19 @@ const DriverShipmentSummarySection = ({ shipment }) => {
               </div>
 
               <div>
-                <p className={styles.label}>Vehicle Number</p>
+                <p className={styles.label}>Transport Status</p>
 
-                <h4>{shipment?.vehicleNumber || "-"}</h4>
+                <h4>
+                  {shipment?.transportStatus?.replaceAll("_", " ") || "-"}
+                </h4>
               </div>
             </div>
           ) : (
-            /* =========================
-                MANUAL DRIVER
-            ========================= */
-
             <div className={styles.driverInfo}>
               <div>
-                <p className={styles.label}>Driver Name</p>
+                <p className={styles.label}>Transport Status</p>
 
-                <h4>{shipment?.driverName || "-"}</h4>
-              </div>
-
-              <div>
-                <p className={styles.label}>Driver Number</p>
-
-                <h4>{shipment?.driverMobile || "-"}</h4>
-              </div>
-
-              <div>
-                <p className={styles.label}>Vehicle Number</p>
-
-                <h4>{shipment?.vehicleNumber || "-"}</h4>
+                <h4>Waiting For Transporter Assignment</h4>
               </div>
             </div>
           )}
@@ -105,9 +85,11 @@ const DriverShipmentSummarySection = ({ shipment }) => {
 
         {/* CONTACT BUTTON */}
 
-        <button className={styles.contactDriverBtn}>
-          {isMarketplaceTransport ? "Contact Transporter" : "Contact Driver"}
-        </button>
+        {transporterAssigned && (
+          <button className={styles.contactDriverBtn}>
+            Contact Transporter
+          </button>
+        )}
       </div>
 
       {/* =========================
@@ -125,7 +107,13 @@ const DriverShipmentSummarySection = ({ shipment }) => {
           <div className={styles.summaryRow}>
             <p>Items in Shipment</p>
 
-            <h4>1 Item</h4>
+            <h4>
+              {shipment?.selectedSubProducts?.length > 0
+                ? shipment.selectedSubProducts.length
+                : 1}{" "}
+              Item
+              {shipment?.selectedSubProducts?.length > 1 ? "s" : ""}
+            </h4>
           </div>
 
           <div className={styles.summaryRow}>
@@ -152,11 +140,7 @@ const DriverShipmentSummarySection = ({ shipment }) => {
             <div className={styles.addressRow}>
               <p>Transport Type</p>
 
-              <span>
-                {isMarketplaceTransport
-                  ? "Marketplace Transport"
-                  : "Manual Transport"}
-              </span>
+              <span>Marketplace Transport</span>
             </div>
           </div>
         </div>

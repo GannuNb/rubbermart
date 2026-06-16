@@ -60,19 +60,62 @@ function TransporterAssignedShipments() {
     }
 
     try {
-      const byteArray = file.data.data;
+      /* =========================
+       BUFFER
+    ========================= */
+
+      const byteArray = file?.data?.data || file?.data;
 
       const uint8Array = new Uint8Array(byteArray);
 
+      /* =========================
+       CONTENT TYPE
+    ========================= */
+
+      const contentType = file?.contentType || "application/pdf";
+
+      /* =========================
+       CREATE BLOB
+    ========================= */
+
       const blob = new Blob([uint8Array], {
-        type: file.contentType || "application/pdf",
+        type: contentType,
       });
 
       const fileURL = window.URL.createObjectURL(blob);
 
+      /* =========================
+       IMAGE
+    ========================= */
+
+      if (contentType.startsWith("image/")) {
+        const imageWindow = window.open("");
+
+        imageWindow.document.write(`
+        <html>
+          <head>
+            <title>${fileName}</title>
+          </head>
+
+          <body style="margin:0;display:flex;justify-content:center;align-items:center;background:#111;">
+            <img 
+              src="${fileURL}" 
+              style="max-width:100%;max-height:100vh;object-fit:contain;" 
+            />
+          </body>
+        </html>
+      `);
+
+        return;
+      }
+
+      /* =========================
+       PDF / OTHER FILES
+    ========================= */
+
       window.open(fileURL, "_blank");
     } catch (error) {
-      console.log(error);
+      console.log("Open File Error:", error);
 
       alert(`Failed to open ${fileName}`);
     }
@@ -213,7 +256,9 @@ function TransporterAssignedShipments() {
                     const isCurrentMarking =
                       markShippedLoading && activeShipmentId === shipment?._id;
 
-                    const isShipped = shipment?.shipmentStatus === "shipped";
+                    const isShipped =
+                      shipment?.shipmentStatus === "shipped" ||
+                      shipment?.shipmentStatus === "delivered";
 
                     return (
                       <tr key={shipment?._id} className={styles.rowBorder}>
@@ -306,7 +351,10 @@ function TransporterAssignedShipments() {
                               <span className={styles.quoteValueTextPurple}>
                                 ₹{" "}
                                 {Number(
-                                  transportQuote?.quotedPrice || 0,
+                                  shipment?.transportFinalAmount ||
+                                    shipment?.transportPrice ||
+                                    transportQuote?.quotedPrice ||
+                                    0,
                                 ).toLocaleString("en-IN")}
                               </span>
                             </div>
@@ -395,8 +443,8 @@ function TransporterAssignedShipments() {
                                   </div>
 
                                   <div className={styles.docSize}>
-                                    {shipment?.weightTicket?.contentType?.includes(
-                                      "image",
+                                    {shipment?.weightTicket?.contentType?.startsWith(
+                                      "image/",
                                     )
                                       ? "Image"
                                       : "PDF"}
@@ -430,8 +478,8 @@ function TransporterAssignedShipments() {
                                   </div>
 
                                   <div className={styles.docSize}>
-                                    {shipment?.packedItemPhoto?.contentType?.includes(
-                                      "image",
+                                    {shipment?.weightTicket?.contentType?.startsWith(
+                                      "image/",
                                     )
                                       ? "Image"
                                       : "PDF"}

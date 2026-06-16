@@ -34,7 +34,9 @@ const ShipmentCard = ({ shipment, orderId }) => {
 
   const isDelivered = shipment.shipmentStatus === "delivered";
 
-  const isShipped = shipment.shipmentStatus === "shipped";
+  const isShipped =
+    shipment.shipmentStatus === "shipped" ||
+    shipment.shipmentStatus === "in_transit";
 
   /* =========================
      OPEN FILE
@@ -49,12 +51,6 @@ const ShipmentCard = ({ shipment, orderId }) => {
 
     try {
       const byteArray = file.data.data;
-
-      if (!byteArray || !Array.isArray(byteArray)) {
-        alert(`Invalid ${fileName}`);
-
-        return;
-      }
 
       const uint8Array = new Uint8Array(byteArray);
 
@@ -85,14 +81,21 @@ const ShipmentCard = ({ shipment, orderId }) => {
       }),
     );
   };
+
+  /* =========================
+     MARK SHIPPED
+  ========================= */
+
   const handleMarkShipped = () => {
     dispatch(
       markShipmentShippedBySellerThunk({
         orderId,
+
         shipmentId: shipment._id,
       }),
     );
   };
+
   return (
     <div className={styles.card}>
       {/* =========================
@@ -176,69 +179,42 @@ const ShipmentCard = ({ shipment, orderId }) => {
             </strong>
           </div>
 
-          {/* TRANSPORT MODE */}
+          {/* ASSIGNED TRANSPORTER */}
 
           <div className={styles.row}>
-            <span>Transport Mode</span>
+            <span>Assigned Transporter</span>
 
             <strong>
-              {shipment.transportMode?.replaceAll("_", " ") || "N/A"}
+              {shipment?.assignedTransporter?.fullName || "Not Assigned"}
             </strong>
           </div>
 
-          {/* =========================
-              SELF TRANSPORT
-          ========================= */}
+          {/* ASSIGNMENT METHOD */}
 
-          {shipment.transportMode === "self_transport" && (
-            <>
-              <div className={styles.row}>
-                <span>Vehicle Number</span>
+          <div className={styles.row}>
+            <span>Assignment Method</span>
 
-                <strong>{shipment.vehicleNumber || "N/A"}</strong>
-              </div>
+            <strong>
+              {shipment?.assignmentMethod?.replaceAll("_", " ") || "N/A"}
+            </strong>
+          </div>
 
-              <div className={styles.row}>
-                <span>Driver Name</span>
+          {/* TRANSPORT PRICE */}
 
-                <strong>{shipment.driverName || "N/A"}</strong>
-              </div>
+          <div className={styles.row}>
+            <span>Transport Amount</span>
 
-              <div className={styles.row}>
-                <span>Driver Contact</span>
+            <strong>
+              ₹{" "}
+              {Number(
+                shipment?.transportFinalAmount ||
+                  shipment?.adminAssignedPrice ||
+                  0,
+              ).toLocaleString("en-IN")}
+            </strong>
+          </div>
 
-                <strong>{shipment.driverMobile || "N/A"}</strong>
-              </div>
-            </>
-          )}
-
-          {/* =========================
-              MARKETPLACE TRANSPORT
-          ========================= */}
-
-          {shipment.transportMode === "marketplace_transport" && (
-            <>
-              <div className={styles.row}>
-                <span>Assigned Transporter</span>
-
-                <strong>
-                  {shipment?.assignedTransporter?.fullName || "Not Assigned"}
-                </strong>
-              </div>
-
-              <div className={styles.row}>
-                <span>Assignment Method</span>
-
-                <strong>
-                  {shipment.assignmentMethod?.replaceAll("_", " ") || "N/A"}
-                </strong>
-              </div>
-            </>
-          )}
-
-          {/* =========================
-              SUB PRODUCTS
-          ========================= */}
+          {/* SUB PRODUCTS */}
 
           {shipment.selectedSubProducts?.length > 0 && (
             <div className={styles.subProducts}>
@@ -254,12 +230,10 @@ const ShipmentCard = ({ shipment, orderId }) => {
             </div>
           )}
 
-          {/* =========================
-              FILE BUTTONS
-          ========================= */}
+          {/* FILES */}
 
           <div className={styles.fileButtons}>
-            {/* WEIGHT TICKET */}
+            {/* WEIGHT */}
 
             {shipment?.weightTicket?.data && (
               <button
@@ -273,7 +247,7 @@ const ShipmentCard = ({ shipment, orderId }) => {
               </button>
             )}
 
-            {/* PACKED PHOTO */}
+            {/* PHOTO */}
 
             {shipment?.packedItemPhoto?.data && (
               <button
@@ -289,29 +263,28 @@ const ShipmentCard = ({ shipment, orderId }) => {
           </div>
 
           {/* =========================
-              SHIPPED STATUS
+              MARK SHIPPED
           ========================= */}
 
-          {shipment.transportMode === "marketplace_transport" &&
-            shipment.transportStatus === "transporter_assigned" && (
-              <button
-                type="button"
-                className={styles.shippedButton}
-                onClick={handleMarkShipped}
-                disabled={isShipped || isDelivered || markShippedLoading}
-              >
-                <FiPackage />
+          {shipment.transportStatus === "transporter_assigned" && (
+            <button
+              type="button"
+              className={styles.shippedButton}
+              onClick={handleMarkShipped}
+              disabled={isShipped || isDelivered || markShippedLoading}
+            >
+              <FiPackage />
 
-                {markShippedLoading
-                  ? "Updating..."
-                  : isShipped
-                    ? "Shipment Shipped"
-                    : "Mark As Shipped"}
-              </button>
-            )}
+              {markShippedLoading
+                ? "Updating..."
+                : isShipped
+                  ? "Shipment Shipped"
+                  : "Mark As Shipped"}
+            </button>
+          )}
 
           {/* =========================
-              DELIVERED BUTTON
+              DELIVERED
           ========================= */}
 
           <button
