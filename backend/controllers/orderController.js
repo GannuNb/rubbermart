@@ -11,7 +11,7 @@ import generateShippingInvoicePdf from "../utils/pdf/shipping/generateShippingIn
 import generateBuyReportPdf from "../utils/pdf/buyReport/generateBuyReportPdf.js";
 import ShipmentTransportQuote from "../models/ShipmentTransportQuote.js";
 
-//buyer--->buyerordercreation
+//buyer---> MAIN BUYER buyerordercreation
 export const createOrder = async (req, res) => {
   try {
     const buyerId = req.user._id;
@@ -211,6 +211,10 @@ REDUCE PRODUCT STOCK
     });
   }
 };
+
+
+
+//SELLER ALL CONTROLLERS
 
 //seller-->ordersforsellers
 export const getSellerOrders = async (req, res) => {
@@ -746,6 +750,211 @@ export const addShipmentToOrder = async (req, res) => {
   }
 };
 
+
+//seller ---> markasship
+export const markShipmentShippedBySeller = async (req, res) => {
+  try {
+    const sellerId = req.user._id;
+
+    const { orderId, shipmentId } = req.params;
+
+    /* =========================
+       FIND ORDER
+    ========================= */
+
+    const order = await Order.findOne({
+      _id: orderId,
+      seller: sellerId,
+      isDeleted: false,
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    /* =========================
+       FIND SHIPMENT
+    ========================= */
+
+    const shipment = order.shipments.id(shipmentId);
+
+    if (!shipment) {
+      return res.status(404).json({
+        success: false,
+        message: "Shipment not found",
+      });
+    }
+
+    /* =========================
+       VALIDATE TRANSPORT
+    ========================= */
+
+    if (shipment.transportMode !== "marketplace_transport") {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Only marketplace transport shipments can be marked as shipped",
+      });
+    }
+
+    /* =========================
+       VALIDATE ASSIGNMENT
+    ========================= */
+
+    if (shipment.transportStatus !== "transporter_assigned") {
+      return res.status(400).json({
+        success: false,
+        message: "Transporter not assigned yet",
+      });
+    }
+
+    /* =========================
+       VALIDATE STATUS
+    ========================= */
+
+    if (shipment.shipmentStatus === "shipped") {
+      return res.status(400).json({
+        success: false,
+        message: "Shipment already marked as shipped",
+      });
+    }
+
+    /* =========================
+       UPDATE SHIPMENT
+    ========================= */
+
+    shipment.shipmentStatus = "shipped";
+
+    shipment.shippedAt = new Date();
+
+    await order.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Shipment marked as shipped successfully",
+      order,
+    });
+  } catch (error) {
+    console.log("Mark Shipment Shipped Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to mark shipment shipped",
+    });
+  }
+};
+
+//seller ---> markdelivered
+export const markShipmentDeliveredBySeller = async (req, res) => {
+  try {
+    const sellerId = req.user._id;
+
+    const { orderId, shipmentId } = req.params;
+
+    /* =========================
+         FIND ORDER
+      ========================= */
+
+    const order = await Order.findOne({
+      _id: orderId,
+      seller: sellerId,
+      isDeleted: false,
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    /* =========================
+         FIND SHIPMENT
+      ========================= */
+
+    const shipment = order.shipments.id(shipmentId);
+
+    if (!shipment) {
+      return res.status(404).json({
+        success: false,
+        message: "Shipment not found",
+      });
+    }
+
+    /* =========================
+         ALREADY DELIVERED
+      ========================= */
+
+    if (shipment.shipmentStatus === "delivered") {
+      return res.status(400).json({
+        success: false,
+        message: "Shipment already delivered",
+      });
+    }
+
+    /* =========================
+         MARK SINGLE SHIPMENT
+      ========================= */
+
+    shipment.shipmentStatus = "delivered";
+
+    shipment.deliveredAt = new Date();
+
+    /* =========================
+         CHECK FULL DELIVERY
+      ========================= */
+
+    const allItemsDelivered = order.orderItems.every((orderItem) => {
+      const deliveredQty = order.shipments
+        .filter(
+          (shipmentItem) =>
+            shipmentItem.selectedItem?.trim()?.toLowerCase() ===
+              orderItem.productName?.trim()?.toLowerCase() &&
+            shipmentItem.shipmentStatus === "delivered",
+        )
+        .reduce(
+          (total, shipmentItem) =>
+            total + Number(shipmentItem.shippedQuantity || 0),
+          0,
+        );
+
+      return deliveredQty >= Number(orderItem.requiredQuantity);
+    });
+
+    /* =========================
+         UPDATE MAIN ORDER STATUS
+      ========================= */
+
+    if (allItemsDelivered) {
+      order.orderStatus = "delivered";
+
+      order.deliveredAt = new Date();
+    }
+
+    await order.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Shipment marked as delivered",
+      order,
+      shipment,
+    });
+  } catch (error) {
+    console.log("Seller Mark Delivered Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to mark shipment delivered",
+      error: error.message,
+    });
+  }
+};
+
+//TRANSPORTER ALL CONTROLLERS
+
 //transporter ---> getallpackeditems
 export const getOpenTransportShipments = async (req, res) => {
   try {
@@ -1104,101 +1313,6 @@ export const getTransporterQuotes = async (req, res) => {
   }
 };
 
-//seller ---> markasship
-export const markShipmentShippedBySeller = async (req, res) => {
-  try {
-    const sellerId = req.user._id;
-
-    const { orderId, shipmentId } = req.params;
-
-    /* =========================
-       FIND ORDER
-    ========================= */
-
-    const order = await Order.findOne({
-      _id: orderId,
-      seller: sellerId,
-      isDeleted: false,
-    });
-
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: "Order not found",
-      });
-    }
-
-    /* =========================
-       FIND SHIPMENT
-    ========================= */
-
-    const shipment = order.shipments.id(shipmentId);
-
-    if (!shipment) {
-      return res.status(404).json({
-        success: false,
-        message: "Shipment not found",
-      });
-    }
-
-    /* =========================
-       VALIDATE TRANSPORT
-    ========================= */
-
-    if (shipment.transportMode !== "marketplace_transport") {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Only marketplace transport shipments can be marked as shipped",
-      });
-    }
-
-    /* =========================
-       VALIDATE ASSIGNMENT
-    ========================= */
-
-    if (shipment.transportStatus !== "transporter_assigned") {
-      return res.status(400).json({
-        success: false,
-        message: "Transporter not assigned yet",
-      });
-    }
-
-    /* =========================
-       VALIDATE STATUS
-    ========================= */
-
-    if (shipment.shipmentStatus === "shipped") {
-      return res.status(400).json({
-        success: false,
-        message: "Shipment already marked as shipped",
-      });
-    }
-
-    /* =========================
-       UPDATE SHIPMENT
-    ========================= */
-
-    shipment.shipmentStatus = "shipped";
-
-    shipment.shippedAt = new Date();
-
-    await order.save();
-
-    return res.status(200).json({
-      success: true,
-      message: "Shipment marked as shipped successfully",
-      order,
-    });
-  } catch (error) {
-    console.log("Mark Shipment Shipped Error:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Failed to mark shipment shipped",
-    });
-  }
-};
 
 //transporters ---> asignedshipments
 export const getTransporterAssignedShipments = async (req, res) => {
@@ -1241,12 +1355,13 @@ export const getTransporterAssignedShipments = async (req, res) => {
     orders.forEach((order) => {
       order.shipments.forEach((shipment) => {
         if (
-          shipment?.assignedTransporter?._id?.toString() ===
-            transporterId.toString() &&
-          !["delivered", "completed", "cancelled"].includes(
-            shipment.shipmentStatus,
-          )
-        ) {
+  shipment?.assignedTransporter?._id?.toString() ===
+    transporterId.toString() &&
+  shipment?.transportStatus === "transporter_assigned" &&
+  !["delivered", "completed", "cancelled"].includes(
+    shipment.shipmentStatus,
+  )
+) {
           assignedShipments.push({
             orderId: order._id,
 
@@ -1582,483 +1697,6 @@ export const getTransporterCompletedDeliveries = async (req, res) => {
       success: false,
 
       message: "Failed to fetch completed deliveries",
-
-      error: error.message,
-    });
-  }
-};
-
-//admin -> transportersquotes
-export const getShipmentQuotes = async (req, res) => {
-  try {
-    const { shipmentId } = req.params;
-
-    /* =========================
-         VALIDATE SHIPMENT ID
-      ========================= */
-
-    if (!mongoose.Types.ObjectId.isValid(shipmentId)) {
-      return res.status(400).json({
-        success: false,
-
-        message: "Invalid shipment id",
-      });
-    }
-
-    /* =========================
-         FETCH QUOTES
-      ========================= */
-
-    const quotes = await ShipmentTransportQuote.find({
-      shipmentId: new mongoose.Types.ObjectId(shipmentId),
-    })
-      .populate(
-        "transporter",
-        `
-            fullName
-            email
-            businessProfile
-            `,
-      )
-      .sort({
-        quotedPrice: 1,
-      })
-      .lean();
-
-    return res.status(200).json({
-      success: true,
-
-      quotes,
-    });
-  } catch (error) {
-    console.log("Get Shipment Quotes Error:", error);
-
-    return res.status(500).json({
-      success: false,
-
-      message: "Failed to fetch shipment quotes",
-    });
-  }
-};
-
-//admin ---> assigntoshipment
-export const assignTransporterToShipment = async (req, res) => {
-  try {
-    const { orderId, shipmentId, quoteId } = req.params;
-
-    /* =========================
-       FIND ORDER
-    ========================= */
-
-    const order = await Order.findById(orderId);
-
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: "Order not found",
-      });
-    }
-
-    /* =========================
-       FIND SHIPMENT
-    ========================= */
-
-    const shipment = order.shipments.id(shipmentId);
-
-    if (!shipment) {
-      return res.status(404).json({
-        success: false,
-        message: "Shipment not found",
-      });
-    }
-
-    /* =========================
-       VALIDATE STATUS
-    ========================= */
-
-    if (
-      ![
-        "quotes_received",
-        "open_for_quotes",
-        "admin_assignment_rejected",
-      ].includes(shipment.transportStatus)
-    ) {
-      return res.status(400).json({
-        success: false,
-        message: "Shipment already assigned",
-      });
-    }
-
-    /* =========================
-       FIND SELECTED QUOTE
-    ========================= */
-
-    const selectedQuote =
-      await ShipmentTransportQuote.findById(quoteId).populate("transporter");
-
-    if (!selectedQuote) {
-      return res.status(404).json({
-        success: false,
-        message: "Quote not found",
-      });
-    }
-
-    /* =========================
-       GST CALCULATION
-    ========================= */
-
-    const transporterGST =
-      selectedQuote?.transporter?.businessProfile?.gstNumber || "";
-
-    const transporterStateCode = transporterGST.substring(0, 2);
-
-    const companyStateCode = "27";
-
-    const gstType =
-      transporterStateCode === companyStateCode ? "cgst_sgst" : "igst";
-
-    const transportPrice = Number(selectedQuote?.quotedPrice || 0);
-
-    const transportGSTPercent = 5;
-
-    const transportGSTAmount = Number(
-      (transportPrice * (transportGSTPercent / 100)).toFixed(2),
-    );
-
-    const transportFinalAmount = Number(
-      (transportPrice + transportGSTAmount).toFixed(2),
-    );
-
-    /* =========================
-       UPDATE SHIPMENT
-    ========================= */
-
-    shipment.assignedTransporter = selectedQuote.transporter._id;
-
-    shipment.selectedQuoteId = selectedQuote._id;
-
-    shipment.transportStatus = "transporter_assigned";
-
-    shipment.shipmentStatus = "assigned";
-
-    shipment.assignmentMethod = "quote_selection";
-
-    shipment.assignedAt = new Date();
-
-    shipment.adminAssignedAt = new Date();
-
-    /* =========================
-       TRANSPORT AMOUNT
-    ========================= */
-
-    shipment.transportPrice = transportPrice;
-
-    shipment.transportGSTPercent = transportGSTPercent;
-
-    shipment.transportGSTType = gstType;
-
-    shipment.transportGSTAmount = transportGSTAmount;
-
-    shipment.transportFinalAmount = transportFinalAmount;
-
-    /* =========================
-       ADMIN FINAL APPROVAL PRICE
-    ========================= */
-
-    shipment.adminAssignedPrice = transportPrice;
-
-    /* =========================
-       PAYMENT STATUS
-    ========================= */
-
-    shipment.transportPaymentStatus = "unpaid";
-
-    /* =========================
-       REJECT OTHER QUOTES
-    ========================= */
-
-    await ShipmentTransportQuote.updateMany(
-      {
-        shipmentId: new mongoose.Types.ObjectId(shipmentId),
-
-        _id: {
-          $ne: quoteId,
-        },
-      },
-      {
-        $set: {
-          quoteStatus: "rejected",
-
-          rejectedAt: new Date(),
-        },
-      },
-    );
-
-    /* =========================
-       SELECT CURRENT QUOTE
-    ========================= */
-
-    await ShipmentTransportQuote.findByIdAndUpdate(quoteId, {
-      $set: {
-        quoteStatus: "selected",
-
-        selectedAt: new Date(),
-      },
-    });
-
-    /* =========================
-       UPDATE ORDER STATUS
-    ========================= */
-
-    if (["seller_confirmed", "partially_shipped"].includes(order.orderStatus)) {
-      order.orderStatus = "transport_processing";
-    }
-
-    /* =========================
-       SAVE ORDER
-    ========================= */
-
-    await order.save();
-
-    /* =========================
-       UPDATED ORDER
-    ========================= */
-
-    const updatedOrder = await Order.findById(orderId)
-      .populate(
-        "buyer seller",
-        `
-          fullName
-          email
-          businessProfile
-          `,
-      )
-      .populate(
-        "shipments.assignedTransporter",
-        `
-          fullName
-          email
-          businessProfile
-          `,
-      )
-      .populate("shipments.selectedQuoteId");
-
-    /* =========================
-       RESPONSE
-    ========================= */
-
-    return res.status(200).json({
-      success: true,
-
-      message: "Transporter assigned successfully",
-
-      order: updatedOrder,
-    });
-  } catch (error) {
-    console.log("Assign Transporter Error:", error);
-
-    return res.status(500).json({
-      success: false,
-
-      message: "Failed to assign transporter",
-
-      error: error.message,
-    });
-  }
-};
-
-//admin ---> admindirectassign/manual
-export const adminDirectAssignTransporter = async (req, res) => {
-  try {
-    const { orderId, shipmentId } = req.params;
-
-    const { transporterId, adminPrice, adminNote } = req.body;
-
-    /* =========================
-       FIND ORDER
-    ========================= */
-
-    const order = await Order.findById(orderId);
-
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-
-        message: "Order not found",
-      });
-    }
-
-    /* =========================
-       FIND SHIPMENT
-    ========================= */
-
-    const shipment = order.shipments.id(shipmentId);
-
-    if (!shipment) {
-      return res.status(404).json({
-        success: false,
-
-        message: "Shipment not found",
-      });
-    }
-
-    /* =========================
-       FIND TRANSPORTER
-    ========================= */
-
-    const transporter = await User.findById(transporterId);
-
-    if (!transporter || transporter.role !== "transporter") {
-      return res.status(404).json({
-        success: false,
-
-        message: "Transporter not found",
-      });
-    }
-
-    /* =========================
-       GST CALCULATION
-    ========================= */
-
-    const transporterGST = transporter?.businessProfile?.gstNumber || "";
-
-    const transporterStateCode = transporterGST.substring(0, 2);
-
-    const companyStateCode = "27";
-
-    const gstType =
-      transporterStateCode === companyStateCode ? "cgst_sgst" : "igst";
-
-    const transportPrice = Number(adminPrice || 0);
-
-    const transportGSTPercent = 5;
-
-    const transportGSTAmount = Number(
-      (transportPrice * (transportGSTPercent / 100)).toFixed(2),
-    );
-
-    const transportFinalAmount = Number(
-      (transportPrice + transportGSTAmount).toFixed(2),
-    );
-
-    /* =========================
-       ASSIGN TRANSPORTER
-    ========================= */
-
-    shipment.assignedTransporter = transporter._id;
-
-    shipment.transportStatus = "admin_assignment_pending";
-
-    shipment.shipmentStatus = "assigned";
-
-    shipment.assignmentMethod = "admin_direct_assignment";
-
-    shipment.assignedAt = new Date();
-
-    shipment.adminAssignedAt = new Date();
-
-    shipment.adminAssignedPrice = transportPrice;
-
-    shipment.adminAssignmentNote = adminNote;
-
-    /* =========================
-       TRANSPORT AMOUNTS
-    ========================= */
-
-    shipment.transportPrice = transportPrice;
-
-    shipment.transportGSTPercent = transportGSTPercent;
-
-    shipment.transportGSTType = gstType;
-
-    shipment.transportGSTAmount = transportGSTAmount;
-
-    shipment.transportFinalAmount = transportFinalAmount;
-
-    shipment.transportPaymentStatus = "unpaid";
-
-    /* =========================
-       SAVE
-    ========================= */
-
-    await order.save();
-
-    /* =========================
-       UPDATED ORDER
-    ========================= */
-
-    const updatedOrder = await Order.findById(orderId).populate(
-      "shipments.assignedTransporter",
-      `
-          fullName
-          email
-          businessProfile
-          `,
-    );
-
-    return res.status(200).json({
-      success: true,
-
-      message: "Transporter assigned successfully",
-
-      order: updatedOrder,
-    });
-  } catch (error) {
-    console.log("Admin Direct Assignment Error:", error);
-
-    return res.status(500).json({
-      success: false,
-
-      message: "Failed to assign transporter",
-
-      error: error.message,
-    });
-  }
-};
-
-//admin ---> dropdownselection
-export const getAllTransporters = async (req, res) => {
-  try {
-    /* =========================
-       FETCH TRANSPORTERS
-    ========================= */
-
-    const transporters = await User.find({
-      role: "transporter",
-    })
-      .select(
-        `
-          fullName
-          email
-          mobile
-          businessProfile
-        `,
-      )
-      .sort({
-        createdAt: -1,
-      })
-      .lean();
-
-    console.log("Transporters:", transporters);
-
-    /* =========================
-       RESPONSE
-    ========================= */
-
-    return res.status(200).json({
-      success: true,
-
-      totalTransporters: transporters.length,
-
-      transporters,
-    });
-  } catch (error) {
-    console.log("Get Transporters Error:", error);
-
-    return res.status(500).json({
-      success: false,
-
-      message: "Failed to fetch transporters",
 
       error: error.message,
     });
@@ -2806,6 +2444,595 @@ export const markShipmentShippedByTransporter = async (req, res) => {
   }
 };
 
+//transporter ---> getting payments
+export const getTransporterPaymentHistory = async (req, res) => {
+  try {
+    const transporterId = req.user._id;
+
+    /* =========================
+       FIND ORDERS
+    ========================= */
+
+    const orders = await Order.find({
+      "shipments.assignedTransporter": transporterId,
+    })
+      .populate(
+        "buyer",
+        `
+          fullName
+          businessProfile.companyName
+        `,
+      )
+      .populate(
+        "seller",
+        `
+          fullName
+          businessProfile.companyName
+        `,
+      );
+
+    /* =========================
+       FILTER SHIPMENTS
+    ========================= */
+
+    const transporterShipments = [];
+
+    orders.forEach((order) => {
+      order.shipments.forEach((shipment) => {
+        if (
+          shipment?.assignedTransporter?.toString() === transporterId.toString()
+        ) {
+          /* =========================
+             VERIFIED ADMIN PAYMENTS
+          ========================= */
+
+          const verifiedPayments =
+            shipment.adminTransportPaymentReceipts.filter(
+              (r) => r.status === "verified",
+            );
+
+          const totalReceived = verifiedPayments.reduce(
+            (sum, r) => sum + Number(r.amount || 0),
+            0,
+          );
+
+          transporterShipments.push({
+            orderId: order._id,
+
+            orderNumber: order.orderId,
+
+            buyer:
+              order?.buyer?.businessProfile?.companyName ||
+              order?.buyer?.fullName,
+
+            seller:
+              order?.seller?.businessProfile?.companyName ||
+              order?.seller?.fullName,
+
+            shipmentId: shipment._id,
+
+            shipmentInvoiceId: shipment.shipmentInvoiceId,
+
+            selectedItem: shipment.selectedItem,
+
+            transportAmount: shipment.transportFinalAmount || 0,
+
+            totalReceived,
+
+            remainingAmount:
+              Number(shipment.transportFinalAmount || 0) - totalReceived,
+
+            payments: verifiedPayments,
+
+            shipmentStatus: shipment.shipmentStatus,
+
+            pickedUpAt: shipment.pickedUpAt,
+
+            deliveredAt: shipment.deliveredAt,
+          });
+        }
+      });
+    });
+
+    return res.status(200).json({
+      success: true,
+
+      shipments: transporterShipments,
+    });
+  } catch (error) {
+    console.log("Get Transporter Payment History Error:", error);
+
+    return res.status(500).json({
+      success: false,
+
+      message: "Failed to fetch transporter payments",
+
+      error: error.message,
+    });
+  }
+};
+
+
+
+//ADMIN ALL CONTROLLERS
+
+//admin -> transportersquotes
+export const getShipmentQuotes = async (req, res) => {
+  try {
+    const { shipmentId } = req.params;
+
+    /* =========================
+         VALIDATE SHIPMENT ID
+      ========================= */
+
+    if (!mongoose.Types.ObjectId.isValid(shipmentId)) {
+      return res.status(400).json({
+        success: false,
+
+        message: "Invalid shipment id",
+      });
+    }
+
+    /* =========================
+         FETCH QUOTES
+      ========================= */
+
+    const quotes = await ShipmentTransportQuote.find({
+      shipmentId: new mongoose.Types.ObjectId(shipmentId),
+    })
+      .populate(
+        "transporter",
+        `
+            fullName
+            email
+            businessProfile
+            `,
+      )
+      .sort({
+        quotedPrice: 1,
+      })
+      .lean();
+
+    return res.status(200).json({
+      success: true,
+
+      quotes,
+    });
+  } catch (error) {
+    console.log("Get Shipment Quotes Error:", error);
+
+    return res.status(500).json({
+      success: false,
+
+      message: "Failed to fetch shipment quotes",
+    });
+  }
+};
+
+//admin ---> assigntoshipment
+export const assignTransporterToShipment = async (req, res) => {
+  try {
+    const { orderId, shipmentId, quoteId } = req.params;
+
+    /* =========================
+       FIND ORDER
+    ========================= */
+
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    /* =========================
+       FIND SHIPMENT
+    ========================= */
+
+    const shipment = order.shipments.id(shipmentId);
+
+    if (!shipment) {
+      return res.status(404).json({
+        success: false,
+        message: "Shipment not found",
+      });
+    }
+
+    /* =========================
+       VALIDATE STATUS
+    ========================= */
+
+    if (
+      ![
+        "quotes_received",
+        "open_for_quotes",
+        "admin_assignment_rejected",
+      ].includes(shipment.transportStatus)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Shipment already assigned",
+      });
+    }
+
+    /* =========================
+       FIND SELECTED QUOTE
+    ========================= */
+
+    const selectedQuote =
+      await ShipmentTransportQuote.findById(quoteId).populate("transporter");
+
+    if (!selectedQuote) {
+      return res.status(404).json({
+        success: false,
+        message: "Quote not found",
+      });
+    }
+
+    /* =========================
+       GST CALCULATION
+    ========================= */
+
+    const transporterGST =
+      selectedQuote?.transporter?.businessProfile?.gstNumber || "";
+
+    const transporterStateCode = transporterGST.substring(0, 2);
+
+    const companyStateCode = "27";
+
+    const gstType =
+      transporterStateCode === companyStateCode ? "cgst_sgst" : "igst";
+
+    const transportPrice = Number(selectedQuote?.quotedPrice || 0);
+
+    const transportGSTPercent = 5;
+
+    const transportGSTAmount = Number(
+      (transportPrice * (transportGSTPercent / 100)).toFixed(2),
+    );
+
+    const transportFinalAmount = Number(
+      (transportPrice + transportGSTAmount).toFixed(2),
+    );
+
+    /* =========================
+       UPDATE SHIPMENT
+    ========================= */
+
+    shipment.assignedTransporter = selectedQuote.transporter._id;
+
+    shipment.selectedQuoteId = selectedQuote._id;
+
+    shipment.transportStatus = "transporter_assigned";
+
+    shipment.shipmentStatus = "assigned";
+
+    shipment.assignmentMethod = "quote_selection";
+
+    shipment.assignedAt = new Date();
+
+    shipment.adminAssignedAt = new Date();
+
+    /* =========================
+       TRANSPORT AMOUNT
+    ========================= */
+
+    shipment.transportPrice = transportPrice;
+
+    shipment.transportGSTPercent = transportGSTPercent;
+
+    shipment.transportGSTType = gstType;
+
+    shipment.transportGSTAmount = transportGSTAmount;
+
+    shipment.transportFinalAmount = transportFinalAmount;
+
+    /* =========================
+       ADMIN FINAL APPROVAL PRICE
+    ========================= */
+
+    shipment.adminAssignedPrice = transportPrice;
+
+    /* =========================
+       PAYMENT STATUS
+    ========================= */
+
+    shipment.transportPaymentStatus = "unpaid";
+
+    /* =========================
+       REJECT OTHER QUOTES
+    ========================= */
+
+    await ShipmentTransportQuote.updateMany(
+      {
+        shipmentId: new mongoose.Types.ObjectId(shipmentId),
+
+        _id: {
+          $ne: quoteId,
+        },
+      },
+      {
+        $set: {
+          quoteStatus: "rejected",
+
+          rejectedAt: new Date(),
+        },
+      },
+    );
+
+    /* =========================
+       SELECT CURRENT QUOTE
+    ========================= */
+
+    await ShipmentTransportQuote.findByIdAndUpdate(quoteId, {
+      $set: {
+        quoteStatus: "selected",
+
+        selectedAt: new Date(),
+      },
+    });
+
+    /* =========================
+       UPDATE ORDER STATUS
+    ========================= */
+
+    if (["seller_confirmed", "partially_shipped"].includes(order.orderStatus)) {
+      order.orderStatus = "transport_processing";
+    }
+
+    /* =========================
+       SAVE ORDER
+    ========================= */
+
+    await order.save();
+
+    /* =========================
+       UPDATED ORDER
+    ========================= */
+
+    const updatedOrder = await Order.findById(orderId)
+      .populate(
+        "buyer seller",
+        `
+          fullName
+          email
+          businessProfile
+          `,
+      )
+      .populate(
+        "shipments.assignedTransporter",
+        `
+          fullName
+          email
+          businessProfile
+          `,
+      )
+      .populate("shipments.selectedQuoteId");
+
+    /* =========================
+       RESPONSE
+    ========================= */
+
+    return res.status(200).json({
+      success: true,
+
+      message: "Transporter assigned successfully",
+
+      order: updatedOrder,
+    });
+  } catch (error) {
+    console.log("Assign Transporter Error:", error);
+
+    return res.status(500).json({
+      success: false,
+
+      message: "Failed to assign transporter",
+
+      error: error.message,
+    });
+  }
+};
+
+//admin ---> admindirectassign/manual
+export const adminDirectAssignTransporter = async (req, res) => {
+  try {
+    const { orderId, shipmentId } = req.params;
+
+    const { transporterId, adminPrice, adminNote } = req.body;
+
+    /* =========================
+       FIND ORDER
+    ========================= */
+
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+
+        message: "Order not found",
+      });
+    }
+
+    /* =========================
+       FIND SHIPMENT
+    ========================= */
+
+    const shipment = order.shipments.id(shipmentId);
+
+    if (!shipment) {
+      return res.status(404).json({
+        success: false,
+
+        message: "Shipment not found",
+      });
+    }
+
+    /* =========================
+       FIND TRANSPORTER
+    ========================= */
+
+    const transporter = await User.findById(transporterId);
+
+    if (!transporter || transporter.role !== "transporter") {
+      return res.status(404).json({
+        success: false,
+
+        message: "Transporter not found",
+      });
+    }
+
+    /* =========================
+       GST CALCULATION
+    ========================= */
+
+    const transporterGST = transporter?.businessProfile?.gstNumber || "";
+
+    const transporterStateCode = transporterGST.substring(0, 2);
+
+    const companyStateCode = "27";
+
+    const gstType =
+      transporterStateCode === companyStateCode ? "cgst_sgst" : "igst";
+
+    const transportPrice = Number(adminPrice || 0);
+
+    const transportGSTPercent = 5;
+
+    const transportGSTAmount = Number(
+      (transportPrice * (transportGSTPercent / 100)).toFixed(2),
+    );
+
+    const transportFinalAmount = Number(
+      (transportPrice + transportGSTAmount).toFixed(2),
+    );
+
+    /* =========================
+       ASSIGN TRANSPORTER
+    ========================= */
+
+    shipment.assignedTransporter = transporter._id;
+
+    shipment.transportStatus = "admin_assignment_pending";
+
+    shipment.assignmentMethod = "admin_direct_assignment";
+
+    shipment.assignedAt = new Date();
+
+    shipment.adminAssignedAt = new Date();
+
+    shipment.adminAssignedPrice = transportPrice;
+
+    shipment.adminAssignmentNote = adminNote;
+
+    /* =========================
+       TRANSPORT AMOUNTS
+    ========================= */
+
+    shipment.transportPrice = transportPrice;
+
+    shipment.transportGSTPercent = transportGSTPercent;
+
+    shipment.transportGSTType = gstType;
+
+    shipment.transportGSTAmount = transportGSTAmount;
+
+    shipment.transportFinalAmount = transportFinalAmount;
+
+    shipment.transportPaymentStatus = "unpaid";
+
+    /* =========================
+       SAVE
+    ========================= */
+
+    await order.save();
+
+    /* =========================
+       UPDATED ORDER
+    ========================= */
+
+    const updatedOrder = await Order.findById(orderId).populate(
+      "shipments.assignedTransporter",
+      `
+          fullName
+          email
+          businessProfile
+          `,
+    );
+
+    return res.status(200).json({
+      success: true,
+
+      message: "Transporter assigned successfully",
+
+      order: updatedOrder,
+    });
+  } catch (error) {
+    console.log("Admin Direct Assignment Error:", error);
+
+    return res.status(500).json({
+      success: false,
+
+      message: "Failed to assign transporter",
+
+      error: error.message,
+    });
+  }
+};
+
+//admin ---> dropdownselection
+export const getAllTransporters = async (req, res) => {
+  try {
+    /* =========================
+       FETCH TRANSPORTERS
+    ========================= */
+
+    const transporters = await User.find({
+      role: "transporter",
+    })
+      .select(
+        `
+          fullName
+          email
+          mobile
+          businessProfile
+        `,
+      )
+      .sort({
+        createdAt: -1,
+      })
+      .lean();
+
+    console.log("Transporters:", transporters);
+
+    /* =========================
+       RESPONSE
+    ========================= */
+
+    return res.status(200).json({
+      success: true,
+
+      totalTransporters: transporters.length,
+
+      transporters,
+    });
+  } catch (error) {
+    console.log("Get Transporters Error:", error);
+
+    return res.status(500).json({
+      success: false,
+
+      message: "Failed to fetch transporters",
+
+      error: error.message,
+    });
+  }
+};
+
+
+
 //admin ---> updating shiped status
 export const markShipmentShippedByAdmin = async (req, res) => {
   try {
@@ -2878,6 +3105,862 @@ export const markShipmentShippedByAdmin = async (req, res) => {
     });
   }
 };
+
+// admin --> allordersfrombuyer
+export const getAdminAllOrders = async (req, res) => {
+  try {
+    const {
+      page = 1,
+      limit = 10,
+      search = "",
+      status = "",
+      fromDate = "",
+      toDate = "",
+    } = req.query;
+
+    const pageNumber = Number(page);
+    const limitNumber = Number(limit);
+
+    let query = {
+      isDeleted: false,
+    };
+
+    /*
+      Search by:
+      - Order ID
+      - Buyer Name
+      - Buyer Email
+    */
+
+    if (search) {
+      query.$or = [
+        {
+          orderId: {
+            $regex: search,
+            $options: "i",
+          },
+        },
+      ];
+    }
+
+    /*
+      Status Filter
+    */
+
+    if (status && status !== "all") {
+      query.orderStatus = status;
+    }
+
+    /*
+      Date Filter (FULL DAY FIX)
+    */
+
+    if (fromDate && toDate) {
+      const startDate = new Date(fromDate);
+      startDate.setHours(0, 0, 0, 0);
+
+      const endDate = new Date(toDate);
+      endDate.setHours(23, 59, 59, 999);
+
+      query.createdAt = {
+        $gte: startDate,
+        $lte: endDate,
+      };
+    }
+
+    let orders = await Order.find(query)
+      .populate("buyer", "fullName email")
+      .populate("seller", "fullName email")
+      .populate(
+        "orderItems.product",
+        `
+          productName
+          category
+          application
+        `,
+      )
+      .sort({ createdAt: -1 });
+
+    /*
+      Manual search support for buyer name/email
+    */
+
+    if (search) {
+      orders = orders.filter((order) => {
+        const buyerName = order?.buyer?.fullName || "";
+        const buyerEmail = order?.buyer?.email || "";
+
+        return (
+          order.orderId.toLowerCase().includes(search.toLowerCase()) ||
+          buyerName.toLowerCase().includes(search.toLowerCase()) ||
+          buyerEmail.toLowerCase().includes(search.toLowerCase())
+        );
+      });
+    }
+
+    const totalOrders = orders.length;
+
+    const paginatedOrders = orders.slice(
+      (pageNumber - 1) * limitNumber,
+      pageNumber * limitNumber,
+    );
+
+    /*
+      Dashboard Counts
+    */
+
+    const allCount = await Order.countDocuments({
+      isDeleted: false,
+    });
+
+    /*
+      Pending =
+      seller still not approved yet
+    */
+
+    const pendingCount = await Order.countDocuments({
+      isDeleted: false,
+      orderStatus: "pending",
+    });
+
+    const deliveredCount = await Order.countDocuments({
+      isDeleted: false,
+      orderStatus: {
+        $in: ["delivered", "completed"],
+      },
+    });
+
+    const partialShipmentCount = await Order.countDocuments({
+      isDeleted: false,
+      orderStatus: "partially_shipped",
+    });
+
+    const cancelledCount = await Order.countDocuments({
+      isDeleted: false,
+      orderStatus: "cancelled",
+    });
+
+    return res.status(200).json({
+      success: true,
+      totalOrders,
+      currentPage: pageNumber,
+      totalPages: Math.ceil(totalOrders / limitNumber),
+
+      counts: {
+        all: allCount,
+        pending: pendingCount,
+        delivered: deliveredCount,
+        partialShipments: partialShipmentCount,
+        cancelled: cancelledCount,
+      },
+
+      orders: paginatedOrders,
+    });
+  } catch (error) {
+    console.log("Get Admin All Orders Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch admin orders",
+      error: error.message,
+    });
+  }
+};
+
+//admin --->singleorder
+export const getAdminSingleOrderDetails = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+
+    const order = await Order.findOne({
+      _id: orderId,
+      isDeleted: false,
+    })
+      .populate(
+        "buyer",
+        `
+        fullName
+        email
+        addresses
+        businessProfile
+        `,
+      )
+      .populate(
+        "seller",
+        `
+        fullName
+        email
+        addresses
+        businessProfile
+        `,
+      )
+      .populate(
+        "orderItems.product",
+        `
+        productName
+        category
+        application
+        `,
+      )
+      .populate("buyerPaymentReceipts.uploadedBy", "fullName")
+      .populate("buyerPaymentReceipts.verifiedBy", "fullName")
+      .populate("sellerPaymentReceipts.uploadedBy", "fullName")
+      .populate("sellerPaymentReceipts.verifiedBy", "fullName")
+      .populate(
+        "shipments.assignedTransporter",
+        `
+    fullName
+    email
+    businessProfile.companyName
+    businessProfile.phoneNumber
+  `,
+      );
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      order,
+    });
+  } catch (error) {
+    console.log("Get Admin Single Order Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch order details",
+      error: error.message,
+    });
+  }
+};
+
+//admin ---> approvepayment
+export const approveBuyerPayment = async (req, res) => {
+  try {
+    const { orderId, paymentId } = req.params;
+
+    const order = await Order.findOne({
+      _id: orderId,
+      isDeleted: false,
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    const payment = order.buyerPaymentReceipts.id(paymentId);
+
+    if (!payment) {
+      return res.status(404).json({
+        success: false,
+        message: "Payment receipt not found",
+      });
+    }
+
+    if (payment.status === "verified") {
+      return res.status(400).json({
+        success: false,
+        message: "Payment already verified",
+      });
+    }
+
+    /* =========================
+       UPDATE PAYMENT ONLY
+       (NO FULL SAVE)
+    ========================= */
+
+    await Order.updateOne(
+      {
+        _id: orderId,
+        "buyerPaymentReceipts._id": paymentId,
+      },
+      {
+        $set: {
+          "buyerPaymentReceipts.$.status": "verified",
+          "buyerPaymentReceipts.$.verifiedBy": req.user._id,
+          "buyerPaymentReceipts.$.verifiedAt": new Date(),
+        },
+      },
+    );
+
+    /* =========================
+       FETCH UPDATED ORDER
+    ========================= */
+
+    const refreshedOrder = await Order.findById(orderId);
+
+    const verifiedTotal = refreshedOrder.buyerPaymentReceipts
+      .filter((item) => item.status === "verified")
+      .reduce((sum, item) => sum + Number(item.amount || 0), 0);
+
+    const buyerPendingAmount = Math.max(
+      Number(refreshedOrder.totalAmount || 0) - verifiedTotal,
+      0,
+    );
+
+    let buyerPaymentStatus = "pending";
+
+    if (buyerPendingAmount <= 0) {
+      buyerPaymentStatus = "completed";
+    } else if (verifiedTotal > 0) {
+      buyerPaymentStatus = "partial";
+    }
+
+    /* =========================
+       UPDATE ONLY PAYMENT SUMMARY
+    ========================= */
+
+    await Order.updateOne(
+      { _id: orderId },
+      {
+        $set: {
+          buyerPaidAmount: verifiedTotal,
+          buyerPendingAmount: buyerPendingAmount,
+          buyerPaymentStatus: buyerPaymentStatus,
+        },
+      },
+    );
+
+    /* =========================
+       RETURN FINAL POPULATED ORDER
+    ========================= */
+
+    const updatedOrder = await Order.findById(orderId)
+      .populate("buyer", "fullName email addresses businessProfile")
+      .populate("seller", "fullName email addresses businessProfile")
+      .populate("orderItems.product", "productName category application")
+      .populate("buyerPaymentReceipts.uploadedBy", "fullName")
+      .populate("buyerPaymentReceipts.verifiedBy", "fullName")
+      .populate("sellerPaymentReceipts.uploadedBy", "fullName")
+      .populate("sellerPaymentReceipts.verifiedBy", "fullName");
+
+    return res.status(200).json({
+      success: true,
+      message: "Buyer payment approved successfully",
+      order: updatedOrder,
+    });
+  } catch (error) {
+    console.log("Approve Buyer Payment Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to approve buyer payment",
+      error: error.message,
+    });
+  }
+};
+
+//admin ---> paymenttoseller
+export const uploadAdminToSellerPayment = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+
+    const { amount, paymentMode, transactionId, note } = req.body;
+
+    const order = await Order.findOne({
+      _id: orderId,
+      isDeleted: false,
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    if (!amount || Number(amount) <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Valid amount is required",
+      });
+    }
+
+    let uploadedFile = {};
+
+    if (req.file) {
+      uploadedFile = {
+        data: req.file.buffer,
+        contentType: req.file.mimetype,
+        originalName: req.file.originalname,
+      };
+    }
+
+    /* =========================
+       CALCULATE PAYMENT
+    ========================= */
+
+    const newPaidAmount = Number(order.sellerPaidAmount || 0) + Number(amount);
+
+    const newPendingAmount = Math.max(
+      Number(order.totalAmount || 0) - newPaidAmount,
+      0,
+    );
+
+    const isFinalPayment = newPendingAmount <= 0;
+
+    let sellerPaymentStatus = "pending";
+
+    if (newPendingAmount <= 0) {
+      sellerPaymentStatus = "completed";
+    } else if (newPaidAmount > 0) {
+      sellerPaymentStatus = "partial";
+    }
+
+    /* =========================
+       UPDATE ONLY PAYMENT FIELDS
+       (NO FULL ORDER SAVE)
+    ========================= */
+
+    await Order.updateOne(
+      { _id: orderId },
+      {
+        $push: {
+          sellerPaymentReceipts: {
+            file: uploadedFile,
+            amount: Number(amount),
+            paymentMode,
+            transactionId,
+            note,
+
+            uploadedBy: req.user._id,
+            paymentFor: "admin_to_seller",
+
+            status: "verified",
+
+            totalPaidTillNow: newPaidAmount,
+            remainingAmount: newPendingAmount,
+
+            isPartialPayment: !isFinalPayment,
+            isFinalPayment: isFinalPayment,
+
+            verifiedBy: req.user._id,
+            verifiedAt: new Date(),
+          },
+        },
+
+        $set: {
+          sellerPaidAmount: newPaidAmount,
+          sellerPendingAmount: newPendingAmount,
+          sellerPaymentStatus: sellerPaymentStatus,
+        },
+      },
+    );
+
+    /* =========================
+       RETURN POPULATED ORDER
+    ========================= */
+
+    const updatedOrder = await Order.findById(orderId)
+      .populate(
+        "buyer",
+        `
+        fullName
+        email
+        addresses
+        businessProfile
+        `,
+      )
+      .populate(
+        "seller",
+        `
+        fullName
+        email
+        addresses
+        businessProfile
+        `,
+      )
+      .populate("buyerPaymentReceipts.uploadedBy", "fullName")
+      .populate("buyerPaymentReceipts.verifiedBy", "fullName")
+      .populate("sellerPaymentReceipts.uploadedBy", "fullName")
+      .populate("sellerPaymentReceipts.verifiedBy", "fullName");
+
+    return res.status(200).json({
+      success: true,
+      message: "Payment sent to seller successfully",
+      order: updatedOrder,
+    });
+  } catch (error) {
+    console.log("Upload Admin To Seller Payment Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to upload seller payment",
+      error: error.message,
+    });
+  }
+};
+
+//admin ---> markdelivered
+export const markShipmentDeliveredByAdmin = async (req, res) => {
+  try {
+    const { orderId, shipmentId } = req.params;
+
+    /* =========================
+         FIND ORDER
+      ========================= */
+
+    const order = await Order.findOne({
+      _id: orderId,
+      isDeleted: false,
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    /* =========================
+         FIND SHIPMENT
+      ========================= */
+
+    const shipment = order.shipments.id(shipmentId);
+
+    if (!shipment) {
+      return res.status(404).json({
+        success: false,
+        message: "Shipment not found",
+      });
+    }
+
+    /* =========================
+         ALREADY DELIVERED
+      ========================= */
+
+    if (shipment.shipmentStatus === "delivered") {
+      return res.status(400).json({
+        success: false,
+        message: "Shipment already delivered",
+      });
+    }
+
+    /* =========================
+         MARK SINGLE SHIPMENT
+      ========================= */
+
+    shipment.shipmentStatus = "delivered";
+
+    shipment.deliveredAt = new Date();
+
+    /* =========================
+         CHECK FULL DELIVERY
+      ========================= */
+
+    const allItemsDelivered = order.orderItems.every((orderItem) => {
+      const deliveredQty = order.shipments
+        .filter(
+          (shipmentItem) =>
+            shipmentItem.selectedItem?.trim()?.toLowerCase() ===
+              orderItem.productName?.trim()?.toLowerCase() &&
+            shipmentItem.shipmentStatus === "delivered",
+        )
+        .reduce(
+          (total, shipmentItem) =>
+            total + Number(shipmentItem.shippedQuantity || 0),
+          0,
+        );
+
+      return deliveredQty >= Number(orderItem.requiredQuantity);
+    });
+
+    /* =========================
+         UPDATE MAIN ORDER STATUS
+      ========================= */
+
+    if (allItemsDelivered) {
+      order.orderStatus = "delivered";
+
+      order.deliveredAt = new Date();
+    }
+
+    await order.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Shipment marked as delivered",
+      order,
+      shipment,
+    });
+  } catch (error) {
+    console.log("Mark Delivered Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to mark shipment delivered",
+      error: error.message,
+    });
+  }
+};
+
+//admin --> adminverifybuyertransportfee
+export const verifyBuyerTransportPayment = async (req, res) => {
+  try {
+    const adminId = req.user._id;
+    const { orderId, shipmentId, receiptId } = req.params;
+    const { action } = req.body;
+
+    /* =========================
+         VALIDATE ACTION
+      ========================= */
+
+    if (!["verified", "rejected"].includes(action)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid action",
+      });
+    }
+
+    /* =========================
+         FIND ORDER
+      ========================= */
+
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    /* =========================
+         FIND SHIPMENT
+      ========================= */
+
+    const shipment = order.shipments.id(shipmentId);
+
+    if (!shipment) {
+      return res.status(404).json({
+        success: false,
+        message: "Shipment not found",
+      });
+    }
+
+    /* =========================
+         FIND RECEIPT
+      ========================= */
+
+    const receipt = shipment.transportPaymentReceipts.id(receiptId);
+
+    if (!receipt) {
+      return res.status(404).json({
+        success: false,
+        message: "Payment receipt not found",
+      });
+    }
+
+    /* =========================
+         PREVENT RE-VERIFY
+      ========================= */
+    if (receipt.status === "verified" && action === "verified") {
+      return res.status(400).json({
+        success: false,
+        message: "Payment already verified",
+      });
+    }
+
+    /* =========================
+         UPDATE STATUS
+      ========================= */
+
+    receipt.status = action;
+    receipt.verifiedBy = adminId;
+    receipt.verifiedAt = new Date();
+
+    /* =========================
+         VERIFIED TOTAL
+      ========================= */
+
+    const verifiedAmount = shipment.transportPaymentReceipts
+      .filter((r) => r.status === "verified")
+      .reduce((sum, r) => sum + Number(r.amount || 0), 0);
+
+    /* =========================
+         PAYMENT STATUS
+      ========================= */
+
+    if (verifiedAmount <= 0) {
+      shipment.transportPaymentStatus = "unpaid";
+    } else if (verifiedAmount < shipment.transportFinalAmount) {
+      shipment.transportPaymentStatus = "partial_paid";
+    } else {
+      shipment.transportPaymentStatus = "paid";
+    }
+
+    /* =========================
+         SAVE
+      ========================= */
+
+    await order.save();
+
+    return res.status(200).json({
+      success: true,
+      message:
+        action === "verified"
+          ? "Payment verified successfully"
+          : "Payment rejected successfully",
+      order,
+    });
+  } catch (error) {
+    console.log("Verify Buyer Transport Payment Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to verify payment",
+      error: error.message,
+    });
+  }
+};
+
+//Admin --->admin to transporterpayment
+export const uploadAdminTransportPayment = async (req, res) => {
+  try {
+    const adminId = req.user._id;
+    const { orderId, shipmentId } = req.params;
+    const { amount, paymentMode, transactionId, note } = req.body;
+
+    /* =========================
+       FIND ORDER
+    ========================= */
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "order not found",
+      });
+    }
+
+    /* =========================
+       FIND SHIPMENT
+    ========================= */
+    const shipment = order.shipments.id(shipmentId);
+
+    if (!shipment) {
+      return res.status(404).json({
+        success: false,
+        message: "shipment not found",
+      });
+    }
+    /* =========================
+       VALIDATE TRANSPORTER
+    ========================= */
+
+    if (!shipment?.assignedTransporter) {
+      return res.status(400).json({
+        success: false,
+        message: "Transporter not assigned",
+      });
+    }
+
+    /* =========================
+       VALIDATE AMOUNT
+    ========================= */
+
+    const paidAmount = Number(amount);
+
+    if (!paidAmount || paidAmount <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid payment amount",
+      });
+    }
+
+    /* =========================
+       VERIFIED ADMIN PAYMENTS
+    ========================= */
+
+    const adminPaidAmount = (shipment?.adminTransportPaymentReceipts || [])
+      .filter((r) => r.status === "verified")
+      .reduce((sum, r) => sum + Number(r.amount || 0), 0);
+    /* =========================
+       TOTAL TRANSPORT AMOUNT
+    ========================= */
+    const totalTransportAmount = Number(shipment?.transportFinalAmount || 0);
+
+    /* =========================
+       REMAINING AMOUNT
+    ========================= */
+    const remainingAmount = totalTransportAmount - adminPaidAmount;
+
+    /* =========================
+       PREVENT OVERPAY
+    ========================= */
+
+    if (paidAmount > remainingAmount) {
+      return res.status(400).json({
+        success: false,
+        message: "Amount exceeds transport total amount",
+      });
+    }
+    /* =========================
+       FILE
+    ========================= */
+    const paymentFile = req.file
+      ? {
+          data: req.file.buffer,
+          contentType: req.file.mimetype,
+          originalName: req.file.originalname,
+        }
+      : null;
+    /* =========================
+       CREATE RECEIPT
+    ========================= */
+
+    const newReceipt = {
+      file: paymentFile,
+      amount: paidAmount,
+      paymentMode,
+      transactionId,
+      note,
+      uploadedBy: adminId,
+      paymentFor: "admin_to_transporter",
+      status: "verified",
+      verifiedBy: adminId,
+      verifiedAt: new Date(),
+      totalPaidTillNow: adminPaidAmount,
+      remainingAmount: remainingAmount - paidAmount,
+      isPartialPayment: paidAmount < remainingAmount,
+      isFinalPayment: paidAmount === remainingAmount,
+    };
+    /* =========================
+       PUSH RECEIPT
+    ========================= */
+    shipment.adminTransportPaymentReceipts.push(newReceipt);
+
+    /* =========================
+       SAVE
+    ========================= */
+
+    await order.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Transporter payment uploaded successfully",
+      order,
+    });
+  } catch (error) {
+    console.log("Upload Admin Transport Payment Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to upload transporter payment",
+      error: error.message,
+    });
+  }
+};
+
+
+//BUYER ALL CONTROLLERS
 
 //buyer ---> buyerorders
 export const getBuyerOrders = async (req, res) => {
@@ -3519,706 +4602,6 @@ export const downloadBuyReport = async (req, res) => {
   }
 };
 
-// admin --> allordersfrombuyer
-export const getAdminAllOrders = async (req, res) => {
-  try {
-    const {
-      page = 1,
-      limit = 10,
-      search = "",
-      status = "",
-      fromDate = "",
-      toDate = "",
-    } = req.query;
-
-    const pageNumber = Number(page);
-    const limitNumber = Number(limit);
-
-    let query = {
-      isDeleted: false,
-    };
-
-    /*
-      Search by:
-      - Order ID
-      - Buyer Name
-      - Buyer Email
-    */
-
-    if (search) {
-      query.$or = [
-        {
-          orderId: {
-            $regex: search,
-            $options: "i",
-          },
-        },
-      ];
-    }
-
-    /*
-      Status Filter
-    */
-
-    if (status && status !== "all") {
-      query.orderStatus = status;
-    }
-
-    /*
-      Date Filter (FULL DAY FIX)
-    */
-
-    if (fromDate && toDate) {
-      const startDate = new Date(fromDate);
-      startDate.setHours(0, 0, 0, 0);
-
-      const endDate = new Date(toDate);
-      endDate.setHours(23, 59, 59, 999);
-
-      query.createdAt = {
-        $gte: startDate,
-        $lte: endDate,
-      };
-    }
-
-    let orders = await Order.find(query)
-      .populate("buyer", "fullName email")
-      .populate("seller", "fullName email")
-      .populate(
-        "orderItems.product",
-        `
-          productName
-          category
-          application
-        `,
-      )
-      .sort({ createdAt: -1 });
-
-    /*
-      Manual search support for buyer name/email
-    */
-
-    if (search) {
-      orders = orders.filter((order) => {
-        const buyerName = order?.buyer?.fullName || "";
-        const buyerEmail = order?.buyer?.email || "";
-
-        return (
-          order.orderId.toLowerCase().includes(search.toLowerCase()) ||
-          buyerName.toLowerCase().includes(search.toLowerCase()) ||
-          buyerEmail.toLowerCase().includes(search.toLowerCase())
-        );
-      });
-    }
-
-    const totalOrders = orders.length;
-
-    const paginatedOrders = orders.slice(
-      (pageNumber - 1) * limitNumber,
-      pageNumber * limitNumber,
-    );
-
-    /*
-      Dashboard Counts
-    */
-
-    const allCount = await Order.countDocuments({
-      isDeleted: false,
-    });
-
-    /*
-      Pending =
-      seller still not approved yet
-    */
-
-    const pendingCount = await Order.countDocuments({
-      isDeleted: false,
-      orderStatus: "pending",
-    });
-
-    const deliveredCount = await Order.countDocuments({
-      isDeleted: false,
-      orderStatus: {
-        $in: ["delivered", "completed"],
-      },
-    });
-
-    const partialShipmentCount = await Order.countDocuments({
-      isDeleted: false,
-      orderStatus: "partially_shipped",
-    });
-
-    const cancelledCount = await Order.countDocuments({
-      isDeleted: false,
-      orderStatus: "cancelled",
-    });
-
-    return res.status(200).json({
-      success: true,
-      totalOrders,
-      currentPage: pageNumber,
-      totalPages: Math.ceil(totalOrders / limitNumber),
-
-      counts: {
-        all: allCount,
-        pending: pendingCount,
-        delivered: deliveredCount,
-        partialShipments: partialShipmentCount,
-        cancelled: cancelledCount,
-      },
-
-      orders: paginatedOrders,
-    });
-  } catch (error) {
-    console.log("Get Admin All Orders Error:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Failed to fetch admin orders",
-      error: error.message,
-    });
-  }
-};
-
-//admin --->singleorder
-export const getAdminSingleOrderDetails = async (req, res) => {
-  try {
-    const { orderId } = req.params;
-
-    const order = await Order.findOne({
-      _id: orderId,
-      isDeleted: false,
-    })
-      .populate(
-        "buyer",
-        `
-        fullName
-        email
-        addresses
-        businessProfile
-        `,
-      )
-      .populate(
-        "seller",
-        `
-        fullName
-        email
-        addresses
-        businessProfile
-        `,
-      )
-      .populate(
-        "orderItems.product",
-        `
-        productName
-        category
-        application
-        `,
-      )
-      .populate("buyerPaymentReceipts.uploadedBy", "fullName")
-      .populate("buyerPaymentReceipts.verifiedBy", "fullName")
-      .populate("sellerPaymentReceipts.uploadedBy", "fullName")
-      .populate("sellerPaymentReceipts.verifiedBy", "fullName")
-      .populate(
-        "shipments.assignedTransporter",
-        `
-    fullName
-    email
-    businessProfile.companyName
-    businessProfile.phoneNumber
-  `,
-      );
-
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: "Order not found",
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      order,
-    });
-  } catch (error) {
-    console.log("Get Admin Single Order Error:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Failed to fetch order details",
-      error: error.message,
-    });
-  }
-};
-
-//admin ---> approvepayment
-export const approveBuyerPayment = async (req, res) => {
-  try {
-    const { orderId, paymentId } = req.params;
-
-    const order = await Order.findOne({
-      _id: orderId,
-      isDeleted: false,
-    });
-
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: "Order not found",
-      });
-    }
-
-    const payment = order.buyerPaymentReceipts.id(paymentId);
-
-    if (!payment) {
-      return res.status(404).json({
-        success: false,
-        message: "Payment receipt not found",
-      });
-    }
-
-    if (payment.status === "verified") {
-      return res.status(400).json({
-        success: false,
-        message: "Payment already verified",
-      });
-    }
-
-    /* =========================
-       UPDATE PAYMENT ONLY
-       (NO FULL SAVE)
-    ========================= */
-
-    await Order.updateOne(
-      {
-        _id: orderId,
-        "buyerPaymentReceipts._id": paymentId,
-      },
-      {
-        $set: {
-          "buyerPaymentReceipts.$.status": "verified",
-          "buyerPaymentReceipts.$.verifiedBy": req.user._id,
-          "buyerPaymentReceipts.$.verifiedAt": new Date(),
-        },
-      },
-    );
-
-    /* =========================
-       FETCH UPDATED ORDER
-    ========================= */
-
-    const refreshedOrder = await Order.findById(orderId);
-
-    const verifiedTotal = refreshedOrder.buyerPaymentReceipts
-      .filter((item) => item.status === "verified")
-      .reduce((sum, item) => sum + Number(item.amount || 0), 0);
-
-    const buyerPendingAmount = Math.max(
-      Number(refreshedOrder.totalAmount || 0) - verifiedTotal,
-      0,
-    );
-
-    let buyerPaymentStatus = "pending";
-
-    if (buyerPendingAmount <= 0) {
-      buyerPaymentStatus = "completed";
-    } else if (verifiedTotal > 0) {
-      buyerPaymentStatus = "partial";
-    }
-
-    /* =========================
-       UPDATE ONLY PAYMENT SUMMARY
-    ========================= */
-
-    await Order.updateOne(
-      { _id: orderId },
-      {
-        $set: {
-          buyerPaidAmount: verifiedTotal,
-          buyerPendingAmount: buyerPendingAmount,
-          buyerPaymentStatus: buyerPaymentStatus,
-        },
-      },
-    );
-
-    /* =========================
-       RETURN FINAL POPULATED ORDER
-    ========================= */
-
-    const updatedOrder = await Order.findById(orderId)
-      .populate("buyer", "fullName email addresses businessProfile")
-      .populate("seller", "fullName email addresses businessProfile")
-      .populate("orderItems.product", "productName category application")
-      .populate("buyerPaymentReceipts.uploadedBy", "fullName")
-      .populate("buyerPaymentReceipts.verifiedBy", "fullName")
-      .populate("sellerPaymentReceipts.uploadedBy", "fullName")
-      .populate("sellerPaymentReceipts.verifiedBy", "fullName");
-
-    return res.status(200).json({
-      success: true,
-      message: "Buyer payment approved successfully",
-      order: updatedOrder,
-    });
-  } catch (error) {
-    console.log("Approve Buyer Payment Error:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Failed to approve buyer payment",
-      error: error.message,
-    });
-  }
-};
-
-//admin ---> paymenttoseller
-export const uploadAdminToSellerPayment = async (req, res) => {
-  try {
-    const { orderId } = req.params;
-
-    const { amount, paymentMode, transactionId, note } = req.body;
-
-    const order = await Order.findOne({
-      _id: orderId,
-      isDeleted: false,
-    });
-
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: "Order not found",
-      });
-    }
-
-    if (!amount || Number(amount) <= 0) {
-      return res.status(400).json({
-        success: false,
-        message: "Valid amount is required",
-      });
-    }
-
-    let uploadedFile = {};
-
-    if (req.file) {
-      uploadedFile = {
-        data: req.file.buffer,
-        contentType: req.file.mimetype,
-        originalName: req.file.originalname,
-      };
-    }
-
-    /* =========================
-       CALCULATE PAYMENT
-    ========================= */
-
-    const newPaidAmount = Number(order.sellerPaidAmount || 0) + Number(amount);
-
-    const newPendingAmount = Math.max(
-      Number(order.totalAmount || 0) - newPaidAmount,
-      0,
-    );
-
-    const isFinalPayment = newPendingAmount <= 0;
-
-    let sellerPaymentStatus = "pending";
-
-    if (newPendingAmount <= 0) {
-      sellerPaymentStatus = "completed";
-    } else if (newPaidAmount > 0) {
-      sellerPaymentStatus = "partial";
-    }
-
-    /* =========================
-       UPDATE ONLY PAYMENT FIELDS
-       (NO FULL ORDER SAVE)
-    ========================= */
-
-    await Order.updateOne(
-      { _id: orderId },
-      {
-        $push: {
-          sellerPaymentReceipts: {
-            file: uploadedFile,
-            amount: Number(amount),
-            paymentMode,
-            transactionId,
-            note,
-
-            uploadedBy: req.user._id,
-            paymentFor: "admin_to_seller",
-
-            status: "verified",
-
-            totalPaidTillNow: newPaidAmount,
-            remainingAmount: newPendingAmount,
-
-            isPartialPayment: !isFinalPayment,
-            isFinalPayment: isFinalPayment,
-
-            verifiedBy: req.user._id,
-            verifiedAt: new Date(),
-          },
-        },
-
-        $set: {
-          sellerPaidAmount: newPaidAmount,
-          sellerPendingAmount: newPendingAmount,
-          sellerPaymentStatus: sellerPaymentStatus,
-        },
-      },
-    );
-
-    /* =========================
-       RETURN POPULATED ORDER
-    ========================= */
-
-    const updatedOrder = await Order.findById(orderId)
-      .populate(
-        "buyer",
-        `
-        fullName
-        email
-        addresses
-        businessProfile
-        `,
-      )
-      .populate(
-        "seller",
-        `
-        fullName
-        email
-        addresses
-        businessProfile
-        `,
-      )
-      .populate("buyerPaymentReceipts.uploadedBy", "fullName")
-      .populate("buyerPaymentReceipts.verifiedBy", "fullName")
-      .populate("sellerPaymentReceipts.uploadedBy", "fullName")
-      .populate("sellerPaymentReceipts.verifiedBy", "fullName");
-
-    return res.status(200).json({
-      success: true,
-      message: "Payment sent to seller successfully",
-      order: updatedOrder,
-    });
-  } catch (error) {
-    console.log("Upload Admin To Seller Payment Error:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Failed to upload seller payment",
-      error: error.message,
-    });
-  }
-};
-
-//admin ---> markdelivered
-export const markShipmentDeliveredByAdmin = async (req, res) => {
-  try {
-    const { orderId, shipmentId } = req.params;
-
-    /* =========================
-         FIND ORDER
-      ========================= */
-
-    const order = await Order.findOne({
-      _id: orderId,
-      isDeleted: false,
-    });
-
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: "Order not found",
-      });
-    }
-
-    /* =========================
-         FIND SHIPMENT
-      ========================= */
-
-    const shipment = order.shipments.id(shipmentId);
-
-    if (!shipment) {
-      return res.status(404).json({
-        success: false,
-        message: "Shipment not found",
-      });
-    }
-
-    /* =========================
-         ALREADY DELIVERED
-      ========================= */
-
-    if (shipment.shipmentStatus === "delivered") {
-      return res.status(400).json({
-        success: false,
-        message: "Shipment already delivered",
-      });
-    }
-
-    /* =========================
-         MARK SINGLE SHIPMENT
-      ========================= */
-
-    shipment.shipmentStatus = "delivered";
-
-    shipment.deliveredAt = new Date();
-
-    /* =========================
-         CHECK FULL DELIVERY
-      ========================= */
-
-    const allItemsDelivered = order.orderItems.every((orderItem) => {
-      const deliveredQty = order.shipments
-        .filter(
-          (shipmentItem) =>
-            shipmentItem.selectedItem?.trim()?.toLowerCase() ===
-              orderItem.productName?.trim()?.toLowerCase() &&
-            shipmentItem.shipmentStatus === "delivered",
-        )
-        .reduce(
-          (total, shipmentItem) =>
-            total + Number(shipmentItem.shippedQuantity || 0),
-          0,
-        );
-
-      return deliveredQty >= Number(orderItem.requiredQuantity);
-    });
-
-    /* =========================
-         UPDATE MAIN ORDER STATUS
-      ========================= */
-
-    if (allItemsDelivered) {
-      order.orderStatus = "delivered";
-
-      order.deliveredAt = new Date();
-    }
-
-    await order.save();
-
-    return res.status(200).json({
-      success: true,
-      message: "Shipment marked as delivered",
-      order,
-      shipment,
-    });
-  } catch (error) {
-    console.log("Mark Delivered Error:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Failed to mark shipment delivered",
-      error: error.message,
-    });
-  }
-};
-
-//seller ---> markdelivered
-export const markShipmentDeliveredBySeller = async (req, res) => {
-  try {
-    const sellerId = req.user._id;
-
-    const { orderId, shipmentId } = req.params;
-
-    /* =========================
-         FIND ORDER
-      ========================= */
-
-    const order = await Order.findOne({
-      _id: orderId,
-      seller: sellerId,
-      isDeleted: false,
-    });
-
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: "Order not found",
-      });
-    }
-
-    /* =========================
-         FIND SHIPMENT
-      ========================= */
-
-    const shipment = order.shipments.id(shipmentId);
-
-    if (!shipment) {
-      return res.status(404).json({
-        success: false,
-        message: "Shipment not found",
-      });
-    }
-
-    /* =========================
-         ALREADY DELIVERED
-      ========================= */
-
-    if (shipment.shipmentStatus === "delivered") {
-      return res.status(400).json({
-        success: false,
-        message: "Shipment already delivered",
-      });
-    }
-
-    /* =========================
-         MARK SINGLE SHIPMENT
-      ========================= */
-
-    shipment.shipmentStatus = "delivered";
-
-    shipment.deliveredAt = new Date();
-
-    /* =========================
-         CHECK FULL DELIVERY
-      ========================= */
-
-    const allItemsDelivered = order.orderItems.every((orderItem) => {
-      const deliveredQty = order.shipments
-        .filter(
-          (shipmentItem) =>
-            shipmentItem.selectedItem?.trim()?.toLowerCase() ===
-              orderItem.productName?.trim()?.toLowerCase() &&
-            shipmentItem.shipmentStatus === "delivered",
-        )
-        .reduce(
-          (total, shipmentItem) =>
-            total + Number(shipmentItem.shippedQuantity || 0),
-          0,
-        );
-
-      return deliveredQty >= Number(orderItem.requiredQuantity);
-    });
-
-    /* =========================
-         UPDATE MAIN ORDER STATUS
-      ========================= */
-
-    if (allItemsDelivered) {
-      order.orderStatus = "delivered";
-
-      order.deliveredAt = new Date();
-    }
-
-    await order.save();
-
-    return res.status(200).json({
-      success: true,
-      message: "Shipment marked as delivered",
-      order,
-      shipment,
-    });
-  } catch (error) {
-    console.log("Seller Mark Delivered Error:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Failed to mark shipment delivered",
-      error: error.message,
-    });
-  }
-};
 
 //buyer ---> proformainvoice
 export const downloadProformaInvoice = async (req, res) => {
@@ -4499,366 +4882,3 @@ export const uploadTransportPaymentReceipt = async (req, res) => {
   }
 };
 
-//admin --> adminverifybuyertransportfee
-export const verifyBuyerTransportPayment = async (req, res) => {
-  try {
-    const adminId = req.user._id;
-    const { orderId, shipmentId, receiptId } = req.params;
-    const { action } = req.body;
-
-    /* =========================
-         VALIDATE ACTION
-      ========================= */
-
-    if (!["verified", "rejected"].includes(action)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid action",
-      });
-    }
-
-    /* =========================
-         FIND ORDER
-      ========================= */
-
-    const order = await Order.findById(orderId);
-
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: "Order not found",
-      });
-    }
-
-    /* =========================
-         FIND SHIPMENT
-      ========================= */
-
-    const shipment = order.shipments.id(shipmentId);
-
-    if (!shipment) {
-      return res.status(404).json({
-        success: false,
-        message: "Shipment not found",
-      });
-    }
-
-    /* =========================
-         FIND RECEIPT
-      ========================= */
-
-    const receipt = shipment.transportPaymentReceipts.id(receiptId);
-
-    if (!receipt) {
-      return res.status(404).json({
-        success: false,
-        message: "Payment receipt not found",
-      });
-    }
-
-    /* =========================
-         PREVENT RE-VERIFY
-      ========================= */
-    if (receipt.status === "verified" && action === "verified") {
-      return res.status(400).json({
-        success: false,
-        message: "Payment already verified",
-      });
-    }
-
-    /* =========================
-         UPDATE STATUS
-      ========================= */
-
-    receipt.status = action;
-    receipt.verifiedBy = adminId;
-    receipt.verifiedAt = new Date();
-
-    /* =========================
-         VERIFIED TOTAL
-      ========================= */
-
-    const verifiedAmount = shipment.transportPaymentReceipts
-      .filter((r) => r.status === "verified")
-      .reduce((sum, r) => sum + Number(r.amount || 0), 0);
-
-    /* =========================
-         PAYMENT STATUS
-      ========================= */
-
-    if (verifiedAmount <= 0) {
-      shipment.transportPaymentStatus = "unpaid";
-    } else if (verifiedAmount < shipment.transportFinalAmount) {
-      shipment.transportPaymentStatus = "partial_paid";
-    } else {
-      shipment.transportPaymentStatus = "paid";
-    }
-
-    /* =========================
-         SAVE
-      ========================= */
-
-    await order.save();
-
-    return res.status(200).json({
-      success: true,
-      message:
-        action === "verified"
-          ? "Payment verified successfully"
-          : "Payment rejected successfully",
-      order,
-    });
-  } catch (error) {
-    console.log("Verify Buyer Transport Payment Error:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Failed to verify payment",
-      error: error.message,
-    });
-  }
-};
-
-export const uploadAdminTransportPayment = async (req, res) => {
-  try {
-    const adminId = req.user._id;
-    const { orderId, shipmentId } = req.params;
-    const { amount, paymentMode, transactionId, note } = req.body;
-
-    /* =========================
-       FIND ORDER
-    ========================= */
-    const order = await Order.findById(orderId);
-
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: "order not found",
-      });
-    }
-
-    /* =========================
-       FIND SHIPMENT
-    ========================= */
-    const shipment = order.shipments.id(shipmentId);
-
-    if (!shipment) {
-      return res.status(404).json({
-        success: false,
-        message: "shipment not found",
-      });
-    }
-    /* =========================
-       VALIDATE TRANSPORTER
-    ========================= */
-
-    if (!shipment?.assignedTransporter) {
-      return res.status(400).json({
-        success: false,
-        message: "Transporter not assigned",
-      });
-    }
-
-    /* =========================
-       VALIDATE AMOUNT
-    ========================= */
-
-    const paidAmount = Number(amount);
-
-    if (!paidAmount || paidAmount <= 0) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid payment amount",
-      });
-    }
-
-    /* =========================
-       VERIFIED ADMIN PAYMENTS
-    ========================= */
-
-    const adminPaidAmount = (shipment?.adminTransportPaymentReceipts || [])
-      .filter((r) => r.status === "verified")
-      .reduce((sum, r) => sum + Number(r.amount || 0), 0);
-    /* =========================
-       TOTAL TRANSPORT AMOUNT
-    ========================= */
-    const totalTransportAmount = Number(shipment?.transportFinalAmount || 0);
-
-    /* =========================
-       REMAINING AMOUNT
-    ========================= */
-    const remainingAmount = totalTransportAmount - adminPaidAmount;
-
-    /* =========================
-       PREVENT OVERPAY
-    ========================= */
-
-    if (paidAmount > remainingAmount) {
-      return res.status(400).json({
-        success: false,
-        message: "Amount exceeds transport total amount",
-      });
-    }
-    /* =========================
-       FILE
-    ========================= */
-    const paymentFile = req.file
-      ? {
-          data: req.file.buffer,
-          contentType: req.file.mimetype,
-          originalName: req.file.originalname,
-        }
-      : null;
-    /* =========================
-       CREATE RECEIPT
-    ========================= */
-
-    const newReceipt = {
-      file: paymentFile,
-      amount: paidAmount,
-      paymentMode,
-      transactionId,
-      note,
-      uploadedBy: adminId,
-      paymentFor: "admin_to_transporter",
-      status: "verified",
-      verifiedBy: adminId,
-      verifiedAt: new Date(),
-      totalPaidTillNow: adminPaidAmount,
-      remainingAmount: remainingAmount - paidAmount,
-      isPartialPayment: paidAmount < remainingAmount,
-      isFinalPayment: paidAmount === remainingAmount,
-    };
-    /* =========================
-       PUSH RECEIPT
-    ========================= */
-    shipment.adminTransportPaymentReceipts.push(newReceipt);
-
-    /* =========================
-       SAVE
-    ========================= */
-
-    await order.save();
-
-    return res.status(200).json({
-      success: true,
-      message: "Transporter payment uploaded successfully",
-      order,
-    });
-  } catch (error) {
-    console.log("Upload Admin Transport Payment Error:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Failed to upload transporter payment",
-      error: error.message,
-    });
-  }
-};
-
-export const getTransporterPaymentHistory = async (req, res) => {
-  try {
-    const transporterId = req.user._id;
-
-    /* =========================
-       FIND ORDERS
-    ========================= */
-
-    const orders = await Order.find({
-      "shipments.assignedTransporter": transporterId,
-    })
-      .populate(
-        "buyer",
-        `
-          fullName
-          businessProfile.companyName
-        `,
-      )
-      .populate(
-        "seller",
-        `
-          fullName
-          businessProfile.companyName
-        `,
-      );
-
-    /* =========================
-       FILTER SHIPMENTS
-    ========================= */
-
-    const transporterShipments = [];
-
-    orders.forEach((order) => {
-      order.shipments.forEach((shipment) => {
-        if (
-          shipment?.assignedTransporter?.toString() === transporterId.toString()
-        ) {
-          /* =========================
-             VERIFIED ADMIN PAYMENTS
-          ========================= */
-
-          const verifiedPayments =
-            shipment.adminTransportPaymentReceipts.filter(
-              (r) => r.status === "verified",
-            );
-
-          const totalReceived = verifiedPayments.reduce(
-            (sum, r) => sum + Number(r.amount || 0),
-            0,
-          );
-
-          transporterShipments.push({
-            orderId: order._id,
-
-            orderNumber: order.orderId,
-
-            buyer:
-              order?.buyer?.businessProfile?.companyName ||
-              order?.buyer?.fullName,
-
-            seller:
-              order?.seller?.businessProfile?.companyName ||
-              order?.seller?.fullName,
-
-            shipmentId: shipment._id,
-
-            shipmentInvoiceId: shipment.shipmentInvoiceId,
-
-            selectedItem: shipment.selectedItem,
-
-            transportAmount: shipment.transportFinalAmount || 0,
-
-            totalReceived,
-
-            remainingAmount:
-              Number(shipment.transportFinalAmount || 0) - totalReceived,
-
-            payments: verifiedPayments,
-
-            shipmentStatus: shipment.shipmentStatus,
-
-            pickedUpAt: shipment.pickedUpAt,
-
-            deliveredAt: shipment.deliveredAt,
-          });
-        }
-      });
-    });
-
-    return res.status(200).json({
-      success: true,
-
-      shipments: transporterShipments,
-    });
-  } catch (error) {
-    console.log("Get Transporter Payment History Error:", error);
-
-    return res.status(500).json({
-      success: false,
-
-      message: "Failed to fetch transporter payments",
-
-      error: error.message,
-    });
-  }
-};
