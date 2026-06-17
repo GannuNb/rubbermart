@@ -13,68 +13,81 @@ export const getTransporterDashboardStats = async (req, res) => {
     try {
         const transporterId = req.user._id;
 
-        const [myQuotes, allOrders] = await Promise.all([
-            ShipmentTransportQuote.find({ transporter: transporterId }).lean(),
-            Order.find({
-                $or: [
-                    { "shipments.transportStatus": "open_for_quotes" },
-                    { "shipments.transportStatus": "admin_assignment_pending" },
-                    { "shipments.assignedTransporter": transporterId }
-                ],
-                isDeleted: false
-            }).lean()
+        const stats = await Order.aggregate([
+            {
+                $match: {
+                    isDeleted: false,
+                    $or: [
+                        { "shipments.assignedTransporter": transporterId },
+                        { "shipments.transportStatus": "open_for_quotes" }
+                    ]
+                }
+            },
+            { $unwind: "$shipments" },
+            {
+                $group: {
+                    _id: null,
+                    openShipments: {
+                        $sum: { $cond: [{ $eq: ["$shipments.transportStatus", "open_for_quotes"] }, 1, 0] }
+                    },
+                    adminPending: {
+                        $sum: {
+                            $cond: [
+                                { $and: [
+                                    { $eq: ["$shipments.assignedTransporter", transporterId] },
+                                    { $eq: ["$shipments.transportStatus", "admin_assignment_pending"] }
+                                ]}, 1, 0
+                            ]
+                        }
+                    },
+                    assignedShipments: {
+                        $sum: {
+                            $cond: [
+                                { $and: [
+                                    { $eq: ["$shipments.assignedTransporter", transporterId] },
+                                    { $eq: ["$shipments.transportStatus", "transporter_assigned"] },
+                                    { $not: { $in: ["$shipments.shipmentStatus", ["delivered", "completed"]] } }
+                                ]}, 1, 0
+                            ]
+                        }
+                    },
+                    completedShipments: {
+                        $sum: {
+                            $cond: [
+                                { $and: [
+                                    { $eq: ["$shipments.assignedTransporter", transporterId] },
+                                    { $in: ["$shipments.shipmentStatus", ["delivered", "completed"]] }
+                                ]}, 1, 0
+                            ]
+                        }
+                    },
+                    revenue: {
+                        $sum: {
+                            $cond: [
+                                { $and: [
+                                    { $eq: ["$shipments.assignedTransporter", transporterId] },
+                                    { $in: ["$shipments.shipmentStatus", ["delivered", "completed"]] }
+                                ]},
+                                { $toDouble: { $ifNull: ["$shipments.transportFinalAmount", 0] } },
+                                0
+                            ]
+                        }
+                    }
+                }
+            }
         ]);
 
-        const myQuotedShipmentIds = new Set(myQuotes.map(q => q.shipmentId.toString()));
-        const openShipmentsList = [];
-        const adminPendingList = [];
-        const assignedShipmentsList = [];
-        let aggregateRevenue = 0;
-        let completedCount = 0;
-
-        allOrders.forEach(o => {
-            o.shipments.forEach(s => {
-                const isMyShipment = s.assignedTransporter?.toString() === transporterId.toString();
-
-                // Open Marketplace Loads
-                if (s.transportStatus === "open_for_quotes" && !myQuotedShipmentIds.has(s._id.toString())) {
-                    openShipmentsList.push({ shipmentId: s.shipmentInvoiceId, route: `${s.shipmentFrom} ➔ ${s.shipmentTo}`, item: s.selectedItem });
-                }
-
-                // Admin Pending Loads
-                if (s.transportStatus === "admin_assignment_pending") {
-                    adminPendingList.push({ shipmentId: s.shipmentInvoiceId, route: `${s.shipmentFrom} ➔ ${s.shipmentTo}` });
-                }
-
-                // Assigned & Completed Shipments
-                if (isMyShipment) {
-                    if (ACTIVE_STATUSES.includes(s.shipmentStatus)) {
-                        assignedShipmentsList.push({ shipmentId: s.shipmentInvoiceId, route: `${s.shipmentFrom} ➔ ${s.shipmentTo}`, status: s.shipmentStatus });
-                    }
-                    if (COMPLETED_STATUSES.includes(s.shipmentStatus)) {
-                        completedCount++;
-                        aggregateRevenue += Number(s.transportFinalAmount || s.transportPrice || 0);
-                    }
-                }
-            });
-        });
+        const result = stats[0] || { openShipments: 0, adminPending: 0, assignedShipments: 0, completedShipments: 0, revenue: 0 };
 
         res.status(200).json({
             success: true,
             stats: {
-                openShipments: openShipmentsList.length,
-                // Summing bids and admin-pending tasks into one logical KPI
-                pendingRequests: myQuotes.filter(q => q.quoteStatus === "submitted").length + adminPendingList.length,
-                adminPending: adminPendingList.length, // Keep as a separate metric for the new card
-                assignedShipments: assignedShipmentsList.length,
-                completedShipments: completedCount,
-                revenue: aggregateRevenue >= 100000 ? `${(aggregateRevenue / 100000).toFixed(2)} Lakhs` : `₹${aggregateRevenue.toLocaleString()}`
-            },
-            openShipmentsList,
-            adminPendingList,
-            assignedShipmentsList
+                ...result,
+                revenue: `₹${result.revenue.toLocaleString()}`
+            }
         });
     } catch (error) {
+        console.error("Dashboard Stats Error:", error);
         res.status(500).json({ success: false, message: "Error fetching stats" });
     }
 };
