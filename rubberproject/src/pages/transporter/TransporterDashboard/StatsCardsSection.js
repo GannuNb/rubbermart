@@ -36,54 +36,37 @@ function StatsCardsSection() {
       });
   }, []);
 
-// ... inside StatsCardsSection component
+  // ... inside StatsCardsSection component
 
+// Change this in StatsCardsSection.js
 const cards = [
-  { label: "Open Shipments", val: stats.pendingRequests, icon: <FiFileText />, color: styles.purpleIcon, path: "/transporter-shipments" },
-  { label: "Admin Quote Requests", val: stats.adminPending, icon: <FiLayers />, color: styles.orangeIcon, path: "/transporter-pending-assignments"  },
-  { label: "Assigned", val: stats.assignedShipments, icon: <FiLayers />, color: styles.purpleIcon , path: "/transporter-assigned-shipments" },
-  { label: "Completed", val: stats.completedShipments, icon: <FiCheckCircle />, color: styles.purpleIcon, path: "/transporter-completed-deliveries"  },
-  { label: "Revenue", val: stats.revenue, icon: <BiRupee />, color: styles.greenIcon, isRevenue: true, path: "/transporter/payments"  },
+  { label: "Open Shipments", val: stats.openShipments, icon: <FiFileText />, color: styles.purpleIcon, path: "/transporter-shipments" },
+  { label: "Admin Quote Requests", val: stats.adminPending, icon: <FiLayers />, color: styles.orangeIcon, path: "/transporter-pending-assignments" },
+  { label: "Assigned", val: stats.assignedShipments, icon: <FiLayers />, color: styles.purpleIcon, path: "/transporter-assigned-shipments" },
+  { label: "Completed", val: stats.completedShipments, icon: <FiCheckCircle />, color: styles.purpleIcon, path: "/transporter-completed-deliveries" },
+  { label: "Revenue", val: stats.revenue, icon: <BiRupee />, color: styles.greenIcon, isRevenue: true, path: "/transporter/payments" },
 ];
 
-// ...
+  // ...
 
-  return (
-    <section className={styles.grid}>
-  {cards.map((c, i) => {
-    const cardContent = (
-      <>
-        <div className={`${styles.iconWrapper} ${c.color}`}>{c.icon}</div>
-        <div className={styles.info}>
-          <span className={styles.label}>{c.label}</span>
-          <h2 className={c.isRevenue ? styles.revenueText : ""}>
-            {loading ? "..." : c.val}
-          </h2>
-        </div>
-      </>
-    );
-
-    return (
-      <div className={styles.card}>
-  <Link 
-    to={c.path} 
-    style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '16px', width: '100%' }}
-  >
-    <div className={`${styles.iconWrapper} ${c.color}`}>
-      {c.icon}
-    </div>
-    <div className={styles.info}>
-      <span className={styles.label}>{c.label}</span>
-      <h2 className={c.isRevenue ? styles.revenueText : ""}>
-        {loading ? "..." : c.val}
-      </h2>
-    </div>
-  </Link>
-</div>
-    );
-  })}
-</section>
-  );
+// Inside StatsCardsSection component
+return (
+  <section className={styles.grid}>
+    {cards.map((c, i) => (
+      <div className={styles.card} key={i}>
+        <Link to={c.path} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '16px', width: '100%' }}>
+          <div className={`${styles.iconWrapper} ${c.color}`}>{c.icon}</div>
+          <div className={styles.info}>
+            <span className={styles.label}>{c.label}</span>
+            <h2 className={c.isRevenue ? styles.revenueText : ""}>
+              {loading ? "..." : (c.val !== undefined ? c.val : 0)}
+            </h2>
+          </div>
+        </Link>
+      </div>
+    ))}
+  </section>
+);
 }
 
 export default StatsCardsSection;
