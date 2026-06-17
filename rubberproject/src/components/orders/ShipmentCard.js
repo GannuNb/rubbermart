@@ -24,9 +24,8 @@ const ShipmentCard = ({ shipment, orderId }) => {
 
   const [showDetails, setShowDetails] = useState(false);
 
-  const { markDeliveredLoading, markShippedLoading } = useSelector(
-    (state) => state.sellerOrders,
-  );
+  const { markDeliveredLoading, markShippedLoading, activeShipmentId } =
+    useSelector((state) => state.sellerOrders);
 
   /* =========================
      STATUS
@@ -281,11 +280,14 @@ const ShipmentCard = ({ shipment, orderId }) => {
               type="button"
               className={styles.shippedButton}
               onClick={handleMarkShipped}
-              disabled={!canMarkShipped || markShippedLoading}
+              disabled={
+                !canMarkShipped ||
+                (markShippedLoading && activeShipmentId === shipment._id)
+              }
             >
               <FiPackage />
 
-              {markShippedLoading
+              {markShippedLoading && activeShipmentId === shipment._id
                 ? "Updating..."
                 : isShipped
                   ? "Shipment Shipped"
@@ -299,21 +301,25 @@ const ShipmentCard = ({ shipment, orderId }) => {
 
           {(isShipped || isDelivered) && (
             <button
-            type="button"
-            className={
-              isDelivered ? styles.deliveredButton : styles.deliverButton
-            }
-            onClick={handleMarkDelivered}
-            disabled={!canMarkDelivered || isDelivered || markDeliveredLoading}
-          >
-            <FiCheckCircle />
+              type="button"
+              className={
+                isDelivered ? styles.deliveredButton : styles.deliverButton
+              }
+              onClick={handleMarkDelivered}
+              disabled={
+                !canMarkDelivered ||
+                isDelivered ||
+                (markDeliveredLoading && activeShipmentId === shipment._id)
+              }
+            >
+              <FiCheckCircle />
 
-            {markDeliveredLoading
-              ? "Updating..."
-              : isDelivered
-                ? "Delivered"
-                : "Mark As Delivered"}
-          </button>
+              {markDeliveredLoading && activeShipmentId === shipment._id
+                ? "Updating..."
+                : isDelivered
+                  ? "Delivered"
+                  : "Mark As Delivered"}
+            </button>
           )}
         </div>
       )}

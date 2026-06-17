@@ -2680,15 +2680,7 @@ export const assignTransporterToShipment = async (req, res) => {
        GST CALCULATION
     ========================= */
 
-    const transporterGST =
-      selectedQuote?.transporter?.businessProfile?.gstNumber || "";
-
-    const transporterStateCode = transporterGST.substring(0, 2);
-
-    const companyStateCode = "27";
-
-    const gstType =
-      transporterStateCode === companyStateCode ? "cgst_sgst" : "igst";
+    const gstType = order.gstType || "igst";
 
     const transportPrice = Number(selectedQuote?.quotedPrice || 0);
 
@@ -2893,14 +2885,7 @@ export const adminDirectAssignTransporter = async (req, res) => {
        GST CALCULATION
     ========================= */
 
-    const transporterGST = transporter?.businessProfile?.gstNumber || "";
-
-    const transporterStateCode = transporterGST.substring(0, 2);
-
-    const companyStateCode = "27";
-
-    const gstType =
-      transporterStateCode === companyStateCode ? "cgst_sgst" : "igst";
+    const gstType = order.gstType || "igst";
 
     const transportPrice = Number(adminPrice || 0);
 

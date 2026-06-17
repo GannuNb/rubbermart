@@ -38,6 +38,8 @@ const initialState = {
   markShippedLoading: false,
   markShippedError: null,
   markShippedSuccess: null,
+
+  activeShipmentId: null,
 };
 
 const sellerOrderSlice = createSlice({
@@ -160,8 +162,10 @@ const sellerOrderSlice = createSlice({
             MARK DELIVERED
          ========================= */
 
-      .addCase(markShipmentDeliveredBySellerThunk.pending, (state) => {
+      .addCase(markShipmentDeliveredBySellerThunk.pending, (state, action) => {
         state.markDeliveredLoading = true;
+
+        state.activeShipmentId = action.meta.arg.shipmentId;
 
         state.markDeliveredError = null;
 
@@ -173,6 +177,8 @@ const sellerOrderSlice = createSlice({
         (state, action) => {
           state.markDeliveredLoading = false;
 
+          state.activeShipmentId = null;
+
           state.markDeliveredSuccess = "Shipment marked as delivered";
 
           state.selectedOrder = action.payload;
@@ -182,6 +188,8 @@ const sellerOrderSlice = createSlice({
       .addCase(markShipmentDeliveredBySellerThunk.rejected, (state, action) => {
         state.markDeliveredLoading = false;
 
+        state.activeShipmentId = null;
+
         state.markDeliveredError = action.payload;
       })
 
@@ -189,8 +197,10 @@ const sellerOrderSlice = createSlice({
    MARK SHIPPED
 ========================= */
 
-      .addCase(markShipmentShippedBySellerThunk.pending, (state) => {
+      .addCase(markShipmentShippedBySellerThunk.pending, (state, action) => {
         state.markShippedLoading = true;
+
+        state.activeShipmentId = action.meta.arg.shipmentId;
 
         state.markShippedError = null;
 
@@ -200,6 +210,8 @@ const sellerOrderSlice = createSlice({
       .addCase(markShipmentShippedBySellerThunk.fulfilled, (state, action) => {
         state.markShippedLoading = false;
 
+        state.activeShipmentId = null;
+
         state.markShippedSuccess = "Shipment marked as shipped";
 
         state.selectedOrder = action.payload;
@@ -207,6 +219,8 @@ const sellerOrderSlice = createSlice({
 
       .addCase(markShipmentShippedBySellerThunk.rejected, (state, action) => {
         state.markShippedLoading = false;
+
+        state.activeShipmentId = null;
 
         state.markShippedError = action.payload;
 
