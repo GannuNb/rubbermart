@@ -38,6 +38,16 @@ const ShipmentCard = ({ shipment, orderId }) => {
     shipment.shipmentStatus === "shipped" ||
     shipment.shipmentStatus === "in_transit";
 
+  const canMarkShipped =
+    shipment.transportStatus === "transporter_assigned" &&
+    !isShipped &&
+    !isDelivered;
+
+  const canMarkDelivered =
+    (shipment.shipmentStatus === "shipped" ||
+      shipment.shipmentStatus === "in_transit") &&
+    !isDelivered;
+
   /* =========================
      OPEN FILE
   ========================= */
@@ -266,12 +276,12 @@ const ShipmentCard = ({ shipment, orderId }) => {
               MARK SHIPPED
           ========================= */}
 
-          {shipment.transportStatus === "transporter_assigned" && (
+          {canMarkShipped && (
             <button
               type="button"
               className={styles.shippedButton}
               onClick={handleMarkShipped}
-              disabled={isShipped || isDelivered || markShippedLoading}
+              disabled={!canMarkShipped || markShippedLoading}
             >
               <FiPackage />
 
@@ -287,13 +297,14 @@ const ShipmentCard = ({ shipment, orderId }) => {
               DELIVERED
           ========================= */}
 
-          <button
+          {(isShipped || isDelivered) && (
+            <button
             type="button"
             className={
               isDelivered ? styles.deliveredButton : styles.deliverButton
             }
             onClick={handleMarkDelivered}
-            disabled={isDelivered || markDeliveredLoading}
+            disabled={!canMarkDelivered || isDelivered || markDeliveredLoading}
           >
             <FiCheckCircle />
 
@@ -303,6 +314,7 @@ const ShipmentCard = ({ shipment, orderId }) => {
                 ? "Delivered"
                 : "Mark As Delivered"}
           </button>
+          )}
         </div>
       )}
     </div>

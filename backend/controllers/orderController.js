@@ -212,8 +212,6 @@ REDUCE PRODUCT STOCK
   }
 };
 
-
-
 //SELLER ALL CONTROLLERS
 
 //seller-->ordersforsellers
@@ -750,8 +748,7 @@ export const addShipmentToOrder = async (req, res) => {
   }
 };
 
-
-//seller ---> markasship
+// seller ---> mark shipment shipped
 export const markShipmentShippedBySeller = async (req, res) => {
   try {
     const sellerId = req.user._id;
@@ -789,36 +786,29 @@ export const markShipmentShippedBySeller = async (req, res) => {
     }
 
     /* =========================
-       VALIDATE TRANSPORT
-    ========================= */
-
-    if (shipment.transportMode !== "marketplace_transport") {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Only marketplace transport shipments can be marked as shipped",
-      });
-    }
-
-    /* =========================
-       VALIDATE ASSIGNMENT
+       VALIDATE ASSIGNED
     ========================= */
 
     if (shipment.transportStatus !== "transporter_assigned") {
       return res.status(400).json({
         success: false,
-        message: "Transporter not assigned yet",
+        message: "Shipment must have assigned transporter before shipping",
       });
     }
 
     /* =========================
-       VALIDATE STATUS
+       INVALID STATUS
     ========================= */
 
-    if (shipment.shipmentStatus === "shipped") {
+    if (
+      shipment.shipmentStatus === "shipped" ||
+      shipment.shipmentStatus === "in_transit" ||
+      shipment.shipmentStatus === "delivered" ||
+      shipment.shipmentStatus === "completed"
+    ) {
       return res.status(400).json({
         success: false,
-        message: "Shipment already marked as shipped",
+        message: "Shipment already shipped or completed",
       });
     }
 
@@ -830,12 +820,45 @@ export const markShipmentShippedBySeller = async (req, res) => {
 
     shipment.shippedAt = new Date();
 
+    /* =========================
+       UPDATE ORDER STATUS
+    ========================= */
+
+    const hasShippedShipments = order.shipments.some(
+      (item) =>
+        item.shipmentStatus === "shipped" ||
+        item.shipmentStatus === "in_transit" ||
+        item.shipmentStatus === "delivered",
+    );
+
+    if (
+      hasShippedShipments &&
+      order.orderStatus !== "delivered" &&
+      order.orderStatus !== "completed"
+    ) {
+      order.orderStatus = "partially_shipped";
+    }
+
+    const allShipmentsShipped = order.shipments.every(
+      (item) =>
+        item.shipmentStatus === "shipped" ||
+        item.shipmentStatus === "in_transit" ||
+        item.shipmentStatus === "delivered",
+    );
+
+    if (allShipmentsShipped) {
+      order.orderStatus = "shipped";
+
+      order.shippedAt = new Date();
+    }
+
     await order.save();
 
     return res.status(200).json({
       success: true,
       message: "Shipment marked as shipped successfully",
       order,
+      shipment,
     });
   } catch (error) {
     console.log("Mark Shipment Shipped Error:", error);
@@ -847,7 +870,7 @@ export const markShipmentShippedBySeller = async (req, res) => {
   }
 };
 
-//seller ---> markdelivered
+// seller ---> mark delivered
 export const markShipmentDeliveredBySeller = async (req, res) => {
   try {
     const sellerId = req.user._id;
@@ -855,8 +878,8 @@ export const markShipmentDeliveredBySeller = async (req, res) => {
     const { orderId, shipmentId } = req.params;
 
     /* =========================
-         FIND ORDER
-      ========================= */
+       FIND ORDER
+    ========================= */
 
     const order = await Order.findOne({
       _id: orderId,
@@ -872,8 +895,8 @@ export const markShipmentDeliveredBySeller = async (req, res) => {
     }
 
     /* =========================
-         FIND SHIPMENT
-      ========================= */
+       FIND SHIPMENT
+    ========================= */
 
     const shipment = order.shipments.id(shipmentId);
 
@@ -885,8 +908,36 @@ export const markShipmentDeliveredBySeller = async (req, res) => {
     }
 
     /* =========================
-         ALREADY DELIVERED
-      ========================= */
+       INVALID STATUS
+    ========================= */
+
+    if (
+      shipment.shipmentStatus === "completed" ||
+      shipment.shipmentStatus === "cancelled"
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Cannot update completed/cancelled shipment",
+      });
+    }
+
+    /* =========================
+       VALIDATE SHIPPED FIRST
+    ========================= */
+
+    if (
+      shipment.shipmentStatus !== "shipped" &&
+      shipment.shipmentStatus !== "in_transit"
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Shipment must be shipped before delivery",
+      });
+    }
+
+    /* =========================
+       ALREADY DELIVERED
+    ========================= */
 
     if (shipment.shipmentStatus === "delivered") {
       return res.status(400).json({
@@ -896,39 +947,22 @@ export const markShipmentDeliveredBySeller = async (req, res) => {
     }
 
     /* =========================
-         MARK SINGLE SHIPMENT
-      ========================= */
+       UPDATE SHIPMENT
+    ========================= */
 
     shipment.shipmentStatus = "delivered";
 
     shipment.deliveredAt = new Date();
 
     /* =========================
-         CHECK FULL DELIVERY
-      ========================= */
+       CHECK ALL DELIVERED
+    ========================= */
 
-    const allItemsDelivered = order.orderItems.every((orderItem) => {
-      const deliveredQty = order.shipments
-        .filter(
-          (shipmentItem) =>
-            shipmentItem.selectedItem?.trim()?.toLowerCase() ===
-              orderItem.productName?.trim()?.toLowerCase() &&
-            shipmentItem.shipmentStatus === "delivered",
-        )
-        .reduce(
-          (total, shipmentItem) =>
-            total + Number(shipmentItem.shippedQuantity || 0),
-          0,
-        );
+    const allShipmentsDelivered = order.shipments.every(
+      (item) => item.shipmentStatus === "delivered",
+    );
 
-      return deliveredQty >= Number(orderItem.requiredQuantity);
-    });
-
-    /* =========================
-         UPDATE MAIN ORDER STATUS
-      ========================= */
-
-    if (allItemsDelivered) {
+    if (allShipmentsDelivered) {
       order.orderStatus = "delivered";
 
       order.deliveredAt = new Date();
@@ -948,10 +982,10 @@ export const markShipmentDeliveredBySeller = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Failed to mark shipment delivered",
-      error: error.message,
     });
   }
 };
+
 
 //TRANSPORTER ALL CONTROLLERS
 
@@ -1313,7 +1347,6 @@ export const getTransporterQuotes = async (req, res) => {
   }
 };
 
-
 //transporters ---> asignedshipments
 export const getTransporterAssignedShipments = async (req, res) => {
   try {
@@ -1355,13 +1388,13 @@ export const getTransporterAssignedShipments = async (req, res) => {
     orders.forEach((order) => {
       order.shipments.forEach((shipment) => {
         if (
-  shipment?.assignedTransporter?._id?.toString() ===
-    transporterId.toString() &&
-  shipment?.transportStatus === "transporter_assigned" &&
-  !["delivered", "completed", "cancelled"].includes(
-    shipment.shipmentStatus,
-  )
-) {
+          shipment?.assignedTransporter?._id?.toString() ===
+            transporterId.toString() &&
+          shipment?.transportStatus === "transporter_assigned" &&
+          !["delivered", "completed", "cancelled"].includes(
+            shipment.shipmentStatus,
+          )
+        ) {
           assignedShipments.push({
             orderId: order._id,
 
@@ -2002,8 +2035,6 @@ export const transporterAcceptAssignment = async (req, res) => {
           quoteStatus: "selected",
 
           selectedAt: new Date(),
-          
-          
         });
 
         shipment.selectedQuoteId = createdQuote._id;
@@ -2138,8 +2169,7 @@ export const transporterRejectAssignment = async (req, res) => {
     ========================= */
 
     if (
-      shipment?.assignedTransporter?.toString() !==
-      transporterId.toString()
+      shipment?.assignedTransporter?.toString() !== transporterId.toString()
     ) {
       return res.status(403).json({
         success: false,
@@ -2152,15 +2182,11 @@ export const transporterRejectAssignment = async (req, res) => {
        VALIDATE STATUS
     ========================= */
 
-    if (
-      shipment.transportStatus !==
-      "admin_assignment_pending"
-    ) {
+    if (shipment.transportStatus !== "admin_assignment_pending") {
       return res.status(400).json({
         success: false,
 
-        message:
-          "Assignment already processed",
+        message: "Assignment already processed",
       });
     }
 
@@ -2187,42 +2213,31 @@ export const transporterRejectAssignment = async (req, res) => {
        RESET SHIPMENT
     ========================= */
 
-    shipment.transportStatus =
-      "open_for_quotes";
+    shipment.transportStatus = "open_for_quotes";
 
-    shipment.shipmentStatus =
-      "packed";
+    shipment.shipmentStatus = "packed";
 
-    shipment.assignedTransporter =
-      null;
+    shipment.assignedTransporter = null;
 
-    shipment.selectedQuoteId =
-      null;
+    shipment.selectedQuoteId = null;
 
     shipment.assignedAt = null;
 
-    shipment.adminAssignedAt =
-      null;
+    shipment.adminAssignedAt = null;
 
     shipment.transportPrice = 0;
 
-    shipment.transportGSTAmount =
-      0;
+    shipment.transportGSTAmount = 0;
 
-    shipment.transportGSTType =
-      "igst";
+    shipment.transportGSTType = "igst";
 
-    shipment.transportFinalAmount =
-      0;
+    shipment.transportFinalAmount = 0;
 
-    shipment.adminAssignedPrice =
-      0;
+    shipment.adminAssignedPrice = 0;
 
-    shipment.transportPaymentStatus =
-      "unpaid";
+    shipment.transportPaymentStatus = "unpaid";
 
-    shipment.adminAssignmentNote =
-      "";
+    shipment.adminAssignmentNote = "";
 
     shipment.pickedUpAt = null;
 
@@ -2236,19 +2251,16 @@ export const transporterRejectAssignment = async (req, res) => {
        UPDATED ORDER
     ========================= */
 
-    const updatedOrder =
-      await Order.findById(orderId)
-        .populate(
-          "shipments.assignedTransporter",
-          `
+    const updatedOrder = await Order.findById(orderId)
+      .populate(
+        "shipments.assignedTransporter",
+        `
           fullName
           email
           businessProfile
           `,
-        )
-        .populate(
-          "shipments.selectedQuoteId",
-        );
+      )
+      .populate("shipments.selectedQuoteId");
 
     /* =========================
        RESPONSE
@@ -2257,22 +2269,17 @@ export const transporterRejectAssignment = async (req, res) => {
     return res.status(200).json({
       success: true,
 
-      message:
-        "Assignment rejected successfully",
+      message: "Assignment rejected successfully",
 
       order: updatedOrder,
     });
   } catch (error) {
-    console.log(
-      "Transporter Reject Assignment Error:",
-      error,
-    );
+    console.log("Transporter Reject Assignment Error:", error);
 
     return res.status(500).json({
       success: false,
 
-      message:
-        "Failed to reject assignment",
+      message: "Failed to reject assignment",
 
       error: error.message,
     });
@@ -2551,8 +2558,6 @@ export const getTransporterPaymentHistory = async (req, res) => {
     });
   }
 };
-
-
 
 //ADMIN ALL CONTROLLERS
 
@@ -3030,8 +3035,6 @@ export const getAllTransporters = async (req, res) => {
     });
   }
 };
-
-
 
 //admin ---> updating shiped status
 export const markShipmentShippedByAdmin = async (req, res) => {
@@ -3959,7 +3962,6 @@ export const uploadAdminTransportPayment = async (req, res) => {
   }
 };
 
-
 //BUYER ALL CONTROLLERS
 
 //buyer ---> buyerorders
@@ -4602,7 +4604,6 @@ export const downloadBuyReport = async (req, res) => {
   }
 };
 
-
 //buyer ---> proformainvoice
 export const downloadProformaInvoice = async (req, res) => {
   try {
@@ -4881,4 +4882,3 @@ export const uploadTransportPaymentReceipt = async (req, res) => {
     });
   }
 };
-
