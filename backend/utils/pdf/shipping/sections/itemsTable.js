@@ -24,8 +24,8 @@ export const drawItemsTable = (doc, order, shipment, startY) => {
     shipped: 230,
     price: 290,
     subtotal: 350,
-    tax: 410,
-    total: 470,
+    tax: 420,
+    total: 490,
   };
 
   /* =========================
@@ -296,19 +296,21 @@ export const drawItemsTable = (doc, order, shipment, startY) => {
 
   doc.fillColor("#fff").font("Helvetica-Bold").fontSize(8);
 
-  doc.text("Transporter", startX + 10, currentY + 7);
+  doc.text("Description", startX + 10, currentY + 7);
 
-  doc.text("HSN", startX + 165, currentY + 7);
+  doc.text("Transporter", startX + 155, currentY + 7);
 
-  doc.text("Taxable", startX + 245, currentY + 7);
+  doc.text("HSN", startX + 280, currentY + 7);
+
+  doc.text("Taxable", startX + 345, currentY + 7);
 
   doc.text(
-    transportGSTType === "cgst_sgst" ? "CGST+SGST" : "IGST",
-    startX + 335,
+    transportGSTType === "cgst_sgst" ? "CGST + SGST" : "IGST",
+    startX + 415,
     currentY + 7,
   );
 
-  doc.text("Total", startX + 435, currentY + 7);
+  doc.text("Total", startX + 490, currentY + 7);
 
   currentY += transportHeaderHeight;
 
@@ -327,56 +329,140 @@ export const drawItemsTable = (doc, order, shipment, startY) => {
   /* =========================
      DRAW TRANSPORT ROW
   ========================= */
+  /* =========================
+   TRANSPORT TABLE BORDER
+========================= */
+
+  doc.lineWidth(0.5).strokeColor(borderColor);
 
   doc.rect(startX, currentY, tableWidth, transportRowHeight).stroke();
 
+  const transportCols = [
+    startX + 145,
+    startX + 275,
+    startX + 330,
+    startX + 400,
+    startX + 475,
+  ];
+
+  transportCols.forEach((x) => {
+    doc
+      .moveTo(x, currentY)
+      .lineTo(x, currentY + transportRowHeight)
+      .stroke();
+  });
   doc.fillColor(darkText).font("Helvetica").fontSize(8);
 
-  doc.text(transporterName, startX + 10, currentY + 10, {
-    width: 130,
+  doc.text("Transportation Charges", startX + 10, currentY + 10, {
+    width: 120,
   });
 
-  doc.text(shipment?.transportHSNCode || "9965", startX + 165, currentY + 10);
+  doc.text(transporterName, startX + 155, currentY + 10, {
+    width: 110,
+  });
 
-  doc.text(` ${transportBase.toFixed(2)}`, startX + 220, currentY + 10, {
-    width: 80,
+  doc.text(shipment?.transportHSNCode || "9965", startX + 285, currentY + 10);
+
+  doc.text(transportBase.toFixed(2), startX + 330, currentY + 10, {
+    width: 70,
+    align: "center",
+  });
+
+  doc.text(transportGSTTotal.toFixed(2), startX + 400, currentY + 10, {
+    width: 55,
+    align: "center",
+  });
+
+  doc.text(transportTotal.toFixed(2), startX + 470, currentY + 10, {
+    width: 45,
+    align: "center",
+  });
+  currentY += transportRowHeight + 18;
+
+    /* =========================
+          GRAND TOTAL SUMMARY
+        ========================= */
+    /* =========================
+            INVOICE SUMMARY TABLE
+          ========================= */
+
+  const totalGST = productGSTTotal + transportGSTTotal;
+
+  const summaryY = currentY;
+
+  const summaryHeight = 32;
+
+  /* =========================
+      SUMMARY TABLE
+    ========================= */
+
+  doc.lineWidth(0.5).strokeColor(borderColor);
+
+  doc
+    .rect(startX, summaryY, tableWidth, summaryHeight)
+    .fillAndStroke(primaryPurple, borderColor);
+
+  /* =========================
+      SUMMARY COLUMNS
+    ========================= */
+
+  const summaryCols = [startX + 130, startX + 265, startX + 395];
+
+  summaryCols.forEach((x) => {
+    doc
+      .moveTo(x, summaryY)
+      .lineTo(x, summaryY + summaryHeight)
+      .stroke();
+  });
+
+  /* =========================
+      SUMMARY TEXT
+    ========================= */
+
+  doc.fillColor("#fff");
+
+  doc.font("Helvetica-Bold").fontSize(8);
+
+  doc.text("INVOICE SUMMARY", startX + 10, summaryY + 7);
+
+  doc.fontSize(7);
+
+  doc.text("TOTAL TAXABLE", startX + 145, summaryY + 5, {
+    width: 100,
     align: "center",
   });
 
   doc.text(
-    `${transportGSTLabel}
- ${transportGSTTotal.toFixed(2)}`,
-    startX + 320,
-    currentY + 6,
+    `${(subtotal + transportBase).toFixed(2)}`,
+    startX + 145,
+    summaryY + 17,
     {
-      width: 90,
+      width: 100,
       align: "center",
     },
   );
 
-  doc.text(` ${transportTotal.toFixed(2)}`, startX + 420, currentY + 10, {
-    width: 80,
+  doc.text("TOTAL GST", startX + 275, summaryY + 5, {
+    width: 90,
     align: "center",
   });
 
-  currentY += transportRowHeight + 10;
-
-  /* =========================
-   GRAND TOTAL
-========================= */
-
-  doc.rect(startX, currentY, tableWidth, 28).fill(primaryPurple);
-
-  doc.fillColor("#fff").font("Helvetica-Bold").fontSize(10);
-
-  doc.text("Grand Total", startX + 15, currentY + 9);
-
-  doc.text(` ${grandTotal.toFixed(2)}`, startX + 360, currentY + 9, {
-    width: 120,
-    align: "right",
+  doc.text(`${totalGST.toFixed(2)}`, startX + 275, summaryY + 17, {
+    width: 90,
+    align: "center",
   });
 
-  currentY += 36;
+  doc.text("GRAND TOTAL", startX + 405, summaryY + 5, {
+    width: 90,
+    align: "center",
+  });
+
+  doc.text(`${grandTotal.toFixed(2)}`, startX + 405, summaryY + 17, {
+    width: 90,
+    align: "center",
+  });
+
+  currentY += 45;
 
   return {
     y: currentY + 10,

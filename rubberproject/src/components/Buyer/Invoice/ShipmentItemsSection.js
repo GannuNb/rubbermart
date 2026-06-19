@@ -129,9 +129,14 @@ const ShipmentItemsSection = ({ shipment, order }) => {
 
             <div>Taxable Amount</div>
 
-            <div>{productGSTType === "igst" ? "IGST 18%" : "CGST 9%"}</div>
-
-            <div>{productGSTType === "igst" ? "-" : "SGST 9%"}</div>
+            {productGSTType === "igst" ? (
+              <div>IGST 18%</div>
+            ) : (
+              <>
+                <div>CGST 9%</div>
+                <div>SGST 9%</div>
+              </>
+            )}
 
             <div>Total Amount</div>
           </div>
@@ -185,16 +190,12 @@ const ShipmentItemsSection = ({ shipment, order }) => {
             {/* GST */}
 
             {productGSTType === "igst" ? (
-              <>
-                <div className={styles.centerCell}>
-                  ₹{" "}
-                  {productIGST.toLocaleString("en-IN", {
-                    maximumFractionDigits: 2,
-                  })}
-                </div>
-
-                <div className={styles.centerCell}>-</div>
-              </>
+              <div className={styles.centerCell}>
+                ₹{" "}
+                {productIGST.toLocaleString("en-IN", {
+                  maximumFractionDigits: 2,
+                })}
+              </div>
             ) : (
               <>
                 <div className={styles.centerCell}>

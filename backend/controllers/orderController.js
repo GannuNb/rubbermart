@@ -818,7 +818,7 @@ export const markShipmentShippedBySeller = async (req, res) => {
 
     shipment.shipmentStatus = "shipped";
 
-    shipment.shippedAt = new Date();
+    shipment.pickedUpAt = new Date();
 
     /* =========================
        UPDATE ORDER STATUS
@@ -2995,7 +2995,7 @@ export const getAllTransporters = async (req, res) => {
       })
       .lean();
 
-    console.log("Transporters:", transporters);
+    // console.log("Transporters:", transporters);
 
     /* =========================
        RESPONSE
@@ -4347,15 +4347,16 @@ export const uploadBuyerPayment = async (req, res) => {
     }
 
     // ✅ allow after seller confirmation (and beyond)
-    if (
-      ![
-        "seller_confirmed",
-        "partially_shipped",
-        "shipped",
-        "delivered",
-        "completed",
-      ].includes(order.orderStatus)
-    ) {
+          if (
+        ![
+          "seller_confirmed",
+          "partially_shipped",
+          "shipped",
+          "transport_processing",
+          "delivered",
+          "completed",
+        ].includes(order.orderStatus)
+      ) {
       return res.status(400).json({
         success: false,
         message: "Payment allowed only after seller confirmation",

@@ -83,15 +83,14 @@ export const drawCustomerSection = (doc, order, shipment, startY) => {
    TRANSPORT DETAILS
 ========================= */
 
-const isMarketplaceTransport =
-  shipment?.transportMode ===
-  "marketplace_transport";
+/* =========================
+   TRANSPORT DETAILS
+========================= */
 
 const transporterName =
   shipment?.assignedTransporter
     ?.businessProfile?.companyName ||
-  shipment?.assignedTransporter
-    ?.fullName ||
+  shipment?.assignedTransporter?.fullName ||
   "-";
 
 const transporterPhone =
@@ -108,34 +107,21 @@ const transporterGST =
    SHIPPING DETAILS
 ========================= */
 
-const shippingLabels = isMarketplaceTransport
-  ? [
-      "Ship From",
-      "Transporter",
-      "Phone",
-      "Transporter GST",
-    ]
-  : [
-      "Ship From",
-      "Vehicle Number",
-      "Driver Name",
-      "Driver Contact",
-    ];
+const shippingLabels = [
+  "Ship From",
+  "Ship To",
+  "Transporter",
+  "Phone",
+  "Transporter GST",
+];
 
-const shippingData = isMarketplaceTransport
-  ? [
-      shipment?.shipmentFrom || "-",
-      transporterName,
-      transporterPhone,
-      transporterGST,
-    ]
-  : [
-      shipment?.shipmentFrom || "-",
-      shipment?.vehicleNumber || "-",
-      shipment?.driverName || "-",
-      shipment?.driverMobile || "-",
-    ];
-
+const shippingData = [
+  shipment?.shipmentFrom || "-",
+  shipment?.shipmentTo || "-",
+  transporterName,
+  transporterPhone,
+  transporterGST,
+];
   /* =========================
      LEFT TABLE (SAFE HEIGHT)
   ========================= */

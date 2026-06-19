@@ -55,7 +55,7 @@ const DriverShipmentSummarySection = ({ shipment }) => {
               <div>
                 <p className={styles.label}>Mobile Number</p>
 
-                <h4>{transporter?.mobile || "-"}</h4>
+                <h4>{transporter?.businessProfile?.phoneNumber || "-"}</h4>
               </div>
 
               <div>

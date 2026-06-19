@@ -27,8 +27,8 @@ const orderSchema = new mongoose.Schema(
     },
     transportMode: {
       type: String,
-      enum: ["self_transport", "marketplace_transport"],
-      default: "self_transport",
+      enum: ["marketplace_transport"],
+      default: "marketplace_transport",
     },
     shippingAddress: shippingAddressSchema,
 
