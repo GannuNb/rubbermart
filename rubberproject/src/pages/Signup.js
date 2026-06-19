@@ -210,7 +210,7 @@ function Signup() {
               <input
                 type="text"
                 name="fullName"
-                placeholder="John Doe"
+                placeholder="Ravi Kumar..."
                 value={formData.fullName}
                 onChange={handleChange}
               />

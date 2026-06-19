@@ -365,10 +365,8 @@ function TransporterAssignedShipments() {
                               </span>
 
                               <span className={styles.quoteValueText}>
-                                {transportQuote?.estimatedDeliveryDays || "-"}{" "}
-                                {transportQuote?.estimatedDeliveryDays
-                                  ? "Days"
-                                  : ""}
+                                {shipment?.estimatedDeliveryDays || "-"}{" "}
+                                {shipment?.estimatedDeliveryDays ? "Days" : ""}
                               </span>
                             </div>
 

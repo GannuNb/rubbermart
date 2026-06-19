@@ -1,7 +1,9 @@
 // backend/controllers/sellerProductController.js
+import User from "../models/User.js";
 import Product from "../models/Product.js";
 import { sendProductApprovedEmail } from "../utils/email/sendProductApprovedEmail.js";
 import { sendProductRejectedEmail } from "../utils/email/sendProductRejectedEmail.js";
+import { sendInterestedProductEmail } from "../utils/email/sendInterestedProductEmail.js";
 
 export const addProduct = async (req, res) => {
   try {
@@ -182,7 +184,45 @@ export const approveProduct = async (req, res) => {
       sellerName: product.seller.fullName,
       productName: product.application,
     });
+    /* =========================
+          FIND INTERESTED USERS
+        ========================= */
 
+    const interestedUsers = await User.find({
+      role: "buyer",
+
+      "businessProfile.interestedProducts": {
+        $elemMatch: {
+          $regex: new RegExp(`^${product.application.trim()}$`, "i"),
+        },
+      },
+    });
+    /* =========================
+            SEND INTERESTED USER EMAILS
+          ========================= */
+
+    for (const user of interestedUsers) {
+      if (!user?.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.email)) {
+        continue;
+      }
+
+      console.log("Sending mail to:", user.email);
+
+      try {
+        await sendInterestedProductEmail({
+          userEmail: user.email,
+          userName: user.fullName,
+          productName: product.application,
+          productId: product._id,
+        });
+      } catch (error) {
+        console.log("Failed sending to:", user.email);
+      }
+    }
+
+    /* =========================
+            SEND PRODUCT ALERT EMAILS
+          ========================= */
     return res.status(200).json({
       success: true,
       message: "Product approved successfully",

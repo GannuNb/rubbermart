@@ -180,7 +180,7 @@ function TransporterCompletedDeliveries() {
                           <div className={styles.circleBottom}></div>
                         </div>
                         <div className="mb-3">
-                          <span className={styles.routeLabel}>From: Ex</span>
+                          <span className={styles.routeLabel}>From</span>
                           <span className={styles.routeText}>
                             {item.shipment?.shipmentFrom || "N/A"}
                           </span>

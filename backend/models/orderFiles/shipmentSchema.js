@@ -73,6 +73,10 @@ const shipmentSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    estimatedDeliveryDays: {
+      type: Number,
+      default: 1,
+    },
 
     transportPaymentStatus: {
       type: String,
@@ -125,19 +129,19 @@ const shipmentSchema = new mongoose.Schema(
     ========================= */
 
     transportStatus: {
-  type: String,
+      type: String,
 
-  enum: [
-    "open_for_quotes",
-    "quotes_received",
-    "admin_assignment_pending",
-    "transporter_assigned",
-    "admin_assignment_rejected",
-    "completed",
-  ],
+      enum: [
+        "open_for_quotes",
+        "quotes_received",
+        "admin_assignment_pending",
+        "transporter_assigned",
+        "admin_assignment_rejected",
+        "completed",
+      ],
 
-  default: "open_for_quotes",
-},
+      default: "open_for_quotes",
+    },
 
     /* =========================
        LOCATION DETAILS

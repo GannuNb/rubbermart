@@ -12,7 +12,7 @@ import { adminDirectAssignTransporter } from "../../../redux/slices/adminOrders/
 
 import { markShipmentShippedByAdminThunk } from "../../../redux/slices/adminOrders/markShipmentShippedByAdminThunk";
 
-import styles from "../../../styles/Admin/AdminSingleShippingInvoice.module.css";
+import styles from "../../../styles/Admin/AdminTransportQuotesCard.module.css";
 
 function AdminTransportQuotesCard({ shipment }) {
   const dispatch = useDispatch();
@@ -39,10 +39,12 @@ function AdminTransportQuotesCard({ shipment }) {
 
   const [adminPrice, setAdminPrice] = useState("");
 
+  const [estimatedDeliveryDays, setEstimatedDeliveryDays] = useState("");
+
   const [adminNote, setAdminNote] = useState("");
 
   /* =========================
-     SHIPMENT QUOTES
+     QUOTES
   ========================= */
 
   const quotes = shipmentQuotes[shipment?._id] || [];
@@ -68,7 +70,7 @@ function AdminTransportQuotesCard({ shipment }) {
   }, [dispatch, shipment?._id, shipment?.transportStatus]);
 
   /* =========================
-     ASSIGN TRANSPORTER
+     ASSIGN EXISTING QUOTE
   ========================= */
 
   const handleAssignTransporter = (quoteId) => {
@@ -77,9 +79,7 @@ function AdminTransportQuotesCard({ shipment }) {
     dispatch(
       assignTransporterToShipment({
         orderId: shipment?.orderId,
-
         shipmentId: shipment?._id,
-
         quoteId,
       }),
     ).then(() => {
@@ -88,7 +88,7 @@ function AdminTransportQuotesCard({ shipment }) {
   };
 
   /* =========================
-     DIRECT ASSIGNMENT
+     MANUAL ASSIGNMENT
   ========================= */
 
   const handleDirectAssign = () => {
@@ -100,6 +100,10 @@ function AdminTransportQuotesCard({ shipment }) {
       return alert("Please enter transport price");
     }
 
+    if (!estimatedDeliveryDays) {
+      return alert("Please enter estimated delivery days");
+    }
+
     dispatch(
       adminDirectAssignTransporter({
         orderId: shipment?.orderId,
@@ -109,6 +113,8 @@ function AdminTransportQuotesCard({ shipment }) {
         transporterId: selectedTransporter,
 
         adminPrice,
+
+        estimatedDeliveryDays,
 
         adminNote,
       }),
@@ -123,38 +129,42 @@ function AdminTransportQuotesCard({ shipment }) {
     dispatch(
       markShipmentShippedByAdminThunk({
         orderId: shipment?.orderId,
-
         shipmentId: shipment?._id,
       }),
     );
   };
 
   return (
-    <div className={styles.infoCard}>
-      <h3 className={styles.cardTitle}>Transport Quotes</h3>
-
+    <div className={styles.transportCard}>
       {/* =========================
-          OPEN FOR QUOTES
+          HEADER
       ========================= */}
 
-      {[
-  "open_for_quotes",
-  "quotes_received",
-].includes(
-  shipment?.transportStatus,
-) &&
-  quotes.length === 0 && (
-    <div className={styles.emptyState}>
-      Waiting for transporter quotes
-    </div>
-)}
+      <div className={styles.cardHeader}>
+        <h3 className={styles.cardTitle}>Transport Quotes</h3>
+
+        <div className={styles.quoteBadge}>{quotes.length} Quotes</div>
+      </div>
+
+      {/* =========================
+          EMPTY STATE
+      ========================= */}
+
+      {["open_for_quotes", "quotes_received"].includes(
+        shipment?.transportStatus,
+      ) &&
+        quotes.length === 0 && (
+          <div className={styles.emptyState}>
+            Waiting for transporter quotes...
+          </div>
+        )}
 
       {/* =========================
           LOADING
       ========================= */}
 
       {shipmentQuotesLoading && (
-        <div className={styles.emptyState}>Loading quotes...</div>
+        <div className={styles.emptyState}>Loading transporter quotes...</div>
       )}
 
       {/* =========================
@@ -169,91 +179,100 @@ function AdminTransportQuotesCard({ shipment }) {
           QUOTES LIST
       ========================= */}
 
-      {!shipmentQuotesLoading && quotes.length > 0 && (
-        <div className={styles.infoList}>
-          {quotes.map((quote) => (
-            <div key={quote._id} className={styles.infoRow}>
-              <div
-                style={{
-                  width: "100%",
-                }}
-              >
-                {/* TRANSPORTER */}
+      {!shipmentQuotesLoading &&
+        quotes.length > 0 &&
+        !(
+          shipment?.assignmentMethod === "admin_direct_assignment" &&
+          shipment?.transportStatus === "transporter_assigned"
+        ) && (
+          <div className={styles.quotesGrid}>
+            {quotes.map((quote) => (
+              <div key={quote._id} className={styles.quoteCard}>
+                {/* TOP */}
 
-                <p className={styles.label}>Transporter</p>
+                <div className={styles.quoteTop}>
+                  <h3 className={styles.transporterName}>
+                    {quote?.transporter?.fullName || "-"}
+                  </h3>
 
-                <h4 className={styles.value}>
-                  {quote?.transporter?.fullName || "-"}
-                </h4>
+                  <div className={styles.statusPill}>{quote?.quoteStatus}</div>
+                </div>
 
-                {/* QUOTE PRICE */}
+                {/* DETAILS */}
 
-                <p className={styles.label}>
-                  Quote Price : ₹
-                  {Number(quote?.quotedPrice || 0).toLocaleString("en-IN")}
-                </p>
+                <div className={styles.quoteDetails}>
+                  <div className={styles.detailRow}>
+                    <span className={styles.detailLabel}>Quote Price</span>
 
-                {/* DELIVERY DAYS */}
+                    <span
+                      className={`${styles.detailValue} ${styles.priceValue}`}
+                    >
+                      ₹{Number(quote?.quotedPrice || 0).toLocaleString("en-IN")}
+                    </span>
+                  </div>
 
-                <p className={styles.label}>
-                  Delivery Days : {quote?.estimatedDeliveryDays || 0} Days
-                </p>
+                  <div className={styles.detailRow}>
+                    <span className={styles.detailLabel}>Delivery Days</span>
 
-                {/* GST TYPE */}
+                    <span className={styles.detailValue}>
+                      {quote?.estimatedDeliveryDays} Days
+                    </span>
+                  </div>
 
-                {shipment?.transportGSTType && (
-                  <p className={styles.label}>
-                    GST Type :{" "}
-                    {shipment.transportGSTType === "cgst_sgst"
-                      ? "CGST + SGST"
-                      : "IGST"}
-                  </p>
-                )}
+                  {shipment?.transportGSTType && (
+                    <div className={styles.detailRow}>
+                      <span className={styles.detailLabel}>GST Type</span>
 
-                {/* FINAL AMOUNT */}
+                      <span className={styles.detailValue}>
+                        {shipment.transportGSTType === "cgst_sgst"
+                          ? "CGST + SGST"
+                          : "IGST"}
+                      </span>
+                    </div>
+                  )}
 
-                {["transporter_assigned", "admin_assignment_pending"].includes(
-                  shipment?.transportStatus,
-                ) && (
-                  <p className={styles.label}>
-                    Final Transport Amount : ₹
-                    {Number(shipment?.transportFinalAmount || 0).toLocaleString(
-                      "en-IN",
-                    )}
-                  </p>
-                )}
+                  {[
+                    "transporter_assigned",
+                    "admin_assignment_pending",
+                  ].includes(shipment?.transportStatus) && (
+                    <div className={styles.detailRow}>
+                      <span className={styles.detailLabel}>Final Amount</span>
+
+                      <span
+                        className={`${styles.detailValue} ${styles.priceValue}`}
+                      >
+                        ₹
+                        {Number(
+                          shipment?.transportFinalAmount || 0,
+                        ).toLocaleString("en-IN")}
+                      </span>
+                    </div>
+                  )}
+                </div>
 
                 {/* NOTE */}
 
-                <p className={styles.label}>{quote?.note || "No note"}</p>
+                <div className={styles.noteBox}>
+                  <p className={styles.noteText}>
+                    {quote?.note || "No additional note provided"}
+                  </p>
+                </div>
 
-                {/* STATUS */}
-
-                <p className={styles.label}>
-                  {shipment?.transportStatus === "admin_assignment_pending"
-                    ? "Waiting for transporter acceptance"
-                    : shipment?.transportStatus === "transporter_assigned"
-                      ? "Transporter assigned successfully"
-                      : "Quote submitted"}
-                </p>
-
-                {/* =========================
-                        BUTTONS
-                    ========================= */}
+                {/* BUTTONS */}
 
                 {shipment?.transportStatus === "transporter_assigned" ? (
-                  <button className={styles.deliverBtn} disabled>
+                  <button className={styles.secondaryBtn} disabled>
                     {quote?.quoteStatus === "selected"
                       ? "Assigned Transporter"
                       : "Transporter Already Assigned"}
                   </button>
                 ) : shipment?.transportStatus === "admin_assignment_pending" ? (
-                  <button className={styles.deliverBtn} disabled>
-                    Waiting For Transporter Response
+                  <button className={styles.secondaryBtn} disabled>
+                    Waiting For Acceptance
                   </button>
                 ) : (
                   <button
-                    className={styles.deliverBtn}
+                    className={styles.primaryBtn}
                     onClick={() => handleAssignTransporter(quote._id)}
                     disabled={
                       assignTransporterLoading && activeQuoteId === quote._id
@@ -265,10 +284,9 @@ function AdminTransportQuotesCard({ shipment }) {
                   </button>
                 )}
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
 
       {/* =========================
           MANUAL ASSIGNMENT
@@ -277,77 +295,88 @@ function AdminTransportQuotesCard({ shipment }) {
       {!["transporter_assigned", "admin_assignment_pending"].includes(
         shipment?.transportStatus,
       ) && (
-        <div
-          style={{
-            marginTop: "20px",
-            borderTop: "1px solid #ddd",
-            paddingTop: "20px",
-          }}
-        >
-          <p className={styles.label}>Manual Transporter Assignment</p>
+        <div className={styles.manualSection}>
+          <h3 className={styles.manualTitle}>Manual Transporter Assignment</h3>
 
-          <select
-            value={selectedTransporter}
-            onChange={(e) => setSelectedTransporter(e.target.value)}
-            className={styles.input}
-            style={{
-              width: "100%",
-              padding: "10px",
-              marginTop: "10px",
-            }}
-          >
-            <option value="">Select Transporter</option>
+          <div className={styles.formGrid}>
+            {/* SELECT */}
 
-            {transporters.map((transporter) => {
-              const alreadyQuoted = quotes.some(
-                (quote) => quote?.transporter?._id === transporter._id,
-              );
+            <div className={`${styles.inputGroup} ${styles.fullWidth}`}>
+              <label className={styles.inputLabel}>Select Transporter</label>
 
-              return (
-                <option
-                  key={transporter._id}
-                  value={transporter._id}
-                  disabled={alreadyQuoted}
-                >
-                  {transporter.fullName}
+              <select
+                value={selectedTransporter}
+                onChange={(e) => setSelectedTransporter(e.target.value)}
+                className={styles.selectField}
+              >
+                <option value="">Choose transporter</option>
 
-                  {alreadyQuoted ? " (Already Quoted)" : ""}
-                </option>
-              );
-            })}
-          </select>
+                {transporters.map((transporter) => {
+                  const alreadyQuoted = quotes.some(
+                    (quote) => quote?.transporter?._id === transporter._id,
+                  );
 
-          <input
-            type="number"
-            placeholder="Enter transport price"
-            value={adminPrice}
-            onChange={(e) => setAdminPrice(e.target.value)}
-            className={styles.input}
-            style={{
-              width: "100%",
-              padding: "10px",
-              marginTop: "15px",
-            }}
-          />
+                  return (
+                    <option
+                      key={transporter._id}
+                      value={transporter._id}
+                      disabled={alreadyQuoted}
+                    >
+                      {transporter.fullName}
 
-          <textarea
-            placeholder="Assignment note"
-            value={adminNote}
-            onChange={(e) => setAdminNote(e.target.value)}
-            className={styles.input}
-            rows={3}
-            style={{
-              width: "100%",
-              padding: "10px",
-              marginTop: "15px",
-            }}
-          />
+                      {alreadyQuoted ? " (Already Quoted)" : ""}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+
+            {/* PRICE */}
+
+            <div className={styles.inputGroup}>
+              <label className={styles.inputLabel}>Transport Price</label>
+
+              <input
+                type="number"
+                placeholder="Enter transport price"
+                value={adminPrice}
+                onChange={(e) => setAdminPrice(e.target.value)}
+                className={styles.inputField}
+              />
+            </div>
+
+            {/* DAYS */}
+
+            <div className={styles.inputGroup}>
+              <label className={styles.inputLabel}>
+                Estimated Delivery Days
+              </label>
+
+              <input
+                type="number"
+                placeholder="Delivery days"
+                value={estimatedDeliveryDays}
+                onChange={(e) => setEstimatedDeliveryDays(e.target.value)}
+                className={styles.inputField}
+              />
+            </div>
+
+            {/* NOTE */}
+
+            <div className={`${styles.inputGroup} ${styles.fullWidth}`}>
+              <label className={styles.inputLabel}>Assignment Note</label>
+
+              <textarea
+                placeholder="Enter admin note..."
+                value={adminNote}
+                onChange={(e) => setAdminNote(e.target.value)}
+                className={styles.textareaField}
+              />
+            </div>
+          </div>
 
           <button
-            className={styles.deliverBtn}
-            style={{
-              marginTop: "15px",
-            }}
+            className={styles.primaryBtn}
             onClick={handleDirectAssign}
             disabled={directAssignLoading || transportersLoading}
           >
@@ -362,29 +391,92 @@ function AdminTransportQuotesCard({ shipment }) {
           ASSIGNED TRANSPORTER
       ========================= */}
 
-      {(shipment?.transportStatus === "transporter_assigned" ||
-        shipment?.transportStatus === "admin_assignment_pending") && (
-        <div
-          className={styles.infoList}
-          style={{
-            marginTop: "20px",
-          }}
-        >
-          <div className={styles.infoRow}>
-            <div>
-              <p className={styles.label}>Assigned Transporter</p>
+      {[
+        "transporter_assigned",
+        "admin_assignment_pending",
+        "completed",
+      ].includes(shipment?.transportStatus) && (
+        <div className={styles.assignedCard}>
+          <p className={styles.assignedTitle}>Assigned Transporter</p>
 
-              <h4 className={styles.value}>
-                {shipment?.assignedTransporter?.fullName || "-"}
-              </h4>
+          <h3 className={styles.assignedName}>
+  {shipment?.assignedTransporter?.fullName ||
+    quotes?.find(
+      (quote) =>
+        quote?.quoteStatus === "selected",
+    )?.transporter?.fullName ||
+    "-"}
+</h3>
 
-              <p className={styles.label}>
-                {shipment?.transportStatus === "admin_assignment_pending"
-                  ? "Waiting for transporter acceptance"
-                  : "Transporter assigned successfully"}
-              </p>
+          <p className={styles.assignedStatus}>
+            {shipment?.transportStatus === "admin_assignment_pending"
+              ? "Waiting for transporter acceptance"
+              : shipment?.transportStatus === "completed"
+                ? "Shipment delivered successfully"
+                : "Transporter assigned successfully"}
+          </p>
+
+          {/* DETAILS */}
+
+          <div
+            className={styles.quoteDetails}
+            style={{
+              marginTop: "20px",
+            }}
+          >
+            {/* PRICE */}
+
+            <div className={styles.detailRow}>
+              <span className={styles.detailLabel}>Transport Price</span>
+
+              <span className={`${styles.detailValue} ${styles.priceValue}`}>
+                ₹{Number(shipment?.transportPrice || 0).toLocaleString("en-IN")}
+              </span>
+            </div>
+
+            {/* DELIVERY DAYS */}
+
+            <div className={styles.detailRow}>
+              <span className={styles.detailLabel}>Estimated Delivery</span>
+
+              <span className={styles.detailValue}>
+                {shipment?.estimatedDeliveryDays || 0} Days
+              </span>
+            </div>
+
+            {/* GST */}
+
+            <div className={styles.detailRow}>
+              <span className={styles.detailLabel}>GST Type</span>
+
+              <span className={styles.detailValue}>
+                {shipment?.transportGSTType === "cgst_sgst"
+                  ? "CGST + SGST"
+                  : "IGST"}
+              </span>
+            </div>
+
+            {/* FINAL AMOUNT */}
+
+            <div className={styles.detailRow}>
+              <span className={styles.detailLabel}>Final Amount</span>
+
+              <span className={`${styles.detailValue} ${styles.priceValue}`}>
+                ₹
+                {Number(shipment?.transportFinalAmount || 0).toLocaleString(
+                  "en-IN",
+                )}
+              </span>
             </div>
           </div>
+
+          {/* NOTE */}
+
+          {shipment?.adminAssignmentNote && (
+            <div className={styles.noteBox}>
+              <p className={styles.noteText}>{shipment?.adminAssignmentNote}</p>
+            </div>
+          )}
         </div>
       )}
 
@@ -395,32 +487,22 @@ function AdminTransportQuotesCard({ shipment }) {
       {shipment?.transportStatus === "transporter_assigned" && (
         <div
           style={{
-            marginTop: "20px",
+            marginTop: "25px",
           }}
         >
           {["shipped", "in_transit", "delivered", "completed"].includes(
             shipment?.shipmentStatus,
           ) ? (
-            <button
-              className={styles.deliverBtn}
-              disabled
-              style={{
-                width: "100%",
-                background: "#6b7280",
-              }}
-            >
-              Shipment Shipped
+            <button className={styles.secondaryBtn} disabled>
+              Shipment Already Shipped
             </button>
           ) : (
             <button
-              className={styles.deliverBtn}
+              className={styles.primaryBtn}
               onClick={handleMarkShipped}
               disabled={
                 markShipmentShippedLoading && activeShipmentId === shipment?._id
               }
-              style={{
-                width: "100%",
-              }}
             >
               {markShipmentShippedLoading && activeShipmentId === shipment?._id
                 ? "Updating..."

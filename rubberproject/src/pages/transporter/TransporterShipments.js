@@ -18,6 +18,8 @@ function TransporterShipments() {
     myQuotes,
   } = useSelector((state) => state.transporter);
 
+  const { user } = useSelector(  (state) => state.auth,);
+
   const [quoteData, setQuoteData] = useState({});
   const [activeShipmentId, setActiveShipmentId] = useState(null);
 
@@ -136,6 +138,11 @@ function TransporterShipments() {
                     (quote) =>
                       quote.shipmentId?.toString() === shipmentId?.toString(),
                   );
+                  const isDirectAssignedTransporter =
+                    item?.shipment?.transportStatus ===
+                      "admin_assignment_pending" &&
+                    item?.shipment?.assignedTransporter?.toString() ===
+                      user?.id?.toString();
 
                   return (
                     <tr key={shipmentId} className={styles.rowBorder}>
@@ -282,7 +289,12 @@ function TransporterShipments() {
 
                       {/* QUOTE SUBMISSION */}
                       <td className="px-3 py-4">
-                        {alreadySubmitted ? (
+                        {isDirectAssignedTransporter ? (
+                          <div className={`alert ${styles.successAlert}`}>
+                            Admin already sent you transport request.
+                            Please check Requested Assignments.
+                          </div>
+                        ) : alreadySubmitted ? (
                           <div className={`alert ${styles.successAlert}`}>
                             Quote already submitted for this shipment
                           </div>

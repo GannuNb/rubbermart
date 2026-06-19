@@ -1454,6 +1454,11 @@ export const getTransporterAssignedShipments = async (req, res) => {
               assignedTransporter: shipment.assignedTransporter || null,
 
               transportPrice: shipment.transportPrice || 0,
+              estimatedDeliveryDays:
+                shipment?.estimatedDeliveryDays ||
+                shipment?.selectedQuoteId
+                  ?.estimatedDeliveryDays ||
+                null,
 
               transportFinalAmount: shipment.transportFinalAmount || 0,
 
@@ -1787,6 +1792,7 @@ export const getTransporterPendingAssignments = async (req, res) => {
             transporterId.toString() &&
           shipment?.transportStatus === "admin_assignment_pending"
         ) {
+          
           pendingAssignments.push({
             orderId: order._id,
 
@@ -1832,7 +1838,10 @@ export const getTransporterPendingAssignments = async (req, res) => {
                 0,
 
               estimatedDeliveryDays:
-                shipment?.selectedQuoteId?.estimatedDeliveryDays || null,
+                shipment?.estimatedDeliveryDays ||
+                shipment?.selectedQuoteId
+                  ?.estimatedDeliveryDays ||
+                null,
 
               note:
                 shipment?.adminAssignmentNote ||
@@ -1888,10 +1897,10 @@ export const transporterAcceptAssignment = async (req, res) => {
     ========================= */
 
     const order = await Order.findOne({
-      _id: orderId,
+  _id: orderId,
 
-      isDeleted: false,
-    });
+  isDeleted: false,
+}).populate("shipments.selectedQuoteId");
 
     if (!order) {
       return res.status(404).json({
@@ -1959,18 +1968,12 @@ export const transporterAcceptAssignment = async (req, res) => {
        GST CALCULATION
     ========================= */
 
-    const transporterGST = transporter?.businessProfile?.gstNumber || "";
-
-    const transporterStateCode = transporterGST.substring(0, 2);
-
-    const companyStateCode = "27";
-
-    const gstType =
-      transporterStateCode === companyStateCode ? "cgst_sgst" : "igst";
+    const gstType = order.gstType || "igst";
 
     /* =========================
        PRICE
     ========================= */
+    const estimatedDeliveryDays =  Number( shipment?.selectedQuoteId  ?.estimatedDeliveryDays, ) || Number(shipment?.estimatedDeliveryDays) || 1;
 
     const transportPrice =
       Number(shipment.adminAssignedPrice) ||
@@ -1999,6 +2002,7 @@ export const transporterAcceptAssignment = async (req, res) => {
     shipment.transportGSTAmount = transportGSTAmount;
 
     shipment.transportFinalAmount = transportFinalAmount;
+    shipment.estimatedDeliveryDays =  estimatedDeliveryDays;
 
     shipment.assignedAt = new Date();
     shipment.pickedUpAt = null;
@@ -2030,7 +2034,7 @@ export const transporterAcceptAssignment = async (req, res) => {
 
           note: shipment.adminAssignmentNote || "Direct admin assignment",
 
-          estimatedDeliveryDays: 1,
+          estimatedDeliveryDays:  shipment?.estimatedDeliveryDays || 1,
 
           quoteStatus: "selected",
 
@@ -2725,6 +2729,7 @@ export const assignTransporterToShipment = async (req, res) => {
     shipment.transportGSTAmount = transportGSTAmount;
 
     shipment.transportFinalAmount = transportFinalAmount;
+    shipment.estimatedDeliveryDays =  Number(selectedQuote?.estimatedDeliveryDays || 1);
 
     /* =========================
        ADMIN FINAL APPROVAL PRICE
@@ -2837,7 +2842,7 @@ export const adminDirectAssignTransporter = async (req, res) => {
   try {
     const { orderId, shipmentId } = req.params;
 
-    const { transporterId, adminPrice, adminNote } = req.body;
+    const { transporterId, adminPrice,estimatedDeliveryDays, adminNote, } = req.body;
 
     /* =========================
        FIND ORDER
@@ -2930,6 +2935,7 @@ export const adminDirectAssignTransporter = async (req, res) => {
     shipment.transportGSTAmount = transportGSTAmount;
 
     shipment.transportFinalAmount = transportFinalAmount;
+    shipment.estimatedDeliveryDays =  Number(estimatedDeliveryDays || 1);
 
     shipment.transportPaymentStatus = "unpaid";
 

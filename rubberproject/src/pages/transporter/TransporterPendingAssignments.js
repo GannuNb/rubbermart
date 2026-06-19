@@ -71,7 +71,8 @@ function TransporterPendingAssignments() {
       <div className="mb-4">
         <h2 className={styles.title}>Requests</h2>
         <p className={styles.subtitle}>
-          Transportation requests assigned by admin for your review and confirmation.
+          Transportation requests assigned by admin for your review and
+          confirmation.
         </p>
       </div>
 
@@ -79,15 +80,21 @@ function TransporterPendingAssignments() {
           STATE FEEDBACK ALERTS
       ========================= */}
       {pendingAssignmentsLoading && (
-        <div className="alert alert-info border-0 shadow-sm">Loading assignments...</div>
+        <div className="alert alert-info border-0 shadow-sm">
+          Loading assignments...
+        </div>
       )}
 
       {pendingAssignmentsError && (
-        <div className="alert alert-danger border-0 shadow-sm">{pendingAssignmentsError}</div>
+        <div className="alert alert-danger border-0 shadow-sm">
+          {pendingAssignmentsError}
+        </div>
       )}
 
       {assignmentActionError && (
-        <div className="alert alert-danger border-0 shadow-sm">{assignmentActionError}</div>
+        <div className="alert alert-danger border-0 shadow-sm">
+          {assignmentActionError}
+        </div>
       )}
 
       {!pendingAssignmentsLoading && pendingAssignments.length === 0 && (
@@ -102,29 +109,53 @@ function TransporterPendingAssignments() {
       {!pendingAssignmentsLoading && pendingAssignments.length > 0 && (
         <div className={`card ${styles.tableCard}`}>
           <div className="table-responsive">
-            <table className={`table align-middle mb-0 ${styles.tableMinWidth}`}>
+            <table
+              className={`table align-middle mb-0 ${styles.tableMinWidth}`}
+            >
               <thead className={styles.tableHeader}>
                 <tr>
-                  <th className={styles.thText} style={{ width: "18%" }}>Shipment Details</th>
-                  <th className={styles.thText} style={{ width: "15%" }}>Route</th>
-                  <th className={styles.thText} style={{ width: "15%" }}>Package Details</th>
-                  <th className={styles.thText} style={{ width: "23%" }}>Admin Quote</th>
-                  <th className={styles.thText} style={{ width: "12%" }}>Requested On</th>
-                  <th className={styles.thText} style={{ width: "17%" }}>Action</th>
+                  <th className={styles.thText} style={{ width: "18%" }}>
+                    Shipment Details
+                  </th>
+                  <th className={styles.thText} style={{ width: "15%" }}>
+                    Route
+                  </th>
+                  <th className={styles.thText} style={{ width: "15%" }}>
+                    Package Details
+                  </th>
+                  <th className={styles.thText} style={{ width: "23%" }}>
+                    Admin Quote
+                  </th>
+                  <th className={styles.thText} style={{ width: "12%" }}>
+                    Requested On
+                  </th>
+                  <th className={styles.thText} style={{ width: "17%" }}>
+                    Action
+                  </th>
                 </tr>
               </thead>
               <tbody style={{ borderTop: "none" }}>
                 {pendingAssignments.map((item) => {
-                  const isCurrentItem = activeAssignmentShipmentId === item.shipment?._id || activeShipmentId === item.shipment?._id;
-                  
+                  const isCurrentItem =
+                    activeAssignmentShipmentId === item.shipment?._id ||
+                    activeShipmentId === item.shipment?._id;
+
                   return (
                     <tr key={item.shipment?._id} className={styles.rowBorder}>
-                      
                       {/* SHIPMENT DETAILS */}
                       <td className="px-4 py-4">
                         <div className="d-flex align-items-start gap-2">
                           <div className={styles.iconBoxLarge}>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9333ea" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <svg
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="#9333ea"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
                               <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
                               <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
                               <line x1="12" y1="22.08" x2="12" y2="12"></line>
@@ -135,11 +166,10 @@ function TransporterPendingAssignments() {
                               Order ID: {item.orderInvoiceId || "N/A"}
                             </div>
                             <div className={styles.invoiceId}>
-                              Invoice ID: {item.shipment?.shipmentInvoiceId || "N/A"}
+                              Invoice ID:{" "}
+                              {item.shipment?.shipmentInvoiceId || "N/A"}
                             </div>
-                            <span className={styles.statusBadge}>
-                              ✓ Packed
-                            </span>
+                            <span className={styles.statusBadge}>✓ Packed</span>
                           </div>
                         </div>
                       </td>
@@ -154,11 +184,15 @@ function TransporterPendingAssignments() {
                           </div>
                           <div className="mb-3">
                             <span className={styles.routeLabel}>From: Ex</span>
-                            <span className={styles.routeText}>{item.shipment?.shipmentFrom || "N/A"}</span>
+                            <span className={styles.routeText}>
+                              {item.shipment?.shipmentFrom || "N/A"}
+                            </span>
                           </div>
                           <div>
                             <span className={styles.routeLabel}>To:</span>
-                            <span className={styles.routeText}>{item.shipment?.shipmentTo || "N/A"}</span>
+                            <span className={styles.routeText}>
+                              {item.shipment?.shipmentTo || "N/A"}
+                            </span>
                           </div>
                         </div>
                       </td>
@@ -167,19 +201,29 @@ function TransporterPendingAssignments() {
                       <td className="px-3 py-4">
                         <div className="d-flex align-items-start gap-2">
                           <div className={styles.iconBoxSmall}>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9333ea" strokeWidth="2">
-                              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="#9333ea"
+                              strokeWidth="2"
+                            >
+                              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
                             </svg>
                           </div>
                           <div>
                             <div className={styles.packageText}>
-                              <strong className="fw-semibold">Item:</strong> {item.shipment?.selectedItem || "N/A"}
+                              <strong className="fw-semibold">Item:</strong>{" "}
+                              {item.shipment?.selectedItem || "N/A"}
                             </div>
                             <div className={styles.packageSubText}>
-                              <strong className="fw-semibold">Quantity:</strong> {item.shipment?.shippedQuantity} MT
+                              <strong className="fw-semibold">Quantity:</strong>{" "}
+                              {item.shipment?.shippedQuantity} MT
                             </div>
                             <div className={styles.hsnText}>
-                              Transport HSN: {item.shipment?.transportHSNCode || "—"}
+                              Transport HSN:{" "}
+                              {item.shipment?.transportHSNCode || "—"}
                             </div>
                           </div>
                         </div>
@@ -189,16 +233,44 @@ function TransporterPendingAssignments() {
                       <td className="px-3 py-4">
                         <div className={styles.quoteBoxWrapper}>
                           <div className={styles.quoteRowItem}>
-                            <span className={styles.quoteLabelText}>Transport Price</span>
-                            <span className={styles.quoteValueTextPurple}>₹ {(item.shipment?.adminAssignedPrice || 0).toLocaleString('en-IN')}</span>
+                            <span className={styles.quoteLabelText}>
+                              Transport Price
+                            </span>
+                            <span className={styles.quoteValueTextPurple}>
+                              ₹{" "}
+                              {(
+                                item.shipment?.adminAssignedPrice || 0
+                              ).toLocaleString("en-IN")}
+                            </span>
                           </div>
                           <div className={styles.quoteRowItem}>
-                            <span className={styles.quoteLabelText}>Delivery Days</span>
-                            <span className={styles.quoteValueText}>{item.shipment?.estimatedDeliveryDays || "3"} Days</span>
-                          </div>
-                          <div className={styles.quoteRowItem} style={{ alignItems: 'flex-start' }}>
-                            <span className={styles.quoteLabelText}>Additional Note</span>
-                            <span className={styles.quoteNoteText}>{item.shipment?.adminAssignmentNote || "No note"}</span>
+  <span className={styles.quoteLabelText}>
+    Delivery Days
+  </span>
+
+  <span className={styles.quoteValueText}>
+    {Number(
+      item?.shipment?.estimatedDeliveryDays,
+    ) > 0
+      ? `${item.shipment.estimatedDeliveryDays} Days`
+      : Number(
+            item?.transportQuote
+              ?.estimatedDeliveryDays,
+          ) > 0
+        ? `${item.transportQuote.estimatedDeliveryDays} Days`
+        : "N/A"}
+  </span>
+</div>
+                          <div
+                            className={styles.quoteRowItem}
+                            style={{ alignItems: "flex-start" }}
+                          >
+                            <span className={styles.quoteLabelText}>
+                              Additional Note
+                            </span>
+                            <span className={styles.quoteNoteText}>
+                              {item.shipment?.adminAssignmentNote || "No note"}
+                            </span>
                           </div>
                         </div>
                       </td>
@@ -207,8 +279,22 @@ function TransporterPendingAssignments() {
                       <td className="px-3 py-4">
                         <div className="d-flex align-items-start gap-2">
                           <div className={styles.iconBoxSmall}>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9333ea" strokeWidth="2">
-                              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="#9333ea"
+                              strokeWidth="2"
+                            >
+                              <rect
+                                x="3"
+                                y="4"
+                                width="18"
+                                height="18"
+                                rx="2"
+                                ry="2"
+                              ></rect>
                               <line x1="16" y1="2" x2="16" y2="6"></line>
                               <line x1="8" y1="2" x2="8" y2="6"></line>
                               <line x1="3" y1="10" x2="21" y2="10"></line>
@@ -218,10 +304,22 @@ function TransporterPendingAssignments() {
                             {item.shipment?.createdAt ? (
                               <>
                                 <div className={styles.dateText}>
-                                  {new Date(item.shipment.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                  {new Date(
+                                    item.shipment.createdAt,
+                                  ).toLocaleDateString("en-GB", {
+                                    day: "numeric",
+                                    month: "short",
+                                    year: "numeric",
+                                  })}
                                 </div>
                                 <div className={styles.timeText}>
-                                  {new Date(item.shipment.createdAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                                  {new Date(
+                                    item.shipment.createdAt,
+                                  ).toLocaleTimeString("en-US", {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                    hour12: true,
+                                  })}
                                 </div>
                               </>
                             ) : (
@@ -237,29 +335,66 @@ function TransporterPendingAssignments() {
                           <button
                             className={styles.btnAccept}
                             onClick={() => handleAccept(item)}
-                            disabled={assignmentActionLoading && isCurrentItem && actionType === "accept"}
+                            disabled={
+                              assignmentActionLoading &&
+                              isCurrentItem &&
+                              actionType === "accept"
+                            }
                           >
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2.5"
+                            >
                               <polyline points="20 6 9 17 4 12"></polyline>
                             </svg>
-                            {assignmentActionLoading && isCurrentItem && actionType === "accept" ? "Accepting..." : "Accept Request"}
+                            {assignmentActionLoading &&
+                            isCurrentItem &&
+                            actionType === "accept"
+                              ? "Accepting..."
+                              : "Accept Request"}
                           </button>
 
                           <button
                             className={styles.btnReject}
                             onClick={() => handleReject(item)}
-                            disabled={assignmentActionLoading && isCurrentItem && actionType === "reject"}
+                            disabled={
+                              assignmentActionLoading &&
+                              isCurrentItem &&
+                              actionType === "reject"
+                            }
                           >
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2.5"
+                            >
                               <circle cx="12" cy="12" r="10"></circle>
                               <line x1="15" y1="9" x2="9" y2="15"></line>
                               <line x1="9" y1="9" x2="15" y2="15"></line>
                             </svg>
-                            {assignmentActionLoading && isCurrentItem && actionType === "reject" ? "Rejecting..." : "Reject Request"}
+                            {assignmentActionLoading &&
+                            isCurrentItem &&
+                            actionType === "reject"
+                              ? "Rejecting..."
+                              : "Reject Request"}
                           </button>
 
                           <div className={styles.badgePending}>
-                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                            <svg
+                              width="10"
+                              height="10"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="3"
+                            >
                               <circle cx="12" cy="12" r="10"></circle>
                               <polyline points="12 6 12 12 16 14"></polyline>
                             </svg>
@@ -267,7 +402,6 @@ function TransporterPendingAssignments() {
                           </div>
                         </div>
                       </td>
-
                     </tr>
                   );
                 })}

@@ -1,0 +1,425 @@
+.transportCard {
+  background: #ffffff;
+
+  border-radius: 24px;
+
+  padding: 28px;
+
+  border: 1px solid #ede9fe;
+
+  box-shadow:
+    0 10px 30px rgba(126, 34, 206, 0.08),
+    0 2px 8px rgba(15, 23, 42, 0.04);
+
+  position: sticky;
+
+  top: 20px;
+
+  max-height: calc(100vh - 40px);
+
+  overflow-y: auto;
+
+  overflow-x: hidden;
+
+  scrollbar-width: thin;
+
+  scrollbar-color: #9333ea #f3e8ff;
+}
+
+.transportCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 5px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    #7e22ce,
+    #9333ea,
+    #a855f7
+  );
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  gap: 15px;
+}
+
+.cardTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: #4c1d95;
+  margin: 0;
+}
+
+.quoteBadge {
+  background: #f3e8ff;
+  color: #7e22ce;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 999px;
+}
+
+/* =========================
+   EMPTY / LOADING
+========================= */
+
+.emptyState {
+  background: #faf5ff;
+  border: 1px dashed #c084fc;
+  color: #7e22ce;
+  padding: 20px;
+  border-radius: 16px;
+  text-align: center;
+  font-weight: 500;
+  margin-top: 15px;
+}
+
+/* =========================
+   QUOTES GRID
+========================= */
+
+.quotesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+/* =========================
+   QUOTE CARD
+========================= */
+
+.quoteCard {
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #faf5ff 100%
+  );
+
+  border: 1px solid #e9d5ff;
+
+  border-radius: 22px;
+
+  padding: 22px;
+
+  transition: all 0.3s ease;
+}
+
+.quoteCard:hover {
+  transform: translateY(-4px);
+
+  box-shadow:
+    0 14px 30px rgba(126, 34, 206, 0.12),
+    0 4px 10px rgba(15, 23, 42, 0.05);
+}
+
+.quoteTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  gap: 15px;
+}
+
+.transporterName {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.statusPill {
+  background: #ede9fe;
+  color: #7e22ce;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 7px 12px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+/* =========================
+   DETAILS
+========================= */
+
+.quoteDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.detailLabel {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.detailValue {
+  font-size: 15px;
+  color: #111827;
+  font-weight: 700;
+  text-align: right;
+}
+
+.priceValue {
+  color: #7e22ce;
+  font-size: 18px;
+}
+
+.noteBox {
+  background: #ffffff;
+  border: 1px solid #ede9fe;
+  padding: 14px;
+  border-radius: 14px;
+  margin-top: 10px;
+}
+
+.noteText {
+  margin: 0;
+  color: #4b5563;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.primaryBtn {
+  width: 100%;
+  border: none;
+  outline: none;
+  cursor: pointer;
+
+  background: linear-gradient(
+    135deg,
+    #7e22ce,
+    #9333ea
+  );
+
+  color: white;
+
+  font-weight: 700;
+
+  padding: 14px 18px;
+
+  border-radius: 14px;
+
+  margin-top: 18px;
+
+  transition: all 0.3s ease;
+}
+
+.primaryBtn:hover {
+  transform: translateY(-2px);
+
+  box-shadow: 0 10px 20px rgba(126, 34, 206, 0.25);
+}
+
+.primaryBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.secondaryBtn {
+  width: 100%;
+  border: 1px solid #d8b4fe;
+  background: #faf5ff;
+  color: #7e22ce;
+  font-weight: 700;
+  padding: 14px 18px;
+  border-radius: 14px;
+  margin-top: 18px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.secondaryBtn:hover {
+  background: #f3e8ff;
+}
+
+/* =========================
+   MANUAL ASSIGNMENT
+========================= */
+
+.manualSection {
+  margin-top: 30px;
+  border-top: 1px solid #ede9fe;
+  padding-top: 28px;
+}
+
+.manualTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #4c1d95;
+  margin-bottom: 18px;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.fullWidth {
+  grid-column: span 2;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inputLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.inputField,
+.selectField,
+.textareaField {
+  width: 100%;
+  border: 1px solid #ddd6fe;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.inputField:focus,
+.selectField:focus,
+.textareaField:focus {
+  border-color: #7e22ce;
+
+  box-shadow: 0 0 0 4px rgba(126, 34, 206, 0.12);
+}
+
+.textareaField {
+  resize: vertical;
+  min-height: 120px;
+}
+
+/* =========================
+   ASSIGNED CARD
+========================= */
+
+.assignedCard {
+  margin-top: 25px;
+
+  background: linear-gradient(
+    135deg,
+    #faf5ff,
+    #ffffff
+  );
+
+  border: 1px solid #d8b4fe;
+
+  border-radius: 18px;
+
+  padding: 22px;
+}
+
+.assignedTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.assignedName {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 10px;
+}
+
+.assignedStatus {
+  color: #7e22ce;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+  .transportCard {
+    padding: 20px;
+  }
+
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .fullWidth {
+    grid-column: span 1;
+  }
+
+  .cardHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .detailRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .detailValue {
+    text-align: left;
+  }
+}
+
+/* =========================
+   CUSTOM SCROLLBAR
+========================= */
+
+.transportCard::-webkit-scrollbar {
+  width: 10px;
+}
+
+.transportCard::-webkit-scrollbar-track {
+  background: #f3e8ff;
+  border-radius: 999px;
+}
+
+.transportCard::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    #7e22ce,
+    #a855f7
+  );
+
+  border-radius: 999px;
+}
+
+.transportCard::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    #6b21a8,
+    #9333ea
+  );
+}

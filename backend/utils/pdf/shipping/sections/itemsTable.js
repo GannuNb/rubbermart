@@ -379,10 +379,10 @@ export const drawItemsTable = (doc, order, shipment, startY) => {
   });
   currentY += transportRowHeight + 18;
 
-    /* =========================
+    /*    =========================
           GRAND TOTAL SUMMARY
-        ========================= */
-    /* =========================
+          ========================= */
+    /*    =========================
             INVOICE SUMMARY TABLE
           ========================= */
 
