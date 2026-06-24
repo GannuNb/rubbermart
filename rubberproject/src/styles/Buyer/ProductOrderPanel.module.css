@@ -1,19 +1,57 @@
 /* src/styles/ProductOrderPanel.module.css */
 
 .sidePanelWrapper {
-  background: #ffffff;
-  border-radius: 28px;
-  padding: 24px;
-  border: 1px solid #edf0f5;
+  position: sticky;
+  top: 90px;
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff 0%,
+      #fbfcff 100%
+    );
+  border-radius: 30px;
+  padding: 20px;
+  border: 1px solid #e7edf7;
   display: flex;
   flex-direction: column;
   gap: 28px;
   height: fit-content;
+  box-shadow:
+    0 10px 40px rgba(15, 23, 42, 0.06),
+    0 2px 6px rgba(15, 23, 42, 0.04);
+  overflow: hidden;
 }
 
 .businessCard {
-  padding-bottom: 24px;
-  border-bottom: 1px solid #edf0f5;
+  position: relative;
+  padding: 20px;
+  border-radius: 24px;
+  background:
+    linear-gradient(
+      135deg,
+      #f8fbff,
+      #ffffff
+    );
+
+  border: 1px solid #e8eef8;
+  box-shadow: 0 8px 24px rgba(75, 108, 183, 0.06);
+  overflow: hidden;
+}
+.businessCard::before {
+  content: "";
+  position: absolute;
+  top: -80px;
+  right: -80px;
+  width: 180px;
+  height: 180px;
+  background:
+    radial-gradient(
+      circle,
+      rgba(75, 108, 183, 0.14),
+      transparent 70%
+    );
+
+  pointer-events: none;
 }
 
 .businessCard h3,
@@ -92,12 +130,7 @@
   height: 120px;
   top: -60px;
   left: -40px;
-  background:
-    radial-gradient(
-      circle,
-      rgba(59, 130, 246, 0.08),
-      transparent 70%
-    );
+  background:radial-gradient(circle,rgba(59, 130, 246, 0.08),transparent 70%);
   pointer-events: none;
 }
 
@@ -215,14 +248,39 @@
 }
 
 .stockInfo {
-  background: #edf8f1;
-  color: #118a45;
-  border-radius: 14px;
-  padding: 14px;
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 10px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #edfdf3,
+      #f7fff9
+    );
+
+  color: #0f9f4b;
+
+  border: 1px solid #c9f1d8;
+
+  border-radius: 18px;
+
+  padding: 16px;
+
   text-align: center;
-  font-weight: 600;
+
+  font-weight: 700;
+
   margin-top: 18px;
+
   font-size: 15px;
+
+  box-shadow:
+    0 6px 20px rgba(34, 197, 94, 0.08);
 }
 
 .orderCard {
@@ -233,6 +291,7 @@
 .addressSection,
 .quantitySection {
   margin-bottom: 18px;
+  margin-top: 3%;
 }
 
 .addressSection label,
@@ -248,24 +307,42 @@
 .addressInput,
 .quantityInput {
   width: 100%;
-  border: 1px solid #d8e0ea;
-  border-radius: 14px;
-  padding: 14px;
+  border: 1.5px solid #917ae4;
+  border-radius: 16px;
+  padding: 15px 16px;
   outline: none;
   font-size: 14px;
   margin-bottom: 14px;
-  background: #ffffff;
-  transition: 0.3s ease;
+  background:    linear-gradient(180deg, #ffffff, #fbfcff);
+  transition: all 0.3s ease;
   color: #182848;
+  font-weight: 500;
+  box-shadow:0 2px 6px rgba(15, 23, 42, 0.03);
+}
+.selectInput:hover,
+.addressInput:hover,
+.quantityInput:hover {
+  border-color: #7f9cf5;
+
+  box-shadow:
+    0 4px 14px rgba(75, 108, 183, 0.08);
+
+  transform: translateY(-1px);
 }
 
 .selectInput:focus,
 .addressInput:focus,
 .quantityInput:focus {
   border-color: #4b6cb7;
-  box-shadow: 0 0 0 4px rgba(75, 108, 183, 0.12);
-}
 
+  background: #ffffff;
+
+  box-shadow:
+    0 0 0 5px rgba(75, 108, 183, 0.14),
+    0 10px 24px rgba(75, 108, 183, 0.08);
+
+  transform: translateY(-1px);
+}
 .dropdownWrapper {
   position: relative;
   width: 100%;
@@ -274,12 +351,18 @@
 .addressDropdown {
   width: 100%;
   padding: 16px 18px;
-  border-radius: 16px;
+  border-radius: 18px;
   border: 1px solid #dbe3ef;
-  background: #ffffff;
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff,
+      #f9fbff
+    );
+
   color: #182848;
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 600;
   outline: none;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -287,16 +370,23 @@
   -webkit-appearance: none;
   -moz-appearance: none;
   padding-right: 50px;
-  min-height: 56px;
+  min-height: 58px;
+  box-shadow:0 2px 8px rgba(15, 23, 42, 0.03);
 }
 
 .addressDropdown:hover {
-  border-color: #4b6cb7;
+  border-color: #7f9cf5;
+  transform: translateY(-1px);
+  box-shadow:
+    0 6px 18px rgba(75, 108, 183, 0.08);
 }
 
 .addressDropdown:focus {
   border-color: #4b6cb7;
-  box-shadow: 0 0 0 4px rgba(75, 108, 183, 0.12);
+  background: #ffffff;
+  box-shadow:
+    0 0 0 5px rgba(75, 108, 183, 0.14),
+    0 10px 24px rgba(75, 108, 183, 0.08);
 }
 
 .dropdownWrapper::after {

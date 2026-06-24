@@ -59,20 +59,24 @@ function ProductDetailsInfo({ singleProduct }) {
 
         <div className={styles.middleSection}>
           <div className={styles.headingSection}>
-            <span className={styles.categoryBadge}>
-              {singleProduct.category || "Category"}
-            </span>
-
             <h1>{singleProduct.application || "Product Name"}</h1>
 
-            <div
-              className={`${styles.stockBadge} ${
-                singleProduct.stockStatus === "available"
-                  ? styles.available
-                  : styles.soldout
-              }`}
-            >
-              {singleProduct.stockStatus || "Unavailable"}
+            <div className={styles.productMetaRow}>
+              <span className={styles.categoryBadge}>
+                {singleProduct.category || "Category"}
+              </span>
+
+              <div
+                className={`${styles.stockBadge} ${
+                  singleProduct.stockStatus === "available"
+                    ? styles.available
+                    : styles.soldout
+                }`}
+              >
+                {singleProduct.stockStatus === "available"
+                  ? "✔ Available"
+                  : "Out Of Stock"}
+              </div>
             </div>
           </div>
 

@@ -149,7 +149,7 @@ export const getProgressLabels = (order) => {
       "Placed Order",
       "Confirmed Order",
       "Shipped",
-      "Delivered Pending",
+      "Delivery Pending",
     ];
   }
 
@@ -161,7 +161,7 @@ export const getProgressLabels = (order) => {
       "Placed Order",
       "Confirmed Order",
       "Partial Shipment",
-      "Delivered Pending",
+      "Delivery Pending",
     ];
   }
 
@@ -174,7 +174,7 @@ export const getProgressLabels = (order) => {
       "Placed Order",
       "Confirmed Order",
       "Shipment Pending",
-      "Delivered Pending",
+      "Delivery Pending",
     ];
   }
 
@@ -182,6 +182,6 @@ export const getProgressLabels = (order) => {
     "Placed Order",
     "Waiting for Seller",
     "Shipment Pending",
-    "Delivered Pending",
+    "Delivery Pending",
   ];
 };

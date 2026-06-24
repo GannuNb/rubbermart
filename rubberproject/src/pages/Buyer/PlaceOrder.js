@@ -1,19 +1,17 @@
 // src/pages/Buyer/PlaceOrder.js
 
 import React, { useMemo, useState } from "react";
+
 import { useNavigate } from "react-router-dom";
+
 import { useDispatch, useSelector } from "react-redux";
-import CustomAlert from "../../components/alert/CustomAlert"; // Update this path to match your folder structure
+
+import CustomAlert from "../../components/alert/CustomAlert";
+
 import { clearOrderSummary } from "../../redux/slices/orderSummarySlice";
+
 import {
   FaClipboardList,
-  FaStore,
-  FaMapMarkerAlt,
-  FaUser,
-  FaPhoneAlt,
-  FaHome,
-  FaIdCard,
-  FaPercent,
   FaBoxOpen,
   FaFileInvoice,
   FaInfoCircle,
@@ -21,12 +19,20 @@ import {
   FaReceipt,
   FaShieldAlt,
 } from "react-icons/fa";
+
 import styles from "../../styles/Buyer/PlaceOrder.module.css";
 
 function PlaceOrder() {
   const navigate = useNavigate();
-  const [alert, setAlert] = useState({ show: false, type: "", title: "", message: "" });
+
   const dispatch = useDispatch();
+
+  const [alert, setAlert] = useState({
+    show: false,
+    type: "",
+    title: "",
+    message: "",
+  });
 
   /*
   =========================================
@@ -34,14 +40,9 @@ function PlaceOrder() {
   =========================================
   */
 
-  const {
-    sellerId,
-    shippingAddress,
-    orderItems,
-    buyerGstNumber,
-    businessProfile,
-    buyerEmail,
-  } = useSelector((state) => state.orderSummary);
+  const { sellerId, shippingAddress, orderItems, buyerGstNumber } = useSelector(
+    (state) => state.orderSummary,
+  );
 
   /*
   =========================================
@@ -105,20 +106,22 @@ function PlaceOrder() {
         show: true,
         type: "warning",
         title: "Action Required",
-        message: "Please agree to the terms and confirm the details first."
+        message: "Please agree to the terms and confirm the details first.",
       });
+
       return;
     }
+
     try {
       setLoading(true);
 
       const token = localStorage.getItem("token");
 
       /*
-        -------------------------------------
-        BACKEND ORDER ITEMS
-        -------------------------------------
-        */
+      =========================================
+      BACKEND ORDER ITEMS
+      =========================================
+      */
 
       const backendOrderItems = orderItems.map((item) => ({
         product: item.product,
@@ -141,10 +144,10 @@ function PlaceOrder() {
       }));
 
       /*
-        -------------------------------------
-        API CALL
-        -------------------------------------
-        */
+      =========================================
+      API CALL
+      =========================================
+      */
 
       const response = await fetch(
         `${process.env.REACT_APP_API_URL}/api/orders/create`,
@@ -186,17 +189,12 @@ function PlaceOrder() {
       const data = await response.json();
 
       /*
-        -------------------------------------
-        SUCCESS
-        -------------------------------------
-        */
+      =========================================
+      SUCCESS
+      =========================================
+      */
 
       if (response.ok) {
-        /*
-          CLEAR REDUX ORDER
-          AFTER SUCCESS
-          */
-
         dispatch(clearOrderSummary());
 
         navigate("/order-success", {
@@ -205,17 +203,22 @@ function PlaceOrder() {
           },
         });
       } else {
-        /*
-        -------------------------------------
-        ERROR
-        -------------------------------------
-        */
-        alert(data.message || "Failed to place order");
+        setAlert({
+          show: true,
+          type: "error",
+          title: "Order Failed",
+          message: data.message || "Failed to place order",
+        });
       }
     } catch (error) {
       console.log("Place Order Error:", error);
 
-      alert("Failed to place order");
+      setAlert({
+        show: true,
+        type: "error",
+        title: "Order Failed",
+        message: "Something went wrong while placing order.",
+      });
     } finally {
       setLoading(false);
     }
@@ -229,7 +232,6 @@ function PlaceOrder() {
 
   if (!orderItems || orderItems.length === 0) {
     return (
-      
       <div className={styles.emptyState}>
         <div className={styles.emptyCard}>
           <h2>No Order Data Found</h2>
@@ -250,13 +252,22 @@ function PlaceOrder() {
   return (
     <>
       {alert.show && (
-      <CustomAlert
-        type={alert.type}
-        title={alert.title}
-        message={alert.message}
-        onClose={() => setAlert({ ...alert, show: false })}
-      />
-    )}
+        <CustomAlert
+          type={alert.type}
+          title={alert.title}
+          message={alert.message}
+          onClose={() =>
+            setAlert({
+              ...alert,
+              show: false,
+            })
+          }
+        />
+      )}
+
+      {/* =====================================
+      PAGE HEADER
+      ===================================== */}
 
       <div className={styles.pageHeader}>
         <div className={styles.pageHeaderLeft}>
@@ -267,7 +278,7 @@ function PlaceOrder() {
           <div>
             <h1>Place Order</h1>
 
-            <p>Review Your Order Details before confirming</p>
+            <p>Review your selected products and confirm your order request.</p>
           </div>
         </div>
       </div>
@@ -277,231 +288,109 @@ function PlaceOrder() {
       ===================================== */}
 
       <div className={styles.pageWrapper}>
-        {/* LEFT SECTION */}
+        {/* =====================================
+        PRODUCTS SECTION
+        ===================================== */}
 
-        <div className={styles.leftSection}>
-          {/* INFORMATION */}
-
-          <div className={styles.card}>
-            <div className={styles.cardHeader}>
-              <div className={styles.cardIcon}>
-                <FaStore />
-              </div>
-
-              <h2>Information</h2>
+        <div className={styles.card}>
+          <div className={styles.cardHeader}>
+            <div className={styles.cardIcon}>
+              <FaBoxOpen />
             </div>
 
-            <div className={styles.infoRow}>
-              <div className={styles.infoLeft}>
-                <FaStore className={styles.rowIcon} />
-
-                <span className={styles.infoLabel}>Company Name</span>
-              </div>
-
-              <span>:</span>
-
-              <span className={styles.infoValue}>
-                {businessProfile?.companyName || "Not Available"}
-              </span>
-            </div>
-
-            <div className={styles.infoRow}>
-              <div className={styles.infoLeft}>
-                <FaUser className={styles.rowIcon} />
-
-                <span className={styles.infoLabel}>Email</span>
-              </div>
-
-              <span>:</span>
-
-              <span className={styles.infoValue}>
-                {buyerEmail || "Not Available"}
-              </span>
-            </div>
-
-            <div className={styles.infoRow}>
-              <div className={styles.infoLeft}>
-                <FaIdCard className={styles.rowIcon} />
-
-                <span className={styles.infoLabel}> GST Number</span>
-              </div>
-
-              <span>:</span>
-
-              <span className={styles.infoValue}>
-                {buyerGstNumber || "Not Available"}
-              </span>
-            </div>
-
-            <div className={styles.infoRow}>
-              <div className={styles.infoLeft}>
-                <FaPercent className={styles.rowIcon} />
-
-                <span className={styles.infoLabel}>GST Type</span>
-              </div>
-
-              <span>:</span>
-
-              <span className={styles.infoValue}>
-                {isMaharashtraGST ? "CGST + SGST" : "IGST"}
-              </span>
-            </div>
+            <h2>Selected Products</h2>
           </div>
 
-          {/* ADDRESS */}
+          <div className={styles.productList}>
+            {orderItems.map((item, index) => (
+              <div key={index} className={styles.productItem}>
+                {/* IMAGE */}
 
-          <div className={styles.card}>
-            <div className={styles.cardHeader}>
-              <div className={styles.cardIcon}>
-                <FaMapMarkerAlt />
-              </div>
-
-              <h2>Delivery Address</h2>
-            </div>
-
-            <div className={styles.addressBox}>
-              <div className={styles.infoRow}>
-                <div className={styles.infoLeft}>
-                  <FaUser className={styles.rowIcon} />
-
-                  <span className={styles.infoLabel}>Full Name</span>
+                <div className={styles.imageWrapper}>
+                  <img
+                    src={
+                      item.productImage ||
+                      "https://via.placeholder.com/120x120?text=No+Image"
+                    }
+                    alt={item.application || "Product"}
+                    className={styles.productImage}
+                    onError={(e) => {
+                      e.target.src =
+                        "https://via.placeholder.com/120x120?text=No+Image";
+                    }}
+                  />
                 </div>
 
-                <span>:</span>
+                {/* PRODUCT INFO */}
 
-                <span className={styles.infoValue}>
-                  {shippingAddress?.fullName || "Not Available"}
-                </span>
-              </div>
+                <div className={styles.productInfo}>
+                  <h3>{item.application}</h3>
 
-              <div className={styles.infoRow}>
-                <div className={styles.infoLeft}>
-                  <FaPhoneAlt className={styles.rowIcon} />
+                  <div className={styles.badgeWrapper}>
+                    <span className={styles.productBadge}>{item.category}</span>
 
-                  <span className={styles.infoLabel}>Mobile Number</span>
-                </div>
+                    <span className={styles.productBadge}>
+                      {item.loadingLocation}
+                    </span>
 
-                <span>:</span>
-
-                <span className={styles.infoValue}>
-                  {shippingAddress?.mobileNumber || "Not Available"}
-                </span>
-              </div>
-
-              <div className={styles.infoRow}>
-                <div className={styles.infoLeft}>
-                  <FaHome className={styles.rowIcon} />
-
-                  <span className={styles.infoLabel}>Address</span>
-                </div>
-
-                <span>:</span>
-
-                <span className={styles.infoValue}>
-                  {shippingAddress?.fullAddress || "Not Available"}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* PRODUCTS */}
-
-          <div className={styles.card}>
-            <div className={styles.cardHeader}>
-              <div className={styles.cardIcon}>
-                <FaBoxOpen />
-              </div>
-
-              <h2>Selected Products</h2>
-            </div>
-
-            <div className={styles.productList}>
-              {orderItems.map((item, index) => (
-                <div key={index} className={styles.productItem}>
-                  {/* IMAGE */}
-
-                  <div className={styles.imageWrapper}>
-                    <img
-                      src={
-                        item.productImage ||
-                        "https://via.placeholder.com/120x120?text=No+Image"
-                      }
-                      alt={item.application || "Product"}
-                      className={styles.productImage}
-                      onError={(e) => {
-                        e.target.src =
-                          "https://via.placeholder.com/120x120?text=No+Image";
-                      }}
-                    />
+                    <span className={styles.productBadge}>
+                      HSN : {item.hsnCode || "N/A"}
+                    </span>
                   </div>
 
-                  {/* INFO */}
+                  <div className={styles.productMeta}>
+                    <div className={styles.metaRow}>
+                      <span>Required Quantity</span>
 
-                  <div className={styles.productInfo}>
-                    <h3>{item.application}</h3>
-
-                    <div className={styles.badgeWrapper}>
-                      <span className={styles.productBadge}>
-                        {item.category}
-                      </span>
-
-                      <span className={styles.productBadge}>
-                        {item.loadingLocation}
-                      </span>
-
-                      <span className={styles.productBadge}>
-                        HSN: {item.hsnCode || "N/A"}
-                      </span>
+                      <strong>{item.requiredQuantity} MT</strong>
                     </div>
 
-                    <div className={styles.productMeta}>
-                      <div className={styles.metaRow}>
-                        <span>Quantity</span>
+                    <div className={styles.metaRow}>
+                      <span>Price Per MT</span>
 
-                        <strong>{item.requiredQuantity} MT</strong>
-                      </div>
-
-                      <div className={styles.metaRow}>
-                        <span>Price Per MT</span>
-
-                        <strong>
-                          ₹{Number(item.pricePerMT || 0).toLocaleString()}
-                        </strong>
-                      </div>
+                      <strong>
+                        ₹{Number(item.pricePerMT || 0).toLocaleString()}
+                      </strong>
                     </div>
                   </div>
-
-                  {/* SUBTOTAL */}
-
-                  <div className={styles.productSubtotal}>
-                    <span>Subtotal</span>
-
-                    <strong>
-                      ₹{Number(item.subtotal || 0).toLocaleString()}
-                    </strong>
-                  </div>
                 </div>
-              ))}
-            </div>
+
+                {/* SUBTOTAL */}
+
+                <div className={styles.productSubtotal}>
+                  <span>Subtotal</span>
+
+                  <strong>
+                    ₹{Number(item.subtotal || 0).toLocaleString()}
+                  </strong>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* RIGHT SECTION */}
+        {/* =====================================
+        FINAL SUMMARY SECTION
+        ===================================== */}
 
-        <div className={styles.rightSection}>
-          <div className={styles.summaryCard}>
-            {/* HEADER */}
+        <div className={styles.summaryCard}>
+          {/* HEADER */}
 
-            <div className={styles.summaryHeader}>
-              <div className={styles.summaryIcon}>
-                <FaFileInvoice />
-              </div>
-
-              <h2>Final Amount Summary</h2>
+          <div className={styles.summaryHeader}>
+            <div className={styles.summaryIcon}>
+              <FaFileInvoice />
             </div>
 
-            {/* SUMMARY */}
+            <div>
+              <h2>Final Amount Summary</h2>
 
+              <p>Review taxes and confirm your order.</p>
+            </div>
+          </div>
+
+          {/* SUMMARY ROWS */}
+
+          <div className={styles.summaryBody}>
             <div className={styles.summaryRow}>
               <span>Taxable Amount</span>
 
@@ -537,58 +426,59 @@ function PlaceOrder() {
 
               <span>₹{Number(totalAmount).toLocaleString()}</span>
             </div>
+          </div>
 
-            {/* NOTICE */}
+          {/* NOTICE BOX */}
 
-            <div className={styles.noticeBox}>
-              <div className={styles.noticeItem}>
-                <FaInfoCircle />
+          <div className={styles.noticeBox}>
+            <div className={styles.noticeItem}>
+              <FaInfoCircle />
 
-                <p>Seller will review this order before payment is requested</p>
-              </div>
-
-              <div className={styles.noticeItem}>
-                <FaFileAlt />
-
-                <p>
-                  Invoice PDF with order ID will be sent after order
-                  confirmation.
-                </p>
-              </div>
-
-              <div className={styles.noticeItem}>
-                <FaReceipt />
-
-                <p>
-                  Payment receipt upload will be enabled after seller approval.
-                </p>
-              </div>
+              <p>Seller will review this order before payment is requested.</p>
             </div>
 
-            {/* CHECKBOX */}
+            <div className={styles.noticeItem}>
+              <FaFileAlt />
 
-            <label className={styles.checkboxWrapper}>
-              <input
-                type="checkbox"
-                checked={agreeTerms}
-                onChange={(e) => setAgreeTerms(e.target.checked)}
-              />
+              <p>
+                Invoice PDF with order ID will be generated after confirmation.
+              </p>
+            </div>
 
-              <span>I confirm that all order details are correct.</span>
-            </label>
+            <div className={styles.noticeItem}>
+              <FaReceipt />
 
-            {/* BUTTON */}
-
-            {/* Change the button code to this: */}
-            <button
-              className={styles.confirmButton}
-              disabled={loading} // Only disable while loading, not based on the checkbox
-              onClick={handleConfirmOrder}
-            >
-              <FaShieldAlt />
-              {loading ? "Placing Order..." : "Confirm Order"}
-            </button>
+              <p>
+                Payment receipt upload will be enabled after seller approval.
+              </p>
+            </div>
           </div>
+
+          {/* CHECKBOX */}
+
+          <label className={styles.checkboxWrapper}>
+            <input
+              type="checkbox"
+              checked={agreeTerms}
+              onChange={(e) => setAgreeTerms(e.target.checked)}
+            />
+
+            <span>
+              I confirm that all order details are correct and verified.
+            </span>
+          </label>
+
+          {/* CONFIRM BUTTON */}
+
+          <button
+            className={styles.confirmButton}
+            disabled={loading}
+            onClick={handleConfirmOrder}
+          >
+            <FaShieldAlt />
+
+            {loading ? "Placing Order..." : "Confirm Order"}
+          </button>
         </div>
       </div>
     </>

@@ -262,7 +262,11 @@ function BuyerProfile() {
                 <p>{user?.email || "-"}</p>
 
                 <div className={styles.badges}>
-                  <span className={styles.roleBadge}>{user?.role}</span>
+                  <span className={styles.roleBadge}>
+                    {user?.role
+                      ? user.role.charAt(0).toUpperCase() + user.role.slice(1)
+                      : ""}
+                  </span>
 
                   {user?.isVerified && (
                     <span className={styles.verifiedBadge}>Verified</span>
@@ -406,8 +410,8 @@ function BuyerProfile() {
 
               <p className={styles.noBusinessProfileText}>
                 Complete your business profile to unlock product exploration,
-                shipping management, interested products,
-                and all marketplace features.
+                shipping management, interested products, and all marketplace
+                features.
               </p>
 
               <button
@@ -591,6 +595,43 @@ function BuyerProfile() {
                 </div>
               )}
             </>
+          )}
+        </div>
+
+        {/* BOTTOM ACTION BUTTONS */}
+
+        <div className={styles.bottomActionWrapper}>
+          {!editMode ? (
+            <button
+              className={styles.editBtn}
+              onClick={() => setEditMode(true)}
+            >
+              <FaEdit />
+              Edit Profile
+            </button>
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                gap: "12px",
+                flexWrap: "wrap",
+                justifyContent: "center",
+              }}
+            >
+              <button
+                className={styles.editBtn}
+                onClick={handleUpdateProfile}
+                disabled={loading}
+              >
+                <FaSave />
+
+                {loading ? "Saving..." : "Save Profile"}
+              </button>
+
+              <button className={styles.cancelBtn} onClick={handleCancelEdit}>
+                Cancel
+              </button>
+            </div>
           )}
         </div>
       </div>

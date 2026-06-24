@@ -94,7 +94,9 @@ function OrderSuccess() {
             </div>
 
             <strong className={styles.statusBadge}>
-              {order.orderStatus?.replace("_", " ")}
+              {order.orderStatus
+                ?.replace(/_/g, " ")
+                ?.replace(/\b\w/g, (char) => char.toUpperCase())}
             </strong>
           </div>
 

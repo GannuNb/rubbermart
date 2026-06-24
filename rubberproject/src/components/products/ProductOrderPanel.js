@@ -338,13 +338,12 @@ function ProductOrderPanel({ singleProduct }) {
               <span className={styles.title}>Verified Seller</span>
               <span className={styles.status}>Trusted & Verified</span>
             </div>
-
             <div className={styles.liveDot}></div>
           </div>
 
           <div className={styles.stockInfo}>
             {singleProduct.stockStatus === "available"
-              ? "Product In Stock"
+              ? "✔ Product Available In Stock"
               : "Currently Out Of Stock"}
           </div>
         </div>
@@ -374,7 +373,7 @@ function ProductOrderPanel({ singleProduct }) {
               type="number"
               min="1"
               max={singleProduct.quantity}
-              placeholder="Enter required quantity"
+              placeholder="Enter Required Quantity"
               className={styles.quantityInput}
               value={requiredQuantity}
               onChange={(e) => setRequiredQuantity(e.target.value)}

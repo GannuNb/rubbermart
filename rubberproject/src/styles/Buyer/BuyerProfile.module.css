@@ -637,3 +637,10 @@
   opacity: 0.9;
   transform: translateY(-2px);
 }
+
+.bottomActionWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
