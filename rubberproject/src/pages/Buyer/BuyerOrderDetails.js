@@ -94,7 +94,7 @@ function BuyerOrderDetails() {
 
       <div className={styles.topHeaderCard}>
         <div className={styles.pageTitleSection}>
-          <h1>My Orders</h1>
+          <h2>Order {order?.orderId}</h2>
         </div>
 
         <div className={styles.profileIcon}>
