@@ -3,6 +3,7 @@ import { IoClose } from "react-icons/io5";
 import { FiCheckCircle, FiAlertCircle, FiInfo } from "react-icons/fi";
 import { MdOutlineWarningAmber } from "react-icons/md";
 import styles from "../../styles/Components/CustomAlert.module.css";
+import Logo from "../../assests/AlertLogo.png"; // Update path if needed
 
 function CustomAlert({
   type = "info",
@@ -31,13 +32,23 @@ function CustomAlert({
       <div className={`${styles.alert} ${styles[type]}`}>
         <div className={styles.progress}></div>
 
-        <div className={styles.iconWrapper}>{icons[type]}</div>
+        {/* Logo */}
+        <div className={styles.logoWrapper}>
+          <img src={Logo} alt="Logo" className={styles.logo} />
+        </div>
 
+        {/* Alert Icon */}
+        <div className={styles.iconWrapper}>
+          {icons[type]}
+        </div>
+
+        {/* Content */}
         <div className={styles.content}>
           <h4>{title}</h4>
           <p>{message}</p>
         </div>
 
+        {/* Close Button */}
         <button className={styles.closeBtn} onClick={onClose}>
           <IoClose />
         </button>
