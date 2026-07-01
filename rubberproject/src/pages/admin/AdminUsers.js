@@ -2,20 +2,25 @@ import React, { useEffect, useState } from "react";
 import styles from "../../styles/Admin/AdminUsers.module.css";
 import AdminBuyerCard from "../../components/admin/AdminBuyerCard";
 import AdminSellerCard from "../../components/admin/AdminSellerCard";
-import AdminAdminCard from "../../components/admin/AdminAdminCard"; 
+import AdminAdminCard from "../../components/admin/AdminAdminCard";
 
 function AdminUsers() {
   const [activeTab, setActiveTab] = useState("buyers");
   const [usersList, setUsersList] = useState([]); // ONLY contains the 4 visible items
-  const [admins, setAdmins] = useState([]);      
+  const [admins, setAdmins] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // TRUE BACKEND PAGINATION DRIVER STATES
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  
+
   // Holds global total numbers to display across all tab badges immediately
-  const [tabCounts, setTabCounts] = useState({ admins: 0, buyers: 0, sellers: 0 });
+  const [tabCounts, setTabCounts] = useState({
+    admins: 0,
+    buyers: 0,
+    sellers: 0,
+    transporters: 0,
+  });
   const itemsPerPage = 4;
 
   // 1. Fetch single admin profile summary
@@ -24,7 +29,10 @@ function AdminUsers() {
       try {
         const token = localStorage.getItem("token");
         const headers = { Authorization: `Bearer ${token}` };
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/user/my-profile`, { headers });
+        const res = await fetch(
+          `${process.env.REACT_APP_API_URL}/api/user/my-profile`,
+          { headers },
+        );
         const profileData = await res.json();
 
         if (profileData.success) {
@@ -42,28 +50,28 @@ function AdminUsers() {
   useEffect(() => {
     if (activeTab === "admins") {
       setLoading(false);
-      return; 
+      return;
     }
 
     const fetchPaginatedUsersFromServer = async () => {
       setLoading(true);
       try {
         const token = localStorage.getItem("token");
-        
+
         // Pass the target role, active page index, and strict display limit to backend
         const response = await fetch(
           `${process.env.REACT_APP_API_URL}/api/user/admin/all-users?role=${activeTab}&page=${currentPage}&limit=${itemsPerPage}`,
           {
             method: "GET",
             headers: { Authorization: `Bearer ${token}` },
-          }
+          },
         );
         const data = await response.json();
 
         if (data.success) {
           setUsersList(data.users || []); // Save ONLY the 4 records returned
           setTotalPages(data.totalPages || 1);
-          
+
           // Sync all tab labels with current database counts instantly
           if (data.globalCounts) {
             setTabCounts(data.globalCounts);
@@ -73,7 +81,7 @@ function AdminUsers() {
         }
       } catch (error) {
         console.log("Fetch Paginated Users Error:", error);
-        setUsersList([]); 
+        setUsersList([]);
       } finally {
         setLoading(false);
       }
@@ -123,22 +131,44 @@ function AdminUsers() {
         >
           Sellers ({tabCounts.sellers})
         </button>
+
+        <button
+          className={`${styles.adminUsersTabButton} ${
+            activeTab === "transporters" ? styles.adminUsersActiveTab : ""
+          }`}
+          onClick={() => handleTabChange("transporters")}
+        >
+          Transporters ({tabCounts.transporters})
+        </button>
       </div>
 
       {loading ? (
-        <div className={styles.adminUsersEmptyState}>Loading users directory entries...</div>
+        <div className={styles.adminUsersEmptyState}>
+          Loading users directory entries...
+        </div>
       ) : (
         <>
-          <div className={activeTab === "admins" ? styles.centerGridItems : styles.adminUsersGrid}>
+          <div
+            className={
+              activeTab === "admins"
+                ? styles.centerGridItems
+                : styles.adminUsersGrid
+            }
+          >
             {activeTab === "admins" ? (
               admins.length > 0 ? (
                 admins.map((admin) => (
-                  <div key={admin._id || "admin-root"} style={{ width: "100%", maxWidth: "560px" }}>
+                  <div
+                    key={admin._id || "admin-root"}
+                    style={{ width: "100%", maxWidth: "560px" }}
+                  >
                     <AdminAdminCard user={admin} />
                   </div>
                 ))
               ) : (
-                <div className={styles.adminUsersEmptyState}>No administrator profiles resolved</div>
+                <div className={styles.adminUsersEmptyState}>
+                  No administrator profiles resolved
+                </div>
               )
             ) : activeTab === "buyers" ? (
               usersList.length > 0 ? (
@@ -146,35 +176,49 @@ function AdminUsers() {
                   <AdminBuyerCard key={buyer._id} user={buyer} />
                 ))
               ) : (
-                <div className={styles.adminUsersEmptyState}>No buyers found inside database documentation</div>
+                <div className={styles.adminUsersEmptyState}>
+                  No buyers found inside database documentation
+                </div>
+              )
+            ) : activeTab === "sellers" ? (
+              usersList.length > 0 ? (
+                usersList.map((seller) => (
+                  <AdminSellerCard key={seller._id} user={seller} />
+                ))
+              ) : (
+                <div className={styles.adminUsersEmptyState}>
+                  No platform sellers found inside database documentation
+                </div>
               )
             ) : usersList.length > 0 ? (
-              usersList.map((seller) => (
-                <AdminSellerCard key={seller._id} user={seller} />
+              usersList.map((transporter) => (
+                <AdminSellerCard key={transporter._id} user={transporter} />
               ))
             ) : (
-              <div className={styles.adminUsersEmptyState}>No platform sellers found inside database documentation</div>
+              <div className={styles.adminUsersEmptyState}>
+                No transporters found inside database
+              </div>
             )}
           </div>
 
           {/* SERVER-SIDE CONTROL FOOTER */}
           {activeTab !== "admins" && (
             <div className={styles.paginationWrapper}>
-              <button 
+              <button
                 className={styles.pageArrowButton}
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
               >
                 &laquo; Previous
               </button>
-              
+
               <div className={styles.pageNumbersGrid}>
                 {(() => {
                   let startPage = Math.max(1, currentPage);
                   if (currentPage === totalPages && totalPages > 1) {
                     startPage = Math.max(1, currentPage - 1);
                   }
-                
+
                   const endPage = Math.min(totalPages, startPage + 1);
                   const pageNumbers = [];
 
@@ -186,14 +230,14 @@ function AdminUsers() {
                         onClick={() => handlePageChange(i)}
                       >
                         {i}
-                      </button>
+                      </button>,
                     );
                   }
                   return pageNumbers;
                 })()}
               </div>
 
-              <button 
+              <button
                 className={styles.pageArrowButton}
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages || totalPages <= 1}

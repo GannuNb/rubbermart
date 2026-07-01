@@ -17,14 +17,19 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   markShipmentDeliveredBySellerThunk,
   markShipmentShippedBySellerThunk,
+  uploadShipmentProofsThunk,
+  getSellerSingleOrderThunk,
 } from "../../redux/slices/sellerOrderThunk";
 
 const ShipmentCard = ({ shipment, orderId }) => {
   const dispatch = useDispatch();
 
   const [showDetails, setShowDetails] = useState(false);
+  const [packedItemPhoto, setPackedItemPhoto] = useState(null);
 
-  const { markDeliveredLoading, markShippedLoading, activeShipmentId } =
+  const [weightTicket, setWeightTicket] = useState(null);
+
+  const { shipmentLoading,markDeliveredLoading, markShippedLoading, activeShipmentId } =
     useSelector((state) => state.sellerOrders);
 
   /* =========================
@@ -32,6 +37,8 @@ const ShipmentCard = ({ shipment, orderId }) => {
   ========================= */
 
   const isDelivered = shipment.shipmentStatus === "delivered";
+  const hasDocuments =
+    shipment?.packedItemPhoto?.data && shipment?.weightTicket?.data;
 
   const isShipped =
     shipment.shipmentStatus === "shipped" ||
@@ -39,6 +46,7 @@ const ShipmentCard = ({ shipment, orderId }) => {
 
   const canMarkShipped =
     shipment.transportStatus === "transporter_assigned" &&
+    hasDocuments &&
     !isShipped &&
     !isDelivered;
 
@@ -103,6 +111,37 @@ const ShipmentCard = ({ shipment, orderId }) => {
         shipmentId: shipment._id,
       }),
     );
+  };
+  const handleUploadProofs = () => {
+    if (!packedItemPhoto) {
+      return alert("Please select packed item photo");
+    }
+
+    if (!weightTicket) {
+      return alert("Please select weight ticket");
+    }
+
+    const proofData = new FormData();
+
+    proofData.append("packedItemPhoto", packedItemPhoto);
+
+    proofData.append("weightTicket", weightTicket);
+
+    dispatch(
+      uploadShipmentProofsThunk({
+        orderId,
+
+        shipmentId: shipment._id,
+
+        proofData,
+      }),
+    ).then((result) => {
+      if (result.meta.requestStatus === "fulfilled") {
+        alert("Shipment proofs uploaded successfully");
+
+        dispatch(getSellerSingleOrderThunk(orderId));
+      }
+    });
   };
 
   return (
@@ -238,6 +277,50 @@ const ShipmentCard = ({ shipment, orderId }) => {
               </div>
             </div>
           )}
+
+          {/* =========================
+              UPLOAD PROOFS
+          ========================= */}
+
+          {shipment.transportStatus === "transporter_assigned" &&
+            !hasDocuments && (
+              <div className={styles.uploadSection}>
+                <h4 className={styles.uploadHeading}>Upload Shipment Proofs</h4>
+
+                {/* PACKED PHOTO */}
+
+                <div className={styles.uploadField}>
+                  <label>Packed Item Photo</label>
+
+                  <input
+                    type="file"
+                    accept="image/*,.pdf"
+                    onChange={(e) => setPackedItemPhoto(e.target.files[0])}
+                  />
+                </div>
+
+                {/* WEIGHT TICKET */}
+
+                <div className={styles.uploadField}>
+                  <label>Weight Ticket</label>
+
+                  <input
+                    type="file"
+                    accept="image/*,.pdf"
+                    onChange={(e) => setWeightTicket(e.target.files[0])}
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  className={styles.uploadButton}
+                  onClick={handleUploadProofs}
+                  disabled={shipmentLoading}
+                >
+                  {shipmentLoading ? "Uploading..." : "Upload Proof Documents"}
+                </button>
+              </div>
+            )}
 
           {/* FILES */}
 

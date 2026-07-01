@@ -1,7 +1,5 @@
-import React, { useRef, useState } from "react";
-
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
 import { addShipmentToOrderThunk } from "../../redux/slices/sellerOrderThunk";
 
 import ShipmentItemSelector from "./ShipmentItemSelector";
@@ -9,16 +7,11 @@ import ShipmentSubProducts from "./ShipmentSubProducts";
 import ShipmentQuantityInfo from "./ShipmentQuantityInfo";
 // import ShipmentBasicFields from "./ShipmentBasicFields";
 import ShipmentAddressField from "./ShipmentAddressField";
-import ShipmentFileUpload from "./ShipmentFileUpload";
 
 import styles from "../../styles/Seller/SellerShipmentForm.module.css";
 
 const SellerShipmentForm = ({ selectedOrder }) => {
   const dispatch = useDispatch();
-
-  const packedItemPhotoRef = useRef(null);
-
-  const weightTicketRef = useRef(null);
 
   const { shipmentLoading, shipmentError, shipmentSuccess } = useSelector(
     (state) => state.sellerOrders,
@@ -26,17 +19,9 @@ const SellerShipmentForm = ({ selectedOrder }) => {
 
   const [formData, setFormData] = useState({
     selectedItem: "",
-
     shippedQuantity: "",
-
     shipmentFrom: "",
-
     shipmentFromType: "",
-
-    packedItemPhoto: null,
-
-    weightTicket: null,
-
     selectedSubProducts: [],
   });
 
@@ -76,22 +61,9 @@ const SellerShipmentForm = ({ selectedOrder }) => {
   ========================= */
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
-
-    /* FILES */
-
-    if (name === "packedItemPhoto" || name === "weightTicket") {
-      setFormData((prev) => ({
-        ...prev,
-
-        [name]: files[0],
-      }));
-
-      return;
-    }
+    const { name, value } = e.target;
 
     /* TEXT */
-
     setFormData((prev) => ({
       ...prev,
 
@@ -171,14 +143,6 @@ const SellerShipmentForm = ({ selectedOrder }) => {
       return alert("Please enter shipped quantity");
     }
 
-    if (!formData.weightTicket) {
-      return alert("Please upload weight ticket");
-    }
-
-    if (!formData.packedItemPhoto) {
-      return alert("Please upload packed item photo");
-    }
-
     if (!formData.shipmentFrom) {
       return alert("Please select shipment from address");
     }
@@ -192,27 +156,17 @@ const SellerShipmentForm = ({ selectedOrder }) => {
       );
     }
 
-    const shipmentData = new FormData();
+    const shipmentData = {
+      selectedItem: formData.selectedItem,
 
-    shipmentData.append("selectedItem", formData.selectedItem);
+      shippedQuantity: formData.shippedQuantity,
 
-    shipmentData.append("shippedQuantity", formData.shippedQuantity);
+      shipmentFrom: formData.shipmentFrom,
 
-    shipmentData.append("shipmentFrom", formData.shipmentFrom);
+      shipmentTo: selectedOrder.shippingAddress?.fullAddress || "",
 
-    shipmentData.append(
-      "shipmentTo",
-      selectedOrder.shippingAddress?.fullAddress || "",
-    );
-
-    shipmentData.append(
-      "selectedSubProducts",
-      JSON.stringify(formData.selectedSubProducts),
-    );
-
-    shipmentData.append("packedItemPhoto", formData.packedItemPhoto);
-
-    shipmentData.append("weightTicket", formData.weightTicket);
+      selectedSubProducts: formData.selectedSubProducts,
+    };
 
     dispatch(
       addShipmentToOrderThunk({
@@ -224,27 +178,11 @@ const SellerShipmentForm = ({ selectedOrder }) => {
       if (result.meta.requestStatus === "fulfilled") {
         setFormData({
           selectedItem: "",
-
           shippedQuantity: "",
-
           shipmentFrom: "",
-
           shipmentFromType: "",
-
-          packedItemPhoto: null,
-
-          weightTicket: null,
-
           selectedSubProducts: [],
         });
-
-        if (packedItemPhotoRef.current) {
-          packedItemPhotoRef.current.value = "";
-        }
-
-        if (weightTicketRef.current) {
-          weightTicketRef.current.value = "";
-        }
       }
     });
   };
@@ -287,12 +225,6 @@ const SellerShipmentForm = ({ selectedOrder }) => {
           shipmentFromOptions={shipmentFromOptions}
           shipmentTo={selectedOrder.shippingAddress?.fullAddress || ""}
           setFormData={setFormData}
-        />
-
-        <ShipmentFileUpload
-          packedItemPhotoRef={packedItemPhotoRef}
-          weightTicketRef={weightTicketRef}
-          handleChange={handleChange}
         />
       </div>
 

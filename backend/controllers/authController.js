@@ -116,7 +116,7 @@ export const googleSignup = async (req, res) => {
       email: normalizedEmail,
       profileImage,
       authProvider: "google",
-      isVerified: true,
+      isVerified: false,
       role: role || "buyer",
     });
 
@@ -271,7 +271,7 @@ export const googleLogin = async (req, res) => {
         email: normalizedEmail,
         profileImage,
         authProvider: "google",
-        isVerified: true,
+        isVerified: false,
         role: "buyer",
       });
 

@@ -2,7 +2,7 @@
 // backend/routes/userRoutes.js
 
 import express from "express";
-import { getMyProfile,getAllUsersForAdmin,getUserProfile,  addUserAddress, } from "../controllers/userController.js";
+import { getMyProfile,getAllUsersForAdmin,getUserProfile,  addUserAddress,verifyUserByAdmin, } from "../controllers/userController.js";
 import {  protectUser,  protectAdmin,} from "../middlewares/authMiddleware.js";
 
 
@@ -11,13 +11,15 @@ import { updateProfile } from "../controllers/userController.js";
 const router = express.Router();
 
 router.get("/my-profile", protectUser, getMyProfile);
-router.get(  "/admin/all-users",  protectUser,  protectAdmin,  getAllUsersForAdmin);
+router.get("/admin/all-users",  protectUser,  protectAdmin,  getAllUsersForAdmin);
+router.put("/admin/verify-user/:userId",  protectUser,  protectAdmin,  verifyUserByAdmin,);
 
 
 router.get("/profile", protectUser, getUserProfile);
 router.post("/add-address", protectUser, addUserAddress);
 
 router.put("/update-profile", protectUser, updateProfile);
+
 
 
 export default router;

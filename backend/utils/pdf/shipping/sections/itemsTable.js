@@ -266,7 +266,7 @@ export const drawItemsTable = (doc, order, shipment, startY) => {
     align: "center",
   });
 
-  doc.text("Product Total", colX.total, currentY + 12, {
+  doc.text("Total", colX.total, currentY + 12, {
     width: 70,
     align: "center",
   });

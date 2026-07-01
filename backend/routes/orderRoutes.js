@@ -10,9 +10,10 @@ import { createOrder,getSellerOrders,  getSellerSingleOrder,  confirmSellerOrder
     markShipmentDeliveredByAdmin,downloadProformaInvoice,downloadShippingInvoice,downloadBuyReport,markShipmentDeliveredBySeller,
     cancelBuyerOrder,getOpenTransportShipments,submitTransportQuote,getTransporterQuotes,getShipmentQuotes,
     assignTransporterToShipment,adminDirectAssignTransporter,getAllTransporters,getTransporterPendingAssignments,
-     transporterAcceptAssignment,transporterRejectAssignment,markShipmentShippedBySeller,
+     transporterAcceptAssignment,transporterRejectAssignment,markShipmentShippedBySeller,   
     getTransporterAssignedShipments,getTransporterCompletedDeliveries, markShipmentShippedByTransporter,markShipmentShippedByAdmin,
-    uploadTransportPaymentReceipt,uploadAdminTransportPayment,verifyBuyerTransportPayment,getTransporterPaymentHistory } from "../controllers/orderController.js";
+    uploadTransportPaymentReceipt,uploadAdminTransportPayment,verifyBuyerTransportPayment,getTransporterPaymentHistory ,
+     uploadShipmentProofs, } from "../controllers/orderController.js";
 
 import { submitOrderReview } from "../controllers/reviewController.js";
 
@@ -37,7 +38,9 @@ router.get("/seller-orders", protectUser, getSellerOrders);
 router.get("/seller-orders/:orderId",  protectUser,  getSellerSingleOrder);
 router.put("/seller-orders/:orderId/confirm",  protectUser,  confirmSellerOrder);
 router.put("/seller-orders/:orderId/reject",  protectUser,  rejectSellerOrder);
-router.post("/seller-orders/:orderId/shipment",protectUser,uploadDocuments.fields([{name: "packedItemPhoto",maxCount: 1, }, { name: "weightTicket",maxCount: 1,},]),addShipmentToOrder);
+router.post("/seller-orders/:orderId/shipment",protectUser,addShipmentToOrder);
+router.put(  "/seller-orders/:orderId/shipment/:shipmentId/upload-proofs",  protectUser,
+  uploadDocuments.fields([{ name: "packedItemPhoto", maxCount: 1, },{ name: "weightTicket", maxCount: 1,  },]),uploadShipmentProofs,);
 router.put("/seller-orders/:orderId/shipment/:shipmentId/delivered",  protectUser,  markShipmentDeliveredBySeller);
 router.put( "/seller-orders/:orderId/shipment/:shipmentId/shipped", protectUser, markShipmentShippedBySeller,);
 

@@ -166,3 +166,79 @@
 
   cursor: not-allowed;
 }
+
+.uploadSection {
+  margin-top: 14px;
+  padding: 16px;
+  border: 1px solid #e9d5ff;
+  background: #faf5ff;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.uploadHeading {
+  font-size: 15px;
+  font-weight: 700;
+  color: #6d28d9;
+  margin: 0;
+}
+
+.uploadField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.uploadField label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.uploadField input {
+  border: 1px solid #ddd6fe;
+  background: white;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.uploadButton {
+  margin-top: 4px;
+  background: linear-gradient(90deg, #7c3aed, #9333ea);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.uploadButton:hover {
+  opacity: 0.95;
+}
+
+.shippedButton {
+  margin-top: 12px;
+  background: linear-gradient(90deg, #2563eb, #3b82f6);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: 0.3s;
+}
+
+.shippedButton:hover {
+  opacity: 0.95;
+}

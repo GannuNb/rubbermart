@@ -55,8 +55,12 @@ export const getAllUsersForAdmin = async (req, res) => {
   try {
     // 1. Determine which role segment the frontend is actively viewing
     let targetRole = "buyer";
+
     if (req.query.role === "sellers") targetRole = "seller";
+
     if (req.query.role === "admins") targetRole = "admin";
+
+    if (req.query.role === "transporters") targetRole = "transporter";
 
     // 2. Parse pagination variables from query string (defaults to page 1, limit 4)
     const page = parseInt(req.query.page) || 1;
@@ -65,11 +69,18 @@ export const getAllUsersForAdmin = async (req, res) => {
 
     // 3. EFFICIENT COUNTING: Get the live database counts for all roles in parallel.
     // This is super fast because countDocuments() doesn't fetch actual user data profiles.
-    const [totalAdmins, totalBuyers, totalSellers] = await Promise.all([
-      User.countDocuments({ role: "admin" }),
-      User.countDocuments({ role: "buyer" }),
-      User.countDocuments({ role: "seller" })
-    ]);
+    const [totalAdmins, totalBuyers, totalSellers, totalTransporters] =
+      await Promise.all([
+        User.countDocuments({ role: "admin" }),
+
+        User.countDocuments({ role: "buyer" }),
+
+        User.countDocuments({ role: "seller" }),
+
+        User.countDocuments({
+          role: "transporter",
+        }),
+      ]);
 
     // 4. TRUE BACKEND PAGINATION: Fetch ONLY 4 documents from the database for the active tab
     const users = await User.find({ role: targetRole })
@@ -92,7 +103,8 @@ export const getAllUsersForAdmin = async (req, res) => {
           panNumber: user.businessProfile?.panNumber || "",
           billingAddress: user.businessProfile?.billingAddress || "",
           shippingAddress: user.businessProfile?.shippingAddress || "",
-          sameAsBillingAddress: user.businessProfile?.sameAsBillingAddress || false,
+          sameAsBillingAddress:
+            user.businessProfile?.sameAsBillingAddress || false,
           interestedProducts: user.businessProfile?.interestedProducts || [],
         },
       };
@@ -118,8 +130,12 @@ export const getAllUsersForAdmin = async (req, res) => {
 
     // Determine target total context based on current view segment
     let activeTotalCount = totalBuyers;
+
     if (targetRole === "seller") activeTotalCount = totalSellers;
+
     if (targetRole === "admin") activeTotalCount = totalAdmins;
+
+    if (targetRole === "transporter") activeTotalCount = totalTransporters;
 
     // 6. Return the paginated chunk alongside global database counts
     return res.status(200).json({
@@ -131,8 +147,9 @@ export const getAllUsersForAdmin = async (req, res) => {
       globalCounts: {
         admins: totalAdmins,
         buyers: totalBuyers,
-        sellers: totalSellers
-      }
+        sellers: totalSellers,
+        transporters: totalTransporters,
+      },
     });
   } catch (error) {
     console.log("Get All Users For Admin Error:", error);
@@ -198,8 +215,9 @@ export const addUserAddress = async (req, res) => {
       });
     }
 
-    const fullAddress = `${flatHouse}, ${areaStreet}${landmark ? `, ${landmark}` : ""
-      }, ${city}, ${state} - ${pincode}`;
+    const fullAddress = `${flatHouse}, ${areaStreet}${
+      landmark ? `, ${landmark}` : ""
+    }, ${city}, ${state} - ${pincode}`;
 
     const user = await User.findById(req.user._id);
 
@@ -213,7 +231,7 @@ export const addUserAddress = async (req, res) => {
     const alreadyExists = user.addresses.some(
       (address) =>
         address.fullAddress?.trim().toLowerCase() ===
-        fullAddress.trim().toLowerCase()
+        fullAddress.trim().toLowerCase(),
     );
 
     if (alreadyExists) {
@@ -285,9 +303,12 @@ export const updateProfile = async (req, res) => {
     // =========================
     if (fullName !== undefined) user.fullName = fullName;
     if (location !== undefined) user.location = location;
-    if (phoneNumber !== undefined) user.businessProfile.phoneNumber = phoneNumber;
-    if (billingAddress !== undefined) user.businessProfile.billingAddress = billingAddress;
-    if (shippingAddress !== undefined) user.businessProfile.shippingAddress = shippingAddress;
+    if (phoneNumber !== undefined)
+      user.businessProfile.phoneNumber = phoneNumber;
+    if (billingAddress !== undefined)
+      user.businessProfile.billingAddress = billingAddress;
+    if (shippingAddress !== undefined)
+      user.businessProfile.shippingAddress = shippingAddress;
 
     if (user.role === "buyer" && interestedProducts !== undefined) {
       user.businessProfile.interestedProducts = interestedProducts;
@@ -295,7 +316,11 @@ export const updateProfile = async (req, res) => {
 
     // Helper function to convert base64 strings into a Mongoose-compatible schema format
     const parseBase64Document = (base64Str) => {
-      if (!base64Str || typeof base64Str !== "string" || !base64Str.includes("base64,")) {
+      if (
+        !base64Str ||
+        typeof base64Str !== "string" ||
+        !base64Str.includes("base64,")
+      ) {
         return null;
       }
       const parts = base64Str.split(";base64,");
@@ -305,7 +330,7 @@ export const updateProfile = async (req, res) => {
       return {
         data: bufferData,
         contentType: contentType,
-        originalName: `uploaded_document_${Date.now()}.${contentType.split("/")[1] || "dat"}`
+        originalName: `uploaded_document_${Date.now()}.${contentType.split("/")[1] || "dat"}`,
       };
     };
 
@@ -343,6 +368,48 @@ export const updateProfile = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Server error while updating profile",
+    });
+  }
+};
+
+export const verifyUserByAdmin = async (
+  req,
+  res,
+) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await User.findById(
+      userId,
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    user.isVerified = true;
+
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message:
+        "User verified successfully",
+
+      user,
+    });
+  } catch (error) {
+    console.log(
+      "Verify User Error:",
+      error,
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to verify user",
     });
   }
 };

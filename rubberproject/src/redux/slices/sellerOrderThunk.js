@@ -110,17 +110,19 @@ export const rejectSellerOrderThunk = createAsyncThunk(
 
 export const addShipmentToOrderThunk = createAsyncThunk(
   "sellerOrders/addShipmentToOrder",
+
   async ({ orderId, shipmentData }, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.token;
 
       const response = await axios.post(
         `${API_URL}/api/orders/seller-orders/${orderId}/shipment`,
+
         shipmentData,
+
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
           },
         },
       );
@@ -128,7 +130,38 @@ export const addShipmentToOrderThunk = createAsyncThunk(
       return response.data.shipments;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Failed to add shipment details",
+        error.response?.data?.message ||
+          "Failed to add shipment details",
+      );
+    }
+  },
+);
+
+export const uploadShipmentProofsThunk = createAsyncThunk(
+  "sellerOrders/uploadShipmentProofs",
+
+  async ({ orderId, shipmentId, proofData }, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.token;
+
+      const response = await axios.put(
+        `${API_URL}/api/orders/seller-orders/${orderId}/shipment/${shipmentId}/upload-proofs`,
+
+        proofData,
+
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      );
+
+      return response.data.order;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Failed to upload shipment proofs",
       );
     }
   },
@@ -164,25 +197,22 @@ export const markShipmentShippedBySellerThunk = createAsyncThunk(
 
   async ({ orderId, shipmentId }, thunkAPI) => {
     try {
-      const token =
-        thunkAPI.getState().auth.token;
+      const token = thunkAPI.getState().auth.token;
 
-      const response =
-        await axios.put(
-          `${API_URL}/api/orders/seller-orders/${orderId}/shipment/${shipmentId}/shipped`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+      const response = await axios.put(
+        `${API_URL}/api/orders/seller-orders/${orderId}/shipment/${shipmentId}/shipped`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        },
+      );
 
       return response.data.order;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data?.message ||
-          "Failed to mark shipment shipped",
+        error.response?.data?.message || "Failed to mark shipment shipped",
       );
     }
   },

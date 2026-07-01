@@ -6,73 +6,109 @@ import styles from "../../styles/Admin/AdminUsers.module.css";
 function AdminSellerCard({ user }) {
   const [showMore, setShowMore] = useState(false);
 
-const openDocument = (fileUrl) => {
-  try {
-    if (!fileUrl) {
-      alert("Document not available");
-      return;
-    }
+  const [verifyLoading, setVerifyLoading] = useState(false);
 
-    /*
+  const openDocument = (fileUrl) => {
+    try {
+      if (!fileUrl) {
+        alert("Document not available");
+
+        return;
+      }
+
+      /*
     =========================================
     FETCH DATA URL
     =========================================
     */
 
-    fetch(fileUrl)
-      .then((response) => response.blob())
-      .then((blob) => {
-
-        /*
+      fetch(fileUrl)
+        .then((response) => response.blob())
+        .then((blob) => {
+          /*
         =========================================
         CREATE BLOB URL
         =========================================
         */
 
-        const blobUrl = window.URL.createObjectURL(blob);
+          const blobUrl = window.URL.createObjectURL(blob);
 
-        /*
+          /*
         =========================================
         CREATE TEMP LINK
         =========================================
         */
 
-        const link = document.createElement("a");
+          const link = document.createElement("a");
 
-        link.href = blobUrl;
+          link.href = blobUrl;
 
-        link.target = "_blank";
+          link.target = "_blank";
 
-        link.rel = "noopener noreferrer";
+          link.rel = "noopener noreferrer";
 
-        document.body.appendChild(link);
+          document.body.appendChild(link);
 
-        link.click();
+          link.click();
 
-        document.body.removeChild(link);
+          document.body.removeChild(link);
 
-        /*
+          /*
         =========================================
         CLEANUP
         =========================================
         */
 
-        setTimeout(() => {
-          window.URL.revokeObjectURL(blobUrl);
-        }, 1000);
-      })
-      .catch((error) => {
-        console.log("Blob Error:", error);
+          setTimeout(() => {
+            window.URL.revokeObjectURL(blobUrl);
+          }, 1000);
+        })
+        .catch((error) => {
+          console.log("Blob Error:", error);
 
-        alert("Failed to open document");
-      });
+          alert("Failed to open document");
+        });
+    } catch (error) {
+      console.log("Document Open Error:", error);
 
-  } catch (error) {
-    console.log("Document Open Error:", error);
+      alert("Failed to open document");
+    }
+  };
 
-    alert("Failed to open document");
-  }
-};
+  const handleVerifyUser = async () => {
+    try {
+      setVerifyLoading(true);
+
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/user/admin/verify-user/${user._id}`,
+        {
+          method: "PUT",
+
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert("User verified successfully");
+
+        window.location.reload();
+      } else {
+        alert(data.message || "Verification failed");
+      }
+    } catch (error) {
+      console.log("Verify User Error:", error);
+
+      alert("Failed to verify user");
+    } finally {
+      setVerifyLoading(false);
+    }
+  };
 
   return (
     <div className={styles.adminUserCard}>
@@ -88,10 +124,9 @@ const openDocument = (fileUrl) => {
                 onError={(e) => {
                   e.target.style.display = "none";
 
-                  const placeholder =
-                    e.target.parentElement.querySelector(
-                      `.${styles.adminUserImagePlaceholder}`
-                    );
+                  const placeholder = e.target.parentElement.querySelector(
+                    `.${styles.adminUserImagePlaceholder}`,
+                  );
 
                   if (placeholder) {
                     placeholder.style.display = "flex";
@@ -117,10 +152,21 @@ const openDocument = (fileUrl) => {
           <h3 className={styles.adminUserName}>{user.fullName}</h3>
 
           <div className={styles.adminUserBadgeWrapper}>
-            <span className={styles.adminUserRole}>Seller</span>
+            <span className={styles.adminUserRole}>
+              {user.role === "transporter" ? "Transporter" : "Seller"}
+            </span>
 
-            {user.isVerified && (
-              <span className={styles.adminUserVerified}>Verified</span>
+            {user.isVerified ? (
+              <span className={styles.adminVerifiedBadge}>Verified</span>
+            ) : (
+              <button
+                type="button"
+                className={styles.adminVerifyButton}
+                onClick={handleVerifyUser}
+                disabled={verifyLoading}
+              >
+                {verifyLoading ? "Verifying..." : "Verify User"}
+              </button>
             )}
           </div>
         </div>
@@ -129,21 +175,25 @@ const openDocument = (fileUrl) => {
       <div className={styles.adminUserInfoGrid}>
         <div className={styles.adminUserInfoCard}>
           <span>Email</span>
+
           <p>{user.email || "N/A"}</p>
         </div>
 
         <div className={styles.adminUserInfoCard}>
           <span>Company</span>
+
           <p>{user.businessProfile?.companyName || "N/A"}</p>
         </div>
 
         <div className={styles.adminUserInfoCard}>
           <span>Phone</span>
+
           <p>{user.businessProfile?.phoneNumber || "N/A"}</p>
         </div>
 
         <div className={styles.adminUserInfoCard}>
           <span>GST Number</span>
+
           <p>{user.businessProfile?.gstNumber || "N/A"}</p>
         </div>
       </div>
@@ -162,36 +212,38 @@ const openDocument = (fileUrl) => {
           <div className={styles.adminUserInfoGrid}>
             <div className={styles.adminUserInfoCard}>
               <span>Company ID</span>
+
               <p>{user.businessProfile?.companyId || "N/A"}</p>
             </div>
 
             <div className={styles.adminUserInfoCard}>
               <span>Business Email</span>
+
               <p>{user.businessProfile?.email || "N/A"}</p>
             </div>
 
             <div className={styles.adminUserInfoCard}>
               <span>PAN Number</span>
+
               <p>{user.businessProfile?.panNumber || "N/A"}</p>
             </div>
 
             <div className={styles.adminUserInfoCard}>
               <span>Billing Address</span>
+
               <p>{user.businessProfile?.billingAddress || "N/A"}</p>
             </div>
 
             <div className={styles.adminUserInfoCard}>
               <span>Shipping Address</span>
+
               <p>{user.businessProfile?.shippingAddress || "N/A"}</p>
             </div>
 
             <div className={styles.adminUserInfoCard}>
               <span>Same As Billing</span>
-              <p>
-                {user.businessProfile?.sameAsBillingAddress
-                  ? "Yes"
-                  : "No"}
-              </p>
+
+              <p>{user.businessProfile?.sameAsBillingAddress ? "Yes" : "No"}</p>
             </div>
           </div>
 
@@ -205,30 +257,26 @@ const openDocument = (fileUrl) => {
               <div className={styles.adminUserDocumentsGrid}>
                 {user.businessProfile?.gstCertificate?.file && (
                   <button
-  type="button"
-  className={styles.adminUserDocumentCard}
-  onClick={() =>
-    openDocument(
-      user.businessProfile.gstCertificate.file
-    )
-  }
->
-  View GST Certificate
-</button>
+                    type="button"
+                    className={styles.adminUserDocumentCard}
+                    onClick={() =>
+                      openDocument(user.businessProfile.gstCertificate.file)
+                    }
+                  >
+                    View GST Certificate
+                  </button>
                 )}
 
                 {user.businessProfile?.panCertificate?.file && (
                   <button
-  type="button"
-  className={styles.adminUserDocumentCard}
-  onClick={() =>
-    openDocument(
-      user.businessProfile.panCertificate.file
-    )
-  }
->
-  View PAN Certificate
-</button>
+                    type="button"
+                    className={styles.adminUserDocumentCard}
+                    onClick={() =>
+                      openDocument(user.businessProfile.panCertificate.file)
+                    }
+                  >
+                    View PAN Certificate
+                  </button>
                 )}
               </div>
             </div>

@@ -5,74 +5,107 @@ import styles from "../../styles/Admin/AdminUsers.module.css";
 
 function AdminBuyerCard({ user }) {
   const [showMore, setShowMore] = useState(false);
+  const [verifyLoading, setVerifyLoading] = useState(false);
 
-const openDocument = (fileUrl) => {
-  try {
-    if (!fileUrl) {
-      alert("Document not available");
-      return;
-    }
+  const openDocument = (fileUrl) => {
+    try {
+      if (!fileUrl) {
+        alert("Document not available");
+        return;
+      }
 
-    /*
+      /*
     =========================================
     FETCH DATA URL
     =========================================
     */
 
-    fetch(fileUrl)
-      .then((response) => response.blob())
-      .then((blob) => {
-
-        /*
+      fetch(fileUrl)
+        .then((response) => response.blob())
+        .then((blob) => {
+          /*
         =========================================
         CREATE BLOB URL
         =========================================
         */
 
-        const blobUrl = window.URL.createObjectURL(blob);
+          const blobUrl = window.URL.createObjectURL(blob);
 
-        /*
+          /*
         =========================================
         CREATE TEMP LINK
         =========================================
         */
 
-        const link = document.createElement("a");
+          const link = document.createElement("a");
 
-        link.href = blobUrl;
+          link.href = blobUrl;
 
-        link.target = "_blank";
+          link.target = "_blank";
 
-        link.rel = "noopener noreferrer";
+          link.rel = "noopener noreferrer";
 
-        document.body.appendChild(link);
+          document.body.appendChild(link);
 
-        link.click();
+          link.click();
 
-        document.body.removeChild(link);
+          document.body.removeChild(link);
 
-        /*
+          /*
         =========================================
         CLEANUP
         =========================================
         */
 
-        setTimeout(() => {
-          window.URL.revokeObjectURL(blobUrl);
-        }, 1000);
-      })
-      .catch((error) => {
-        console.log("Blob Error:", error);
+          setTimeout(() => {
+            window.URL.revokeObjectURL(blobUrl);
+          }, 1000);
+        })
+        .catch((error) => {
+          console.log("Blob Error:", error);
 
-        alert("Failed to open document");
-      });
+          alert("Failed to open document");
+        });
+    } catch (error) {
+      console.log("Document Open Error:", error);
 
-  } catch (error) {
-    console.log("Document Open Error:", error);
+      alert("Failed to open document");
+    }
+  };
+  const handleVerifyUser = async () => {
+    try {
+      setVerifyLoading(true);
 
-    alert("Failed to open document");
-  }
-};
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/user/admin/verify-user/${user._id}`,
+        {
+          method: "PUT",
+
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert("User verified successfully");
+
+        window.location.reload();
+      } else {
+        alert(data.message || "Verification failed");
+      }
+    } catch (error) {
+      console.log("Verify User Error:", error);
+
+      alert("Failed to verify user");
+    } finally {
+      setVerifyLoading(false);
+    }
+  };
   return (
     <div className={styles.adminUserCard}>
       <div className={styles.adminUserTopSection}>
@@ -117,8 +150,17 @@ const openDocument = (fileUrl) => {
           <div className={styles.adminUserBadgeWrapper}>
             <span className={styles.adminUserRole}>Buyer</span>
 
-            {user.isVerified && (
-              <span className={styles.adminUserVerified}>Verified</span>
+            {user.isVerified ? (
+              <span className={styles.adminVerifiedBadge}>Verified</span>
+            ) : (
+              <button
+                type="button"
+                className={styles.adminVerifyButton}
+                onClick={handleVerifyUser}
+                disabled={verifyLoading}
+              >
+                {verifyLoading ? "Verifying..." : "Verify User"}
+              </button>
             )}
           </div>
         </div>

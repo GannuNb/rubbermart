@@ -5,6 +5,7 @@ import {
   confirmSellerOrderThunk,
   rejectSellerOrderThunk,
   addShipmentToOrderThunk,
+  uploadShipmentProofsThunk,
   markShipmentDeliveredBySellerThunk,
   markShipmentShippedBySellerThunk,
 } from "./sellerOrderThunk";
@@ -158,6 +159,33 @@ const sellerOrderSlice = createSlice({
         state.shipmentLoading = false;
         state.shipmentError = action.payload;
       })
+
+      /* =========================
+          UPLOAD SHIPMENT PROOFS
+        ========================= */
+
+      .addCase(uploadShipmentProofsThunk.pending, (state) => {
+        state.shipmentLoading = true;
+
+        state.shipmentError = null;
+
+        state.shipmentSuccess = null;
+      })
+
+      .addCase(uploadShipmentProofsThunk.fulfilled, (state, action) => {
+        state.shipmentLoading = false;
+
+        state.shipmentSuccess = "Shipment proofs uploaded successfully";
+
+        state.selectedOrder = action.payload;
+      })
+
+      .addCase(uploadShipmentProofsThunk.rejected, (state, action) => {
+        state.shipmentLoading = false;
+
+        state.shipmentError = action.payload;
+      })
+
       /* =========================
             MARK DELIVERED
          ========================= */

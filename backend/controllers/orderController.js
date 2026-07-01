@@ -606,25 +606,25 @@ export const addShipmentToOrder = async (req, res) => {
    FILES
 ========================= */
 
-    const packedItemPhoto = req.files?.packedItemPhoto?.[0]
-      ? {
-          data: req.files.packedItemPhoto[0].buffer,
+    // const packedItemPhoto = req.files?.packedItemPhoto?.[0]
+    //   ? {
+    //       data: req.files.packedItemPhoto[0].buffer,
 
-          contentType: req.files.packedItemPhoto[0].mimetype,
+    //       contentType: req.files.packedItemPhoto[0].mimetype,
 
-          originalName: req.files.packedItemPhoto[0].originalname,
-        }
-      : null;
+    //       originalName: req.files.packedItemPhoto[0].originalname,
+    //     }
+    //   : null;
 
-    const weightTicket = req.files?.weightTicket?.[0]
-      ? {
-          data: req.files.weightTicket[0].buffer,
+    // const weightTicket = req.files?.weightTicket?.[0]
+    //   ? {
+    //       data: req.files.weightTicket[0].buffer,
 
-          contentType: req.files.weightTicket[0].mimetype,
+    //       contentType: req.files.weightTicket[0].mimetype,
 
-          originalName: req.files.weightTicket[0].originalname,
-        }
-      : null;
+    //       originalName: req.files.weightTicket[0].originalname,
+    //     }
+    //   : null;
 
     /* =========================
        NEW SHIPMENT OBJECT
@@ -642,13 +642,13 @@ export const addShipmentToOrder = async (req, res) => {
       shipmentFrom,
       shipmentTo,
 
-      selectedSubProducts: selectedSubProducts
-        ? JSON.parse(selectedSubProducts)
+      selectedSubProducts: Array.isArray(selectedSubProducts)
+        ? selectedSubProducts
         : [],
 
-      packedItemPhoto,
+      // packedItemPhoto,
 
-      weightTicket,
+      // weightTicket,
 
       /* =========================
         TRANSPORT WORKFLOW
@@ -744,6 +744,101 @@ export const addShipmentToOrder = async (req, res) => {
       success: false,
       message: "Failed to add shipment details",
       error: error.message,
+    });
+  }
+};
+
+//seller ---> upload documents
+export const uploadShipmentProofs = async (req, res) => {
+  try {
+    const sellerId = req.user._id;
+
+    const { orderId, shipmentId } = req.params;
+
+    /* =========================
+       FIND ORDER
+    ========================= */
+
+    const order = await Order.findOne({
+      _id: orderId,
+      seller: sellerId,
+      isDeleted: false,
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    /* =========================
+       FIND SHIPMENT
+    ========================= */
+
+    const shipment = order.shipments.id(shipmentId);
+
+    if (!shipment) {
+      return res.status(404).json({
+        success: false,
+        message: "Shipment not found",
+      });
+    }
+
+    /* =========================
+       VALIDATION
+    ========================= */
+
+    if (shipment.transportStatus !== "transporter_assigned") {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Transporter must be assigned before uploading shipment proofs",
+      });
+    }
+
+    /* =========================
+       PACKED ITEM PHOTO
+    ========================= */
+
+    if (req.files?.packedItemPhoto?.[0]) {
+      shipment.packedItemPhoto = {
+        data: req.files.packedItemPhoto[0].buffer,
+
+        contentType: req.files.packedItemPhoto[0].mimetype,
+
+        originalName: req.files.packedItemPhoto[0].originalname,
+      };
+    }
+
+    /* =========================
+       WEIGHT TICKET
+    ========================= */
+
+    if (req.files?.weightTicket?.[0]) {
+      shipment.weightTicket = {
+        data: req.files.weightTicket[0].buffer,
+
+        contentType: req.files.weightTicket[0].mimetype,
+
+        originalName: req.files.weightTicket[0].originalname,
+      };
+    }
+
+    await order.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Shipment proofs uploaded successfully",
+
+      order,
+    });
+  } catch (error) {
+    console.log("Upload Shipment Proofs Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to upload shipment proofs",
     });
   }
 };
@@ -985,7 +1080,6 @@ export const markShipmentDeliveredBySeller = async (req, res) => {
     });
   }
 };
-
 
 //TRANSPORTER ALL CONTROLLERS
 
@@ -1456,8 +1550,7 @@ export const getTransporterAssignedShipments = async (req, res) => {
               transportPrice: shipment.transportPrice || 0,
               estimatedDeliveryDays:
                 shipment?.estimatedDeliveryDays ||
-                shipment?.selectedQuoteId
-                  ?.estimatedDeliveryDays ||
+                shipment?.selectedQuoteId?.estimatedDeliveryDays ||
                 null,
 
               transportFinalAmount: shipment.transportFinalAmount || 0,
@@ -1792,7 +1885,6 @@ export const getTransporterPendingAssignments = async (req, res) => {
             transporterId.toString() &&
           shipment?.transportStatus === "admin_assignment_pending"
         ) {
-          
           pendingAssignments.push({
             orderId: order._id,
 
@@ -1839,8 +1931,7 @@ export const getTransporterPendingAssignments = async (req, res) => {
 
               estimatedDeliveryDays:
                 shipment?.estimatedDeliveryDays ||
-                shipment?.selectedQuoteId
-                  ?.estimatedDeliveryDays ||
+                shipment?.selectedQuoteId?.estimatedDeliveryDays ||
                 null,
 
               note:
@@ -1897,10 +1988,10 @@ export const transporterAcceptAssignment = async (req, res) => {
     ========================= */
 
     const order = await Order.findOne({
-  _id: orderId,
+      _id: orderId,
 
-  isDeleted: false,
-}).populate("shipments.selectedQuoteId");
+      isDeleted: false,
+    }).populate("shipments.selectedQuoteId");
 
     if (!order) {
       return res.status(404).json({
@@ -1973,7 +2064,10 @@ export const transporterAcceptAssignment = async (req, res) => {
     /* =========================
        PRICE
     ========================= */
-    const estimatedDeliveryDays =  Number( shipment?.selectedQuoteId  ?.estimatedDeliveryDays, ) || Number(shipment?.estimatedDeliveryDays) || 1;
+    const estimatedDeliveryDays =
+      Number(shipment?.selectedQuoteId?.estimatedDeliveryDays) ||
+      Number(shipment?.estimatedDeliveryDays) ||
+      1;
 
     const transportPrice =
       Number(shipment.adminAssignedPrice) ||
@@ -2002,7 +2096,7 @@ export const transporterAcceptAssignment = async (req, res) => {
     shipment.transportGSTAmount = transportGSTAmount;
 
     shipment.transportFinalAmount = transportFinalAmount;
-    shipment.estimatedDeliveryDays =  estimatedDeliveryDays;
+    shipment.estimatedDeliveryDays = estimatedDeliveryDays;
 
     shipment.assignedAt = new Date();
     shipment.pickedUpAt = null;
@@ -2034,7 +2128,7 @@ export const transporterAcceptAssignment = async (req, res) => {
 
           note: shipment.adminAssignmentNote || "Direct admin assignment",
 
-          estimatedDeliveryDays:  shipment?.estimatedDeliveryDays || 1,
+          estimatedDeliveryDays: shipment?.estimatedDeliveryDays || 1,
 
           quoteStatus: "selected",
 
@@ -2729,7 +2823,9 @@ export const assignTransporterToShipment = async (req, res) => {
     shipment.transportGSTAmount = transportGSTAmount;
 
     shipment.transportFinalAmount = transportFinalAmount;
-    shipment.estimatedDeliveryDays =  Number(selectedQuote?.estimatedDeliveryDays || 1);
+    shipment.estimatedDeliveryDays = Number(
+      selectedQuote?.estimatedDeliveryDays || 1,
+    );
 
     /* =========================
        ADMIN FINAL APPROVAL PRICE
@@ -2842,7 +2938,8 @@ export const adminDirectAssignTransporter = async (req, res) => {
   try {
     const { orderId, shipmentId } = req.params;
 
-    const { transporterId, adminPrice,estimatedDeliveryDays, adminNote, } = req.body;
+    const { transporterId, adminPrice, estimatedDeliveryDays, adminNote } =
+      req.body;
 
     /* =========================
        FIND ORDER
@@ -2935,7 +3032,7 @@ export const adminDirectAssignTransporter = async (req, res) => {
     shipment.transportGSTAmount = transportGSTAmount;
 
     shipment.transportFinalAmount = transportFinalAmount;
-    shipment.estimatedDeliveryDays =  Number(estimatedDeliveryDays || 1);
+    shipment.estimatedDeliveryDays = Number(estimatedDeliveryDays || 1);
 
     shipment.transportPaymentStatus = "unpaid";
 
@@ -4353,16 +4450,16 @@ export const uploadBuyerPayment = async (req, res) => {
     }
 
     // ✅ allow after seller confirmation (and beyond)
-          if (
-        ![
-          "seller_confirmed",
-          "partially_shipped",
-          "shipped",
-          "transport_processing",
-          "delivered",
-          "completed",
-        ].includes(order.orderStatus)
-      ) {
+    if (
+      ![
+        "seller_confirmed",
+        "partially_shipped",
+        "shipped",
+        "transport_processing",
+        "delivered",
+        "completed",
+      ].includes(order.orderStatus)
+    ) {
       return res.status(400).json({
         success: false,
         message: "Payment allowed only after seller confirmation",
