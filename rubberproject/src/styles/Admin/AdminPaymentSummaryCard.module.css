@@ -54,7 +54,7 @@
 }
 
 .section h4 {
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 700;
   color: #5b2be0;
   margin-bottom: 16px;
@@ -79,12 +79,12 @@
 
 .row span,
 .statusRow span {
-  font-size: 14px;
+  font-size: 16px;
   color: #6b7280;
 }
 
 .row strong {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   color: #111827;
 }
@@ -146,4 +146,23 @@
   border-radius: 12px;
   padding: 18px;
   background: #fcfcff;
+}
+
+/* ==========================================================================
+   DROPDOWN ACCORDION HOOKS (Add this at the bottom of the file)
+   ========================================================================== */
+
+.toggleIcon {
+  margin-left: auto;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1;
+  color: #692ca0; /* brand purple */
+  transition: transform 0.2s ease, color 0.2s ease;
+  user-select: none;
+}
+
+.iconActive {
+  color: #dc2626; /* indicators cleanly change to indicator red when open */
+  transform: rotate(180deg);
 }

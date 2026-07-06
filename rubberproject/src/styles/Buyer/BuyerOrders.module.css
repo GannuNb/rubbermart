@@ -115,7 +115,7 @@
   color: #111;
   border-radius: 999px;
   padding: 8px 14px;
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   display: flex;
@@ -170,13 +170,13 @@
   color: #475569;
   padding: 6px 14px;
   border-radius: 999px;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 600;
 }
 
 .orderDate {
   color: #8a8a8a;
-  font-size: 12px;
+  font-size: 16px;
 }
 
 /* Body */
@@ -198,7 +198,7 @@
 }
 
 .orderContent h3 {
-  font-size: 13px;
+  font-size: 16px;
   color: #7c3aed;
   margin-bottom: 6px;
   font-weight: 700;
@@ -206,7 +206,7 @@
 
 .orderContent p {
   color: #5b5b5b;
-  font-size: 13px;
+  font-size: 16px;
   margin-bottom: 8px;
 }
 
@@ -356,7 +356,7 @@
   color: #111827;
   border-radius: 8px;
   padding: 8px 14px;
-  font-size: 11px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   display: flex;

@@ -4971,3 +4971,30 @@ export const uploadTransportPaymentReceipt = async (req, res) => {
     });
   }
 };
+
+export const getOrderDetailsForInvoice = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    
+    const order = await Order.findById(orderId)
+      // Populate Buyer/Seller profile
+      .populate("buyer", "fullName email phone businessProfile")
+      .populate("seller", "fullName email phone businessProfile")
+      // Populate Product Details for each item
+      .populate("orderItems.product", "productName category") 
+      // Populate Transporter details
+      .populate("shipments.assignedTransporter", "fullName companyName phone")
+      // Populate Receipts (using the order fields)
+      .populate("buyerPaymentReceipts.uploadedBy", "fullName")
+      .populate("buyerPaymentReceipts.verifiedBy", "fullName")
+      .populate("sellerPaymentReceipts.uploadedBy", "fullName")
+      .populate("sellerPaymentReceipts.verifiedBy", "fullName");
+
+    if (!order) return res.status(404).json({ success: false, message: "Order not found" });
+
+    res.status(200).json({ success: true, order });
+  } catch (error) {
+    console.error("Error fetching invoice data:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};

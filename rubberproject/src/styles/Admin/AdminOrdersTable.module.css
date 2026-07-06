@@ -54,7 +54,7 @@
   align-items: center;
   gap: 8px;
   color: #692ca0;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 700;
 }
 
@@ -69,7 +69,7 @@
 .table tbody td {
   padding: 18px 16px;
   border-bottom: 1px solid #f3f4f6;
-  font-size: 14px;
+  font-size: 16px;
   color: #1f2937;
   white-space: nowrap;   /* ⭐ prevent breaking */
 }
@@ -106,7 +106,7 @@
 
 .orderId {
   color: #692ca0;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 700;
 }
 
@@ -131,7 +131,7 @@
 .statusBadge {
   padding: 6px 12px;
   border-radius: 999px;
-  font-size: 11px;
+  font-size: 15px;
   font-weight: 700;
   min-width: 100px;
   text-align: center;
@@ -174,7 +174,7 @@
   background: #ffffff;
   color: #692ca0;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
 }

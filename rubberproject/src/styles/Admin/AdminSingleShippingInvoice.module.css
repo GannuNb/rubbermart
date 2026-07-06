@@ -50,7 +50,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  font-size: 13px;
+  font-size: 15px;
   color: #6b7280;
   margin-bottom: 18px;
 }
@@ -362,9 +362,9 @@
 
 
 
-/* =========================
-   PRODUCT CARD
-========================= */
+/* ==========================================================================
+   REPLACE EVERYTHING BETWEEN "PRODUCT CARD" AND "BOTTOM GRID" WITH THIS
+   ========================================================================== */
 
 .productCard {
   background: #ffffff;
@@ -372,13 +372,7 @@
   border-radius: 14px;
   padding: 20px;
   margin-bottom: 24px;
-
-  overflow-x: auto;
 }
-
-/* =========================
-   TITLE
-========================= */
 
 .productLeft {
   margin-bottom: 16px;
@@ -390,41 +384,29 @@
   color: #1f2937;
 }
 
-/* =========================
-   IMAGE
-========================= */
-
 .productImage {
   width: 48px;
   height: 48px;
   border-radius: 8px;
   object-fit: cover;
   border: 1px solid #f1f5f9;
+  flex-shrink: 0;
 }
 
 /* =========================
-   TABLE BASE (FIXED)
+   TABLE CONTENT WRAPPER
 ========================= */
+
+.tableWrapper {
+  width: 100%;
+}
 
 .productTableHeader,
 .tableRow {
   display: grid;
-
-  /* 🔥 PERFECT BALANCE */
-grid-template-columns:
-  2fr        /* Product */
-  1.3fr      /* Loading */
-  1.3fr      /* Shipment From */
-  1.3fr      /* Shipment To */
-  1fr        /* Ordered */
-  1fr        /* Shipped */
-  1fr        /* Price */
-  1.2fr;     /* Total */
-
+  grid-template-columns: 2fr 1.3fr 1.3fr 1.3fr 1fr 1fr 1fr 1.2fr;
   gap: 12px;
   align-items: center;
-
-  min-width: 820px; /* 🔥 ensures scroll */
 }
 
 /* HEADER */
@@ -432,25 +414,28 @@ grid-template-columns:
   background: #f8fafc;
   border: 1px solid #e5e7eb;
   padding: 14px 16px;
-
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
   color: #6b7280;
+  border-radius: 6px 6px 0 0;
 }
 
 /* ROW */
 .tableRow {
   padding: 16px;
   border-bottom: 1px solid #e5e7eb;
-  font-size: 14px;
+  font-size: 15px;
   color: #111827;
 }
 
-/* =========================
-   PRODUCT CELL
-========================= */
-
 .productCell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.productContent {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -460,16 +445,16 @@ grid-template-columns:
 .productName {
   font-weight: 600;
   font-size: 14px;
-
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-/* =========================
-   ALIGNMENT (IMPORTANT)
-========================= */
+.mobileLabel {
+  display: none;
+}
 
+/* ALIGNMENT SETUP */
 .productTableHeader div,
 .tableRow div {
   display: flex;
@@ -477,7 +462,6 @@ grid-template-columns:
   min-width: 0;
 }
 
-/* center quantities */
 .productTableHeader div:nth-child(5),
 .productTableHeader div:nth-child(6),
 .tableRow div:nth-child(5),
@@ -485,13 +469,13 @@ grid-template-columns:
   justify-content: center;
 }
 
-/* right align money */
 .productTableHeader div:nth-child(7),
 .productTableHeader div:nth-child(8),
 .tableRow div:nth-child(7),
 .tableRow div:nth-child(8) {
   justify-content: flex-end;
 }
+
 /* =========================
    SUMMARY
 ========================= */
@@ -506,7 +490,7 @@ grid-template-columns:
   display: flex;
   justify-content: space-between;
   padding: 6px 0;
-  font-size: 14px;
+  font-size: 15px;
   color: #6b7280;
 }
 
@@ -515,16 +499,11 @@ grid-template-columns:
   color: #111827;
 }
 
-/* =========================
-   TOTAL BOX
-========================= */
-
 .totalBox {
   margin-top: 10px;
   background: #f3f0ff;
   padding: 12px 14px;
   border-radius: 8px;
-
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -542,19 +521,68 @@ grid-template-columns:
 }
 
 /* =========================
-   RESPONSIVE
+   MOBILE RESPONSIVE OVERRIDES
 ========================= */
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
+  .productTableHeader {
+    display: none;
+  }
+
+  .tableRow {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 12px 4px;
+    border-bottom: none;
+  }
+
+  .tableRow div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between !important;
+    align-items: center;
+    width: 100%;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed #f1f5f9;
+  }
+
+  .tableRow div:last-child {
+    border-bottom: none;
+  }
+
+  .mobileLabel {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7280;
+  }
+
+  .cellValue, .productName {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111827;
+    text-align: right;
+  }
+
+  .productCell {
+    flex-direction: row !important;
+  }
+
+  .productContent {
+    justify-content: flex-end;
+  }
+
   .productCard {
-    padding: 14px;
+    padding: 16px;
   }
 
   .summaryBox {
     width: 100%;
+    margin-top: 24px;
+    border-top: 2px dashed #e5e7eb;
+    padding-top: 16px;
   }
 }
-
 
 
 
@@ -625,14 +653,14 @@ grid-template-columns:
 
 /* label */
 .label {
-  font-size: 12px;
+  font-size: 16px;
   color: #6b7280;
-  margin-bottom: 2px;
+  margin-bottom: 5px;
 }
 
 /* value */
 .value {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   color: #111827;
 
@@ -701,7 +729,7 @@ grid-template-columns:
   background: #ffffff;
   border-radius: 14px;
   padding: 20px;
-
+  margin-top: 1%;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
 }
 
@@ -988,4 +1016,27 @@ grid-template-columns:
   .successAlert p {
     font-size: 13px;
   }
+}
+
+/* ==========================================================================
+   DROPDOWN ACCORDION HOOKS (Add this at the bottom of the file)
+   ========================================================================== */
+
+.toggleIcon, .toggleIconSmall {
+  margin-left: auto;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1;
+  color: #692ca0; /* brand purple */
+  transition: transform 0.2s ease, color 0.2s ease;
+  user-select: none;
+}
+
+.toggleIconSmall {
+  font-size: 18px;
+}
+
+.iconActive {
+  color: #dc2626 !important; /* indicator red when open */
+  transform: rotate(180deg);
 }

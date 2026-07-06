@@ -43,6 +43,8 @@ function AdminTransportQuotesCard({ shipment }) {
 
   const [adminNote, setAdminNote] = useState("");
 
+  const [isOpen, setIsOpen] = useState(false); // Dropdown Accordion Toggle
+
   /* =========================
      QUOTES
   ========================= */
@@ -134,30 +136,35 @@ function AdminTransportQuotesCard({ shipment }) {
     );
   };
 
-  return (
+return (
     <div className={styles.transportCard}>
       {/* =========================
-          HEADER
-      ========================= */}
-
-      <div className={styles.cardHeader}>
-        <h3 className={styles.cardTitle}>Transport Quotes</h3>
-
-        <div className={styles.quoteBadge}>{quotes.length} Quotes</div>
+           CLICKABLE HEADER
+         ========================= */}
+      <div className={styles.cardHeader} onClick={() => setIsOpen(!isOpen)}>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <h3 className={styles.cardTitle}>Transport Quotes</h3>
+          <div className={styles.quoteBadge}>{quotes.length} Quotes</div>
+        </div>
+        
+        {/* Dropdown Plus/Minus indicator icon */}
+        <span className={`${styles.toggleIcon} ${isOpen ? styles.iconActive : ""}`}>
+          {isOpen ? "−" : "+"}
+        </span>
       </div>
 
       {/* =========================
-          EMPTY STATE
-      ========================= */}
-
-      {["open_for_quotes", "quotes_received"].includes(
-        shipment?.transportStatus,
-      ) &&
-        quotes.length === 0 && (
-          <div className={styles.emptyState}>
-            Waiting for transporter quotes...
-          </div>
-        )}
+           DROPDOWN INNER CONTENT
+         ========================= */}
+      {isOpen && (
+        <div className={styles.dropdownContent}>
+          {/* EMPTY STATE */}
+          {["open_for_quotes", "quotes_received"].includes(shipment?.transportStatus) &&
+            quotes.length === 0 && (
+              <div className={styles.emptyState}>
+                Waiting for transporter quotes...
+              </div>
+            )}
 
       {/* =========================
           LOADING
@@ -508,6 +515,8 @@ function AdminTransportQuotesCard({ shipment }) {
                 ? "Updating..."
                 : "Mark As Shipped"}
             </button>
+          )}
+            </div>
           )}
         </div>
       )}

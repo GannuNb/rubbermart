@@ -56,7 +56,7 @@ const AdminSellerPaymentHistoryCard = ({ order }) => {
         </div>
 
         <h3>
-          Seller Payment History
+          Admin to Seller Paid Payment History
         </h3>
       </div>
 
@@ -66,26 +66,28 @@ const AdminSellerPaymentHistoryCard = ({ order }) => {
             key={payment._id || index}
             className={styles.paymentBox}
           >
-            <div
-              className={styles.paymentHeader}
-              onClick={() =>
-                setOpenPayment(
-                  openPayment === index
-                    ? null
-                    : index
-                )
-              }
-            >
-              <span>
-                Payment #{index + 1}
-              </span>
+            {/* REPLACE the original individual payment header block with this snippet */}
+<div
+  className={styles.paymentHeader}
+  onClick={() =>
+    setOpenPayment(
+      openPayment === index
+        ? null
+        : index
+    )
+  }
+>
+  <span>
+    Payment #{index + 1}
+  </span>
 
-              <span className={styles.arrow}>
-                {openPayment === index
-                  ? "▲"
-                  : "▼"}
-              </span>
-            </div>
+  <span 
+    className={`${styles.toggleIconSmall} ${openPayment === index ? styles.iconActive : ""}`}
+    style={{ fontSize: "18px", fontWeight: "600", lineHeight: "1" }}
+  >
+    {openPayment === index ? "−" : "+"}
+  </span>
+</div>
 
             {openPayment === index && (
               <>
