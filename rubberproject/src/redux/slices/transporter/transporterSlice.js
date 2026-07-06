@@ -39,43 +39,39 @@ const initialState = {
   myQuotesError: null,
 
   /* =========================
-   PENDING ASSIGNMENTS
-========================= */
+      PENDING ASSIGNMENTS
+    ========================= */
   pendingAssignments: [],
   pendingAssignmentsLoading: false,
   pendingAssignmentsError: null,
 
   /* =========================
-   ASSIGNMENT ACTIONS
-========================= */
+      ASSIGNMENT ACTIONS
+    ========================= */
 
   assignmentActionLoading: false,
   assignmentActionError: null,
   activeAssignmentShipmentId: null,
 
   /* =========================
-   ASSIGNED SHIPMENTS
-========================= */
+      ASSIGNED SHIPMENTS
+    ========================= */
   assignedShipments: [],
   assignedShipmentsLoading: false,
   assignedShipmentsError: null,
 
   /* =========================
-   COMPLETED DELIVERIES
-========================= */
+      COMPLETED DELIVERIES
+    ========================= */
 
   completedDeliveries: [],
   completedDeliveriesLoading: false,
   completedDeliveriesError: null,
 
   markShippedLoading: false,
-
   markShippedError: null,
-
   paymentHistory: [],
-
   paymentHistoryLoading: false,
-
   paymentHistoryError: null,
 };
 
