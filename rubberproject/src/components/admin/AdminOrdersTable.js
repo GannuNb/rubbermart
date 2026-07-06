@@ -1,7 +1,10 @@
-// src/components/admin/AdminOrdersTable.js
+// rubberproject/src/components/admin/AdminOrdersTable.js
 
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { PDFDownloadLink } from "@react-pdf/renderer"; // Added
+import OrderHistoryPDF from "./OrderHistoryPDF"; // Added
+
 import {
   FaFileInvoice,
   FaUser,
@@ -10,6 +13,7 @@ import {
   FaCheckCircle,
   FaCalendarAlt,
   FaEye,
+  FaDownload, // Added for download button icon
 } from "react-icons/fa";
 
 import styles from "../../styles/Admin/AdminOrdersTable.module.css";
@@ -21,18 +25,14 @@ const AdminOrdersTable = ({ orders }) => {
     switch (status) {
       case "pending":
         return styles.pending;
-
       case "partially_shipped":
         return styles.partial;
-
       case "cancelled":
         return styles.cancelled;
-
       case "delivered":
       case "completed":
       case "shipped":
         return styles.delivered;
-
       case "seller_confirmed":
       case "partial_payment_uploaded":
       case "partial_payment_verified":
@@ -207,15 +207,41 @@ const AdminOrdersTable = ({ orders }) => {
                   </td>
 
                   {/* ACTION */}
-                  <td data-label="Action">
-                    <button
-                      className={styles.viewBtn}
-                      onClick={() =>
-                        navigate(`/admin/order-details/${order._id}`)
-                      }
-                    >
-                      View
-                    </button>
+                  <td data-label="Action" onClick={(e) => e.stopPropagation()}>
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      <button
+                        className={styles.viewBtn}
+                        onClick={() =>
+                          navigate(`/admin/order-details/${order._id}`)
+                        }
+                      >
+                        View
+                      </button>
+
+                      {/* PDF DOWNLOAD BUTTON */}
+                      <PDFDownloadLink
+                        document={<OrderHistoryPDF order={order} />}
+                        fileName={`Order_History_${order?.orderId || order._id}.pdf`}
+                        style={{ textDecoration: "none" }}
+                      >
+                        {({ loading }) => (
+                          <button 
+                            className={styles.viewBtn} 
+                            style={{ 
+                              backgroundColor: "#28a745", 
+                              color: "#fff", 
+                              display: "flex", 
+                              alignItems: "center", 
+                              gap: "4px" 
+                            }}
+                            disabled={loading}
+                          >
+                            <FaDownload size={11} />
+                            {loading ? "..." : "PDF"}
+                          </button>
+                        )}
+                      </PDFDownloadLink>
+                    </div>
                   </td>
                 </tr>
               );

@@ -51,7 +51,7 @@
 
 .subText {
   margin-top: 0.4rem;
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: #6b7280;
   line-height: 1.5;
 }
@@ -156,7 +156,7 @@
 
 .label {
   margin: 0 0 0.2rem;
-  font-size: 0.75rem;
+  font-size: 1rem;
   font-weight: 500;
   color: #6b7280;
 }

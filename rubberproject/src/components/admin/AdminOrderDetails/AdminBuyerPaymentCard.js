@@ -1,5 +1,3 @@
-// src/components/admin/AdminOrderDetails/AdminBuyerPaymentCard.js
-
 import React, { useState } from "react";
 import {
   FaDownload,
@@ -14,12 +12,10 @@ import styles from "../../../styles/Admin/AdminBuyerPaymentCard.module.css";
 const AdminBuyerPaymentCard = ({ order }) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const [openPayment, setOpenPayment] =
-    useState(null);
+  const [openPayment, setOpenPayment] = useState(null);
   const dispatch = useDispatch();
 
-  const payments =
-    order?.buyerPaymentReceipts || [];
+  const payments = order?.buyerPaymentReceipts || [];
 
   /* =========================
      ONLY CURRENT BUTTON LOADING
@@ -51,8 +47,7 @@ const AdminBuyerPaymentCard = ({ order }) => {
         return;
       }
 
-      const uint8Array =
-        new Uint8Array(byteArray);
+      const uint8Array = new Uint8Array(byteArray);
 
       const blob = new Blob(
         [uint8Array],
@@ -63,8 +58,7 @@ const AdminBuyerPaymentCard = ({ order }) => {
         }
       );
 
-      const fileURL =
-        window.URL.createObjectURL(blob);
+      const fileURL = window.URL.createObjectURL(blob);
 
       window.open(fileURL, "_blank");
     } catch (error) {
@@ -103,6 +97,7 @@ const AdminBuyerPaymentCard = ({ order }) => {
 
   return (
     <div className={styles.card}>
+      {/* Main Card Header - Changed arrow to + / − */}
       <div
         className={styles.dropdownHeader}
         onClick={() => setIsOpen(!isOpen)}
@@ -118,10 +113,10 @@ const AdminBuyerPaymentCard = ({ order }) => {
         </div>
 
         <span
-          className={`${styles.arrow} ${isOpen ? styles.arrowOpen : ""
-            }`}
+          className={`${styles.toggleIcon} ${isOpen ? styles.iconActive : ""}`}
+          style={{ fontSize: "22px", fontWeight: "600", lineHeight: "1" }}
         >
-          ▼
+          {isOpen ? "−" : "+"}
         </span>
       </div>
 
@@ -133,6 +128,7 @@ const AdminBuyerPaymentCard = ({ order }) => {
                 key={payment._id || index}
                 className={styles.paymentBox}
               >
+                {/* Nested Individual Payment Header - Changed arrow to + / − */}
                 <div
                   className={styles.paymentDropdownHeader}
                   onClick={() =>
@@ -142,18 +138,17 @@ const AdminBuyerPaymentCard = ({ order }) => {
                         : payment._id
                     )
                   }
+                  style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
                 >
                   <span>
                     Payment #{index + 1}
                   </span>
 
                   <span
-                    className={`${styles.arrowSmall} ${openPayment === payment._id
-                      ? styles.arrowOpen
-                      : ""
-                      }`}
+                    className={`${styles.toggleIconSmall} ${openPayment === payment._id ? styles.iconActive : ""}`}
+                    style={{ fontSize: "18px", fontWeight: "600", lineHeight: "1" }}
                   >
-                    ▼
+                    {openPayment === payment._id ? "−" : "+"}
                   </span>
                 </div>
 

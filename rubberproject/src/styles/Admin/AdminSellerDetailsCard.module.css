@@ -67,7 +67,7 @@
   gap: 6px;
 
   color: #692ca0;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
 }
 
@@ -81,7 +81,7 @@
 ========================= */
 
 .infoValue {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   color: #111827;
   line-height: 1.4;
@@ -154,5 +154,50 @@
 
   .infoValue {
     font-size: 12px;
+  }
+}
+
+/* =========================
+   ACCORDION DROPDOWN HOOKS
+========================= */
+
+.dropdownHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.dropdownHeader .cardTitle {
+  margin-bottom: 0;
+}
+
+.toggleIcon {
+  font-size: 22px;
+  font-weight: 600;
+  color: #692ca0; /* Safely links to your exact layout purple brand shade */
+  line-height: 1;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.iconActive {
+  color: #dc2626;
+  transform: rotate(180deg);
+}
+
+.dropdownContent {
+  margin-top: 20px;
+  animation: fadeInDown 0.2s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

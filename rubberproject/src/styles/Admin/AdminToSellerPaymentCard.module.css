@@ -48,7 +48,7 @@
 .formGroup label {
   display: block;
   margin-bottom: 8px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   color: #374151;
 }
@@ -113,6 +113,7 @@
   align-items: center;
   cursor: pointer;
   user-select: none;
+  margin-bottom: 5%;
 }
 
 .headerLeft {
@@ -134,4 +135,27 @@
 h3{
   font-weight: 700;
   font-size: 1.5rem;
+}
+
+/* ==========================================================================
+   DROPDOWN ACCORDION HOOKS (Only add this to the bottom of your CSS files)
+   ========================================================================== */
+
+.toggleIcon, 
+.toggleIconSmall {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1;
+  color: #692ca0; /* brand purple */
+  transition: transform 0.2s ease, color 0.2s ease;
+  user-select: none;
+}
+
+.toggleIconSmall {
+  font-size: 18px;
+}
+
+.iconActive {
+  color: #dc2626; /* switches cleanly to indicator red when minus shows */
+  transform: rotate(180deg);
 }

@@ -22,28 +22,31 @@ const AdminPaymentSummaryCard = ({ order }) => {
 
   return (
     <div className={styles.card}>
-      {/* Header */}
-      <div className={styles.cardHeader}
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <div className={styles.iconBox}>
-          <FaWallet />
-        </div>
+      {/* REPLACE the original card header block with this snippet */}
+<div 
+  className={styles.cardHeader}
+  onClick={() => setIsOpen(!isOpen)}
+>
+  <div className={styles.iconBox}>
+    <FaWallet />
+  </div>
 
-        <h3>
-          Payment Summary
-        </h3>
-        <span className={styles.arrow}>
-          {isOpen ? "▲" : "▼"}
-        </span>
-      </div>
+  <h3>Payment Summary</h3>
+  
+  <span 
+    className={`${styles.toggleIcon} ${isOpen ? styles.iconActive : ""}`}
+    style={{ fontSize: "22px", fontWeight: "600", lineHeight: "1" }}
+  >
+    {isOpen ? "−" : "+"}
+  </span>
+</div>
 
       {isOpen && (
         <>
           {/* Buyer Section */}
           <div className={styles.section}>
             <h4>
-              Buyer Payment
+              Buyer Payment Summary (Received from Buyer)
             </h4>
 
             <div className={styles.row}>
@@ -78,7 +81,7 @@ const AdminPaymentSummaryCard = ({ order }) => {
           {/* Seller Section */}
           <div className={styles.section}>
             <h4>
-              Seller Payment
+              Seller Payment Summary (Paid to Seller)
             </h4>
 
             <div className={styles.row}>

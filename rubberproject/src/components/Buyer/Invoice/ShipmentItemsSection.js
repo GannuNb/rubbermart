@@ -1,5 +1,5 @@
-import React from "react";
-import { FaBoxOpen, FaTruck } from "react-icons/fa";
+import React, { useState } from "react";
+import { FaBoxOpen, FaTruck, FaFileInvoiceDollar } from "react-icons/fa";
 
 import styles from "../../../styles/Buyer/BuyerSingleShippingInvoice.module.css";
 
@@ -9,9 +9,15 @@ const ShipmentItemsSection = ({ shipment, order }) => {
   );
 
   /* =========================
-     IMAGE
+      ACCORDION STATES
   ========================= */
+  const [isProductOpen, setIsProductOpen] = useState(true);
+  const [isTransportOpen, setIsTransportOpen] = useState(true);
+  const [isSummaryOpen, setIsSummaryOpen] = useState(true);
 
+  /* =========================
+      IMAGE
+  ========================= */
   const getImage = () => {
     if (!matchedItem?.productImage?.data) {
       return "/logo192.png";
@@ -36,21 +42,15 @@ const ShipmentItemsSection = ({ shipment, order }) => {
   };
 
   /* =========================
-     PRODUCT VALUES
+      PRODUCT VALUES
   ========================= */
-
   const shippedQty = Number(shipment?.shippedQuantity || 0);
-
   const pricePerMT = Number(matchedItem?.pricePerMT || 0);
-
   const productTaxable = shippedQty * pricePerMT;
-
   const productGSTType = order?.gstType;
 
   let productIGST = 0;
-
   let productCGST = 0;
-
   let productSGST = 0;
 
   if (productGSTType === "igst") {
@@ -59,26 +59,20 @@ const ShipmentItemsSection = ({ shipment, order }) => {
 
   if (productGSTType === "cgst_sgst") {
     productCGST = Number((productTaxable * 0.09).toFixed(2));
-
     productSGST = Number((productTaxable * 0.09).toFixed(2));
   }
 
   const productTotal = productTaxable + productIGST + productCGST + productSGST;
 
   /* =========================
-     TRANSPORT VALUES
+      TRANSPORT VALUES
   ========================= */
-
   const transportPrice = Number(shipment?.transportPrice || 0);
-
   const transportGSTAmount = Number(shipment?.transportGSTAmount || 0);
-
   const transportGSTType = shipment?.transportGSTType;
 
   let transportIGST = 0;
-
   let transportCGST = 0;
-
   let transportSGST = 0;
 
   if (transportGSTType === "igst") {
@@ -87,7 +81,6 @@ const ShipmentItemsSection = ({ shipment, order }) => {
 
   if (transportGSTType === "cgst_sgst") {
     transportCGST = Number((transportGSTAmount / 2).toFixed(2));
-
     transportSGST = Number((transportGSTAmount / 2).toFixed(2));
   }
 
@@ -96,238 +89,221 @@ const ShipmentItemsSection = ({ shipment, order }) => {
   );
 
   /* =========================
-     GRAND TOTAL
+      GRAND TOTAL
   ========================= */
-
   const grandTotal = Number((productTotal + transportTotal).toFixed(2));
 
   return (
     <div className={styles.itemsWrapper}>
       {/* =========================
-          PRODUCT TABLE
+           PRODUCT TABLE CARD
       ========================= */}
-      <div className={styles.itemsCard}>
-        <div className={styles.itemsHeader}>
-          <FaBoxOpen className={styles.itemsIcon} />
-
-          <h3 className={styles.sectionTitle}>Product Invoice</h3>
-        </div>
-
-        <div className={styles.tableWrapper}>
-          {/* =========================
-        TABLE HEADER
-    ========================= */}
-
-          <div className={styles.tableHeader}>
-            <div>Product</div>
-
-            <div>Ordered Qty</div>
-
-            <div>Shipped Qty</div>
-
-            <div>Price / MT</div>
-
-            <div>Taxable Amount</div>
-
-            {productGSTType === "igst" ? (
-              <div>IGST 18%</div>
-            ) : (
-              <>
-                <div>CGST 9%</div>
-                <div>SGST 9%</div>
-              </>
-            )}
-
-            <div>Total Amount</div>
+      <div className={styles.itemsCard} style={{ padding: "0", overflow: "hidden" }}>
+        {/* HEADER ARRANGE */}
+        <div 
+          className={styles.cardAccordionHeader}
+          onClick={() => setIsProductOpen(!isProductOpen)}
+          style={{ 
+            display: "flex", 
+            alignItems: "center", 
+            justifyContent: "space-between", 
+            padding: "22px", 
+            cursor: "pointer", 
+            userSelect: "none" 
+          }}
+        >
+          <div className={styles.itemsHeader} style={{ margin: "0" }}>
+            <FaBoxOpen className={styles.itemsIcon} />
+            <h3 className={styles.sectionTitle}>Product Invoice</h3>
           </div>
-
-          {/* =========================
-        TABLE ROW
-    ========================= */}
-
-          <div className={styles.tableRow}>
-            {/* PRODUCT */}
-
-            <div className={styles.itemDetails}>
-              <img
-                src={getImage()}
-                alt="product"
-                className={styles.itemImage}
-              />
-
-              <div>
-                <h4>{shipment?.selectedItem || "-"}</h4>
-
-                <p>{matchedItem?.loadingLocation || "-"}</p>
-              </div>
-            </div>
-
-            {/* ORDERED QTY */}
-
-            <div className={styles.centerCell}>
-              {matchedItem?.requiredQuantity || 0} MT
-            </div>
-
-            {/* SHIPPED QTY */}
-
-            <div className={styles.centerCell}>{shippedQty} MT</div>
-
-            {/* PRICE / MT */}
-
-            <div className={styles.centerCell}>
-              ₹ {pricePerMT.toLocaleString("en-IN")}
-            </div>
-
-            {/* TAXABLE */}
-
-            <div className={styles.centerCell}>
-              ₹{" "}
-              {productTaxable.toLocaleString("en-IN", {
-                maximumFractionDigits: 2,
-              })}
-            </div>
-
-            {/* GST */}
-
-            {productGSTType === "igst" ? (
-              <div className={styles.centerCell}>
-                ₹{" "}
-                {productIGST.toLocaleString("en-IN", {
-                  maximumFractionDigits: 2,
-                })}
-              </div>
-            ) : (
-              <>
-                <div className={styles.centerCell}>
-                  ₹{" "}
-                  {productCGST.toLocaleString("en-IN", {
-                    maximumFractionDigits: 2,
-                  })}
-                </div>
-
-                <div className={styles.centerCell}>
-                  ₹{" "}
-                  {productSGST.toLocaleString("en-IN", {
-                    maximumFractionDigits: 2,
-                  })}
-                </div>
-              </>
-            )}
-
-            {/* TOTAL */}
-
-            <div className={styles.totalAmountCell}>
-              ₹{" "}
-              {productTotal.toLocaleString("en-IN", {
-                maximumFractionDigits: 2,
-              })}
-            </div>
+          
+          <div className={`${styles.toggleIconBtn} ${isProductOpen ? styles.activeToggle : ""}`}>
+            {isProductOpen ? "−" : "+"}
           </div>
         </div>
+
+        {/* CONTAINER WORK */}
+        {isProductOpen && (
+          <div style={{ padding: "0 22px 22px 22px" }}>
+            <div className={styles.tableWrapper}>
+              <div className={styles.tableHeader}>
+                <div>Product</div>
+                <div>Ordered Qty</div>
+                <div>Shipped Qty</div>
+                <div>Price / MT</div>
+                <div>Taxable Amount</div>
+                {productGSTType === "igst" ? (
+                  <div>IGST 18%</div>
+                ) : (
+                  <>
+                    <div>CGST 9%</div>
+                    <div>SGST 9%</div>
+                  </>
+                )}
+                <div>Total Amount</div>
+              </div>
+
+              <div className={styles.tableRow}>
+                <div className={styles.itemDetails}>
+                  <img src={getImage()} alt="product" className={styles.itemImage} />
+                  <div>
+                    <h4>{shipment?.selectedItem || "-"}</h4>
+                    <p>{matchedItem?.loadingLocation || "-"}</p>
+                  </div>
+                </div>
+
+                <div className={styles.centerCell}>{matchedItem?.requiredQuantity || 0} MT</div>
+                <div className={styles.centerCell}>{shippedQty} MT</div>
+                <div className={styles.centerCell}>₹ {pricePerMT.toLocaleString("en-IN")}</div>
+                <div className={styles.centerCell}>
+                  ₹ {productTaxable.toLocaleString("en-IN", { maximumFractionDigits: 2 })}
+                </div>
+
+                {productGSTType === "igst" ? (
+                  <div className={styles.centerCell}>
+                    ₹ {productIGST.toLocaleString("en-IN", { maximumFractionDigits: 2 })}
+                  </div>
+                ) : (
+                  <>
+                    <div className={styles.centerCell}>
+                      ₹ {productCGST.toLocaleString("en-IN", { maximumFractionDigits: 2 })}
+                    </div>
+                    <div className={styles.centerCell}>
+                      ₹ {productSGST.toLocaleString("en-IN", { maximumFractionDigits: 2 })}
+                    </div>
+                  </>
+                )}
+
+                <div className={styles.totalAmountCell}>
+                  ₹ {productTotal.toLocaleString("en-IN", { maximumFractionDigits: 2 })}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* =========================
-          TRANSPORT TABLE
+           TRANSPORT TABLE CARD
       ========================= */}
-
-      <div className={styles.itemsCard}>
-        <div className={styles.itemsHeader}>
-          <FaTruck className={styles.itemsIcon} />
-
-          <h3 className={styles.sectionTitle}>Transport Invoice</h3>
+      <div className={styles.itemsCard} style={{ padding: "0", overflow: "hidden" }}>
+        {/* HEADER ARRANGE */}
+        <div 
+          className={styles.cardAccordionHeader}
+          onClick={() => setIsTransportOpen(!isTransportOpen)}
+          style={{ 
+            display: "flex", 
+            alignItems: "center", 
+            justifyContent: "space-between", 
+            padding: "22px", 
+            cursor: "pointer", 
+            userSelect: "none" 
+          }}
+        >
+          <div className={styles.itemsHeader} style={{ margin: "0" }}>
+            <FaTruck className={styles.itemsIcon} />
+            <h3 className={styles.sectionTitle}>Transport Invoice</h3>
+          </div>
+          
+          <div className={`${styles.toggleIconBtn} ${isTransportOpen ? styles.activeToggle : ""}`}>
+            {isTransportOpen ? "−" : "+"}
+          </div>
         </div>
 
-        <div className={styles.tableWrapper}>
-          <div className={styles.tableHeader}>
-            <div>Description</div>
-
-            <div>HSN</div>
-
-            <div>GST Type</div>
-
-            <div>Taxable</div>
-
-            {transportGSTType === "igst" ? (
-              <div>IGST 5%</div>
-            ) : (
-              <>
-                <div>CGST 2.5%</div>
-
-                <div>SGST 2.5%</div>
-              </>
-            )}
-
-            <div>Total</div>
-          </div>
-
-          <div className={styles.tableRow}>
-            <div className={styles.transportDetails}>
-              <h4>Transportation Charges</h4>
-
-              <p>
-                {shipment?.shipmentFrom} → {shipment?.shipmentTo}
-              </p>
-            </div>
-
-            <div className={styles.centerCell}>
-              {shipment?.transportHSNCode || "9965"}
-            </div>
-
-            <div className={styles.centerCell}>
-              {transportGSTType === "igst" ? "IGST" : "CGST + SGST"}
-            </div>
-
-            <div className={styles.centerCell}>
-              ₹ {transportPrice.toLocaleString("en-IN")}
-            </div>
-
-            {transportGSTType === "igst" ? (
-              <div className={styles.centerCell}>
-                ₹ {transportIGST.toLocaleString("en-IN")}
+        {/* CONTAINER WORK */}
+        {isTransportOpen && (
+          <div style={{ padding: "0 22px 22px 22px" }}>
+            <div className={styles.tableWrapper}>
+              <div className={styles.tableHeader}>
+                <div>Description</div>
+                <div>HSN</div>
+                <div>GST Type</div>
+                <div>Taxable</div>
+                {transportGSTType === "igst" ? (
+                  <div>IGST 5%</div>
+                ) : (
+                  <>
+                    <div>CGST 2.5%</div>
+                    <div>SGST 2.5%</div>
+                  </>
+                )}
+                <div>Total</div>
               </div>
-            ) : (
-              <>
-                <div className={styles.centerCell}>
-                  ₹ {transportCGST.toLocaleString("en-IN")}
+
+              <div className={styles.tableRow}>
+                <div className={styles.transportDetails}>
+                  <h4>Transportation Charges</h4>
+                  <p>{shipment?.shipmentFrom} → {shipment?.shipmentTo}</p>
                 </div>
 
-                <div className={styles.centerCell}>
-                  ₹ {transportSGST.toLocaleString("en-IN")}
-                </div>
-              </>
-            )}
+                <div className={styles.centerCell}>{shipment?.transportHSNCode || "9965"}</div>
+                <div className={styles.centerCell}>{transportGSTType === "igst" ? "IGST" : "CGST + SGST"}</div>
+                <div className={styles.centerCell}>₹ {transportPrice.toLocaleString("en-IN")}</div>
 
-            <div className={styles.totalAmountCell}>
-              ₹ {transportTotal.toLocaleString("en-IN")}
+                {transportGSTType === "igst" ? (
+                  <div className={styles.centerCell}>₹ {transportIGST.toLocaleString("en-IN")}</div>
+                ) : (
+                  <>
+                    <div className={styles.centerCell}>₹ {transportCGST.toLocaleString("en-IN")}</div>
+                    <div className={styles.centerCell}>₹ {transportSGST.toLocaleString("en-IN")}</div>
+                  </>
+                )}
+
+                <div className={styles.totalAmountCell}>₹ {transportTotal.toLocaleString("en-IN")}</div>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* =========================
-          FINAL SUMMARY
+           FINAL SUMMARY CARD
       ========================= */}
-
-      <div className={styles.invoiceSummaryCard}>
-        <h3>Invoice Summary</h3>
-
-        <div className={styles.summaryRow}>
-          <span>Product Total</span>
-
-          <span>₹ {productTotal.toLocaleString("en-IN")}</span>
+      <div className={styles.invoiceSummaryCard} style={{ padding: "0", overflow: "hidden" }}>
+        {/* HEADER ARRANGE */}
+        <div 
+          className={styles.cardAccordionHeader}
+          onClick={() => setIsSummaryOpen(!isSummaryOpen)}
+          style={{ 
+            display: "flex", 
+            alignItems: "center", 
+            justifyContent: "space-between", 
+            padding: "24px", 
+            cursor: "pointer", 
+            userSelect: "none" 
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <FaFileInvoiceDollar style={{ fontSize: "17px", color: "#6d28d9" }} />
+            <h3 style={{ margin: "0", fontSize: "20px", fontWeight: "700", color: "#111827" }}>
+              Invoice Summary
+            </h3>
+          </div>
+          
+          <div className={`${styles.toggleIconBtn} ${isSummaryOpen ? styles.activeToggle : ""}`}>
+            {isSummaryOpen ? "−" : "+"}
+          </div>
         </div>
 
-        <div className={styles.summaryRow}>
-          <span>Transport Total</span>
+        {/* CONTAINER WORK */}
+        {isSummaryOpen && (
+          <div style={{ padding: "0 24px 24px 24px" }}>
+            <div className={styles.summaryRow}>
+              <span>Product Total</span>
+              <span>₹ {productTotal.toLocaleString("en-IN")}</span>
+            </div>
 
-          <span>₹ {transportTotal.toLocaleString("en-IN")}</span>
-        </div>
+            <div className={styles.summaryRow}>
+              <span>Transport Total</span>
+              <span>₹ {transportTotal.toLocaleString("en-IN")}</span>
+            </div>
 
-        <div className={styles.finalTotalRow}>
-          <span>Grand Total</span>
-
-          <span>₹ {grandTotal.toLocaleString("en-IN")}</span>
-        </div>
+            <div className={styles.finalTotalRow}>
+              <span>Grand Total</span>
+              <span>₹ {grandTotal.toLocaleString("en-IN")}</span>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -154,7 +154,7 @@
   align-items: center;
   gap: 6px;
   color: #692ca0;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
   margin-bottom: 6px;
 }
@@ -183,7 +183,7 @@
 .badge {
   padding: 6px 12px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   display: inline-block;
   white-space: nowrap;
@@ -208,7 +208,7 @@
 ========================= */
 
 .dateText {
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   color: #111827;
   line-height: 1.5;

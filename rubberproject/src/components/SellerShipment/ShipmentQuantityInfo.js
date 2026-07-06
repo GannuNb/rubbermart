@@ -10,7 +10,7 @@ const ShipmentQuantityInfo = ({
 }) => {
   return (
     <div className={styles.field}>
-      <label>Shipped Quantity</label>
+      <label>Shipped Quantity (In Tons)</label>
 
       <input
         type="number"

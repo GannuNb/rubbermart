@@ -88,7 +88,7 @@
 
 .subTitle {
   margin-top: 6px;
-  font-size: 14px;
+  font-size: 16px;
   color: #6b7280;
 }
 
@@ -100,7 +100,7 @@
   display: flex;
   gap: 6px;
   align-items: center;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   white-space: nowrap; /* keep inline */
 }
@@ -127,14 +127,15 @@
   border: 1px solid #f1f1f1;
 }
 /* =========================
-   HEADER SUMMARY CARD
+   HEADER SUMMARY CARD (FIXED)
 ========================= */
 
 .headerGrid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 24px;
-  align-items: stretch;
+  /* Switch from hardcoded 5 columns to an auto-fitting grid layout */
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  align-items: center;
 }
 
 .headerItem {
@@ -142,9 +143,16 @@
   align-items: center;
   gap: 14px;
   min-height: 72px;
-  min-width: 0; /* ⭐ prevents breaking */
+  min-width: 0; /* Keeps items confined to their grid container boundaries */
 }
 
+/* Container text wrapper inside the item block */
+.headerItem > div:last-child {
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* Crucial for controlling inner word-break contexts */
+  flex: 1;
+}
 
 .iconBox {
   width: 46px;
@@ -163,21 +171,21 @@
   font-size: 13px;
   font-weight: 500;
   color: #6b7280;
-  margin: 0 0 6px 0;
+  margin: 0 0 4px 0;
   line-height: 1.4;
 }
 
-
 .headerItem h4 {
-   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   margin: 0;
   font-size: 15px;
   font-weight: 700;
   color: #111827;
-  line-height: 1.5;
-  word-break: break-word;
+  line-height: 1.4;
+  
+  /* CRITICAL UI FIXES: Allow values to wrap naturally instead of pushing the viewport */
+  white-space: normal; 
+  word-wrap: break-word;
+  word-break: break-all; /* Handles continuous string/hash value sequences */
 }
 
 /* =========================
@@ -258,6 +266,11 @@
 
 @media (max-width: 768px) {
 
+  .headerGrid {
+    /* Safe stack option for tablet and smaller viewports */
+    grid-template-columns: repeat(auto-fit, minmax(100%, 1fr));
+    gap: 16px;
+  }
   .shippingTitleRow {
     flex-direction: column; /* ⭐ stack */
     align-items: flex-start;
@@ -380,7 +393,7 @@
 ========================= */
 
 .step h4 {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
   color: #6d28d9;
   margin-bottom: 6px;
@@ -391,7 +404,7 @@
 ========================= */
 
 .step p {
-  font-size: 13px;
+  font-size: 14px;
   color: #6b7280;
   line-height: 1.5;
   font-weight: 500;
@@ -407,7 +420,7 @@
   border-radius: 10px;
   padding: 16px 20px;
   text-align: center;
-  font-size: 14px;
+  font-size: 16px;
   color: #4b5563;
   font-weight: 500;
   border: 1px solid #ece5ff;
@@ -494,10 +507,10 @@
 }
 
 .label {
-  font-size: 13px;
+  font-size: 16px;
   color: #6b7280;
   margin-bottom: 4px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .driverInfo h4 {
@@ -544,7 +557,8 @@
 .summaryRow p {
   margin: 0;
   color: #6b7280;
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .summaryRow h4 {
@@ -566,7 +580,7 @@
 }
 
 .addressTitle {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
   color: #111827;
   margin-bottom: 12px;
@@ -581,12 +595,12 @@
 
 .addressRow p {
   margin: 0;
-  font-size: 13px;
+  font-size: 15px;
   color: #6b7280;
 }
 
 .addressRow span {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   color: #111827;
 
@@ -682,7 +696,7 @@
 }
 
 .sectionTitle {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
   color: #111827;
   margin: 0;
@@ -744,7 +758,7 @@
 }
 
 .tableHeader div {
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 700;
   color: #5b6475;
   text-align: center;
@@ -791,7 +805,7 @@
 }
 
 .itemDetails h4 {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   color: #111827;
   margin: 0 0 4px;
@@ -801,7 +815,7 @@
 }
 
 .itemDetails p {
-  font-size: 12px;
+  font-size: 15px;
   color: #6b7280;
   margin: 0;
   line-height: 1.5;
@@ -934,14 +948,14 @@
 
 .transportDetails h4 {
   margin: 0;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   color: #111827;
 }
 
 .transportDetails p {
   margin-top: 4px;
-  font-size: 12px;
+  font-size: 15px;
   color: #6b7280;
 }
 
@@ -976,12 +990,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   padding: 12px 0;
-
   border-bottom: 1px dashed #d1d5db;
-
-  font-size: 15px;
+  font-size: 16px;
 }
 
 .summaryRow span:first-child {
@@ -1001,13 +1012,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   margin-top: 18px;
-
   padding: 18px;
-
   border-radius: 14px;
-
   background: linear-gradient(
     135deg,
     #f3f0ff,
@@ -1072,7 +1079,7 @@
 .trackingHeader {
   background: #fafafa;
   padding: 14px 16px;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 700;
   color: #374151;
   border-bottom: 1px solid #e5e7eb;
@@ -1081,7 +1088,7 @@
 /* ROW */
 .trackingRow {
   padding: 14px 16px;
-  font-size: 13px;
+  font-size: 15px;
   color: #4b5563;
   border-bottom: 1px solid #f1f1f1;
 }
@@ -1124,7 +1131,7 @@
   padding: 12px 14px;
   border-radius: 10px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -1158,7 +1165,7 @@
 
 .helpCard p {
   margin: 0 0 14px;
-  font-size: 12px;
+  font-size: 14px;
   color: #6b7280;
   line-height: 1.5;
 }
@@ -1171,7 +1178,7 @@
   padding: 12px;
   border-radius: 10px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -1206,4 +1213,53 @@
   .helpCard {
     padding: 14px;
   }
+}
+
+/* =========================================================
+   ACCORDION ACTION BAR AND INDICATOR STYLING (+/-)
+========================================================= */
+
+.cardAccordionHeader {
+  background-color: #ffffff;
+  transition: background-color 0.15s ease;
+}
+
+.cardAccordionHeader:hover {
+  background-color: #fcfbfe;
+}
+
+.toggleIconBtn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  background: #f5f3ff;
+  color: #6d28d9;
+  border-radius: 50%;
+  
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1;
+  
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+}
+
+/* Hover effects driven via the header triggers */
+.cardAccordionHeader:hover .toggleIconBtn {
+  background: #6d28d9;
+  color: #ffffff;
+}
+
+/* Open Panel Active States */
+.toggleIconBtn.activeToggle {
+  background: #ede9fe;
+  color: #5b21b6;
+}
+
+.cardAccordionHeader:hover .toggleIconBtn.activeToggle {
+  background: #6d28d9;
+  color: #ffffff;
 }

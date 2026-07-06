@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import styles from "../../styles/Buyer/BuyerOrderDetails.module.css";
 import CustomAlert from "../alert/CustomAlert";
+
 function PaymentUploadCard({ order, onPaymentUploaded }) {
+  const [isOpen, setIsOpen] = useState(false); // Controls accordion visibility
   const [amount, setAmount] = useState("");
   const [paymentMode, setPaymentMode] = useState("bank_transfer");
   const [transactionId, setTransactionId] = useState("");
@@ -14,7 +16,10 @@ function PaymentUploadCard({ order, onPaymentUploaded }) {
     title: "",
     message: "",
   });
-  const handleSubmit = async () => {
+
+  const handleSubmit = async (e) => {
+    e.stopPropagation(); // Prevents closing the card when clicking the submit button
+
     if (!amount || !file) {
       setAlert({
         show: true,
@@ -22,11 +27,9 @@ function PaymentUploadCard({ order, onPaymentUploaded }) {
         title: "Missing Information",
         message: "Amount and receipt file are required",
       });
-
       return;
     }
 
-    // ✅ calculate remaining from VERIFIED ONLY
     const verifiedPaid = (order.buyerPaymentReceipts || [])
       .filter((r) => r.status === "verified")
       .reduce((sum, r) => sum + Number(r.amount || 0), 0);
@@ -40,15 +43,12 @@ function PaymentUploadCard({ order, onPaymentUploaded }) {
         title: "Invalid Amount",
         message: "Amount exceeds remaining amount",
       });
-
       return;
     }
 
     try {
       setLoading(true);
-
       const token = localStorage.getItem("token");
-
       const formData = new FormData();
       formData.append("amount", amount);
       formData.append("paymentMode", paymentMode);
@@ -83,6 +83,7 @@ function PaymentUploadCard({ order, onPaymentUploaded }) {
         setTransactionId("");
         setNote("");
         setFile(null);
+        setIsOpen(false); // Close the dropdown on successful submission
       } else {
         setAlert({
           show: true,
@@ -119,64 +120,79 @@ function PaymentUploadCard({ order, onPaymentUploaded }) {
           }
         />
       )}
-      <h3 className={styles.cardTitle}>Upload Payment</h3>
 
-      <div className={styles.formGroup}>
-        <label>Amount</label>
-        <input
-          type="number"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-        />
-      </div>
+      {/* Clickable Header Toggle */}
+<div 
+  className={styles.dropdownHeader} 
+  onClick={() => setIsOpen(!isOpen)}
+>
+  <h3 className={styles.cardTitle}>Upload Payment</h3>
+  <span className={`${styles.toggleIcon} ${isOpen ? styles.iconActive : ""}`}>
+    {isOpen ? "−" : "+"}
+  </span>
+</div>
 
-      <div className={styles.formGroup}>
-        <label>Payment Mode</label>
-        <select
-          value={paymentMode}
-          onChange={(e) => setPaymentMode(e.target.value)}
-        >
-          <option value="bank_transfer">Bank Transfer</option>
-          <option value="upi">UPI</option>
-          <option value="cash">Cash</option>
-          <option value="cheque">Cheque</option>
-          <option value="rtgs">RTGS</option>
-          <option value="neft">NEFT</option>
-        </select>
-      </div>
+      {/* Conditional Rendering of Fields */}
+      {isOpen && (
+        <div className={styles.dropdownContent}>
+          <div className={styles.formGroup}>
+            <label>Amount</label>
+            <input
+              type="number"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+            />
+          </div>
 
-      <div className={styles.formGroup}>
-        <label>Transaction ID</label>
-        <input
-          type="text"
-          value={transactionId}
-          onChange={(e) => setTransactionId(e.target.value)}
-        />
-      </div>
+          <div className={styles.formGroup}>
+            <label>Payment Mode</label>
+            <select
+              value={paymentMode}
+              onChange={(e) => setPaymentMode(e.target.value)}
+            >
+              <option value="bank_transfer">Bank Transfer</option>
+              <option value="upi">UPI</option>
+              <option value="cash">Cash</option>
+              <option value="cheque">Cheque</option>
+              <option value="rtgs">RTGS</option>
+              <option value="neft">NEFT</option>
+            </select>
+          </div>
 
-      <div className={styles.formGroup}>
-        <label>Note</label>
-        <textarea
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
-        />
-      </div>
+          <div className={styles.formGroup}>
+            <label>Transaction ID</label>
+            <input
+              type="text"
+              value={transactionId}
+              onChange={(e) => setTransactionId(e.target.value)}
+            />
+          </div>
 
-      <div className={styles.formGroup}>
-        <label>Upload Receipt</label>
-        <input
-          type="file"
-          onChange={(e) => setFile(e.target.files[0])}
-        />
-      </div>
+          <div className={styles.formGroup}>
+            <label>Note</label>
+            <textarea
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+            />
+          </div>
 
-      <button
-        className={styles.submitBtn}
-        onClick={handleSubmit}
-        disabled={loading}
-      >
-        {loading ? "Uploading..." : "Submit Payment"}
-      </button>
+          <div className={styles.formGroup}>
+            <label>Upload Receipt</label>
+            <input
+              type="file"
+              onChange={(e) => setFile(e.target.files[0])}
+            />
+          </div>
+
+          <button
+            className={styles.submitBtn}
+            onClick={handleSubmit}
+            disabled={loading}
+          >
+            {loading ? "Uploading..." : "Submit Payment"}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

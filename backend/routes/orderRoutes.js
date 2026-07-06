@@ -6,7 +6,7 @@ import uploadDocuments from "../middlewares/uploadDocuments.js";
 import { uploadDocumentsErrorHandler } from "../middlewares/uploadDocumentsErrorHandler.js";
 
 import { createOrder,getSellerOrders,  getSellerSingleOrder,  confirmSellerOrder,rejectSellerOrder,addShipmentToOrder,getBuyerOrders,
-    getBuyerSingleOrder, uploadBuyerPayment ,getAdminAllOrders,getAdminSingleOrderDetails,approveBuyerPayment, uploadAdminToSellerPayment,
+    getBuyerSingleOrder, uploadBuyerPayment ,getAdminAllOrders,getAdminSingleOrderDetails,getOrderDetailsForInvoice, approveBuyerPayment, uploadAdminToSellerPayment,
     markShipmentDeliveredByAdmin,downloadProformaInvoice,downloadShippingInvoice,downloadBuyReport,markShipmentDeliveredBySeller,
     cancelBuyerOrder,getOpenTransportShipments,submitTransportQuote,getTransporterQuotes,getShipmentQuotes,
     assignTransporterToShipment,adminDirectAssignTransporter,getAllTransporters,getTransporterPendingAssignments,
@@ -49,6 +49,10 @@ router.put( "/seller-orders/:orderId/shipment/:shipmentId/shipped", protectUser,
 router.get("/admin/all-orders",  protectUser, protectAdmin,  getAdminAllOrders);
 router.get(  "/admin/transporters",  protectUser,  protectAdmin,  getAllTransporters,);//alltransporters
 router.get("/admin/:orderId",  protectUser,  protectAdmin,  getAdminSingleOrderDetails);
+
+// FIX: Changed protect -> protectUser, admin -> protectAdmin, and prefixed path with /admin
+router.get("/admin/:orderId/invoice-data", protectUser, protectAdmin, getOrderDetailsForInvoice);
+
 router.put("/admin/:orderId/payment/:paymentId/approve",  protectUser,  protectAdmin,  approveBuyerPayment);
 router.post("/admin/:orderId/seller-payment",  protectUser,  protectAdmin,  uploadDocuments.single("file"),  uploadAdminToSellerPayment);
 // router.put(  "/admin/:orderId/shipment/:shipmentId/approve",  protectUser,  protectAdmin,  approveShipmentByAdmin);
@@ -72,10 +76,5 @@ router.get(  "/transporter/completed-deliveries",  protectUser,  getTransporterC
 router.put(  "/transporter/:orderId/shipment/:shipmentId/accept-assignment",  protectUser,  transporterAcceptAssignment,);
 router.put(  "/transporter/:orderId/shipment/:shipmentId/reject-assignment",  protectUser,  transporterRejectAssignment,);
 router.put(  "/transporter/:orderId/shipment/:shipmentId/shipped",  protectUser,  markShipmentShippedByTransporter,);
-
-
-
-
-
 
 export default router;

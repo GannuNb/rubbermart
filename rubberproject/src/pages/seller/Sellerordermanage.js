@@ -27,6 +27,13 @@ const Sellerordermanage = () => {
 
   const [cancellationReason, setCancellationReason] = useState("");
 
+  // Accordion open/close states
+  const [isOrderInfoOpen, setIsOrderInfoOpen] = useState(true);
+  const [isAddressOpen, setIsAddressOpen] = useState(true);
+  const [isProductsOpen, setIsProductsOpen] = useState(true);
+  const [isPaymentOpen, setIsPaymentOpen] = useState(true);    // New: Defaults open
+  const [isShipmentOpen, setIsShipmentOpen] = useState(true);  // New: Defaults open
+
   const [alert, setAlert] = useState({
     show: false,
     type: "",
@@ -209,176 +216,222 @@ const Sellerordermanage = () => {
         )}
       </div>
 
-      {/* Order Information */}
+      {/* Order Information Section */}
       <div className={styles.section}>
-        <h2 className={styles.sectionTitle}>
-          <FiShoppingBag className={styles.sectionIcon} />
-          Order Information
-        </h2>
-
-        <div className={styles.infoGrid}>
-          <div className={styles.infoItem}>
-            <span>Order ID</span>
-            <strong>{selectedOrder.orderId}</strong>
-          </div>
-
-          <div className={styles.infoItem}>
-            <span>Status</span>
-            <strong className={styles.statusBadge}>
-              {selectedOrder.orderStatus}
-            </strong>
-          </div>
-
-          <div className={styles.infoItem}>
-            <span>Total Amount</span>
-            <strong>₹ {selectedOrder.totalAmount}</strong>
-          </div>
-
-          <div className={styles.infoItem}>
-            <span>Buyer Name</span>
-            <strong>{selectedOrder.buyer?.fullName}</strong>
-          </div>
-
-          <div className={styles.infoItem}>
-            <span>Buyer Email</span>
-            <strong>{selectedOrder.buyer?.email}</strong>
-          </div>
+        <div 
+          className={styles.dropdownHeader} 
+          onClick={() => setIsOrderInfoOpen(!isOrderInfoOpen)}
+        >
+          <h2 className={styles.sectionTitle}>
+            <FiShoppingBag className={styles.sectionIcon} />
+            Order Information
+          </h2>
+          <span className={`${styles.toggleIcon} ${isOrderInfoOpen ? styles.iconActive : ""}`}>
+            {isOrderInfoOpen ? "−" : "+"}
+          </span>
         </div>
-      </div>
 
-      {/* Shipping Address */}
-      <div className={styles.section}>
-        <h2 className={styles.sectionTitle}>
-          <FiMapPin className={styles.sectionIcon} />
-          Shipping Address
-        </h2>
-
-        <p className={styles.address}>
-          {selectedOrder.shippingAddress?.fullAddress}
-        </p>
-      </div>
-
-      {/* Products */}
-      {/* Products */}
-
-      <div ref={productsRef} className={styles.section}>
-        <h2 className={styles.sectionTitle}>
-          <FiBox className={styles.sectionIcon} />
-          Products
-        </h2>
-
-        <div className={styles.productsGrid}>
-          {selectedOrder.orderItems?.map((item, index) => {
-            /* =========================
-           IMAGE URL
-        ========================= */
-
-            const productImage =
-              item?.productImage?.data?.data && item?.productImage?.contentType
-                ? `data:${item.productImage.contentType};base64,${btoa(
-                    new Uint8Array(item.productImage.data.data).reduce(
-                      (data, byte) => data + String.fromCharCode(byte),
-                      "",
-                    ),
-                  )}`
-                : null;
-
-            return (
-              <div key={index} className={styles.productCard}>
-                {/* IMAGE */}
-
-                <div className={styles.productImageWrapper}>
-                  {productImage ? (
-                    <img
-                      src={productImage}
-                      alt={item.productName}
-                      className={styles.productImage}
-                    />
-                  ) : (
-                    <div className={styles.noImage}>No Image</div>
-                  )}
-                </div>
-
-                {/* DETAILS */}
-
-                <div className={styles.productContent}>
-                  <div className={styles.productTop}>
-                    <div>
-                      <h3 className={styles.productTitle}>
-                        {item.productName}
-                      </h3>
-
-                      <p className={styles.productCategory}>{item.category}</p>
-                    </div>
-
-                    <div className={styles.priceBadge}>
-                      ₹ {item.pricePerMT}
-                      /MT
-                    </div>
-                  </div>
-
-                  {/* INFO GRID */}
-
-                  <div className={styles.productInfoGrid}>
-                    <div className={styles.infoBox}>
-                      <span>Quantity</span>
-
-                      <strong>{item.requiredQuantity} MT</strong>
-                    </div>
-
-                    <div className={styles.infoBox}>
-                      <span>Subtotal</span>
-
-                      <strong>₹ {item.subtotal}</strong>
-                    </div>
-
-                    <div className={styles.infoBox}>
-                      <span>Loading Location</span>
-
-                      <strong>{item.loadingLocation || "N/A"}</strong>
-                    </div>
-
-                    <div className={styles.infoBox}>
-                      <span>HSN Code</span>
-
-                      <strong>{item.hsnCode || "N/A"}</strong>
-                    </div>
-                  </div>
-
-                  {/* SUB PRODUCTS */}
-
-                  {item.subProducts?.length > 0 && (
-                    <div className={styles.subProductsSection}>
-                      <span className={styles.subProductsLabel}>
-                        Sub Products
-                      </span>
-
-                      <div className={styles.subProductsWrap}>
-                        {item.subProducts.map((sub, subIndex) => (
-                          <span key={subIndex} className={styles.subProductTag}>
-                            {sub}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
+        {isOrderInfoOpen && (
+          <div className={styles.dropdownContent}>
+            <div className={styles.infoGrid}>
+              <div className={styles.infoItem}>
+                <span>Order ID</span>
+                <strong>{selectedOrder.orderId}</strong>
               </div>
-            );
-          })}
+
+              <div className={styles.infoItem}>
+                <span>Status</span>
+                <strong className={styles.statusBadge}>
+                  {selectedOrder.orderStatus}
+                </strong>
+              </div>
+
+              <div className={styles.infoItem}>
+                <span>Total Amount</span>
+                <strong>₹ {selectedOrder.totalAmount}</strong>
+              </div>
+
+              <div className={styles.infoItem}>
+                <span>Buyer Name</span>
+                <strong>{selectedOrder.buyer?.fullName}</strong>
+              </div>
+
+              <div className={styles.infoItem}>
+                <span>Buyer Email</span>
+                <strong>{selectedOrder.buyer?.email}</strong>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Shipping Address Section */}
+      <div className={styles.section}>
+        <div 
+          className={styles.dropdownHeader} 
+          onClick={() => setIsAddressOpen(!isAddressOpen)}
+        >
+          <h2 className={styles.sectionTitle}>
+            <FiMapPin className={styles.sectionIcon} />
+            Shipping Address
+          </h2>
+          <span className={`${styles.toggleIcon} ${isAddressOpen ? styles.iconActive : ""}`}>
+            {isAddressOpen ? "−" : "+"}
+          </span>
         </div>
+
+        {isAddressOpen && (
+          <div className={styles.dropdownContent}>
+            <p className={styles.address}>
+              {selectedOrder.shippingAddress?.fullAddress}
+            </p>
+          </div>
+        )}
       </div>
 
-      {/* Payment */}
-      <div ref={paymentRef}>
-        <SellerPaymentSection selectedOrder={selectedOrder} />
+      {/* Products Section */}
+      <div ref={productsRef} className={styles.section}>
+        <div 
+          className={styles.dropdownHeader} 
+          onClick={() => setIsProductsOpen(!isProductsOpen)}
+        >
+          <h2 className={styles.sectionTitle}>
+            <FiBox className={styles.sectionIcon} />
+            Products
+          </h2>
+          <span className={`${styles.toggleIcon} ${isProductsOpen ? styles.iconActive : ""}`}>
+            {isProductsOpen ? "−" : "+"}
+          </span>
+        </div>
+
+        {isProductsOpen && (
+          <div className={styles.dropdownContent}>
+            <div className={styles.productsGrid}>
+              {selectedOrder.orderItems?.map((item, index) => {
+                const productImage =
+                  item?.productImage?.data?.data && item?.productImage?.contentType
+                    ? `data:${item.productImage.contentType};base64,${btoa(
+                        new Uint8Array(item.productImage.data.data).reduce(
+                          (data, byte) => data + String.fromCharCode(byte),
+                          "",
+                        ),
+                      )}`
+                    : null;
+
+                return (
+                  <div key={index} className={styles.productCard}>
+                    <div className={styles.productImageWrapper}>
+                      {productImage ? (
+                        <img
+                          src={productImage}
+                          alt={item.productName}
+                          className={styles.productImage}
+                        />
+                      ) : (
+                        <div className={styles.noImage}>No Image</div>
+                      )}
+                    </div>
+
+                    <div className={styles.productContent}>
+                      <div className={styles.productTop}>
+                        <div>
+                          <h3 className={styles.productTitle}>
+                            {item.productName}
+                          </h3>
+                          <p className={styles.productCategory}>{item.category}</p>
+                        </div>
+
+                        <div className={styles.priceBadge}>
+                          ₹ {item.pricePerMT} /MT
+                        </div>
+                      </div>
+
+                      <div className={styles.productInfoGrid}>
+                        <div className={styles.infoBox}>
+                          <span>Quantity</span>
+                          <strong>{item.requiredQuantity} MT</strong>
+                        </div>
+
+                        <div className={styles.infoBox}>
+                          <span>Subtotal</span>
+                          <strong>₹ {item.subtotal}</strong>
+                        </div>
+
+                        <div className={styles.infoBox}>
+                          <span>Loading Location</span>
+                          <strong>{item.loadingLocation || "N/A"}</strong>
+                        </div>
+
+                        <div className={styles.infoBox}>
+                          <span>HSN Code</span>
+                          <strong>{item.hsnCode || "N/A"}</strong>
+                        </div>
+                      </div>
+
+                      {item.subProducts?.length > 0 && (
+                        <div className={styles.subProductsSection}>
+                          <span className={styles.subProductsLabel}>
+                            Sub Products
+                          </span>
+                          <div className={styles.subProductsWrap}>
+                            {item.subProducts.map((sub, subIndex) => (
+                              <span key={subIndex} className={styles.subProductTag}>
+                                {sub}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Shipment */}
+      {/* Payment Section - Handled via clean Section Structure wrappers */}
+      <div ref={paymentRef} className={styles.section}>
+        <div 
+          className={styles.dropdownHeader} 
+          onClick={() => setIsPaymentOpen(!isPaymentOpen)}
+        >
+          <h2 className={styles.sectionTitle}>
+            <FiCreditCard className={styles.sectionIcon} />
+            Payment Details
+          </h2>
+          <span className={`${styles.toggleIcon} ${isPaymentOpen ? styles.iconActive : ""}`}>
+            {isPaymentOpen ? "−" : "+"}
+          </span>
+        </div>
+        {isPaymentOpen && (
+          <div className={styles.dropdownContent}>
+            <SellerPaymentSection selectedOrder={selectedOrder} />
+          </div>
+        )}
+      </div>
 
+      {/* Shipment Section - Handled via clean Section Structure wrappers */}
       {selectedOrder.orderStatus !== "cancelled" && (
-        <div ref={shipmentRef}>
-          <SellerShipmentSection selectedOrder={selectedOrder} />
+        <div ref={shipmentRef} className={styles.section}>
+          <div 
+            className={styles.dropdownHeader} 
+            onClick={() => setIsShipmentOpen(!isShipmentOpen)}
+          >
+            <h2 className={styles.sectionTitle}>
+              <FiTruck className={styles.sectionIcon} />
+              Shipment Details
+            </h2>
+            <span className={`${styles.toggleIcon} ${isShipmentOpen ? styles.iconActive : ""}`}>
+              {isShipmentOpen ? "−" : "+"}
+            </span>
+          </div>
+          {isShipmentOpen && (
+            <div className={styles.dropdownContent}>
+              <SellerShipmentSection selectedOrder={selectedOrder} />
+            </div>
+          )}
         </div>
       )}
 

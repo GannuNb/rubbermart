@@ -107,25 +107,26 @@ const AdminToSellerPaymentCard = ({ order }) => {
 
   return (
     <div className={styles.card}>
-      <div
-        className={styles.dropdownHeader}
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <div className={styles.headerLeft}>
-          <div className={styles.iconBox}>
-            <FaWallet />
-          </div>
+      {/* REPLACE the original header block with this code snippet */}
+<div
+  className={styles.dropdownHeader}
+  onClick={() => setIsOpen(!isOpen)}
+>
+  <div className={styles.headerLeft}>
+    <div className={styles.iconBox}>
+      <FaWallet />
+    </div>
 
-          <h3>Payment To Seller</h3>
-        </div>
+    <h3>Make Payment To Seller</h3>
+  </div>
 
-        <span
-          className={`${styles.arrow} ${isOpen ? styles.arrowOpen : ""
-            }`}
-        >
-          ▼
-        </span>
-      </div>
+  <span
+    className={`${styles.toggleIcon} ${isOpen ? styles.iconActive : ""}`}
+    style={{ fontSize: "22px", fontWeight: "600", lineHeight: "1" }}
+  >
+    {isOpen ? "−" : "+"}
+  </span>
+</div>
 
       {alert.show && (
         <CustomAlert

@@ -33,7 +33,7 @@
 }
 
 .paymentIcon {
-  font-size: 34px;
+  font-size: 50px;
   color: #6d28d9;
 
   background: #f5f3ff;
@@ -50,7 +50,7 @@
 
 .headerLeft p {
   margin-top: 6px;
-  font-size: 14px;
+  font-size: 15px;
   color: #6b7280;
   line-height: 1.6;
 }
@@ -101,29 +101,22 @@
     #faf7ff,
     #ffffff
   );
-
   border: 1px solid #ede9fe;
-
   border-radius: 20px;
-
   padding: 22px;
 }
 
 .summaryCard p {
   margin: 0 0 10px;
-
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
-
   color: #6b7280;
 }
 
 .summaryCard h4 {
   margin: 0;
-
   font-size: 24px;
   font-weight: 700;
-
   color: #6d28d9;
 }
 
@@ -133,34 +126,22 @@
 
 .errorBox {
   background: #fef2f2;
-
   border: 1px solid #fecaca;
-
   color: #dc2626;
-
   padding: 14px 16px;
-
   border-radius: 14px;
-
   margin-bottom: 20px;
-
   font-size: 14px;
   font-weight: 500;
 }
 
 .successBox {
   background: #ecfdf5;
-
   border: 1px solid #bbf7d0;
-
   color: #059669;
-
   padding: 14px 16px;
-
   border-radius: 14px;
-
   margin-bottom: 20px;
-
   font-size: 14px;
   font-weight: 500;
 }
@@ -178,7 +159,6 @@
 .formGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-
   gap: 20px;
 }
 
@@ -189,7 +169,7 @@
 }
 
 .formGroup label {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   color: #374151;
 }
@@ -198,19 +178,13 @@
 .formGroup select,
 .formGroup textarea {
   width: 100%;
-
   border: 1px solid #d1d5db;
   border-radius: 16px;
-
   padding: 14px 16px;
-
   font-size: 14px;
   color: #111827;
-
   background: #ffffff;
-
   outline: none;
-
   transition: all 0.2s ease;
 }
 
@@ -223,7 +197,6 @@
 .formGroup select:focus,
 .formGroup textarea:focus {
   border-color: #6d28d9;
-
   box-shadow: 0 0 0 4px rgba(109, 40, 217, 0.08);
 }
 
@@ -242,37 +215,23 @@
 
 .uploadBtn {
   border: none;
-
-  background: linear-gradient(
-    135deg,
-    #6d28d9,
-    #7c3aed
-  );
-
+  background: linear-gradient(135deg,#6d28d9,#7c3aed);
   color: white;
-
   padding: 16px 20px;
-
   border-radius: 18px;
-
   font-size: 15px;
   font-weight: 700;
-
   cursor: pointer;
-
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-
   transition: all 0.25s ease;
-
   margin-top: 4px;
 }
 
 .uploadBtn:hover {
   transform: translateY(-1px);
-
   box-shadow: 0 10px 25px rgba(109, 40, 217, 0.18);
 }
 
@@ -303,7 +262,6 @@
 
 .historyGrid {
   display: grid;
-
   grid-template-columns: repeat(
     auto-fit,
     minmax(300px, 1fr)
@@ -577,4 +535,67 @@
     font-size: 14px;
     padding: 14px;
   }
+}
+
+.paymentHeaderAccordion {
+  display: flex;
+  align-items: center;
+  padding: 28px;
+  background-color: #ffffff;
+  transition: background-color 0.15s ease;
+}
+
+.paymentHeaderAccordion:hover {
+  background-color: #fcfbfe;
+}
+
+@media (max-width: 768px) {
+  .paymentHeaderAccordion {
+    padding: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .paymentHeaderAccordion {
+    padding: 16px;
+  }
+}
+
+/* =========================================================
+   ACCORDION TOGGLE BUTTON (+/-)
+========================================================= */
+
+.toggleIconBtn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  background: #f5f3ff;
+  color: #6d28d9;
+  border-radius: 50%;
+  
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1;
+  
+  transition: all 0.25s ease;
+}
+
+/* Hover effect on the indicator */
+.paymentHeaderAccordion:hover .toggleIconBtn {
+  background: #6d28d9;
+  color: #ffffff;
+}
+
+/* Active state customization when panel is open */
+.toggleIconBtn.activeToggle {
+  background: #ede9fe;
+  color: #5b21b6;
+}
+
+.paymentHeaderAccordion:hover .toggleIconBtn.activeToggle {
+  background: #6d28d9;
+  color: #ffffff;
 }

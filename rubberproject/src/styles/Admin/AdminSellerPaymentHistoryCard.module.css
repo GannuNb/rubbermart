@@ -78,12 +78,12 @@
 }
 
 .row span {
-  font-size: 14px;
+  font-size: 16px;
   color: #6b7280;
 }
 
 .row strong {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   color: #111827;
   text-align: right;
@@ -135,4 +135,27 @@
 
 .details {
   margin-top: 16px;
+}
+
+/* ==========================================================================
+   DROPDOWN ACCORDION HOOKS (Only add this to the bottom of your CSS files)
+   ========================================================================== */
+
+.toggleIcon, 
+.toggleIconSmall {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1;
+  color: #692ca0; /* brand purple */
+  transition: transform 0.2s ease, color 0.2s ease;
+  user-select: none;
+}
+
+.toggleIconSmall {
+  font-size: 18px;
+}
+
+.iconActive {
+  color: #dc2626; /* switches cleanly to indicator red when minus shows */
+  transform: rotate(180deg);
 }
