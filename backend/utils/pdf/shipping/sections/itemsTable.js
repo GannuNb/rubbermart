@@ -1,8 +1,13 @@
 // backend/utils/pdf/shipping/sections/itemsTable.js
 
+import path from "path";
 import { invoiceColors } from "../../styles.js";
+import { RUPEE_SYMBOL } from "../../rupee.js";
 
 const { primaryPurple, borderColor, darkText } = invoiceColors;
+const regularFont = path.join(process.cwd(), "fonts", "NotoSans-Regular.ttf");
+
+const boldFont = path.join(process.cwd(), "fonts", "NotoSans-Bold.ttf");
 
 export const drawItemsTable = (doc, order, shipment, startY) => {
   let currentY = startY;
@@ -34,7 +39,7 @@ export const drawItemsTable = (doc, order, shipment, startY) => {
 
   doc.rect(startX, currentY, tableWidth, headerHeight).fill(primaryPurple);
 
-  doc.fillColor("#fff").font("Helvetica-Bold").fontSize(8);
+  doc.fillColor("#fff").font(boldFont).fontSize(8);
 
   doc.text("S.NO", colX.sno + 5, currentY + 7);
 
@@ -55,7 +60,7 @@ export const drawItemsTable = (doc, order, shipment, startY) => {
     align: "center",
   });
 
-  doc.text("Taxable", colX.subtotal, currentY + 7, {
+  doc.text("Taxable Value", colX.subtotal, currentY + 7, {
     width: 60,
     align: "center",
   });
@@ -162,7 +167,7 @@ export const drawItemsTable = (doc, order, shipment, startY) => {
      PRODUCT ROW HEIGHT
   ========================= */
 
-  doc.font("Helvetica").fontSize(8);
+  doc.font(regularFont).fontSize(8);
 
   const itemHeight = doc.heightOfString(item.application || "-", {
     width: colX.ordered - colX.item,
@@ -205,25 +210,40 @@ export const drawItemsTable = (doc, order, shipment, startY) => {
     align: "center",
   });
 
-  doc.text(price.toFixed(2), colX.price, currentY + 8, {
+  doc.text(`${RUPEE_SYMBOL} ${price.toFixed(2)}`, colX.price, currentY + 8, {
     width: colX.subtotal - colX.price,
     align: "center",
   });
 
-  doc.text(subtotal.toFixed(2), colX.subtotal, currentY + 8, {
-    width: colX.tax - colX.subtotal,
-    align: "center",
-  });
+  doc.text(
+    `${RUPEE_SYMBOL} ${subtotal.toFixed(2)}`,
+    colX.subtotal,
+    currentY + 8,
+    {
+      width: colX.tax - colX.subtotal,
+      align: "center",
+    },
+  );
 
-  doc.text(productGSTTotal.toFixed(2), colX.tax, currentY + 8, {
-    width: colX.total - colX.tax,
-    align: "center",
-  });
+  doc.text(
+    `${RUPEE_SYMBOL} ${productGSTTotal.toFixed(2)}`,
+    colX.tax,
+    currentY + 8,
+    {
+      width: colX.total - colX.tax,
+      align: "center",
+    },
+  );
 
-  doc.text(productTotal.toFixed(2), colX.total, currentY + 8, {
-    width: 70,
-    align: "center",
-  });
+  doc.text(
+    `${RUPEE_SYMBOL} ${productTotal.toFixed(2)}`,
+    colX.total,
+    currentY + 8,
+    {
+      width: 70,
+      align: "center",
+    },
+  );
 
   currentY += rowHeight;
 
@@ -244,37 +264,52 @@ export const drawItemsTable = (doc, order, shipment, startY) => {
         .stroke();
     });
 
-  doc.font("Helvetica-Bold").fillColor(darkText);
+  doc.font(boldFont).fillColor(darkText);
 
   doc.text("Taxable Value", colX.subtotal, currentY + 12, {
     width: 60,
     align: "center",
   });
 
-  doc.text(subtotal.toFixed(2), colX.subtotal, currentY + 30, {
-    width: 60,
-    align: "center",
-  });
+  doc.text(
+    `${RUPEE_SYMBOL} ${subtotal.toFixed(2)}`,
+    colX.subtotal,
+    currentY + 30,
+    {
+      width: 60,
+      align: "center",
+    },
+  );
 
   doc.text(productGSTLabel, colX.tax, currentY + 12, {
     width: 60,
     align: "center",
   });
 
-  doc.text(productGSTTotal.toFixed(2), colX.tax, currentY + 30, {
-    width: 60,
-    align: "center",
-  });
+  doc.text(
+    `${RUPEE_SYMBOL} ${productGSTTotal.toFixed(2)}`,
+    colX.tax,
+    currentY + 30,
+    {
+      width: 60,
+      align: "center",
+    },
+  );
 
   doc.text("Total", colX.total, currentY + 12, {
     width: 70,
     align: "center",
   });
 
-  doc.text(productTotal.toFixed(2), colX.total, currentY + 30, {
-    width: 70,
-    align: "center",
-  });
+  doc.text(
+    `${RUPEE_SYMBOL} ${productTotal.toFixed(2)}`,
+    colX.total,
+    currentY + 30,
+    {
+      width: 70,
+      align: "center",
+    },
+  );
 
   /* =========================
      SMALL GAP
@@ -294,7 +329,7 @@ export const drawItemsTable = (doc, order, shipment, startY) => {
     .rect(startX, currentY, tableWidth, transportHeaderHeight)
     .fill(primaryPurple);
 
-  doc.fillColor("#fff").font("Helvetica-Bold").fontSize(8);
+  doc.fillColor("#fff").font(boldFont).fontSize(8);
 
   doc.text("Description", startX + 10, currentY + 7);
 
@@ -302,7 +337,7 @@ export const drawItemsTable = (doc, order, shipment, startY) => {
 
   doc.text("HSN", startX + 280, currentY + 7);
 
-  doc.text("Taxable", startX + 345, currentY + 7);
+  doc.text("Taxable Value", startX + 345, currentY + 7);
 
   doc.text(
     transportGSTType === "cgst_sgst" ? "CGST + SGST" : "IGST",
@@ -351,7 +386,7 @@ export const drawItemsTable = (doc, order, shipment, startY) => {
       .lineTo(x, currentY + transportRowHeight)
       .stroke();
   });
-  doc.fillColor(darkText).font("Helvetica").fontSize(8);
+  doc.fillColor(darkText).font(regularFont).fontSize(8);
 
   doc.text("Transportation Charges", startX + 10, currentY + 10, {
     width: 120,
@@ -363,26 +398,41 @@ export const drawItemsTable = (doc, order, shipment, startY) => {
 
   doc.text(shipment?.transportHSNCode || "9965", startX + 285, currentY + 10);
 
-  doc.text(transportBase.toFixed(2), startX + 330, currentY + 10, {
-    width: 70,
-    align: "center",
-  });
+  doc.text(
+    `${RUPEE_SYMBOL} ${transportBase.toFixed(2)}`,
+    startX + 330,
+    currentY + 10,
+    {
+      width: 70,
+      align: "center",
+    },
+  );
 
-  doc.text(transportGSTTotal.toFixed(2), startX + 400, currentY + 10, {
-    width: 55,
-    align: "center",
-  });
+  doc.text(
+    `${RUPEE_SYMBOL} ${transportGSTTotal.toFixed(2)}`,
+    startX + 400,
+    currentY + 10,
+    {
+      width: 55,
+      align: "center",
+    },
+  );
 
-  doc.text(transportTotal.toFixed(2), startX + 470, currentY + 10, {
-    width: 45,
-    align: "center",
-  });
+  doc.text(
+    `${RUPEE_SYMBOL} ${transportTotal.toFixed(2)}`,
+    startX + 470,
+    currentY + 10,
+    {
+      width: 45,
+      align: "center",
+    },
+  );
   currentY += transportRowHeight + 18;
 
-    /*    =========================
+  /*    =========================
           GRAND TOTAL SUMMARY
           ========================= */
-    /*    =========================
+  /*    =========================
             INVOICE SUMMARY TABLE
           ========================= */
 
@@ -421,7 +471,7 @@ export const drawItemsTable = (doc, order, shipment, startY) => {
 
   doc.fillColor("#fff");
 
-  doc.font("Helvetica-Bold").fontSize(8);
+  doc.font(boldFont).fontSize(8);
 
   doc.text("INVOICE SUMMARY", startX + 10, summaryY + 7);
 
@@ -433,7 +483,7 @@ export const drawItemsTable = (doc, order, shipment, startY) => {
   });
 
   doc.text(
-    `${(subtotal + transportBase).toFixed(2)}`,
+    `${RUPEE_SYMBOL} ${(subtotal + transportBase).toFixed(2)}`,
     startX + 145,
     summaryY + 17,
     {
@@ -447,20 +497,30 @@ export const drawItemsTable = (doc, order, shipment, startY) => {
     align: "center",
   });
 
-  doc.text(`${totalGST.toFixed(2)}`, startX + 275, summaryY + 17, {
-    width: 90,
-    align: "center",
-  });
+  doc.text(
+    `${RUPEE_SYMBOL} ${totalGST.toFixed(2)}`,
+    startX + 275,
+    summaryY + 17,
+    {
+      width: 90,
+      align: "center",
+    },
+  );
 
   doc.text("GRAND TOTAL", startX + 405, summaryY + 5, {
     width: 90,
     align: "center",
   });
 
-  doc.text(`${grandTotal.toFixed(2)}`, startX + 405, summaryY + 17, {
-    width: 90,
-    align: "center",
-  });
+  doc.text(
+    `${RUPEE_SYMBOL} ${grandTotal.toFixed(2)}`,
+    startX + 405,
+    summaryY + 17,
+    {
+      width: 90,
+      align: "center",
+    },
+  );
 
   currentY += 45;
 

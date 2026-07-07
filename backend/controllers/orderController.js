@@ -4110,7 +4110,13 @@ export const getBuyerOrders = async (req, res) => {
 
     if (filter !== "all") {
       orders = orders.filter((order) => {
-        const shipments = order.shipments || [];
+        const shipments = (order.shipments || []).filter(
+          (shipment) =>
+            shipment.shipmentStatus === "shipped" ||
+            shipment.shipmentStatus === "in_transit" ||
+            shipment.shipmentStatus === "delivered" ||
+            shipment.shipmentStatus === "completed"
+        );
 
         const totalShippedQuantity = shipments.reduce(
           (total, shipment) => total + Number(shipment.shippedQuantity || 0),

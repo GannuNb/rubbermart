@@ -7,7 +7,9 @@ import {
   FaArrowRight,
   FaCheckCircle,
 } from "react-icons/fa";
+
 import { useNavigate, useParams } from "react-router-dom";
+
 import { useDispatch, useSelector } from "react-redux";
 
 import { getBuyerSingleOrderThunk } from "../../redux/slices/buyerOrderThunk";
@@ -16,6 +18,7 @@ import styles from "../../styles/Buyer/BuyerShippingInvoices.module.css";
 
 const BuyerShippingInvoices = () => {
   const navigate = useNavigate();
+
   const dispatch = useDispatch();
 
   const { orderId, itemName } = useParams();
@@ -67,7 +70,9 @@ const BuyerShippingInvoices = () => {
   }
 
   /* =========================
-     FILTER SHIPMENTS (NO ADMIN FILTER)
+     FILTER SHIPMENTS
+     SHOW ONLY AFTER
+     TRANSPORT STARTS
   ========================= */
 
   const shipments =
@@ -76,7 +81,18 @@ const BuyerShippingInvoices = () => {
 
       const currentItem = decodeURIComponent(itemName)?.trim()?.toLowerCase();
 
-      return shipmentItem === currentItem;
+      const allowedStatuses = [
+        "assigned",
+        "shipped",
+        "in_transit",
+        "delivered",
+        "completed",
+      ];
+
+      return (
+        shipmentItem === currentItem &&
+        allowedStatuses.includes(shipment?.shipmentStatus)
+      );
     }) || [];
 
   shipments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -102,6 +118,7 @@ const BuyerShippingInvoices = () => {
 
           <div className={styles.orderIdBox}>
             <span>Order ID</span>
+
             <strong>{order?.orderId || orderId}</strong>
           </div>
         </div>
@@ -110,7 +127,7 @@ const BuyerShippingInvoices = () => {
       {/* SHIPMENT LIST */}
 
       {shipments.length === 0 ? (
-        <div className={styles.empty}>No shipment invoices found</div>
+        <div className={styles.empty}>No shipment invoices available yet</div>
       ) : (
         <div className={styles.invoiceList}>
           {shipments.map((shipment) => (
@@ -125,6 +142,8 @@ const BuyerShippingInvoices = () => {
               style={{ cursor: "pointer" }}
             >
               <div className={styles.cardLeft}>
+                {/* INVOICE */}
+
                 <div className={styles.infoBlock}>
                   <div className={styles.iconBox}>
                     <FaFileInvoice />
@@ -132,9 +151,12 @@ const BuyerShippingInvoices = () => {
 
                   <div>
                     <p className={styles.label}>Invoice ID</p>
+
                     <h4>{shipment?.shipmentInvoiceId || "-"}</h4>
                   </div>
                 </div>
+
+                {/* DATE */}
 
                 <div className={styles.infoBlock}>
                   <div className={styles.iconBox}>
@@ -154,6 +176,8 @@ const BuyerShippingInvoices = () => {
                   </div>
                 </div>
 
+                {/* ITEM */}
+
                 <div className={styles.infoBlock}>
                   <div className={styles.iconBox}>
                     <FaBoxOpen />
@@ -161,6 +185,7 @@ const BuyerShippingInvoices = () => {
 
                   <div>
                     <p className={styles.label}>Item</p>
+
                     <h4>{shipment?.selectedItem || "-"}</h4>
                   </div>
                 </div>
@@ -184,23 +209,23 @@ const BuyerShippingInvoices = () => {
                           : styles.inTransitStatus
                       }
                     >
-                      {shipment?.shipmentStatus === "packed"
-                        ? "Packed"
-                        : shipment?.shipmentStatus === "assigned"
-                          ? "Transporter Assigned"
-                          : shipment?.shipmentStatus === "shipped"
-                            ? "Shipped"
-                            : shipment?.shipmentStatus === "in_transit"
-                              ? "In Transit"
-                              : ["delivered", "completed"].includes(
-                                    shipment?.shipmentStatus,
-                                  )
-                                ? "Delivered"
-                                : shipment?.shipmentStatus || "Pending"}
+                      {shipment?.shipmentStatus === "assigned"
+                        ? "Transporter Assigned / Shipment Not Started"
+                        : shipment?.shipmentStatus === "shipped"
+                          ? "Shipped"
+                          : shipment?.shipmentStatus === "in_transit"
+                            ? "In Transit"
+                            : ["delivered", "completed"].includes(
+                                  shipment?.shipmentStatus,
+                                )
+                              ? "Delivered"
+                              : shipment?.shipmentStatus || "Pending"}
                     </h4>
                   </div>
                 </div>
               </div>
+
+              {/* BUTTON */}
 
               <div className={styles.viewButton}>
                 View Details

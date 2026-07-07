@@ -2,6 +2,8 @@
 
 import { invoiceColors } from "../styles.js";
 import { numberToWordsIndian } from "../../mathHelpers.js";
+import { RUPEE_SYMBOL } from "../rupee.js";
+import { boldFont } from "../fonts.js";
 
 const { primaryPurple, lightPurple, darkPurple } = invoiceColors;
 
@@ -30,10 +32,10 @@ export const drawSummarySection = (doc, order, currentY) => {
 
   doc
     .fillColor("#ffffff")
-    .font("Helvetica-Bold")
+    .font(boldFont)
     .fontSize(9)
     .text(
-      `Total Amount In words : ${amountText}`,
+      `Total Amount In Words (${RUPEE_SYMBOL}) : ${amountText}`,
       55,
       summaryTop + 18,
       {

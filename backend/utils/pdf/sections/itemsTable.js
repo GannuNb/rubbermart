@@ -1,4 +1,9 @@
+// backend/utils/pdf/sections/itemsTable.js
+
 import { invoiceColors } from "../styles.js";
+import { regularFont, boldFont } from "../fonts.js";
+import { RUPEE_SYMBOL } from "../rupee.js";
+
 const { primaryPurple, borderColor, darkText } = invoiceColors;
 
 export const drawItemsTable = (doc, order, startY) => {
@@ -21,7 +26,7 @@ export const drawItemsTable = (doc, order, startY) => {
 
   // 1. Draw Table Header
   doc.rect(startX, currentY, tableWidth, headerHeight).fill(primaryPurple);
-  doc.fillColor("#ffffff").font("Helvetica-Bold").fontSize(8);
+  doc.fillColor("#ffffff").font(boldFont).fontSize(8);
   
   doc.text("S.NO", colX.sno + 7, currentY + 7);
   doc.text("Item Name", colX.item + 10, currentY + 7);
@@ -42,7 +47,7 @@ export const drawItemsTable = (doc, order, startY) => {
     const itemName = item.application || item.name || "-";
 
     // --- DYNAMIC HEIGHT CALCULATION ---
-    doc.font("Helvetica").fontSize(8);
+    doc.font(regularFont).fontSize(8);
     const itemNameHeight = doc.heightOfString(itemName, { width: colX.qty - colX.item - 15 });
     const dynamicRowHeight = Math.max(itemNameHeight + 15, 30); // Minimum 30px height
 
@@ -60,10 +65,14 @@ export const drawItemsTable = (doc, order, startY) => {
     doc.text(index + 1, colX.sno + 12, currentY + 10);
     doc.text(itemName, colX.item + 8, currentY + 10, { width: colX.qty - colX.item - 15 });
     doc.text(item.requiredQuantity, colX.qty, currentY + 10, { width: colX.price - colX.qty, align: "center" });
-    doc.text(Number(item.pricePerMT || 0).toFixed(2), colX.price, currentY + 10, { width: colX.subtotal - colX.price, align: "center" });
-    doc.text(Number(item.subtotal || 0).toFixed(2), colX.subtotal, currentY + 10, { width: colX.tax - colX.subtotal, align: "center" });
-    doc.text(tax.toFixed(2), colX.tax, currentY + 10, { width: colX.total - colX.tax, align: "center" });
-    doc.text(total.toFixed(2), colX.total + 10, currentY + 10);
+    doc.text(
+  `${RUPEE_SYMBOL} ${Number(item.pricePerMT || 0).toFixed(2)}`, colX.price, currentY + 10, { width: colX.subtotal - colX.price, align: "center" });
+    doc.text(
+  `${RUPEE_SYMBOL} ${Number(item.subtotal || 0).toFixed(2)}`, colX.subtotal, currentY + 10, { width: colX.tax - colX.subtotal, align: "center" });
+    doc.text(
+  `${RUPEE_SYMBOL} ${tax.toFixed(2)}`, colX.tax, currentY + 10, { width: colX.total - colX.tax, align: "center" });
+    doc.text(
+  `${RUPEE_SYMBOL} ${total.toFixed(2)}`, colX.total + 10, currentY + 10);
 
     currentY += dynamicRowHeight;
   });

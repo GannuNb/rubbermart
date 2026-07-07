@@ -1,4 +1,7 @@
 import { invoiceColors } from "../styles.js";
+import { RUPEE_SYMBOL } from "../rupee.js";
+import { regularFont, boldFont } from "../fonts.js";
+
 const { borderColor, darkText } = invoiceColors;
 
 export const drawTotalsSection = (doc, order, currentY) => {
@@ -22,7 +25,7 @@ export const drawTotalsSection = (doc, order, currentY) => {
 
   doc
     .fillColor(darkText)
-    .font("Helvetica-Bold");
+    .font(boldFont);
 
   /* =========================
      CGST + SGST
@@ -40,7 +43,7 @@ export const drawTotalsSection = (doc, order, currentY) => {
 
       .fontSize(7.5)
       .text(
-        Number(order.taxableAmount || 0).toFixed(2),
+        `${RUPEE_SYMBOL} ${Number(order.taxableAmount || 0).toFixed(2)}`,
         282,
         currentY + 35,
         {
@@ -57,7 +60,7 @@ export const drawTotalsSection = (doc, order, currentY) => {
 
       .fontSize(7.5)
       .text(
-        Number(order.gstAmount || 0).toFixed(2),
+        `${RUPEE_SYMBOL} ${Number(order.gstAmount || 0).toFixed(2)}`,
         345,
         currentY + 35,
         {
@@ -75,7 +78,7 @@ export const drawTotalsSection = (doc, order, currentY) => {
 
       .fontSize(8.5)
       .text(
-        Number(order.totalAmount || 0).toFixed(2),
+        `${RUPEE_SYMBOL} ${Number(order.totalAmount || 0).toFixed(2)}`,
         432,
         currentY + 35,
         {
@@ -101,7 +104,7 @@ export const drawTotalsSection = (doc, order, currentY) => {
 
       .fontSize(7.5)
       .text(
-        Number(order.taxableAmount || 0).toFixed(2),
+        `${RUPEE_SYMBOL} ${Number(order.taxableAmount || 0).toFixed(2)}`,
         282,
         currentY + 35,
         {
@@ -118,7 +121,7 @@ export const drawTotalsSection = (doc, order, currentY) => {
 
       .fontSize(7.5)
       .text(
-        Number(order.igstAmount || 0).toFixed(2),
+        `${RUPEE_SYMBOL} ${Number(order.igstAmount || 0).toFixed(2)}`,
         345,
         currentY + 35,
         {
@@ -136,7 +139,7 @@ export const drawTotalsSection = (doc, order, currentY) => {
 
       .fontSize(8.5)
       .text(
-        Number(order.totalAmount || 0).toFixed(2),
+        `${RUPEE_SYMBOL} ${Number(order.totalAmount || 0).toFixed(2)}`,
         432,
         currentY + 35,
         {

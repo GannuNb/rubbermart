@@ -1,6 +1,14 @@
 // backend/utils/pdf/shipping/sections/summarySection.js
 
 import { numberToWordsIndian } from "../../../mathHelpers.js";
+import { RUPEE_SYMBOL } from "../../rupee.js";
+
+import path from "path";
+const boldFont = path.join(
+  process.cwd(),
+  "fonts",
+  "NotoSans-Bold.ttf"
+);
 
 export const drawSummarySection = (
   doc,
@@ -44,11 +52,11 @@ export const drawSummarySection = (
 
   doc
     .fillColor("#ffffff")
-    .font("Helvetica-Bold")
+    .font(boldFont)
     .fontSize(8);
 
   doc.text(
-    `Amount In Words : ${words}`,
+    `Amount In Words (${RUPEE_SYMBOL}) : ${words}`,
     45,
     summaryTop + 10,
     {

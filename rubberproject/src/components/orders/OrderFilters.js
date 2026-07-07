@@ -46,7 +46,7 @@ function OrderFilters({ activeFilter, setActiveFilter }) {
         }`}
         onClick={(e) => handleClick("in_progress", e)}
       >
-        In Progress
+        Waiting for Seller
       </button>
 
       <button

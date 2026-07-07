@@ -36,9 +36,16 @@ function OrderItemsSection({ order, onReviewSubmitted }) {
 
   const getItemProgress = (item) => {
     const shipments =
-      order.shipments?.filter(
-        (shipment) => shipment.selectedItem === item.productName,
-      ) || [];
+  order.shipments?.filter(
+    (shipment) =>
+      shipment.selectedItem === item.productName &&
+      (
+        shipment.shipmentStatus === "shipped" ||
+        shipment.shipmentStatus === "in_transit" ||
+        shipment.shipmentStatus === "delivered" ||
+        shipment.shipmentStatus === "completed"
+      )
+  ) || [];
 
     const shippedQty = shipments.reduce(
       (total, shipment) => total + Number(shipment.shippedQuantity || 0),
