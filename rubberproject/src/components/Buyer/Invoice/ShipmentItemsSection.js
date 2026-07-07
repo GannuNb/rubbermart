@@ -11,9 +11,7 @@ const ShipmentItemsSection = ({ shipment, order }) => {
   /* =========================
       ACCORDION STATES
   ========================= */
-  const [isProductOpen, setIsProductOpen] = useState(true);
-  const [isTransportOpen, setIsTransportOpen] = useState(true);
-  const [isSummaryOpen, setIsSummaryOpen] = useState(true);
+  const [isTransportOpen, setIsTransportOpen] = useState(false);
 
   /* =========================
       IMAGE
@@ -36,9 +34,8 @@ const ShipmentItemsSection = ({ shipment, order }) => {
       );
     }
 
-    return `data:${
-      matchedItem.productImage.contentType || "image/jpeg"
-    };base64,${base64}`;
+    return `data:${matchedItem.productImage.contentType || "image/jpeg"
+      };base64,${base64}`;
   };
 
   /* =========================
@@ -100,87 +97,79 @@ const ShipmentItemsSection = ({ shipment, order }) => {
       ========================= */}
       <div className={styles.itemsCard} style={{ padding: "0", overflow: "hidden" }}>
         {/* HEADER ARRANGE */}
-        <div 
+        <div
           className={styles.cardAccordionHeader}
-          onClick={() => setIsProductOpen(!isProductOpen)}
-          style={{ 
-            display: "flex", 
-            alignItems: "center", 
-            justifyContent: "space-between", 
-            padding: "22px", 
-            cursor: "pointer", 
-            userSelect: "none" 
+          style={{
+            display: "flex",
+            alignItems: "center",
+            padding: "22px",
           }}
         >
           <div className={styles.itemsHeader} style={{ margin: "0" }}>
             <FaBoxOpen className={styles.itemsIcon} />
             <h3 className={styles.sectionTitle}>Product Invoice</h3>
           </div>
-          
-          <div className={`${styles.toggleIconBtn} ${isProductOpen ? styles.activeToggle : ""}`}>
-            {isProductOpen ? "−" : "+"}
-          </div>
+
         </div>
 
         {/* CONTAINER WORK */}
-        {isProductOpen && (
-          <div style={{ padding: "0 22px 22px 22px" }}>
-            <div className={styles.tableWrapper}>
-              <div className={styles.tableHeader}>
-                <div>Product</div>
-                <div>Ordered Qty</div>
-                <div>Shipped Qty</div>
-                <div>Price / MT</div>
-                <div>Taxable Amount</div>
-                {productGSTType === "igst" ? (
-                  <div>IGST 18%</div>
-                ) : (
-                  <>
-                    <div>CGST 9%</div>
-                    <div>SGST 9%</div>
-                  </>
-                )}
-                <div>Total Amount</div>
+        <div style={{ padding: "0 22px 22px 22px" }}>
+          <div className={styles.tableWrapper}>
+            <div className={styles.tableHeader}>
+              <div>Product</div>
+              <div>Ordered Qty</div>
+              <div>Shipped Qty</div>
+              <div>Price / MT</div>
+              <div>Taxable Amount</div>
+              {productGSTType === "igst" ? (
+                <div>IGST 18%</div>
+              ) : (
+                <>
+                  <div>CGST 9%</div>
+                  <div>SGST 9%</div>
+                </>
+              )}
+              <div>Total Amount</div>
+            </div>
+
+            <div className={styles.tableRow}>
+              <div className={styles.itemDetails}>
+                <img src={getImage()} alt="product" className={styles.itemImage} />
+                <div>
+                  <h4>{shipment?.selectedItem || "-"}</h4>
+                  <p>{matchedItem?.loadingLocation || "-"}</p>
+                </div>
               </div>
 
-              <div className={styles.tableRow}>
-                <div className={styles.itemDetails}>
-                  <img src={getImage()} alt="product" className={styles.itemImage} />
-                  <div>
-                    <h4>{shipment?.selectedItem || "-"}</h4>
-                    <p>{matchedItem?.loadingLocation || "-"}</p>
-                  </div>
-                </div>
+              <div className={styles.centerCell}>{matchedItem?.requiredQuantity || 0} MT</div>
+              <div className={styles.centerCell}>{shippedQty} MT</div>
+              <div className={styles.centerCell}>₹ {pricePerMT.toLocaleString("en-IN")}</div>
+              <div className={styles.centerCell}>
+                ₹ {productTaxable.toLocaleString("en-IN", { maximumFractionDigits: 2 })}
+              </div>
 
-                <div className={styles.centerCell}>{matchedItem?.requiredQuantity || 0} MT</div>
-                <div className={styles.centerCell}>{shippedQty} MT</div>
-                <div className={styles.centerCell}>₹ {pricePerMT.toLocaleString("en-IN")}</div>
+              {productGSTType === "igst" ? (
                 <div className={styles.centerCell}>
-                  ₹ {productTaxable.toLocaleString("en-IN", { maximumFractionDigits: 2 })}
+                  ₹ {productIGST.toLocaleString("en-IN", { maximumFractionDigits: 2 })}
                 </div>
-
-                {productGSTType === "igst" ? (
+              ) : (
+                <>
                   <div className={styles.centerCell}>
-                    ₹ {productIGST.toLocaleString("en-IN", { maximumFractionDigits: 2 })}
+                    ₹ {productCGST.toLocaleString("en-IN", { maximumFractionDigits: 2 })}
                   </div>
-                ) : (
-                  <>
-                    <div className={styles.centerCell}>
-                      ₹ {productCGST.toLocaleString("en-IN", { maximumFractionDigits: 2 })}
-                    </div>
-                    <div className={styles.centerCell}>
-                      ₹ {productSGST.toLocaleString("en-IN", { maximumFractionDigits: 2 })}
-                    </div>
-                  </>
-                )}
+                  <div className={styles.centerCell}>
+                    ₹ {productSGST.toLocaleString("en-IN", { maximumFractionDigits: 2 })}
+                  </div>
+                </>
+              )}
 
-                <div className={styles.totalAmountCell}>
-                  ₹ {productTotal.toLocaleString("en-IN", { maximumFractionDigits: 2 })}
-                </div>
+              <div className={styles.totalAmountCell}>
+                ₹ {productTotal.toLocaleString("en-IN", { maximumFractionDigits: 2 })}
               </div>
             </div>
           </div>
-        )}
+        </div>
+
       </div>
 
       {/* =========================
@@ -188,23 +177,23 @@ const ShipmentItemsSection = ({ shipment, order }) => {
       ========================= */}
       <div className={styles.itemsCard} style={{ padding: "0", overflow: "hidden" }}>
         {/* HEADER ARRANGE */}
-        <div 
+        <div
           className={styles.cardAccordionHeader}
           onClick={() => setIsTransportOpen(!isTransportOpen)}
-          style={{ 
-            display: "flex", 
-            alignItems: "center", 
-            justifyContent: "space-between", 
-            padding: "22px", 
-            cursor: "pointer", 
-            userSelect: "none" 
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "22px",
+            cursor: "pointer",
+            userSelect: "none"
           }}
         >
           <div className={styles.itemsHeader} style={{ margin: "0" }}>
             <FaTruck className={styles.itemsIcon} />
             <h3 className={styles.sectionTitle}>Transport Invoice</h3>
           </div>
-          
+
           <div className={`${styles.toggleIconBtn} ${isTransportOpen ? styles.activeToggle : ""}`}>
             {isTransportOpen ? "−" : "+"}
           </div>
@@ -261,32 +250,23 @@ const ShipmentItemsSection = ({ shipment, order }) => {
       ========================= */}
       <div className={styles.invoiceSummaryCard} style={{ padding: "0", overflow: "hidden" }}>
         {/* HEADER ARRANGE */}
-        <div 
+        <div
           className={styles.cardAccordionHeader}
-          onClick={() => setIsSummaryOpen(!isSummaryOpen)}
-          style={{ 
-            display: "flex", 
-            alignItems: "center", 
-            justifyContent: "space-between", 
-            padding: "24px", 
-            cursor: "pointer", 
-            userSelect: "none" 
+          style={{
+            display: "flex",
+            alignItems: "center",
+            padding: "24px",
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <FaFileInvoiceDollar style={{ fontSize: "17px", color: "#6d28d9" }} />
-            <h3 style={{ margin: "0", fontSize: "20px", fontWeight: "700", color: "#111827" }}>
+            <h3 style={{ margin: "0", fontSize: "20px", fontWeight: "700", color: "#101113" }}>
               Invoice Summary
             </h3>
-          </div>
-          
-          <div className={`${styles.toggleIconBtn} ${isSummaryOpen ? styles.activeToggle : ""}`}>
-            {isSummaryOpen ? "−" : "+"}
           </div>
         </div>
 
         {/* CONTAINER WORK */}
-        {isSummaryOpen && (
           <div style={{ padding: "0 24px 24px 24px" }}>
             <div className={styles.summaryRow}>
               <span>Product Total</span>
@@ -303,7 +283,7 @@ const ShipmentItemsSection = ({ shipment, order }) => {
               <span>₹ {grandTotal.toLocaleString("en-IN")}</span>
             </div>
           </div>
-        )}
+        
       </div>
     </div>
   );

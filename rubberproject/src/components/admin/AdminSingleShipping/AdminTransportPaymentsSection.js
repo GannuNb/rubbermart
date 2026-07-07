@@ -71,10 +71,10 @@ const AdminTransportPaymentsSection = ({ shipment, order }) => {
   /* =========================
       NESTED DROPDOWN ACCORDION STATES
   ========================= */
-  const [isMainOpen, setIsMainOpen] = useState(true); 
+  const [isMainOpen, setIsMainOpen] = useState(false); 
   const [isFormOpen, setIsFormOpen] = useState(false); 
-  const [isBuyerHistoryOpen, setIsBuyerHistoryOpen] = useState(true); 
-  const [isTransporterHistoryOpen, setIsTransporterHistoryOpen] = useState(true); 
+  const [isBuyerHistoryOpen, setIsBuyerHistoryOpen] = useState(false); 
+  const [isTransporterHistoryOpen, setIsTransporterHistoryOpen] = useState(false); 
 
   /* =========================
       VERIFY / REJECT

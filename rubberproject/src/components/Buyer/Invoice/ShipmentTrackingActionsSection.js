@@ -15,8 +15,8 @@ const ShipmentTrackingActionsSection = ({ shipment, order }) => {
   /* =========================
       ACCORDION STATES
   ========================= */
-  const [isOpen, setIsOpen] = useState(true);
-  const [isActionsOpen, setIsActionsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isActionsOpen, setIsActionsOpen] = useState(false);
 
   /* =========================
       WEIGHT TICKET

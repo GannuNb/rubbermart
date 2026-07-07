@@ -28,11 +28,9 @@ const Sellerordermanage = () => {
   const [cancellationReason, setCancellationReason] = useState("");
 
   // Accordion open/close states
-  const [isOrderInfoOpen, setIsOrderInfoOpen] = useState(true);
-  const [isAddressOpen, setIsAddressOpen] = useState(true);
-  const [isProductsOpen, setIsProductsOpen] = useState(true);
-  const [isPaymentOpen, setIsPaymentOpen] = useState(true);    // New: Defaults open
-  const [isShipmentOpen, setIsShipmentOpen] = useState(true);  // New: Defaults open
+  const [isAddressOpen, setIsAddressOpen] = useState(false);
+  const [isPaymentOpen, setIsPaymentOpen] = useState(false);    // New: Defaults open
+  const [isShipmentOpen, setIsShipmentOpen] = useState(false);  // New: Defaults open
 
   const [alert, setAlert] = useState({
     show: false,
@@ -220,18 +218,13 @@ const Sellerordermanage = () => {
       <div className={styles.section}>
         <div 
           className={styles.dropdownHeader} 
-          onClick={() => setIsOrderInfoOpen(!isOrderInfoOpen)}
         >
           <h2 className={styles.sectionTitle}>
             <FiShoppingBag className={styles.sectionIcon} />
             Order Information
           </h2>
-          <span className={`${styles.toggleIcon} ${isOrderInfoOpen ? styles.iconActive : ""}`}>
-            {isOrderInfoOpen ? "−" : "+"}
-          </span>
         </div>
 
-        {isOrderInfoOpen && (
           <div className={styles.dropdownContent}>
             <div className={styles.infoGrid}>
               <div className={styles.infoItem}>
@@ -262,7 +255,7 @@ const Sellerordermanage = () => {
               </div>
             </div>
           </div>
-        )}
+       
       </div>
 
       {/* Shipping Address Section */}
@@ -293,18 +286,13 @@ const Sellerordermanage = () => {
       <div ref={productsRef} className={styles.section}>
         <div 
           className={styles.dropdownHeader} 
-          onClick={() => setIsProductsOpen(!isProductsOpen)}
         >
           <h2 className={styles.sectionTitle}>
             <FiBox className={styles.sectionIcon} />
             Products
           </h2>
-          <span className={`${styles.toggleIcon} ${isProductsOpen ? styles.iconActive : ""}`}>
-            {isProductsOpen ? "−" : "+"}
-          </span>
         </div>
 
-        {isProductsOpen && (
           <div className={styles.dropdownContent}>
             <div className={styles.productsGrid}>
               {selectedOrder.orderItems?.map((item, index) => {
@@ -388,7 +376,7 @@ const Sellerordermanage = () => {
               })}
             </div>
           </div>
-        )}
+        
       </div>
 
       {/* Payment Section - Handled via clean Section Structure wrappers */}
