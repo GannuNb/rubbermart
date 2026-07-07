@@ -11,27 +11,20 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-
   gap: 16px;
-
   margin-bottom: 20px;
 }
 
 .topBar h2 {
   font-size: 30px;
-
   font-weight: 800;
-
   color: #111827;
-
   margin-bottom: 6px;
 }
 
 .topBar p {
-  font-size: 14px;
-
+  font-size: 16px;
   color: #64748b;
-
   margin: 0;
 }
 
@@ -41,36 +34,24 @@
 
 .viewAllBtn {
   height: 44px;
-
   padding: 0 18px;
-
   border-radius: 12px;
-
   background: #7c3aed;
-
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
   text-decoration: none;
-
   color: white;
-
   font-size: 14px;
   font-weight: 700;
-
   transition: 0.3s ease;
-
   flex-shrink: 0;
 }
 
 .viewAllBtn:hover {
   background: #6d28d9;
-
   color: white;
-
   text-decoration: none;
-
   transform: translateY(-2px);
 }
 
@@ -80,18 +61,11 @@
 
 .tableCard {
   background: white;
-
   border-radius: 24px;
-
   padding: 22px;
-
   border: 1px solid #eef2f7;
-
-  box-shadow:
-    0 10px 30px rgba(15, 23, 42, 0.05);
-
+  box-shadow:0 10px 30px rgba(15, 23, 42, 0.05);
   overflow: hidden;
-
   width: 100%;
 }
 
@@ -101,25 +75,19 @@
 
 .tableWrapper {
   width: 100%;
-
   overflow-x: auto;
-
   overflow-y: hidden;
-
   -webkit-overflow-scrolling: touch;
-
   border-radius: 14px;
 }
 
 /* CUSTOM SCROLLBAR */
-
 .tableWrapper::-webkit-scrollbar {
   height: 6px;
 }
 
 .tableWrapper::-webkit-scrollbar-thumb {
   background: #d1d5db;
-
   border-radius: 999px;
 }
 
@@ -129,9 +97,7 @@
 
 .table {
   width: 100%;
-
   border-collapse: collapse;
-
   min-width: 720px;
 }
 
@@ -141,31 +107,20 @@
 
 .table th {
   text-align: left;
-
   padding: 15px 12px;
-
-  font-size: 13px;
-
+  font-size: 16px;
   font-weight: 700;
-
   color: #64748b;
-
   white-space: nowrap;
 }
 
 .table td {
   padding: 16px 12px;
-
-  font-size: 14px;
-
+  font-size: 16px;
   font-weight: 600;
-
   color: #111827;
-
   border-bottom: 1px solid #f8fafc;
-
   vertical-align: middle;
-
   white-space: nowrap;
 }
 
@@ -182,20 +137,15 @@
 ========================= */
 
 .buyerInfo h4 {
-  font-size: 14px;
-
+  font-size: 18px;
   font-weight: 700;
-
   color: #111827;
-
   margin-bottom: 4px;
 }
 
 .buyerInfo p {
-  font-size: 12px;
-
+  font-size: 16px;
   color: #64748b;
-
   margin: 0;
 }
 
@@ -207,14 +157,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
   padding: 8px 14px;
-
   border-radius: 999px;
-
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
-
   text-transform: capitalize;
 }
 
@@ -222,31 +168,26 @@
 
 .completed {
   background: rgba(34, 197, 94, 0.12);
-
   color: #16a34a;
 }
 
 .pending {
   background: rgba(249, 115, 22, 0.12);
-
   color: #f97316;
 }
 
 .partial {
   background: rgba(37, 99, 235, 0.12);
-
   color: #2563eb;
 }
 
 .cancelled {
   background: rgba(239, 68, 68, 0.12);
-
   color: #dc2626;
 }
 
 .default {
   background: rgba(124, 58, 237, 0.12);
-
   color: #7c3aed;
 }
 
@@ -257,14 +198,11 @@
 .loading,
 .empty {
   height: 220px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   font-size: 18px;
   font-weight: 700;
-
   color: #64748b;
 }
 
@@ -293,7 +231,6 @@
 @media (max-width: 768px) {
   .topBar {
     flex-direction: column;
-
     align-items: flex-start;
   }
 
@@ -303,7 +240,6 @@
 
   .tableCard {
     padding: 16px;
-
     border-radius: 20px;
   }
 
@@ -313,26 +249,22 @@
 
   .table th {
     font-size: 12px;
-
     padding: 14px 10px;
   }
 
   .table td {
     font-size: 13px;
-
     padding: 15px 10px;
   }
 
   .status {
     padding: 7px 12px;
-
     font-size: 11px;
   }
 
   .loading,
   .empty {
     height: 180px;
-
     font-size: 16px;
   }
 }
@@ -369,4 +301,4 @@
   .status {
     font-size: 10px;
   }
-}
+} 

@@ -7,8 +7,8 @@ const DriverShipmentSummarySection = ({ shipment }) => {
   const transporter = shipment?.assignedTransporter;
 
   // Independent state management for both accordion modules
-  const [isTransporterOpen, setIsTransporterOpen] = useState(true);
-  const [isSummaryOpen, setIsSummaryOpen] = useState(true);
+  const [isTransporterOpen, setIsTransporterOpen] = useState(false);
+  const [isSummaryOpen, setIsSummaryOpen] = useState(false);
 
   return (
     <div className={styles.driverSummaryWrapper}>

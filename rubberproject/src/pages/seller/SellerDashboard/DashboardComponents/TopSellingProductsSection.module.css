@@ -12,19 +12,14 @@
 
 .topBar h2 {
   font-size: 26px;
-
   font-weight: 800;
-
   color: #111827;
-
   margin-bottom: 6px;
 }
 
 .topBar p {
-  font-size: 14px;
-
+  font-size: 16px;
   color: #64748b;
-
   margin: 0;
 }
 
@@ -34,16 +29,10 @@
 
 .card {
   background: white;
-
   border-radius: 24px;
-
   padding: 22px;
-
   border: 1px solid #eef2f7;
-
-  box-shadow:
-    0 10px 30px rgba(15, 23, 42, 0.05);
-
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
   min-height: 420px;
 }
 
@@ -54,7 +43,6 @@
 .productsList {
   display: flex;
   flex-direction: column;
-
   gap: 18px;
 }
 
@@ -66,17 +54,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   gap: 16px;
-
   padding-bottom: 18px;
-
   border-bottom: 1px solid #f1f5f9;
 }
 
 .productItem:last-child {
   border-bottom: none;
-
   padding-bottom: 0;
 }
 
@@ -87,9 +71,7 @@
 .leftContent {
   display: flex;
   align-items: center;
-
   gap: 14px;
-
   flex: 1;
 }
 
@@ -100,28 +82,16 @@
 .rankBadge {
   width: 48px;
   height: 48px;
-
   min-width: 48px;
-
   border-radius: 16px;
-
-  background: linear-gradient(
-    135deg,
-    #7c3aed,
-    #2563eb
-  );
-
+  background: linear-gradient(135deg,#7c3aed,#2563eb);
   display: flex;
   align-items: center;
   justify-content: center;
-
   color: white;
-
   font-size: 18px;
   font-weight: 800;
-
-  box-shadow:
-    0 10px 20px rgba(124, 58, 237, 0.25);
+  box-shadow: 0 10px 20px rgba(124, 58, 237, 0.25);
 }
 
 /* =========================
@@ -130,19 +100,14 @@
 
 .productInfo h4 {
   font-size: 16px;
-
   font-weight: 700;
-
   color: #111827;
-
   margin-bottom: 6px;
 }
 
 .productInfo p {
   font-size: 13px;
-
   color: #64748b;
-
   margin: 0;
 }
 
@@ -152,11 +117,8 @@
 
 .revenueBox {
   font-size: 17px;
-
   font-weight: 800;
-
   color: #16a34a;
-
   white-space: nowrap;
 }
 
@@ -167,14 +129,11 @@
 .loading,
 .empty {
   height: 320px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   font-size: 17px;
   font-weight: 700;
-
   color: #64748b;
 }
 
@@ -183,16 +142,13 @@
 ========================= */
 
 @media (max-width: 768px) {
-
   .card {
     min-height: auto;
-
     padding: 18px;
   }
 }
 
 @media (max-width: 576px) {
-
   .topBar h2 {
     font-size: 22px;
   }
@@ -203,18 +159,14 @@
 
   .card {
     border-radius: 20px;
-
     padding: 16px;
   }
 
   .rankBadge {
     width: 42px;
     height: 42px;
-
     min-width: 42px;
-
     border-radius: 14px;
-
     font-size: 16px;
   }
 
@@ -233,7 +185,6 @@
   .loading,
   .empty {
     height: 220px;
-
     font-size: 15px;
   }
 }

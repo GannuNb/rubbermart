@@ -25,7 +25,7 @@ const BuyerTransportPaymentSection = ({ shipment, order }) => {
   /* =========================
       ACCORDION STATE
   ========================= */
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   /* =========================
       FORM STATE

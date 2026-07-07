@@ -11,9 +11,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-
   gap: 18px;
-
   margin-bottom: 20px;
 }
 
@@ -25,7 +23,7 @@
 }
 
 .topBar p {
-  font-size: 14px;
+  font-size: 16px;
   color: #64748b;
   margin: 0;
 }
@@ -36,32 +34,21 @@
 
 .filterSelect {
   height: 46px;
-
   padding: 0 16px;
-
   border-radius: 14px;
-
   border: 1px solid #e2e8f0;
-
   background: white;
-
   font-size: 14px;
   font-weight: 600;
-
   color: #111827;
-
   cursor: pointer;
-
   outline: none;
-
   transition: 0.3s ease;
-
   min-width: 170px;
 }
 
 .filterSelect:focus {
   border-color: #7c3aed;
-
   box-shadow:
     0 0 0 4px rgba(124, 58, 237, 0.10);
 }
@@ -72,18 +59,11 @@
 
 .chartCard {
   background: white;
-
   border-radius: 24px;
-
   padding: 24px;
-
   border: 1px solid #eef2f7;
-
-  box-shadow:
-    0 10px 30px rgba(15, 23, 42, 0.05);
-
+  box-shadow:0 10px 30px rgba(15, 23, 42, 0.05);
   overflow: hidden;
-
   width: 100%;
 }
 
@@ -94,7 +74,6 @@
 .chartWrapper {
   width: 100%;
   height: auto;
-
   margin-bottom: 26px;
 }
 
@@ -104,13 +83,9 @@
 
 .summaryGrid {
   display: grid;
-
   grid-template-columns: repeat(6, minmax(0, 1fr));
-
   gap: 14px;
-
   padding-top: 20px;
-
   border-top: 1px solid #eef2f7;
 }
 
@@ -120,49 +95,33 @@
 
 .summaryCard {
   background: #faf7ff;
-
   border: 1px solid #eee7ff;
-
   border-radius: 16px;
-
   padding: 16px 12px;
-
   text-align: center;
-
   min-width: 0;
-
   transition: 0.25s ease;
 }
 
 .summaryCard:hover {
   transform: translateY(-2px);
-
   border-color: #d8c7ff;
 }
 
 .summaryCard h3 {
   font-size: 28px;
-
   font-weight: 800;
-
   margin-bottom: 6px;
-
   color: #7c3aed;
-
   line-height: 1;
 }
 
 .summaryCard p {
-  font-size: 13px;
-
+  font-size: 16px;
   font-weight: 600;
-
   color: #64748b;
-
   margin: 0;
-
   line-height: 1.4;
-
   word-break: break-word;
 }
 
@@ -196,14 +155,11 @@
 
 .loading {
   height: 420px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   font-size: 18px;
   font-weight: 700;
-
   color: #64748b;
 }
 
@@ -213,16 +169,12 @@
 
 .recharts-default-tooltip {
   border-radius: 14px !important;
-
   border: none !important;
-
-  box-shadow:
-    0 10px 30px rgba(15, 23, 42, 0.12) !important;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12) !important;
 }
 
 .recharts-tooltip-label {
   color: #111827 !important;
-
   font-weight: 700 !important;
 }
 
@@ -232,13 +184,11 @@
 
 .recharts-cartesian-axis-tick-value {
   fill: #64748b;
-
   font-size: 13px;
 }
 
 .recharts-legend-item-text {
   color: #111827 !important;
-
   font-size: 14px;
   font-weight: 600;
 }
@@ -274,7 +224,6 @@
 @media (max-width: 768px) {
   .topBar {
     flex-direction: column;
-
     align-items: flex-start;
   }
 
@@ -284,31 +233,24 @@
 
   .chartCard {
     padding: 18px;
-
     border-radius: 20px;
   }
 
   .summaryGrid {
     grid-template-columns: 1fr;
-
     gap: 12px;
   }
 
   .summaryCard {
     text-align: left;
-
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
-
     padding: 16px;
   }
 
   .summaryCard h3 {
     font-size: 26px;
-
     margin-bottom: 0;
   }
 
@@ -318,7 +260,6 @@
 
   .loading {
     height: 300px;
-
     font-size: 16px;
   }
 }
