@@ -1,42 +1,75 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FaFilter, FaSearch } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchLoadingLocations } from "../../redux/slices/loadingLocationsThunk";
 import styles from "../../styles/Buyer/ProductFilters.module.css";
 
 function ProductFilters({ filters, setFilters }) {
+  const dispatch = useDispatch();
+
+  const { loadingLocations = [], loadingLocationsLoading } = useSelector(
+    (state) => state.buyerProducts,
+  );
+
   const categoryOptions = ["Tyre Scrap", "Pyro Oil", "Tyre Steel Scrap"];
 
   const applicationOptions = {
-
-    "Tyre Scrap": ["Baled Tyres PCR", "Baled Tyres TBR", "Three Piece PCR", "Three Piece TBR", "Shreds", "PCR Mulch", "Rubber Granules/Crumb"],
+    "Tyre Scrap": [
+      "Baled Tyres PCR",
+      "Baled Tyres TBR",
+      "Three Piece PCR",
+      "Three Piece TBR",
+      "Shreds",
+      "PCR Mulch",
+      "Rubber Granules/Crumb",
+    ],
     "Pyro Oil": ["Pyro Oil"],
     "Tyre Steel Scrap": ["Rubber Crumb Steel", "Pyro Steel"],
-
   };
 
   const availableApplications = filters.category
     ? applicationOptions[filters.category] || []
+    : [
+        "Baled Tyres PCR",
+        "Baled Tyres TBR",
+        "Three Piece PCR",
+        "Three Piece TBR",
+        "Shreds",
+        "PCR Mulch",
+        "Rubber Granules/Crumb",
+        "Pyro Oil",
+        "Pyro Steel",
+        "Rubber Crumb Steel",
+      ];
 
-    : ["Baled Tyres PCR", "Baled Tyres TBR", "Three Piece PCR", "Three Piece TBR", "Shreds", "PCR Mulch", "Rubber Granules/Crumb", "Pyro Oil", "Pyro Steel", "Rubber Crumb Steel"];
+  useEffect(() => {
+    if (loadingLocations.length === 0 && !loadingLocationsLoading) {
+      dispatch(fetchLoadingLocations());
+    }
+  }, [dispatch, loadingLocations.length, loadingLocationsLoading]);
 
   /* =========================
       HANDLE CHANGE
   ========================== */
 
-
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
+
     // Logic for specific fields
     let nextFilters = { ...filters, [name]: value };
 
     if (name === "category") {
       nextFilters = { ...nextFilters, search: "", application: "" };
     } else if (name === "application" || name === "search") {
-      nextFilters = { ...nextFilters, search: name === "search" ? value : "", application: name === "application" ? value : "" };
+      nextFilters = {
+        ...nextFilters,
+        search: name === "search" ? value : "",
+        application: name === "application" ? value : "",
+      };
     }
 
     setFilters(nextFilters);
-    
+
     // Auto-close dropdowns on mobile/desktop by removing focus
     if (e.target.tagName === "SELECT") {
       e.target.blur();
@@ -44,7 +77,15 @@ function ProductFilters({ filters, setFilters }) {
   };
 
   const clearFilters = () => {
-    setFilters({ category: "", application: "", loadingLocation: "", stockStatus: "", minPrice: "", maxPrice: "", search: "" });
+    setFilters({
+      category: "",
+      application: "",
+      loadingLocation: "",
+      stockStatus: "",
+      minPrice: "",
+      maxPrice: "",
+      search: "",
+    });
   };
 
   return (
@@ -56,38 +97,70 @@ function ProductFilters({ filters, setFilters }) {
 
       <div className={styles.searchBox}>
         <FaSearch className={styles.searchIcon} />
-        <input type="text" name="search" placeholder="Search products..." value={filters.search || ""} onChange={handleChange} />
+        <input
+          type="text"
+          name="search"
+          placeholder="Search products..."
+          value={filters.search || ""}
+          onChange={handleChange}
+        />
       </div>
 
       <div className={styles.filterGroup}>
         <label>Category</label>
-        <select name="category" value={filters.category} onChange={handleChange}>
+        <select
+          name="category"
+          value={filters.category}
+          onChange={handleChange}
+        >
           <option value="">All Categories</option>
-          {categoryOptions.map((cat) => <option key={cat} value={cat}>{cat}</option>)}
+          {categoryOptions.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
+          ))}
         </select>
       </div>
 
       <div className={styles.filterGroup}>
         <label>Application</label>
-        <select name="application" value={filters.application} onChange={handleChange}>
+        <select
+          name="application"
+          value={filters.application}
+          onChange={handleChange}
+        >
           <option value="">All Applications</option>
-          {availableApplications.map((app) => <option key={app} value={app}>{app}</option>)}
+          {availableApplications.map((app) => (
+            <option key={app} value={app}>
+              {app}
+            </option>
+          ))}
         </select>
       </div>
 
       <div className={styles.filterGroup}>
         <label>Loading Location</label>
-        <select name="loadingLocation" value={filters.loadingLocation} onChange={handleChange}>
+        <select
+          name="loadingLocation"
+          value={filters.loadingLocation}
+          onChange={handleChange}
+        >
           <option value="">All Locations</option>
-          <option value="Ex Chennai">Ex Chennai</option>
-          <option value="Ex Mundra">Ex Mundra</option>
-          <option value="Ex Nhavasheva">Ex Nhavasheva</option>
+          {loadingLocations.map((location) => (
+            <option key={location} value={location}>
+              {location}
+            </option>
+          ))}
         </select>
       </div>
 
       <div className={styles.filterGroup}>
         <label>Stock Status</label>
-        <select name="stockStatus" value={filters.stockStatus} onChange={handleChange}>
+        <select
+          name="stockStatus"
+          value={filters.stockStatus}
+          onChange={handleChange}
+        >
           <option value="">All Status</option>
           <option value="available">Available</option>
           <option value="soldout">Sold Out</option>
@@ -97,12 +170,26 @@ function ProductFilters({ filters, setFilters }) {
       <div className={styles.priceSection}>
         <label>Price Range (₹ / MT)</label>
         <div className={styles.priceInputs}>
-          <input type="number" name="minPrice" placeholder="Min" value={filters.minPrice || ""} onChange={handleChange} />
-          <input type="number" name="maxPrice" placeholder="Max" value={filters.maxPrice || ""} onChange={handleChange} />
+          <input
+            type="number"
+            name="minPrice"
+            placeholder="Min"
+            value={filters.minPrice || ""}
+            onChange={handleChange}
+          />
+          <input
+            type="number"
+            name="maxPrice"
+            placeholder="Max"
+            value={filters.maxPrice || ""}
+            onChange={handleChange}
+          />
         </div>
       </div>
 
-      <button className={styles.clearBtn} onClick={clearFilters}>Clear Filters</button>
+      <button className={styles.clearBtn} onClick={clearFilters}>
+        Clear Filters
+      </button>
     </div>
   );
 }

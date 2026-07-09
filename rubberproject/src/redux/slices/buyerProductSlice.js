@@ -6,6 +6,7 @@ import {
   fetchRecommendedProducts,
   fetchFeaturedProducts,
 } from "./buyerProductThunk";
+import { fetchLoadingLocations } from "./loadingLocationsThunk";
 
 const initialState = {
   approvedProducts: [],
@@ -19,6 +20,10 @@ const initialState = {
   featuredProducts: [],
   featuredProductsLoading: false,
   featuredProductsError: null,
+
+  loadingLocations: [],
+  loadingLocationsLoading: false,
+  loadingLocationsError: null,
 
   currentPage: 1,
   totalPages: 1,
@@ -85,6 +90,20 @@ const buyerProductSlice = createSlice({
         state.recommendedProductsLoading = false;
 
         state.recommendedProductsError = action.payload;
+      })
+      .addCase(fetchLoadingLocations.pending, (state) => {
+        state.loadingLocationsLoading = true;
+        state.loadingLocationsError = null;
+      })
+
+      .addCase(fetchLoadingLocations.fulfilled, (state, action) => {
+        state.loadingLocationsLoading = false;
+        state.loadingLocations = action.payload;
+      })
+
+      .addCase(fetchLoadingLocations.rejected, (state, action) => {
+        state.loadingLocationsLoading = false;
+        state.loadingLocationsError = action.payload;
       });
   },
 });

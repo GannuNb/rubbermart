@@ -390,3 +390,23 @@ export const getFeaturedProducts = async (req, res) => {
     });
   }
 };
+
+export const getLoadingLocations = async (req, res) => {
+  try {
+    const locations = await Product.distinct("loadingLocation", {
+      status: "approved",
+    });
+
+    return res.status(200).json({
+      success: true,
+      locations: locations.sort(),
+    });
+  } catch (error) {
+    console.log("Get Loading Locations Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch loading locations",
+    });
+  }
+};

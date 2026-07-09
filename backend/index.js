@@ -17,14 +17,14 @@ import sellerDashboardRoutes from "./routes/sellerDashboardRoutes.js";
 import adminDashboardRoutes from "./routes/adminDashboardRoutes.js";
 // 🟢 IMPORTED: Transporter Dashboard Router Module
 import transporterDashboardRoutes from "./routes/transporterDashboardRoutes.js";
+import { startCancelExpiredOrdersCron } from "./cron/cancelExpiredOrders.js";
+
 
 dotenv.config();
-
 const app = express();
-
 connectDB();
-
-
+startCancelExpiredOrdersCron();
+  
 
 app.use(
   cors({
