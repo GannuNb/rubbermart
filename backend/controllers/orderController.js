@@ -10,6 +10,8 @@ import generateShipmentInvoiceId from "../utils/generateShipmentInvoiceId.js";
 import generateShippingInvoicePdf from "../utils/pdf/shipping/generateShippingInvoicePdf.js";
 import generateBuyReportPdf from "../utils/pdf/buyReport/generateBuyReportPdf.js";
 import ShipmentTransportQuote from "../models/ShipmentTransportQuote.js";
+import generateOrderHistoryPdf from "../utils/pdf/orderHistory/generateOrderHistoryPdf.js";
+
 
 //buyer---> MAIN BUYER buyerordercreation
 export const createOrder = async (req, res) => {
@@ -5002,5 +5004,101 @@ export const getOrderDetailsForInvoice = async (req, res) => {
   } catch (error) {
     console.error("Error fetching invoice data:", error);
     res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+export const downloadOrderHistoryPdf = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+
+    const order = await Order.findById(orderId)
+      .populate(
+        "buyer",
+        "fullName email phone businessProfile"
+      )
+      .populate(
+        "seller",
+        "fullName email phone businessProfile"
+      )
+      .populate(
+        "orderItems.product",
+        "productName category"
+      )
+      .populate(
+        "shipments.assignedTransporter",
+        "fullName email phone companyName"
+      )
+      .populate(
+        "buyerPaymentReceipts.uploadedBy",
+        "fullName"
+      )
+      .populate(
+        "buyerPaymentReceipts.verifiedBy",
+        "fullName"
+      )
+      .populate(
+        "sellerPaymentReceipts.uploadedBy",
+        "fullName"
+      )
+      .populate(
+        "sellerPaymentReceipts.verifiedBy",
+        "fullName"
+      )
+      .populate(
+        "shipments.transportPaymentReceipts.uploadedBy",
+        "fullName"
+      )
+      .populate(
+        "shipments.transportPaymentReceipts.verifiedBy",
+        "fullName"
+      )
+      .populate(
+        "shipments.adminTransportPaymentReceipts.uploadedBy",
+        "fullName"
+      )
+      .populate(
+        "shipments.adminTransportPaymentReceipts.verifiedBy",
+        "fullName"
+      );
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    const shipmentQuotes =
+      await ShipmentTransportQuote.find({
+        orderId: order._id,
+      }).populate(
+        "transporter",
+        "fullName phone companyName"
+      );
+
+    const pdfBuffer =
+      await generateOrderHistoryPdf(
+        order,
+        shipmentQuotes,
+      );
+
+    res.setHeader(
+      "Content-Type",
+      "application/pdf",
+    );
+
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=Order_History_${order.orderId}.pdf`,
+    );
+
+    res.send(pdfBuffer);
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to generate Order History PDF",
+    });
   }
 };

@@ -2,8 +2,6 @@
 
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { PDFDownloadLink } from "@react-pdf/renderer"; // Added
-import OrderHistoryPDF from "./OrderHistoryPDF"; // Added
 
 import {
   FaFileInvoice,
@@ -83,6 +81,53 @@ const AdminOrdersTable = ({ orders }) => {
     } catch (error) {
       console.log("Image Conversion Error:", error);
       return null;
+    }
+  };
+
+  const downloadOrderHistory = async (orderId, orderNumber) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(
+  `${process.env.REACT_APP_API_URL}/api/orders/admin/${orderId}/order-history`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+
+        console.log("Backend Error:", errorText);
+
+        alert(errorText);
+
+        return;
+      }
+
+      const blob = await response.blob();
+
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+
+      link.href = url;
+
+      link.download = `Order_History_${orderNumber}.pdf`;
+
+      document.body.appendChild(link);
+
+      link.click();
+
+      link.remove();
+
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error(error);
+
+      alert("Failed to download Order History PDF.");
     }
   };
 
@@ -219,28 +264,22 @@ const AdminOrdersTable = ({ orders }) => {
                       </button>
 
                       {/* PDF DOWNLOAD BUTTON */}
-                      <PDFDownloadLink
-                        document={<OrderHistoryPDF order={order} />}
-                        fileName={`Order_History_${order?.orderId || order._id}.pdf`}
-                        style={{ textDecoration: "none" }}
+                      <button
+                        className={styles.viewBtn}
+                        style={{
+                          backgroundColor: "#28a745",
+                          color: "#fff",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "4px",
+                        }}
+                        onClick={() =>
+                          downloadOrderHistory(order._id, order.orderId)
+                        }
                       >
-                        {({ loading }) => (
-                          <button 
-                            className={styles.viewBtn} 
-                            style={{ 
-                              backgroundColor: "#28a745", 
-                              color: "#fff", 
-                              display: "flex", 
-                              alignItems: "center", 
-                              gap: "4px" 
-                            }}
-                            disabled={loading}
-                          >
-                            <FaDownload size={11} />
-                            {loading ? "..." : "PDF"}
-                          </button>
-                        )}
-                      </PDFDownloadLink>
+                        <FaDownload size={11} />
+                        PDF
+                      </button>
                     </div>
                   </td>
                 </tr>

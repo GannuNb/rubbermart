@@ -13,7 +13,7 @@ import { createOrder,getSellerOrders,  getSellerSingleOrder,  confirmSellerOrder
      transporterAcceptAssignment,transporterRejectAssignment,markShipmentShippedBySeller,   
     getTransporterAssignedShipments,getTransporterCompletedDeliveries, markShipmentShippedByTransporter,markShipmentShippedByAdmin,
     uploadTransportPaymentReceipt,uploadAdminTransportPayment,verifyBuyerTransportPayment,getTransporterPaymentHistory ,
-     uploadShipmentProofs, } from "../controllers/orderController.js";
+     uploadShipmentProofs, downloadOrderHistoryPdf,} from "../controllers/orderController.js";
 
 import { submitOrderReview } from "../controllers/reviewController.js";
 
@@ -52,6 +52,7 @@ router.get("/admin/:orderId",  protectUser,  protectAdmin,  getAdminSingleOrderD
 
 // FIX: Changed protect -> protectUser, admin -> protectAdmin, and prefixed path with /admin
 router.get("/admin/:orderId/invoice-data", protectUser, protectAdmin, getOrderDetailsForInvoice);
+router.get(  "/admin/:orderId/order-history",  protectUser,  protectAdmin,  downloadOrderHistoryPdf,);
 
 router.put("/admin/:orderId/payment/:paymentId/approve",  protectUser,  protectAdmin,  approveBuyerPayment);
 router.post("/admin/:orderId/seller-payment",  protectUser,  protectAdmin,  uploadDocuments.single("file"),  uploadAdminToSellerPayment);
