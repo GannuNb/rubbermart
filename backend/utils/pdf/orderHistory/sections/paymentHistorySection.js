@@ -140,7 +140,7 @@ function drawPaymentTable(doc, payments, y) {
     });
 
     doc.text(
-      `₹ ${Number(payment.amount || 0).toLocaleString("en-IN")}`,
+      `${Number(payment.amount || 0).toLocaleString("en-IN")}`,
       63,
       y + 8,
       {

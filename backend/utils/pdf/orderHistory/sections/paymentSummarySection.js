@@ -49,7 +49,7 @@ export const drawPaymentSummarySection = (
   let rowY = y + 18;
 
   const formatAmount = (amount) =>
-    `₹ ${Number(amount || 0).toLocaleString("en-IN")}`;
+    `${Number(amount || 0).toLocaleString("en-IN")}`;
 
   const drawRow = (
     leftLabel,

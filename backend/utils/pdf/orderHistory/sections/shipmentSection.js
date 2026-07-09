@@ -148,7 +148,7 @@ const cardHeight =
       "Quantity",
       `${shipment.shippedQuantity || 0} MT`,
       "Transport Amount",
-      `₹ ${Number(
+      `${Number(
         shipment.transportFinalAmount || 0,
       ).toLocaleString("en-IN")}`,
     );
@@ -195,7 +195,7 @@ const cardHeight =
     if (selectedQuote) {
       drawRow(
         "Quoted Price",
-        `₹ ${Number(
+        `${Number(
           selectedQuote.quotedPrice || 0,
         ).toLocaleString("en-IN")}`,
         "Delivery Days",
@@ -229,7 +229,7 @@ const cardHeight =
         .font("Helvetica")
         .fontSize(8)
         .text(
-          `₹ ${payment.amount} | ${payment.paymentMode} | ${payment.status}`,
+          ` ${payment.amount} | ${payment.paymentMode} | ${payment.status}`,
           60,
           rowY,
         );
@@ -265,7 +265,7 @@ const cardHeight =
           .font("Helvetica")
           .fontSize(8)
           .text(
-            `₹ ${payment.amount} | ${payment.paymentMode} | ${payment.status}`,
+            ` ${payment.amount} | ${payment.paymentMode} | ${payment.status}`,
             60,
             rowY,
           );

@@ -218,7 +218,7 @@ export const drawOrderInfoSection = (doc, order, startY) => {
         .font("Helvetica")
         .fontSize(8.5)
         .text(
-          `• ₹ ${Number(payment.amount || 0).toLocaleString("en-IN")} | Uploaded : ${formatDate(
+          `• ${Number(payment.amount || 0).toLocaleString("en-IN")} | Uploaded : ${formatDate(
             payment.uploadedAt,
           )}`,
           65,

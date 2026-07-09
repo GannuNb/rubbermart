@@ -112,7 +112,7 @@ export const drawItemsTableSection = (doc, order, startY) => {
     );
 
     doc.text(
-      `₹ ${Number(item?.pricePerMT || 0).toLocaleString("en-IN")}`,
+      `${Number(item?.pricePerMT || 0).toLocaleString("en-IN")}`,
       355,
       y + 11,
       {
@@ -132,7 +132,7 @@ export const drawItemsTableSection = (doc, order, startY) => {
     );
 
     doc.text(
-      `₹ ${Number(item?.subtotal || 0).toLocaleString("en-IN")}`,
+      `${Number(item?.subtotal || 0).toLocaleString("en-IN")}`,
       485,
       y + 11,
       {
@@ -161,7 +161,7 @@ export const drawItemsTableSection = (doc, order, startY) => {
     .font("Helvetica-Bold")
     .fontSize(10)
     .text(
-      `Order Items Total : ₹ ${grandTotal.toLocaleString("en-IN")}`,
+      `Order Items Total : ${grandTotal.toLocaleString("en-IN")}`,
       370,
       y + 9
     );
