@@ -174,8 +174,9 @@ export const getSingleApprovedProduct = async (req, res) => {
       status: "approved",
     }).populate(
       "seller",
-      "fullName email businessProfile addresses profileImage",
+      "fullName email businessProfile addresses profileImage isVerified",
     );
+    
 
     if (!product) {
       return res.status(404).json({

@@ -151,77 +151,92 @@ function FeaturedProductsSection() {
 
           {/* PRODUCTS */}
 
-          <div className={styles.productsSlider} ref={scrollRef}>
-            {featuredProducts.map((item, index) => (
-              <div className={styles.productCard} key={index}>
-                {/* IMAGE */}
+          {!featuredProductsLoading && featuredProducts.length === 0 ? (
+            <div className={styles.emptyState}>
+              <div className={styles.emptyIcon}>📦</div>
 
-                <div className={styles.imageWrapper}>
-                  <img
-                    src={item.images?.[0]?.image || tyreImg}
-                    alt={item.application}
-                    className={styles.productImage}
-                  />
+              <h3>No Latest Products Yet</h3>
 
-                  {/* BADGE */}
+              <p>
+                New approved products will appear here soon. Please check back
+                later for the latest arrivals.
+              </p>
+            </div>
+          ) : (
+            <div className={styles.productsSlider} ref={scrollRef}>
+              {featuredProducts.map((item, index) => (
+                <div className={styles.productCard} key={index}>
+                  {/* IMAGE */}
 
-                  <div className={`${styles.badgeIcon} ${styles.purpleBadge}`}>
-                    <ShieldCheck size={15} />
-                  </div>
-                </div>
+                  <div className={styles.imageWrapper}>
+                    <img
+                      src={item.images?.[0]?.image || tyreImg}
+                      alt={item.application}
+                      className={styles.productImage}
+                    />
 
-                {/* BODY */}
+                    {/* BADGE */}
 
-                <div className={styles.cardBody}>
-                  {/* TITLE */}
-
-                  <h3 className={styles.productTitle}>{item.application}</h3>
-
-                  {/* QUANTITY */}
-
-                  <p className={styles.qtyText}>{item.quantity} MT</p>
-
-                  {/* LOCATION */}
-
-                  <div className={styles.locationRow}>
-                    <MapPin size={13} />
-
-                    <span>{item.loadingLocation}</span>
+                    <div
+                      className={`${styles.badgeIcon} ${styles.purpleBadge}`}
+                    >
+                      <ShieldCheck size={15} />
+                    </div>
                   </div>
 
-                  {/* PRICE */}
+                  {/* BODY */}
 
-                  <h4 className={styles.purplePrice}>
-                    ₹ {item.pricePerMT} / MT
-                  </h4>
+                  <div className={styles.cardBody}>
+                    {/* TITLE */}
 
-                  {/* BUTTON */}
+                    <h3 className={styles.productTitle}>{item.application}</h3>
 
-                  <button
-                    className={styles.detailsBtn}
-                    onClick={() => {
-                      const token = localStorage.getItem("token");
+                    {/* QUANTITY */}
 
-                      if (!token) {
-                        navigate("/login");
-                        return;
-                      }
+                    <p className={styles.qtyText}>{item.quantity} MT</p>
 
-                      if (user && !user.businessProfileCompleted) {
-                        navigate("/business-profile");
-                        return;
-                      }
+                    {/* LOCATION */}
 
-                      navigate(`/product/${item._id}`);
-                    }}
-                  >
-                    View Details
-                    <MoveRight size={15} />
-                  </button>
+                    <div className={styles.locationRow}>
+                      <MapPin size={13} />
+
+                      <span>{item.loadingLocation}</span>
+                    </div>
+
+                    {/* PRICE */}
+
+                    <h4 className={styles.purplePrice}>
+                      ₹ {item.pricePerMT} / MT
+                    </h4>
+
+                    {/* BUTTON */}
+
+                    <button
+                      className={styles.detailsBtn}
+                      onClick={() => {
+                        const token = localStorage.getItem("token");
+
+                        if (!token) {
+                          navigate("/login");
+                          return;
+                        }
+
+                        if (user && !user.businessProfileCompleted) {
+                          navigate("/business-profile");
+                          return;
+                        }
+
+                        navigate(`/product/${item._id}`);
+                      }}
+                    >
+                      View Details
+                      <MoveRight size={15} />
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* =====================================

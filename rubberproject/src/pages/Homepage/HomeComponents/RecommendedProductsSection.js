@@ -118,8 +118,8 @@ const RecommendedProductsSection = () => {
           </h2>
 
           <p className={styles.sectionSubtitle}>
-            Handpicked products that match your
-            business interests and requirements
+            Handpicked products that match your business interests and
+            requirements
           </p>
         </div>
 
@@ -129,13 +129,8 @@ const RecommendedProductsSection = () => {
 
         <div className={styles.featureGrid}>
           {features.map((item, index) => (
-            <div
-              key={index}
-              className={styles.featureCard}
-            >
-              <div className={styles.featureIcon}>
-                {item.icon}
-              </div>
+            <div key={index} className={styles.featureCard}>
+              <div className={styles.featureIcon}>{item.icon}</div>
 
               <div className={styles.featureText}>
                 <h4>{item.title}</h4>
@@ -156,7 +151,6 @@ const RecommendedProductsSection = () => {
           <div className={styles.productsTopbar}>
             <h3>
               <FaStar />
-
               Top Picks for You
             </h3>
 
@@ -165,17 +159,11 @@ const RecommendedProductsSection = () => {
 
               {recommendedProducts.length > 3 && (
                 <div className={styles.sliderBtns}>
-                  <button
-                    className={styles.arrowBtn}
-                    onClick={scrollLeft}
-                  >
+                  <button className={styles.arrowBtn} onClick={scrollLeft}>
                     <FaArrowLeft />
                   </button>
 
-                  <button
-                    className={styles.arrowBtn}
-                    onClick={scrollRight}
-                  >
+                  <button className={styles.arrowBtn} onClick={scrollRight}>
                     <FaArrowRight />
                   </button>
                 </div>
@@ -185,12 +173,9 @@ const RecommendedProductsSection = () => {
 
               <button
                 className={styles.viewAllBtn}
-                onClick={() =>
-                  navigate("/our-products")
-                }
+                onClick={() => navigate("/our-products")}
               >
                 View all products
-
                 <FaArrowRight />
               </button>
             </div>
@@ -198,35 +183,32 @@ const RecommendedProductsSection = () => {
 
           {/* LOADING */}
 
-          {recommendedProductsLoading && (
-            <p>Loading recommendations...</p>
-          )}
+          {recommendedProductsLoading && <p>Loading recommendations...</p>}
 
           {/* ERROR */}
 
-          {recommendedProductsError && (
-            <p>{recommendedProductsError}</p>
-          )}
+          {recommendedProductsError && <p>{recommendedProductsError}</p>}
 
           {/* EMPTY */}
 
-          {!recommendedProductsLoading &&
-            recommendedProducts.length === 0 && (
-              <p>No recommended products found</p>
-            )}
+          {!recommendedProductsLoading && recommendedProducts.length === 0 && (
+            <div className={styles.emptyState}>
+              <div className={styles.emptyIcon}>🎯</div>
+
+              <h3>No Recommended Products Yet</h3>
+
+              <p>
+                We couldn't find any products matching your selected interests. As new products are approved, personalized recommendations will appear here.
+              </p>
+            </div>
+          )}
 
           {/* PRODUCTS */}
 
-          <div
-            className={styles.productsScroll}
-            ref={scrollRef}
-          >
+          <div className={styles.productsScroll} ref={scrollRef}>
             <div className={styles.productGrid}>
               {recommendedProducts.map((product) => (
-                <div
-                  key={product._id}
-                  className={styles.productCard}
-                >
+                <div key={product._id} className={styles.productCard}>
                   {/* IMAGE */}
 
                   <div className={styles.imageWrapper}>
@@ -238,13 +220,7 @@ const RecommendedProductsSection = () => {
                       alt={product.application}
                     />
 
-                    <span
-                      className={
-                        styles.stockBadge
-                      }
-                    >
-                      ● Available
-                    </span>
+                    <span className={styles.stockBadge}>● Available</span>
                   </div>
 
                   {/* BODY */}
@@ -252,95 +228,53 @@ const RecommendedProductsSection = () => {
                   <div className={styles.cardBody}>
                     {/* CATEGORY */}
 
-                    <span
-                      className={
-                        styles.categoryTag
-                      }
-                    >
+                    <span className={styles.categoryTag}>
                       {product.category}
                     </span>
 
                     {/* TITLE */}
 
-                    <h3
-                      className={
-                        styles.productTitle
-                      }
-                    >
+                    <h3 className={styles.productTitle}>
                       {product.application}
                     </h3>
 
                     {/* PRICE */}
 
                     <div className={styles.price}>
-                      ₹
-                      {Number(
-                        product.pricePerMT
-                      ).toLocaleString()}
-
+                      ₹{Number(product.pricePerMT).toLocaleString()}
                       <span> / MT</span>
                     </div>
 
                     {/* LOCATION */}
 
-                    <div
-                      className={
-                        styles.locationRow
-                      }
-                    >
+                    <div className={styles.locationRow}>
                       <FaMapMarkerAlt />
 
                       <span>
-                        {
-                          product.loadingLocation
-                        }
-                        ,{" "}
-                        {
-                          product.countryOfOrigin
-                        }
+                        {product.loadingLocation}, {product.countryOfOrigin}
                       </span>
                     </div>
 
                     {/* META */}
 
-                    <div
-                      className={styles.metaGrid}
-                    >
-                      <div
-                        className={
-                          styles.metaBox
-                        }
-                      >
+                    <div className={styles.metaGrid}>
+                      <div className={styles.metaBox}>
                         <h5>
                           <FaBoxes />
                         </h5>
 
-                        <p>
-                          {product.quantity} MT
-                        </p>
+                        <p>{product.quantity} MT</p>
                       </div>
 
-                      <div
-                        className={
-                          styles.metaBox
-                        }
-                      >
+                      <div className={styles.metaBox}>
                         <h5>
                           <FaGlobe />
                         </h5>
 
-                        <p>
-                          {
-                            product.countryOfOrigin
-                          }
-                        </p>
+                        <p>{product.countryOfOrigin}</p>
                       </div>
 
-                      <div
-                        className={
-                          styles.metaBox
-                        }
-                      >
+                      <div className={styles.metaBox}>
                         <h5>
                           <FaShieldAlt />
                         </h5>
@@ -353,14 +287,9 @@ const RecommendedProductsSection = () => {
 
                     <button
                       className={styles.viewBtn}
-                      onClick={() =>
-                        navigate(
-                          `/product/${product._id}`
-                        )
-                      }
+                      onClick={() => navigate(`/product/${product._id}`)}
                     >
                       View Product
-
                       <FaArrowRight />
                     </button>
                   </div>
@@ -380,26 +309,17 @@ const RecommendedProductsSection = () => {
               </div>
 
               <div className={styles.bottomText}>
-                <h4>
-                  Can't find what you're looking
-                  for?
-                </h4>
+                <h4>Can't find what you're looking for?</h4>
 
-                <p>
-                  Explore all products from
-                  verified sellers
-                </p>
+                <p>Explore all products from verified sellers</p>
               </div>
             </div>
 
             <button
               className={styles.exploreBtn}
-              onClick={() =>
-                navigate("/our-products")
-              }
+              onClick={() => navigate("/our-products")}
             >
               Explore All Products
-
               <FaArrowRight />
             </button>
           </div>

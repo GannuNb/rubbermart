@@ -33,83 +33,87 @@ function ProductOrderPanel({ singleProduct }) {
     pincode: "",
   });
 
-  useEffect(() => {
-    const fetchBuyerAddresses = async () => {
-      try {
-        setBuyerAddressesLoading(true);
+  const fetchBuyerAddresses = async () => {
+    try {
+      setBuyerAddressesLoading(true);
 
-        const token = localStorage.getItem("token");
+      const token = localStorage.getItem("token");
 
-        const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/api/user/profile`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/user/profile`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        },
+      );
 
-        const data = await response.json();
+      const data = await response.json();
 
-        if (response.ok) {
-          setBuyerProfile(data.user);
+      if (response.ok) {
+        setBuyerProfile(data.user);
 
-          let allAddresses = (data.user?.addresses || []).map((address) => ({
-            ...address,
-            fullAddress:
-              address.fullAddress ||
-              `${address.flatHouse || ""}${address.areaStreet ? `, ${address.areaStreet}` : ""
-              }${address.landmark ? `, ${address.landmark}` : ""}${address.city ? `, ${address.city}` : ""
-              }${address.state ? `, ${address.state}` : ""}${address.pincode ? ` - ${address.pincode}` : ""
-              }`,
-          }));
+        let allAddresses = (data.user?.addresses || []).map((address) => ({
+          ...address,
+          fullAddress:
+            address.fullAddress ||
+            `${address.flatHouse || ""}${
+              address.areaStreet ? `, ${address.areaStreet}` : ""
+            }${address.landmark ? `, ${address.landmark}` : ""}${
+              address.city ? `, ${address.city}` : ""
+            }${address.state ? `, ${address.state}` : ""}${
+              address.pincode ? ` - ${address.pincode}` : ""
+            }`,
+        }));
 
-          const shippingAddress = data.user?.businessProfile?.shippingAddress;
+        const shippingAddress = data.user?.businessProfile?.shippingAddress;
 
-          if (
-            shippingAddress &&
-            !allAddresses.some(
-              (address) => address.fullAddress === shippingAddress,
-            )
-          ) {
-            allAddresses = [
-              {
-                fullName:
-                  data.user?.fullName ||
-                  data.user?.businessProfile?.companyName ||
-                  "",
+        if (
+          shippingAddress &&
+          !allAddresses.some(
+            (address) => address.fullAddress === shippingAddress,
+          )
+        ) {
+          allAddresses = [
+            {
+              fullName:
+                data.user?.fullName ||
+                data.user?.businessProfile?.companyName ||
+                "",
 
-                mobileNumber:
-                  data.user?.businessProfile?.phoneNumber ||
-                  data.user?.phoneNumber ||
-                  "",
+              mobileNumber:
+                data.user?.businessProfile?.phoneNumber ||
+                data.user?.phoneNumber ||
+                "",
 
-                flatHouse: "",
-                areaStreet: "",
-                landmark: "",
-                city: "",
-                state: "",
-                pincode: "",
+              flatHouse: "",
+              areaStreet: "",
+              landmark: "",
+              city: "",
+              state: "",
+              pincode: "",
 
-                fullAddress: shippingAddress,
-              },
-              ...allAddresses,
-            ];
-          }
-
-          setBuyerAddresses(allAddresses);
-
-          if (allAddresses.length > 0) {
-            setSelectedAddress(allAddresses[0].fullAddress);
-          }
+              fullAddress: shippingAddress,
+            },
+            ...allAddresses,
+          ];
         }
-      } catch (error) {
-        console.log("Fetch Buyer Addresses Error:", error);
-      } finally {
-        setBuyerAddressesLoading(false);
-      }
-    };
 
+        setBuyerAddresses(allAddresses);
+
+        if (allAddresses.length > 0) {
+          setSelectedAddress(allAddresses[0].fullAddress);
+        }
+        return allAddresses;
+      }
+    } catch (error) {
+      console.log("Fetch Buyer Addresses Error:", error);
+    } finally {
+      setBuyerAddressesLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchBuyerAddresses();
   }, []);
 
@@ -141,19 +145,9 @@ function ProductOrderPanel({ singleProduct }) {
       const data = await response.json();
 
       if (response.ok) {
-        let updatedAddresses = (data.addresses || []).map((address) => ({
-          ...address,
-          fullAddress:
-            address.fullAddress ||
-            `${address.flatHouse || ""}${address.areaStreet ? `, ${address.areaStreet}` : ""
-            }${address.landmark ? `, ${address.landmark}` : ""}${address.city ? `, ${address.city}` : ""
-            }${address.state ? `, ${address.state}` : ""}${address.pincode ? ` - ${address.pincode}` : ""
-            }`,
-        }));
+        const updatedAddresses = await fetchBuyerAddresses();
 
-        setBuyerAddresses(updatedAddresses);
-
-        const latestAddress = updatedAddresses[updatedAddresses.length - 1];
+        const latestAddress = updatedAddresses?.[updatedAddresses.length - 1];
 
         if (latestAddress?.fullAddress) {
           setSelectedAddress(latestAddress.fullAddress);
@@ -183,7 +177,6 @@ function ProductOrderPanel({ singleProduct }) {
   };
 
   const handleContinueToOrder = () => {
-    
     const quantity = Number(requiredQuantity);
 
     if (!selectedAddress) {
@@ -319,25 +312,51 @@ function ProductOrderPanel({ singleProduct }) {
             <div className={styles.badgeOrbit}></div>
 
             <div className={styles.verifiedSeal}>
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M9.2 12.8L11 14.6L15.5 10.1"
-                  stroke="currentColor"
-                  strokeWidth="2.4"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              {singleProduct.seller?.isVerified ? (
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M9.2 12.8L11 14.6L15.5 10.1"
+                    stroke="currentColor"
+                    strokeWidth="2.4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 7V12"
+                    stroke="currentColor"
+                    strokeWidth="2.4"
+                    strokeLinecap="round"
+                  />
+                  <circle cx="12" cy="16.5" r="1" fill="currentColor" />
+                </svg>
+              )}
             </div>
 
             <div className={styles.verifiedText}>
-              <span className={styles.title}>Verified Seller</span>
-              <span className={styles.status}>Trusted & Verified</span>
+              <span className={styles.title}>
+                {singleProduct.seller?.isVerified
+                  ? "Verified Seller"
+                  : "Verification Pending"}
+              </span>
+
+              <span className={styles.status}>
+                {singleProduct.seller?.isVerified
+                  ? "Trusted & Verified"
+                  : "Seller verification is in Progress"}
+              </span>
             </div>
+
             <div className={styles.liveDot}></div>
           </div>
 
@@ -399,7 +418,7 @@ function ProductOrderPanel({ singleProduct }) {
             }
           >
             {singleProduct.stockStatus !== "available" ||
-              Number(singleProduct.quantity) <= 0
+            Number(singleProduct.quantity) <= 0
               ? "Currently Unavailable"
               : "Continue To Order"}
           </button>

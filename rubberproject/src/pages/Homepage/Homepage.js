@@ -10,7 +10,6 @@ import CommunitySection from "./HomeComponents/CommunitySection";
 import TrustedBySection from "./HomeComponents/TrustedBySection";
 import TestimonialsSection from "./HomeComponents/TestimonialsSection";
 import MoreForYouSection from "./HomeComponents/MoreForYouSection";
-
 import RecommendedProductsSection from "./HomeComponents/RecommendedProductsSection";
 
 function Homepage() {
