@@ -15,6 +15,8 @@ import { sendOrderConfirmedEmail } from "../utils/email/sendOrderConfirmedEmail.
 import { sendOrderRejectedEmail } from "../utils/email/sendOrderRejectedEmail.js";
 import { sendNewShipmentAvailableEmail } from "../utils/email/sendNewShipmentAvailableEmail.js";
 import { sendTransporterAssignedEmail } from "../utils/email/sendTransporterAssignedEmail.js";
+import { sendShipmentShippedEmail } from "../utils/email/sendShipmentShippedEmail.js";
+import { sendShipmentDeliveredEmail } from "../utils/email/sendShipmentDeliveredEmail.js";
 
 //buyer---> MAIN BUYER buyerordercreation
 export const createOrder = async (req, res) => {
@@ -1038,6 +1040,54 @@ export const markShipmentShippedBySeller = async (req, res) => {
     }
 
     await order.save();
+    /* =========================
+   UPDATED ORDER
+========================= */
+
+const updatedOrder = await Order.findById(orderId)
+  .populate(
+    "buyer",
+    `
+    fullName
+    email
+    `,
+  )
+  .populate(
+    "shipments.assignedTransporter",
+    `
+    fullName
+    email
+    `,
+  );
+
+const updatedShipment = updatedOrder.shipments.id(shipmentId);
+
+/* =========================
+   SEND BUYER EMAIL
+========================= */
+
+if (updatedOrder?.buyer?.email) {
+  sendShipmentShippedEmail({
+    buyerEmail: updatedOrder.buyer.email,
+
+    buyerName: updatedOrder.buyer.fullName,
+
+    orderId: updatedOrder.orderId,
+
+    shipmentInvoiceId: updatedShipment.shipmentInvoiceId,
+
+    productName: updatedShipment.selectedItem,
+
+    shippedQuantity: updatedShipment.shippedQuantity,
+
+    shipmentFrom: updatedShipment.shipmentFrom,
+
+    shipmentTo: updatedShipment.shipmentTo,
+
+    transporterName:
+      updatedShipment.assignedTransporter?.fullName || "Transport Partner",
+  }).catch(console.error);
+}
 
     return res.status(200).json({
       success: true,
@@ -1154,6 +1204,54 @@ export const markShipmentDeliveredBySeller = async (req, res) => {
     }
 
     await order.save();
+    /* =========================
+   UPDATED ORDER
+========================= */
+
+const updatedOrder = await Order.findById(orderId)
+  .populate(
+    "buyer",
+    `
+    fullName
+    email
+    `,
+  )
+  .populate(
+    "shipments.assignedTransporter",
+    `
+    fullName
+    email
+    `,
+  );
+
+const updatedShipment = updatedOrder.shipments.id(shipmentId);
+
+/* =========================
+   SEND BUYER EMAIL
+========================= */
+
+if (updatedOrder?.buyer?.email) {
+  sendShipmentDeliveredEmail({
+    buyerEmail: updatedOrder.buyer.email,
+
+    buyerName: updatedOrder.buyer.fullName,
+
+    orderId: updatedOrder.orderId,
+
+    shipmentInvoiceId: updatedShipment.shipmentInvoiceId,
+
+    productName: updatedShipment.selectedItem,
+
+    shippedQuantity: updatedShipment.shippedQuantity,
+
+    shipmentFrom: updatedShipment.shipmentFrom,
+
+    shipmentTo: updatedShipment.shipmentTo,
+
+    transporterName:
+      updatedShipment.assignedTransporter?.fullName || "Transport Partner",
+  }).catch(console.error);
+}
 
     return res.status(200).json({
       success: true,
@@ -2645,6 +2743,34 @@ export const markShipmentShippedByTransporter = async (req, res) => {
           `,
       )
       .populate("shipments.selectedQuoteId");
+      /* =========================
+   SEND BUYER EMAIL
+========================= */
+
+const updatedShipment = updatedOrder.shipments.id(shipmentId);
+
+if (updatedOrder?.buyer?.email) {
+  sendShipmentShippedEmail({
+    buyerEmail: updatedOrder.buyer.email,
+
+    buyerName: updatedOrder.buyer.fullName,
+
+    orderId: updatedOrder.orderId,
+
+    shipmentInvoiceId: updatedShipment.shipmentInvoiceId,
+
+    productName: updatedShipment.selectedItem,
+
+    shippedQuantity: updatedShipment.shippedQuantity,
+
+    shipmentFrom: updatedShipment.shipmentFrom,
+
+    shipmentTo: updatedShipment.shipmentTo,
+
+    transporterName:
+      updatedShipment.assignedTransporter?.fullName || "Transport Partner",
+  }).catch(console.error);
+}
 
     /* =========================
        RESPONSE
@@ -3277,14 +3403,21 @@ export const markShipmentShippedByAdmin = async (req, res) => {
   try {
     const { orderId, shipmentId } = req.params;
 
-    const order = await Order.findById(orderId).populate(
-      "shipments.assignedTransporter",
-      `
-        fullName
-        email
-        businessProfile
-      `,
-    );
+    const order = await Order.findById(orderId)
+  .populate(
+    "buyer",
+    `
+    fullName
+    email
+    `,
+  )
+  .populate(
+    "shipments.assignedTransporter",
+    `
+    fullName
+    email
+    `,
+  );
 
     if (!order) {
       return res.status(404).json({
@@ -3369,6 +3502,34 @@ export const markShipmentShippedByAdmin = async (req, res) => {
     }
 
     await order.save();
+    /* =========================
+   SEND BUYER EMAIL
+========================= */
+
+const updatedShipment = order.shipments.id(shipmentId);
+
+if (order?.buyer?.email) {
+  sendShipmentShippedEmail({
+    buyerEmail: order.buyer.email,
+
+    buyerName: order.buyer.fullName,
+
+    orderId: order.orderId,
+
+    shipmentInvoiceId: updatedShipment.shipmentInvoiceId,
+
+    productName: updatedShipment.selectedItem,
+
+    shippedQuantity: updatedShipment.shippedQuantity,
+
+    shipmentFrom: updatedShipment.shipmentFrom,
+
+    shipmentTo: updatedShipment.shipmentTo,
+
+    transporterName:
+      updatedShipment.assignedTransporter?.fullName || "Transport Partner",
+  }).catch(console.error);
+}
 
     return res.status(200).json({
       success: true,
@@ -3890,9 +4051,23 @@ export const markShipmentDeliveredByAdmin = async (req, res) => {
       ========================= */
 
     const order = await Order.findOne({
-      _id: orderId,
-      isDeleted: false,
-    });
+  _id: orderId,
+  isDeleted: false,
+})
+  .populate(
+    "buyer",
+    `
+    fullName
+    email
+    `,
+  )
+  .populate(
+    "shipments.assignedTransporter",
+    `
+    fullName
+    email
+    `,
+  );
 
     if (!order) {
       return res.status(404).json({
@@ -3965,6 +4140,34 @@ export const markShipmentDeliveredByAdmin = async (req, res) => {
     }
 
     await order.save();
+    /* =========================
+   SEND BUYER EMAIL
+========================= */
+
+const updatedShipment = order.shipments.id(shipmentId);
+
+if (order?.buyer?.email) {
+  sendShipmentDeliveredEmail({
+    buyerEmail: order.buyer.email,
+
+    buyerName: order.buyer.fullName,
+
+    orderId: order.orderId,
+
+    shipmentInvoiceId: updatedShipment.shipmentInvoiceId,
+
+    productName: updatedShipment.selectedItem,
+
+    shippedQuantity: updatedShipment.shippedQuantity,
+
+    shipmentFrom: updatedShipment.shipmentFrom,
+
+    shipmentTo: updatedShipment.shipmentTo,
+
+    transporterName:
+      updatedShipment.assignedTransporter?.fullName || "Transport Partner",
+  }).catch(console.error);
+}
 
     return res.status(200).json({
       success: true,

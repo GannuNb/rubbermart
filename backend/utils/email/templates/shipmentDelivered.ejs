@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Shipment Delivered</title>
+</head>
+
+<body
+style="
+margin:0;
+padding:0;
+background:#f4f7fb;
+font-family:Arial,Helvetica,sans-serif;
+">
+
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td align="center">
+
+<table
+width="650"
+cellpadding="0"
+cellspacing="0"
+style="
+background:#ffffff;
+margin:30px auto;
+border-radius:12px;
+overflow:hidden;
+border:1px solid #e5e7eb;
+">
+
+<tr>
+<td
+style="
+background:#198754;
+color:white;
+padding:30px;
+text-align:center;
+">
+
+<h1 style="margin:0;">
+✅ Rubber Scrap Mart
+</h1>
+
+<p style="margin-top:10px;">
+Shipment Delivered Successfully
+</p>
+
+</td>
+</tr>
+
+<tr>
+<td style="padding:35px;">
+
+<h2 style="margin-top:0;">
+Hello <%= buyerName %>,
+</h2>
+
+<p style="line-height:1.8;">
+Good news! Your shipment has been successfully delivered to the destination.
+Thank you for choosing Rubber Scrap Mart.
+</p>
+
+<table
+width="100%"
+cellpadding="10"
+cellspacing="0"
+style="
+margin:25px 0;
+border-collapse:collapse;
+border:1px solid #ddd;
+">
+
+<tr>
+<td><strong>Shipment ID</strong></td>
+<td><%= shipmentInvoiceId %></td>
+</tr>
+
+<tr>
+<td><strong>Order ID</strong></td>
+<td><%= orderId %></td>
+</tr>
+
+<tr>
+<td><strong>Product</strong></td>
+<td><%= productName %></td>
+</tr>
+
+<tr>
+<td><strong>Delivered Quantity</strong></td>
+<td><%= shippedQuantity %> MT</td>
+</tr>
+
+<tr>
+<td><strong>Pickup Location</strong></td>
+<td><%= shipmentFrom %></td>
+</tr>
+
+<tr>
+<td><strong>Delivery Location</strong></td>
+<td><%= shipmentTo %></td>
+</tr>
+
+<tr>
+<td><strong>Transport Partner</strong></td>
+<td>
+<%= transporterName || "Transport Partner" %>
+</td>
+</tr>
+
+</table>
+
+<div
+style="
+background:#eef9f1;
+border-left:5px solid #198754;
+padding:18px;
+border-radius:8px;
+">
+
+<strong>Thank You</strong>
+
+<p style="margin-bottom:0;line-height:1.8;">
+
+We hope your shipment arrived safely and met your expectations.
+
+If everything looks good, we would greatly appreciate it if you could leave a review for the seller. Your feedback helps other buyers make informed decisions.
+
+</p>
+
+</div>
+
+<div
+style="
+margin-top:35px;
+text-align:center;
+">
+
+<a
+href="<%= frontendUrl %>/buyer/orders"
+style="
+background:#198754;
+color:white;
+text-decoration:none;
+padding:14px 28px;
+border-radius:8px;
+display:inline-block;
+font-weight:bold;
+">
+
+View Order
+
+</a>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td
+style="
+background:#f3f4f6;
+padding:25px;
+text-align:center;
+color:#666;
+font-size:14px;
+">
+
+© <%= new Date().getFullYear() %> Rubber Scrap Mart
+
+<br><br>
+
+Thank you for doing business with us.
+
+</td>
+</tr>
+
+</table>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>

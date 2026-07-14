@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Shipment Dispatched</title>
+</head>
+
+<body
+style="
+margin:0;
+padding:0;
+background:#f4f7fb;
+font-family:Arial,Helvetica,sans-serif;
+">
+
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td align="center">
+
+<table
+width="650"
+cellpadding="0"
+cellspacing="0"
+style="
+background:#ffffff;
+margin:30px auto;
+border-radius:12px;
+overflow:hidden;
+border:1px solid #e5e7eb;
+">
+
+<!-- Header -->
+
+<tr>
+<td
+style="
+background:#0d6efd;
+color:white;
+padding:30px;
+text-align:center;
+">
+
+<h1 style="margin:0;">
+🚚 Rubber Scrap Mart
+</h1>
+
+<p style="margin-top:10px;">
+Shipment Dispatched
+</p>
+
+</td>
+</tr>
+
+<!-- Body -->
+
+<tr>
+<td style="padding:35px;">
+
+<h2 style="margin-top:0;">
+Hello <%= buyerName %>,
+</h2>
+
+<p style="line-height:1.8;">
+Great news! Your shipment has now been dispatched and is on its way.
+You can log in to your account to monitor shipment progress.
+</p>
+
+<table
+width="100%"
+cellpadding="10"
+cellspacing="0"
+style="
+margin:25px 0;
+border-collapse:collapse;
+border:1px solid #ddd;
+">
+
+<tr>
+<td><strong>Shipment ID</strong></td>
+<td><%= shipmentInvoiceId %></td>
+</tr>
+
+<tr>
+<td><strong>Order ID</strong></td>
+<td><%= orderId %></td>
+</tr>
+
+<tr>
+<td><strong>Product</strong></td>
+<td><%= productName %></td>
+</tr>
+
+<tr>
+<td><strong>Quantity</strong></td>
+<td><%= shippedQuantity %> MT</td>
+</tr>
+
+<tr>
+<td><strong>Pickup Location</strong></td>
+<td><%= shipmentFrom %></td>
+</tr>
+
+<tr>
+<td><strong>Delivery Location</strong></td>
+<td><%= shipmentTo %></td>
+</tr>
+
+<tr>
+<td><strong>Transporter</strong></td>
+<td>
+<%= transporterName || "Assigned Transport Partner" %>
+</td>
+</tr>
+
+</table>
+
+<div
+style="
+background:#eef7ff;
+border-left:5px solid #0d6efd;
+padding:18px;
+border-radius:8px;
+">
+
+<strong>What's Next?</strong>
+
+<p style="margin-bottom:0;line-height:1.8;">
+
+Your shipment is now moving towards its destination.
+
+You can track shipment updates from your Buyer Dashboard.
+Once delivery is completed, you'll receive another notification.
+
+</p>
+
+</div>
+
+<div
+style="
+margin-top:35px;
+text-align:center;
+">
+
+<a
+href="<%= frontendUrl %>/buyer/orders"
+style="
+background:#0d6efd;
+color:white;
+text-decoration:none;
+padding:14px 28px;
+border-radius:8px;
+display:inline-block;
+font-weight:bold;
+">
+
+Track Shipment
+
+</a>
+
+</div>
+
+</td>
+</tr>
+
+<!-- Footer -->
+
+<tr>
+<td
+style="
+background:#f3f4f6;
+padding:25px;
+text-align:center;
+color:#666;
+font-size:14px;
+">
+
+© <%= new Date().getFullYear() %> Rubber Scrap Mart
+
+<br><br>
+
+Thank you for choosing Rubber Scrap Mart.
+
+</td>
+</tr>
+
+</table>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>
