@@ -3398,26 +3398,19 @@ export const getAllTransporters = async (req, res) => {
   }
 };
 
-//admin ---> updating shiped status
+// admin ---> updating shipped status
 export const markShipmentShippedByAdmin = async (req, res) => {
   try {
     const { orderId, shipmentId } = req.params;
 
-    const order = await Order.findById(orderId)
-  .populate(
-    "buyer",
-    `
-    fullName
-    email
-    `,
-  )
-  .populate(
-    "shipments.assignedTransporter",
-    `
-    fullName
-    email
-    `,
-  );
+    const order = await Order.findById(orderId).populate(
+      "shipments.assignedTransporter",
+      `
+        fullName
+        email
+        businessProfile
+      `
+    );
 
     if (!order) {
       return res.status(404).json({
@@ -3436,12 +3429,22 @@ export const markShipmentShippedByAdmin = async (req, res) => {
     }
 
     /* =========================
+       VALIDATE UPLOADED PROOFS
+       (Crucial for shipment integrity)
+    ========================= */
+    if (!shipment.packedItemPhoto?.data || !shipment.weightTicket?.data) {
+      return res.status(400).json({
+        success: false,
+        message: "Cannot mark as shipped: Seller has not uploaded required proofs (Packed Item Photo & Weight Ticket).",
+      });
+    }
+
+    /* =========================
        VALIDATE STATUS
     ========================= */
-
     if (
       ["shipped", "in_transit", "delivered", "completed"].includes(
-        shipment.shipmentStatus,
+        shipment.shipmentStatus
       )
     ) {
       return res.status(400).json({
@@ -3453,98 +3456,23 @@ export const markShipmentShippedByAdmin = async (req, res) => {
     /* =========================
        UPDATE STATUS
     ========================= */
-
     shipment.shipmentStatus = "shipped";
-
     shipment.pickedUpAt = new Date();
-    /* =========================
-   PARTIALLY SHIPPED
-========================= */
-
-    const hasShippedShipments = order.shipments.some((item) =>
-      ["shipped", "in_transit", "delivered", "completed"].includes(
-        item.shipmentStatus,
-      ),
-    );
-
-    if (
-      hasShippedShipments &&
-      !["delivered", "completed"].includes(order.orderStatus)
-    ) {
-      order.orderStatus = "partially_shipped";
-    }
-
-    /* =========================
-   CHECK FULL SHIPPED QUANTITY
-========================= */
-
-    const allItemsFullyShipped = order.orderItems.every((orderItem) => {
-      const shippedQty = order.shipments
-        .filter(
-          (shipment) =>
-            shipment.selectedItem?.trim().toLowerCase() ===
-              orderItem.productName?.trim().toLowerCase() &&
-            ["shipped", "in_transit", "delivered", "completed"].includes(
-              shipment.shipmentStatus,
-            ),
-        )
-        .reduce(
-          (total, shipment) => total + Number(shipment.shippedQuantity || 0),
-          0,
-        );
-
-      return shippedQty >= Number(orderItem.requiredQuantity);
-    });
-
-    if (allItemsFullyShipped) {
-      order.orderStatus = "shipped";
-      order.shippedAt = new Date();
-    }
 
     await order.save();
-    /* =========================
-   SEND BUYER EMAIL
-========================= */
-
-const updatedShipment = order.shipments.id(shipmentId);
-
-if (order?.buyer?.email) {
-  sendShipmentShippedEmail({
-    buyerEmail: order.buyer.email,
-
-    buyerName: order.buyer.fullName,
-
-    orderId: order.orderId,
-
-    shipmentInvoiceId: updatedShipment.shipmentInvoiceId,
-
-    productName: updatedShipment.selectedItem,
-
-    shippedQuantity: updatedShipment.shippedQuantity,
-
-    shipmentFrom: updatedShipment.shipmentFrom,
-
-    shipmentTo: updatedShipment.shipmentTo,
-
-    transporterName:
-      updatedShipment.assignedTransporter?.fullName || "Transport Partner",
-  }).catch(console.error);
-}
 
     return res.status(200).json({
       success: true,
-
       message: "Shipment marked as shipped",
-
       order,
     });
   } catch (error) {
-    console.log("Admin Mark Shipment Shipped Error:", error);
+    console.error("Admin Mark Shipment Shipped Error:", error);
 
     return res.status(500).json({
       success: false,
-
       message: "Failed to update shipment",
+      error: error.message,
     });
   }
 };
