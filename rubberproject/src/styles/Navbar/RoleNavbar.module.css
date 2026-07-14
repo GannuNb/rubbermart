@@ -157,3 +157,17 @@
   .userGreetingPill { padding: 6px 12px; }
   .topNavbar { padding: 10px 0; }
 }
+
+.userGreetingLink {
+  text-decoration: none !important; /* Forces removal of underline */
+  color: inherit;                  /* Keeps your original text color */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+/* Optional: Add a subtle hover effect if you like */
+.userGreetingLink:hover {
+  opacity: 0.8;
+  text-decoration: none !important;
+}
