@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>New Shipment Available</title>
+</head>
+
+<body
+  style="
+    margin:0;
+    padding:0;
+    background:#f4f7fb;
+    font-family:Arial,Helvetica,sans-serif;
+  "
+>
+  <table width="100%" cellpadding="0" cellspacing="0">
+    <tr>
+      <td align="center">
+
+        <table
+          width="650"
+          cellpadding="0"
+          cellspacing="0"
+          style="
+            background:#ffffff;
+            margin:30px auto;
+            border-radius:12px;
+            overflow:hidden;
+            border:1px solid #e5e7eb;
+          "
+        >
+
+          <!-- Header -->
+          <tr>
+            <td
+              style="
+                background:#0d6efd;
+                color:#ffffff;
+                padding:30px;
+                text-align:center;
+              "
+            >
+              <h1 style="margin:0;">
+                🚚 Rubber Scrap Mart
+              </h1>
+
+              <p style="margin-top:10px;">
+                New Shipment Available
+              </p>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:35px;">
+
+              <h2 style="margin-top:0;">
+                Hello <%= transporterName %>,
+              </h2>
+
+              <p style="line-height:1.7;">
+                A seller has created a new shipment that is now open for
+                transporter quotations.
+              </p>
+
+              <table
+                width="100%"
+                cellpadding="10"
+                cellspacing="0"
+                style="
+                  margin:25px 0;
+                  border-collapse:collapse;
+                  border:1px solid #ddd;
+                "
+              >
+
+                <tr>
+                  <td><strong>Shipment ID</strong></td>
+                  <td><%= shipmentInvoiceId %></td>
+                </tr>
+
+                <tr>
+                  <td><strong>Order ID</strong></td>
+                  <td><%= orderId %></td>
+                </tr>
+
+                <tr>
+                  <td><strong>Product</strong></td>
+                  <td><%= productName %></td>
+                </tr>
+
+                <tr>
+                  <td><strong>Quantity</strong></td>
+                  <td><%= shippedQuantity %> MT</td>
+                </tr>
+
+                <tr>
+                  <td><strong>Pickup</strong></td>
+                  <td><%= shipmentFrom %></td>
+                </tr>
+
+                <tr>
+                  <td><strong>Delivery</strong></td>
+                  <td><%= shipmentTo %></td>
+                </tr>
+
+              </table>
+
+              <div
+                style="
+                  background:#eef7ff;
+                  border-left:5px solid #0d6efd;
+                  padding:18px;
+                  border-radius:8px;
+                "
+              >
+                <strong>Action Required</strong>
+
+                <p style="margin-bottom:0; line-height:1.7;">
+                  Review the shipment details and submit your quotation.
+                  The administrator will compare all received quotations
+                  and assign the shipment to the most suitable transporter.
+                </p>
+              </div>
+
+              <div
+                style="
+                  margin-top:35px;
+                  text-align:center;
+                "
+              >
+                <a
+                  href="<%= frontendUrl %>/transporter/open-shipments"
+                  style="
+                    background:#0d6efd;
+                    color:white;
+                    text-decoration:none;
+                    padding:14px 28px;
+                    border-radius:8px;
+                    display:inline-block;
+                    font-weight:bold;
+                  "
+                >
+                  View Available Shipments
+                </a>
+              </div>
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td
+              style="
+                background:#f3f4f6;
+                text-align:center;
+                padding:25px;
+                color:#666;
+                font-size:14px;
+              "
+            >
+              © <%= new Date().getFullYear() %> Rubber Scrap Mart
+
+              <br><br>
+
+              This is an automated notification sent to registered
+              transport partners.
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

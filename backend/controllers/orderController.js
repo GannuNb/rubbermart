@@ -11,7 +11,10 @@ import generateShippingInvoicePdf from "../utils/pdf/shipping/generateShippingIn
 import generateBuyReportPdf from "../utils/pdf/buyReport/generateBuyReportPdf.js";
 import ShipmentTransportQuote from "../models/ShipmentTransportQuote.js";
 import generateOrderHistoryPdf from "../utils/pdf/orderHistory/generateOrderHistoryPdf.js";
-
+import { sendOrderConfirmedEmail } from "../utils/email/sendOrderConfirmedEmail.js";
+import { sendOrderRejectedEmail } from "../utils/email/sendOrderRejectedEmail.js";
+import { sendNewShipmentAvailableEmail } from "../utils/email/sendNewShipmentAvailableEmail.js";
+import { sendTransporterAssignedEmail } from "../utils/email/sendTransporterAssignedEmail.js";
 
 //buyer---> MAIN BUYER buyerordercreation
 export const createOrder = async (req, res) => {
@@ -414,6 +417,14 @@ export const confirmSellerOrder = async (req, res) => {
         loadingLocation
         `,
       );
+    // Send confirmation email to buyer
+    sendOrderConfirmedEmail({
+      buyerEmail: updatedOrder.buyer.email,
+      buyerName: updatedOrder.buyer.fullName,
+      orderId: updatedOrder.orderId,
+      sellerName: updatedOrder.seller.fullName,
+      totalAmount: updatedOrder.totalAmount,
+    }).catch(console.error);
 
     return res.status(200).json({
       success: true,
@@ -506,6 +517,14 @@ export const rejectSellerOrder = async (req, res) => {
         loadingLocation
         `,
       );
+    sendOrderRejectedEmail({
+      buyerEmail: updatedOrder.buyer.email,
+      buyerName: updatedOrder.buyer.fullName,
+      orderId: updatedOrder.orderId,
+      sellerName: updatedOrder.seller.fullName,
+      cancellationReason:
+        updatedOrder.cancellationReason || "Rejected by seller",
+    }).catch(console.error);
 
     return res.status(200).json({
       success: true,
@@ -694,13 +713,9 @@ export const addShipmentToOrder = async (req, res) => {
       return totalShippedForItem >= Number(item.requiredQuantity);
     });
 
-    let updatedOrderStatus = "partially_shipped";
+    let updatedOrderStatus = order.orderStatus;
 
-    let updatedShippedAt = null;
-
-    if (allItemsFullyShipped) {
-      updatedOrderStatus = "partially_shipped";
-    }
+    let updatedShippedAt = order.shippedAt || null;
 
     /* =========================
        UPDATE ORDER
@@ -729,7 +744,62 @@ export const addShipmentToOrder = async (req, res) => {
        FETCH UPDATED ORDER
     ========================= */
 
-    const updatedOrder = await Order.findById(orderId);
+    const updatedOrder = await Order.findById(orderId)
+      .populate(
+        "buyer",
+        `
+    fullName
+    email
+    `,
+      )
+      .populate(
+        "seller",
+        `
+    fullName
+    email
+    `,
+      );
+    /* =========================
+   EMAIL ALL TRANSPORTERS
+========================= */
+
+    const transporters = await User.find({
+      role: "transporter",
+      isVerified: true,
+    }).select("fullName email");
+
+    const emailResults = await Promise.allSettled(
+      transporters.map((transporter) =>
+        sendNewShipmentAvailableEmail({
+          transporterEmail: transporter.email,
+          transporterName: transporter.fullName,
+
+          orderId: updatedOrder.orderId,
+
+          shipmentInvoiceId,
+
+          productName: selectedItem,
+
+          shippedQuantity,
+
+          shipmentFrom,
+
+          shipmentTo,
+        }),
+      ),
+    );
+
+    const successCount = emailResults.filter(
+      (result) => result.status === "fulfilled",
+    ).length;
+
+    const failedCount = emailResults.filter(
+      (result) => result.status === "rejected",
+    ).length;
+
+    console.log(
+      `Transporter notification emails: ${successCount} sent, ${failedCount} failed.`,
+    );
 
     return res.status(200).json({
       success: true,
@@ -921,6 +991,10 @@ export const markShipmentShippedBySeller = async (req, res) => {
        UPDATE ORDER STATUS
     ========================= */
 
+    /* =========================
+   CHECK SHIPPED QUANTITIES
+========================= */
+
     const hasShippedShipments = order.shipments.some(
       (item) =>
         item.shipmentStatus === "shipped" ||
@@ -936,16 +1010,30 @@ export const markShipmentShippedBySeller = async (req, res) => {
       order.orderStatus = "partially_shipped";
     }
 
-    const allShipmentsShipped = order.shipments.every(
-      (item) =>
-        item.shipmentStatus === "shipped" ||
-        item.shipmentStatus === "in_transit" ||
-        item.shipmentStatus === "delivered",
-    );
+    /* =========================
+   CHECK ALL ORDER ITEMS FULLY SHIPPED
+========================= */
 
-    if (allShipmentsShipped) {
+    const allItemsFullyShipped = order.orderItems.every((orderItem) => {
+      const shippedQty = order.shipments
+        .filter(
+          (shipment) =>
+            shipment.selectedItem?.trim().toLowerCase() ===
+              orderItem.productName?.trim().toLowerCase() &&
+            ["shipped", "in_transit", "delivered"].includes(
+              shipment.shipmentStatus,
+            ),
+        )
+        .reduce(
+          (total, shipment) => total + Number(shipment.shippedQuantity || 0),
+          0,
+        );
+
+      return shippedQty >= Number(orderItem.requiredQuantity);
+    });
+
+    if (allItemsFullyShipped) {
       order.orderStatus = "shipped";
-
       order.shippedAt = new Date();
     }
 
@@ -2485,16 +2573,47 @@ export const markShipmentShippedByTransporter = async (req, res) => {
        UPDATE ORDER STATUS
     ========================= */
 
-    const allShipmentsShipped = order.shipments.every(
-      (item) =>
-        item.shipmentStatus === "shipped" ||
-        item.shipmentStatus === "delivered" ||
-        item.shipmentStatus === "completed",
+    /* =========================
+   PARTIALLY SHIPPED
+========================= */
+
+    const hasShippedShipments = order.shipments.some((item) =>
+      ["shipped", "in_transit", "delivered", "completed"].includes(
+        item.shipmentStatus,
+      ),
     );
 
-    if (allShipmentsShipped) {
-      order.orderStatus = "shipped";
+    if (
+      hasShippedShipments &&
+      !["delivered", "completed"].includes(order.orderStatus)
+    ) {
+      order.orderStatus = "partially_shipped";
+    }
 
+    /* =========================
+   CHECK FULL SHIPPED QUANTITY
+========================= */
+
+    const allItemsFullyShipped = order.orderItems.every((orderItem) => {
+      const shippedQty = order.shipments
+        .filter(
+          (shipment) =>
+            shipment.selectedItem?.trim().toLowerCase() ===
+              orderItem.productName?.trim().toLowerCase() &&
+            ["shipped", "in_transit", "delivered", "completed"].includes(
+              shipment.shipmentStatus,
+            ),
+        )
+        .reduce(
+          (total, shipment) => total + Number(shipment.shippedQuantity || 0),
+          0,
+        );
+
+      return shippedQty >= Number(orderItem.requiredQuantity);
+    });
+
+    if (allItemsFullyShipped) {
+      order.orderStatus = "shipped";
       order.shippedAt = new Date();
     }
 
@@ -2910,6 +3029,33 @@ export const assignTransporterToShipment = async (req, res) => {
           `,
       )
       .populate("shipments.selectedQuoteId");
+      /* =========================
+   SEND EMAIL TO ASSIGNED TRANSPORTER
+========================= */
+
+const assignedShipment = updatedOrder.shipments.id(shipmentId);
+
+if (assignedShipment?.assignedTransporter?.email) {
+  sendTransporterAssignedEmail({
+    transporterEmail: assignedShipment.assignedTransporter.email,
+
+    transporterName: assignedShipment.assignedTransporter.fullName,
+
+    shipmentInvoiceId: assignedShipment.shipmentInvoiceId,
+
+    orderId: updatedOrder.orderId,
+
+    productName: assignedShipment.selectedItem,
+
+    shipmentFrom: assignedShipment.shipmentFrom,
+
+    shipmentTo: assignedShipment.shipmentTo,
+
+    quotedPrice: assignedShipment.transportPrice,
+
+    estimatedDeliveryDays: assignedShipment.estimatedDeliveryDays,
+  }).catch(console.error);
+}
 
     /* =========================
        RESPONSE
@@ -3178,6 +3324,49 @@ export const markShipmentShippedByAdmin = async (req, res) => {
     shipment.shipmentStatus = "shipped";
 
     shipment.pickedUpAt = new Date();
+    /* =========================
+   PARTIALLY SHIPPED
+========================= */
+
+    const hasShippedShipments = order.shipments.some((item) =>
+      ["shipped", "in_transit", "delivered", "completed"].includes(
+        item.shipmentStatus,
+      ),
+    );
+
+    if (
+      hasShippedShipments &&
+      !["delivered", "completed"].includes(order.orderStatus)
+    ) {
+      order.orderStatus = "partially_shipped";
+    }
+
+    /* =========================
+   CHECK FULL SHIPPED QUANTITY
+========================= */
+
+    const allItemsFullyShipped = order.orderItems.every((orderItem) => {
+      const shippedQty = order.shipments
+        .filter(
+          (shipment) =>
+            shipment.selectedItem?.trim().toLowerCase() ===
+              orderItem.productName?.trim().toLowerCase() &&
+            ["shipped", "in_transit", "delivered", "completed"].includes(
+              shipment.shipmentStatus,
+            ),
+        )
+        .reduce(
+          (total, shipment) => total + Number(shipment.shippedQuantity || 0),
+          0,
+        );
+
+      return shippedQty >= Number(orderItem.requiredQuantity);
+    });
+
+    if (allItemsFullyShipped) {
+      order.orderStatus = "shipped";
+      order.shippedAt = new Date();
+    }
 
     await order.save();
 
@@ -4114,13 +4303,15 @@ export const getBuyerOrders = async (req, res) => {
       orders = orders.filter((order) => {
         const shipments = (order.shipments || []).filter(
           (shipment) =>
+            shipment.shipmentStatus === "packed" ||
+            shipment.shipmentStatus === "assigned" ||
             shipment.shipmentStatus === "shipped" ||
             shipment.shipmentStatus === "in_transit" ||
             shipment.shipmentStatus === "delivered" ||
-            shipment.shipmentStatus === "completed"
+            shipment.shipmentStatus === "completed",
         );
 
-        const totalShippedQuantity = shipments.reduce(
+        const totalPackedQuantity = shipments.reduce(
           (total, shipment) => total + Number(shipment.shippedQuantity || 0),
           0,
         );
@@ -4155,7 +4346,19 @@ export const getBuyerOrders = async (req, res) => {
         ========================= */
 
         if (filter === "in_progress") {
-          return order.orderStatus === "pending";
+          const shipmentStarted = (order.shipments || []).some(
+            (shipment) =>
+              shipment.shipmentStatus === "shipped" ||
+              shipment.shipmentStatus === "in_transit" ||
+              shipment.shipmentStatus === "delivered" ||
+              shipment.shipmentStatus === "completed",
+          );
+
+          return (
+            order.orderStatus === "pending" ||
+            order.orderStatus === "seller_confirmed" ||
+            (order.orderStatus === "transport_processing" && !shipmentStarted)
+          );
         }
 
         /* =========================
@@ -4165,8 +4368,8 @@ export const getBuyerOrders = async (req, res) => {
         if (filter === "partial_shipments") {
           return (
             shipments.length > 0 &&
-            totalShippedQuantity > 0 &&
-            totalShippedQuantity < totalRequiredQuantity
+            totalPackedQuantity > 0 &&
+            totalPackedQuantity < totalRequiredQuantity
           );
         }
 
@@ -4176,9 +4379,17 @@ export const getBuyerOrders = async (req, res) => {
         ========================= */
 
         if (filter === "shipped") {
+          const fullyShipped = totalPackedQuantity >= totalRequiredQuantity;
+
+          const shipmentStarted = shipments.some(
+            (shipment) =>
+              shipment.shipmentStatus === "shipped" ||
+              shipment.shipmentStatus === "in_transit",
+          );
+
           return (
-            shipments.length > 0 &&
-            totalShippedQuantity >= totalRequiredQuantity &&
+            fullyShipped &&
+            shipmentStarted &&
             order.orderStatus !== "delivered" &&
             order.orderStatus !== "completed"
           );
@@ -4983,13 +5194,13 @@ export const uploadTransportPaymentReceipt = async (req, res) => {
 export const getOrderDetailsForInvoice = async (req, res) => {
   try {
     const { orderId } = req.params;
-    
+
     const order = await Order.findById(orderId)
       // Populate Buyer/Seller profile
       .populate("buyer", "fullName email phone businessProfile")
       .populate("seller", "fullName email phone businessProfile")
       // Populate Product Details for each item
-      .populate("orderItems.product", "productName category") 
+      .populate("orderItems.product", "productName category")
       // Populate Transporter details
       .populate("shipments.assignedTransporter", "fullName companyName phone")
       // Populate Receipts (using the order fields)
@@ -4998,7 +5209,10 @@ export const getOrderDetailsForInvoice = async (req, res) => {
       .populate("sellerPaymentReceipts.uploadedBy", "fullName")
       .populate("sellerPaymentReceipts.verifiedBy", "fullName");
 
-    if (!order) return res.status(404).json({ success: false, message: "Order not found" });
+    if (!order)
+      return res
+        .status(404)
+        .json({ success: false, message: "Order not found" });
 
     res.status(200).json({ success: true, order });
   } catch (error) {
@@ -5012,53 +5226,26 @@ export const downloadOrderHistoryPdf = async (req, res) => {
     const { orderId } = req.params;
 
     const order = await Order.findById(orderId)
-      .populate(
-        "buyer",
-        "fullName email phone businessProfile"
-      )
-      .populate(
-        "seller",
-        "fullName email phone businessProfile"
-      )
-      .populate(
-        "orderItems.product",
-        "productName category"
-      )
+      .populate("buyer", "fullName email phone businessProfile")
+      .populate("seller", "fullName email phone businessProfile")
+      .populate("orderItems.product", "productName category")
       .populate(
         "shipments.assignedTransporter",
-        "fullName email phone companyName"
+        "fullName email phone companyName",
       )
-      .populate(
-        "buyerPaymentReceipts.uploadedBy",
-        "fullName"
-      )
-      .populate(
-        "buyerPaymentReceipts.verifiedBy",
-        "fullName"
-      )
-      .populate(
-        "sellerPaymentReceipts.uploadedBy",
-        "fullName"
-      )
-      .populate(
-        "sellerPaymentReceipts.verifiedBy",
-        "fullName"
-      )
-      .populate(
-        "shipments.transportPaymentReceipts.uploadedBy",
-        "fullName"
-      )
-      .populate(
-        "shipments.transportPaymentReceipts.verifiedBy",
-        "fullName"
-      )
+      .populate("buyerPaymentReceipts.uploadedBy", "fullName")
+      .populate("buyerPaymentReceipts.verifiedBy", "fullName")
+      .populate("sellerPaymentReceipts.uploadedBy", "fullName")
+      .populate("sellerPaymentReceipts.verifiedBy", "fullName")
+      .populate("shipments.transportPaymentReceipts.uploadedBy", "fullName")
+      .populate("shipments.transportPaymentReceipts.verifiedBy", "fullName")
       .populate(
         "shipments.adminTransportPaymentReceipts.uploadedBy",
-        "fullName"
+        "fullName",
       )
       .populate(
         "shipments.adminTransportPaymentReceipts.verifiedBy",
-        "fullName"
+        "fullName",
       );
 
     if (!order) {
@@ -5068,24 +5255,13 @@ export const downloadOrderHistoryPdf = async (req, res) => {
       });
     }
 
-    const shipmentQuotes =
-      await ShipmentTransportQuote.find({
-        orderId: order._id,
-      }).populate(
-        "transporter",
-        "fullName phone companyName"
-      );
+    const shipmentQuotes = await ShipmentTransportQuote.find({
+      orderId: order._id,
+    }).populate("transporter", "fullName phone companyName");
 
-    const pdfBuffer =
-      await generateOrderHistoryPdf(
-        order,
-        shipmentQuotes,
-      );
+    const pdfBuffer = await generateOrderHistoryPdf(order, shipmentQuotes);
 
-    res.setHeader(
-      "Content-Type",
-      "application/pdf",
-    );
+    res.setHeader("Content-Type", "application/pdf");
 
     res.setHeader(
       "Content-Disposition",

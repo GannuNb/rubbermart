@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Order Confirmed</title>
+</head>
+
+<body
+  style="
+    margin:0;
+    padding:0;
+    background:#f4f7fb;
+    font-family:Arial,Helvetica,sans-serif;
+  "
+>
+  <table width="100%" cellpadding="0" cellspacing="0">
+    <tr>
+      <td align="center">
+
+        <table
+          width="650"
+          cellpadding="0"
+          cellspacing="0"
+          style="
+            background:#ffffff;
+            margin:30px auto;
+            border-radius:12px;
+            overflow:hidden;
+            border:1px solid #e5e7eb;
+          "
+        >
+
+          <!-- Header -->
+          <tr>
+            <td
+              style="
+                background:#0b5ed7;
+                color:#fff;
+                padding:30px;
+                text-align:center;
+              "
+            >
+              <h1 style="margin:0;">
+                Rubber Scrap Mart
+              </h1>
+
+              <p style="margin-top:8px;">
+                Order Confirmation
+              </p>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:35px;">
+
+              <h2 style="margin-top:0;">
+                Hello <%= buyerName %>,
+              </h2>
+
+              <p style="font-size:16px; line-height:1.7;">
+                Your seller has successfully confirmed your order.
+                Thank you for choosing Rubber Scrap Mart.
+              </p>
+
+              <table
+                width="100%"
+                cellpadding="10"
+                cellspacing="0"
+                style="
+                  margin:25px 0;
+                  border:1px solid #ddd;
+                  border-collapse:collapse;
+                "
+              >
+                <tr>
+                  <td><strong>Order ID</strong></td>
+                  <td><%= orderId %></td>
+                </tr>
+
+                <tr>
+                  <td><strong>Seller</strong></td>
+                  <td><%= sellerName %></td>
+                </tr>
+
+                <tr>
+                  <td><strong>Total Amount</strong></td>
+                  <td>₹ <%= totalAmount %></td>
+                </tr>
+
+                <tr>
+                  <td><strong>Status</strong></td>
+                  <td>Seller Confirmed</td>
+                </tr>
+              </table>
+
+              <div
+                style="
+                  background:#fff8e6;
+                  border-left:5px solid #f59e0b;
+                  padding:18px;
+                  border-radius:8px;
+                  margin:25px 0;
+                "
+              >
+                <strong>Important Payment Notice</strong>
+
+                <p style="margin-bottom:0; line-height:1.7;">
+                  Please complete your payment within
+                  <strong>48 hours</strong>.
+                  If payment is not received within this period,
+                  your order may be cancelled automatically according
+                  to Rubber Scrap Mart's order policy.
+                </p>
+              </div>
+
+              <p style="line-height:1.8;">
+                Once your payment is verified, the shipment process
+                will begin and you can track the progress directly
+                from your dashboard.
+              </p>
+
+              <div style="text-align:center; margin-top:35px;">
+                <a
+                  href="<%= frontendUrl %>/buyer/orders"
+                  style="
+                    background:#0b5ed7;
+                    color:#fff;
+                    text-decoration:none;
+                    padding:14px 28px;
+                    border-radius:8px;
+                    display:inline-block;
+                    font-weight:bold;
+                  "
+                >
+                  View My Orders
+                </a>
+              </div>
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td
+              style="
+                background:#f3f4f6;
+                text-align:center;
+                padding:25px;
+                color:#666;
+                font-size:14px;
+              "
+            >
+              © <%= new Date().getFullYear() %> Rubber Scrap Mart<br>
+
+              This is an automated email.
+              Please do not reply directly to this message.
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

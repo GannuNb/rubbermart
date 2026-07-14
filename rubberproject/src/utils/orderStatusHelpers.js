@@ -67,12 +67,14 @@ export const getDisplayStatus = (order) => {
 
   // ✅ ORDER CONFIRMED (before shipment)
   if (
-    order.orderStatus === "seller_confirmed" ||
-    order.orderStatus === "partially_shipped" ||
-    order.orderStatus === "shipped"
-  ) {
-    return "Confirmed Order";
-  }
+  order.orderStatus === "seller_confirmed" ||
+  (
+    order.orderStatus === "transport_processing" &&
+    totalShippedQuantity === 0
+  )
+) {
+  return "Confirmed Order";
+}
 
   return "Placed Order";
 };
@@ -113,13 +115,15 @@ if (
     return styles.partialProgress;
   }
 
-  if (
-    order.orderStatus === "seller_confirmed" ||
-    order.orderStatus === "partially_shipped" ||
-    order.orderStatus === "shipped"
-  ) {
-    return styles.confirmedProgress;
-  }
+ if (
+  order.orderStatus === "seller_confirmed" ||
+  (
+    order.orderStatus === "transport_processing" &&
+    totalShippedQuantity === 0
+  )
+) {
+  return styles.confirmedProgress;
+}
 
   return styles.pendingProgress;
 };
@@ -172,17 +176,19 @@ export const getProgressLabels = (order) => {
   }
 
   if (
-    order.orderStatus === "seller_confirmed" ||
-    order.orderStatus === "partially_shipped" ||
-    order.orderStatus === "shipped"
-  ) {
-    return [
-      "Placed Order",
-      "Confirmed Order",
-      "Shipment Pending",
-      "Delivery Pending",
-    ];
-  }
+  order.orderStatus === "seller_confirmed" ||
+  (
+    order.orderStatus === "transport_processing" &&
+    totalShippedQuantity === 0
+  )
+) {
+  return [
+    "Placed Order",
+    "Confirmed Order",
+    "Shipment Pending",
+    "Delivery Pending",
+  ];
+}
 
   return [
     "Placed Order",
