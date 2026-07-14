@@ -1,20 +1,13 @@
 // src/pages/transporter/TransporterAssignedShipments.jsx
-
 import React, { useEffect, useState } from "react";
-
 import { useDispatch, useSelector } from "react-redux";
-
 import { getAssignedShipmentsThunk } from "../../redux/slices/transporter/getAssignedShipmentsThunk";
-
 import { markShipmentShippedThunk } from "../../redux/slices/transporter/markShipmentShippedThunk";
-
 import styles from "./TransporterAssignedShipments.module.css";
 
 function TransporterAssignedShipments() {
   const dispatch = useDispatch();
-
   const [activeShipmentId, setActiveShipmentId] = useState(null);
-
   const {
     assignedShipments,
     assignedShipmentsLoading,
@@ -250,8 +243,12 @@ function TransporterAssignedShipments() {
                 >
                   {assignedShipments.map((item) => {
                     const shipment = item.shipment;
-
                     const transportQuote = item.transportQuote;
+
+                    const hasWeightTicket = !!shipment?.weightTicket?.data;
+                    const hasPackedPhoto = !!shipment?.packedItemPhoto?.data;
+
+                    const canMarkAsShipped = hasWeightTicket && hasPackedPhoto;
 
                     const isCurrentMarking =
                       markShippedLoading && activeShipmentId === shipment?._id;
@@ -352,9 +349,9 @@ function TransporterAssignedShipments() {
                                 ₹{" "}
                                 {Number(
                                   shipment?.transportFinalAmount ||
-                                    shipment?.transportPrice ||
-                                    transportQuote?.quotedPrice ||
-                                    0,
+                                  shipment?.transportPrice ||
+                                  transportQuote?.quotedPrice ||
+                                  0,
                                 ).toLocaleString("en-IN")}
                               </span>
                             </div>
@@ -514,15 +511,30 @@ function TransporterAssignedShipments() {
                               Shipped
                             </button>
                           ) : (
-                            <button
-                              className={styles.btnShippedAction}
-                              onClick={() => handleMarkShipped(item)}
-                              disabled={isCurrentMarking}
-                            >
-                              {isCurrentMarking
-                                ? "Updating..."
-                                : "Mark As Shipped"}
-                            </button>
+                            <>
+                              <button
+                                className={styles.btnShippedAction}
+                                onClick={() => handleMarkShipped(item)}
+                                disabled={isCurrentMarking || !canMarkAsShipped}
+                              >
+                                {isCurrentMarking
+                                  ? "Updating..."
+                                  : "Mark As Shipped"}
+                              </button>
+
+                              {!canMarkAsShipped && (
+                                <div
+                                  style={{
+                                    fontSize: "12px",
+                                    color: "#dc3545",
+                                    marginTop: "6px",
+                                    lineHeight: "1.4",
+                                  }}
+                                >
+                                  Wait until the seller uploads proof documents.
+                                </div>
+                              )}
+                            </>
                           )}
                         </td>
                       </tr>

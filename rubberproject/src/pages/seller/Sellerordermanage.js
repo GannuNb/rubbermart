@@ -244,15 +244,6 @@ const Sellerordermanage = () => {
                 <strong>₹ {selectedOrder.totalAmount}</strong>
               </div>
 
-              <div className={styles.infoItem}>
-                <span>Buyer Name</span>
-                <strong>{selectedOrder.buyer?.fullName}</strong>
-              </div>
-
-              <div className={styles.infoItem}>
-                <span>Buyer Email</span>
-                <strong>{selectedOrder.buyer?.email}</strong>
-              </div>
             </div>
           </div>
        

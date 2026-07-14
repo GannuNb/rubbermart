@@ -6,7 +6,7 @@ import styles from "../../styles/Seller/SellerShipmentSection.module.css";
 const SellerShipmentSection = ({ selectedOrder }) => {
   return (
     <div className={styles.section}>
-      <h2 className={styles.heading}>Shipment Details</h2>
+      <h2 className={styles.heading}>Package Details for Shipment</h2>
 
       <SellerShipmentForm selectedOrder={selectedOrder} />
 
