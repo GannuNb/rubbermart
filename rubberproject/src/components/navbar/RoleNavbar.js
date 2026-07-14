@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { FaBars, FaTimes, FaUserCircle } from "react-icons/fa";
 import { logoutUser } from "../../redux/slices/authSlice";
-
+import { Link } from "react-router-dom"; // Ensure this is imported
 import styles from "../../styles/Navbar/RoleNavbar.module.css";
 
 // Sub-components
@@ -106,14 +106,17 @@ function RoleNavbar() {
 
               {!isGuest ? (
                 <div className={styles.userActionsGroup}>
-                  {/* Separate Greeting Pill */}
-                  <div className={styles.userGreetingPill}>
-                    <FaUserCircle className={styles.userIcon} />
-                    <span className={styles.greetingText}>
-                      Hi, {getUserGreetingName()}
-                    </span>
-                  </div>
-                  {/* Separate Logout Button for Laptops */}
+                  {/* Wrap the greeting pill in a Link */}
+                  <Link to="/seller-profile" className={styles.userGreetingLink}>
+                    <div className={styles.userGreetingPill}>
+                      <FaUserCircle className={styles.userIcon} />
+                      <span className={styles.greetingText}>
+                        Hi, {getUserGreetingName()}
+                      </span>
+                    </div>
+                  </Link>
+
+                  {/* Separate Logout Button */}
                   <div className={styles.desktopLogoutContainer}>
                     <LogoutButton onLogout={handleLogout} />
                   </div>

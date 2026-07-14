@@ -189,7 +189,7 @@ const SellerShipmentForm = ({ selectedOrder }) => {
 
   return (
     <div className={styles.section}>
-      <h2 className={styles.heading}>Raise Weight Ticket</h2>
+      <h2 className={styles.heading}>Raise Package Details for Transport Quote</h2>
 
       {shipmentSuccess && (
         <div className={styles.success}>{shipmentSuccess}</div>
@@ -243,7 +243,7 @@ const SellerShipmentForm = ({ selectedOrder }) => {
             ? "Please Accept Order Before Shipment"
             : selectedOrderItem && remainingQuantity <= 0
               ? "Fully Shipped"
-              : "Submit Shipment Details"}
+              : "Submit Package Details"}
       </button>
     </div>
   );

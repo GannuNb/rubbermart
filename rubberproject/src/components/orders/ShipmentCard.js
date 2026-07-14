@@ -29,7 +29,7 @@ const ShipmentCard = ({ shipment, orderId }) => {
 
   const [weightTicket, setWeightTicket] = useState(null);
 
-  const { shipmentLoading,markDeliveredLoading, markShippedLoading, activeShipmentId } =
+  const { shipmentLoading, markDeliveredLoading, markShippedLoading, activeShipmentId } =
     useSelector((state) => state.sellerOrders);
 
   /* =========================
@@ -256,8 +256,8 @@ const ShipmentCard = ({ shipment, orderId }) => {
               ₹{" "}
               {Number(
                 shipment?.transportFinalAmount ||
-                  shipment?.adminAssignedPrice ||
-                  0,
+                shipment?.adminAssignedPrice ||
+                0,
               ).toLocaleString("en-IN")}
             </strong>
           </div>
@@ -282,77 +282,52 @@ const ShipmentCard = ({ shipment, orderId }) => {
               UPLOAD PROOFS
           ========================= */}
 
-          {shipment.transportStatus === "transporter_assigned" &&
-            !hasDocuments && (
-              <div className={styles.uploadSection}>
-                <h4 className={styles.uploadHeading}>Upload Shipment Proofs</h4>
+          {shipment.transportStatus === "transporter_assigned" && !hasDocuments && (
+            <div className={styles.uploadSection}>
+              <h4 className={styles.uploadHeading}>Upload Shipment Proofs</h4>
 
-                {/* PACKED PHOTO */}
-
+              <div className={styles.inputGroup}>
                 <div className={styles.uploadField}>
                   <label>Packed Item Photo</label>
-
-                  <input
-                    type="file"
-                    accept="image/*,.pdf"
-                    onChange={(e) => setPackedItemPhoto(e.target.files[0])}
-                  />
+                  <input type="file" onChange={(e) => setPackedItemPhoto(e.target.files[0])} />
                 </div>
-
-                {/* WEIGHT TICKET */}
 
                 <div className={styles.uploadField}>
                   <label>Weight Ticket</label>
-
-                  <input
-                    type="file"
-                    accept="image/*,.pdf"
-                    onChange={(e) => setWeightTicket(e.target.files[0])}
-                  />
+                  <input type="file" onChange={(e) => setWeightTicket(e.target.files[0])} />
                 </div>
-
-                <button
-                  type="button"
-                  className={styles.uploadButton}
-                  onClick={handleUploadProofs}
-                  disabled={shipmentLoading}
-                >
-                  {shipmentLoading ? "Uploading..." : "Upload Proof Documents"}
-                </button>
               </div>
-            )}
+
+              <button className={styles.uploadButton} onClick={handleUploadProofs}>
+                Upload Documents
+              </button>
+            </div>
+          )}
 
           {/* FILES */}
+          {(shipment?.weightTicket?.data || shipment?.packedItemPhoto?.data) && (
+            <div className={styles.fileButtons}>
+              {shipment?.weightTicket?.data && (
+                <button
+                  type="button"
+                  className={styles.viewButton}
+                  onClick={() => handleOpenFile(shipment.weightTicket, "Weight Ticket")}
+                >
+                  View Weight Ticket
+                </button>
+              )}
 
-          <div className={styles.fileButtons}>
-            {/* WEIGHT */}
-
-            {shipment?.weightTicket?.data && (
-              <button
-                type="button"
-                className={styles.viewButton}
-                onClick={() =>
-                  handleOpenFile(shipment.weightTicket, "Weight Ticket")
-                }
-              >
-                View Weight Ticket
-              </button>
-            )}
-
-            {/* PHOTO */}
-
-            {shipment?.packedItemPhoto?.data && (
-              <button
-                type="button"
-                className={styles.viewButton}
-                onClick={() =>
-                  handleOpenFile(shipment.packedItemPhoto, "Packed Item Photo")
-                }
-              >
-                View Packed Photo
-              </button>
-            )}
-          </div>
+              {shipment?.packedItemPhoto?.data && (
+                <button
+                  type="button"
+                  className={styles.viewButton}
+                  onClick={() => handleOpenFile(shipment.packedItemPhoto, "Packed Item Photo")}
+                >
+                  View Packed Photo
+                </button>
+              )}
+            </div>
+          )}
 
           {/* =========================
               MARK SHIPPED
@@ -404,6 +379,7 @@ const ShipmentCard = ({ shipment, orderId }) => {
                   : "Mark As Delivered"}
             </button>
           )}
+          
         </div>
       )}
     </div>
