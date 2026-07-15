@@ -66,13 +66,7 @@ export const getDisplayStatus = (order) => {
   }
 
   // ✅ ORDER CONFIRMED (before shipment)
-  if (
-  order.orderStatus === "seller_confirmed" ||
-  (
-    order.orderStatus === "transport_processing" &&
-    totalShippedQuantity === 0
-  )
-) {
+if (order.orderStatus === "seller_confirmed") {
   return "Confirmed Order";
 }
 
@@ -115,13 +109,7 @@ if (
     return styles.partialProgress;
   }
 
- if (
-  order.orderStatus === "seller_confirmed" ||
-  (
-    order.orderStatus === "transport_processing" &&
-    totalShippedQuantity === 0
-  )
-) {
+ if (order.orderStatus === "seller_confirmed") {
   return styles.confirmedProgress;
 }
 
@@ -175,13 +163,7 @@ export const getProgressLabels = (order) => {
     ];
   }
 
-  if (
-  order.orderStatus === "seller_confirmed" ||
-  (
-    order.orderStatus === "transport_processing" &&
-    totalShippedQuantity === 0
-  )
-) {
+  if (order.orderStatus === "seller_confirmed") {
   return [
     "Placed Order",
     "Confirmed Order",

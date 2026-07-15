@@ -56,43 +56,78 @@ function OrderItemsSection({ order, onReviewSubmitted }) {
 
     const remainingQty = Math.max(requiredQty - shippedQty, 0);
 
-    if (order.orderStatus === "delivered") {
-      return {
-        stage: 4,
-        label: "Delivered",
-        type: "delivered",
-        shippedQty,
-        remainingQty,
-      };
-    }
+/* =========================
+   ITEM DELIVERY STATUS
+========================= */
 
-    if (shippedQty === 0) {
-      return {
-        stage: 1,
-        label: "Order Confirmed",
-        type: "confirmed",
-        shippedQty,
-        remainingQty,
-      };
-    }
+const deliveredQty = order.shipments
+  ?.filter(
+    (shipment) =>
+      shipment.selectedItem === item.productName &&
+      (
+        shipment.shipmentStatus === "delivered" ||
+        shipment.shipmentStatus === "completed"
+      )
+  )
+  .reduce(
+    (total, shipment) =>
+      total + Number(shipment.shippedQuantity || 0),
+    0,
+  ) || 0;
 
-    if (shippedQty < requiredQty) {
-      return {
-        stage: 2,
-        label: "Partial Shipment",
-        type: "partial",
-        shippedQty,
-        remainingQty,
-      };
-    }
+/* =========================
+   FULLY DELIVERED
+========================= */
 
-    return {
-      stage: 3,
-      label: "Shipped",
-      type: "shipped",
-      shippedQty,
-      remainingQty: 0,
-    };
+if (deliveredQty >= requiredQty) {
+  return {
+    stage: 4,
+    label: "Delivered",
+    type: "delivered",
+    shippedQty,
+    remainingQty: 0,
+  };
+}
+
+/* =========================
+   NOT SHIPPED
+========================= */
+
+if (shippedQty === 0) {
+  return {
+    stage: 1,
+    label: "Order Confirmed",
+    type: "confirmed",
+    shippedQty,
+    remainingQty,
+  };
+}
+
+/* =========================
+   PARTIAL SHIPMENT
+========================= */
+
+if (shippedQty < requiredQty) {
+  return {
+    stage: 2,
+    label: "Partial Shipment",
+    type: "partial",
+    shippedQty,
+    remainingQty,
+  };
+}
+
+/* =========================
+   FULLY SHIPPED
+========================= */
+
+return {
+  stage: 3,
+  label: "Shipped",
+  type: "shipped",
+  shippedQty,
+  remainingQty: 0,
+};
   };
 
   const getProgressWidth = (stage) => {

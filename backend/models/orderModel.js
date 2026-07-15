@@ -120,7 +120,6 @@ const orderSchema = new mongoose.Schema(
         "seller_confirmed",
         "partially_shipped",
         "shipped",
-        "transport_processing",
         "delivered",
         "completed",
         "cancelled",

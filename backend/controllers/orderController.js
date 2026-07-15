@@ -621,33 +621,6 @@ export const addShipmentToOrder = async (req, res) => {
 
     const shipmentInvoiceId = await generateShipmentInvoiceId();
 
-    /* =========================
-       FILE BUFFER
-    ========================= */
-
-    /* =========================
-   FILES
-========================= */
-
-    // const packedItemPhoto = req.files?.packedItemPhoto?.[0]
-    //   ? {
-    //       data: req.files.packedItemPhoto[0].buffer,
-
-    //       contentType: req.files.packedItemPhoto[0].mimetype,
-
-    //       originalName: req.files.packedItemPhoto[0].originalname,
-    //     }
-    //   : null;
-
-    // const weightTicket = req.files?.weightTicket?.[0]
-    //   ? {
-    //       data: req.files.weightTicket[0].buffer,
-
-    //       contentType: req.files.weightTicket[0].mimetype,
-
-    //       originalName: req.files.weightTicket[0].originalname,
-    //     }
-    //   : null;
 
     /* =========================
        NEW SHIPMENT OBJECT
@@ -668,10 +641,6 @@ export const addShipmentToOrder = async (req, res) => {
       selectedSubProducts: Array.isArray(selectedSubProducts)
         ? selectedSubProducts
         : [],
-
-      // packedItemPhoto,
-
-      // weightTicket,
 
       /* =========================
         TRANSPORT WORKFLOW
@@ -1193,15 +1162,30 @@ export const markShipmentDeliveredBySeller = async (req, res) => {
        CHECK ALL DELIVERED
     ========================= */
 
-    const allShipmentsDelivered = order.shipments.every(
-      (item) => item.shipmentStatus === "delivered",
+    /* =========================
+   CHECK ALL ORDER ITEMS FULLY DELIVERED
+========================= */
+
+const allItemsFullyDelivered = order.orderItems.every((orderItem) => {
+  const deliveredQty = order.shipments
+    .filter(
+      (shipment) =>
+        shipment.selectedItem?.trim().toLowerCase() ===
+          orderItem.productName?.trim().toLowerCase() &&
+        ["delivered", "completed"].includes(shipment.shipmentStatus),
+    )
+    .reduce(
+      (total, shipment) => total + Number(shipment.shippedQuantity || 0),
+      0,
     );
 
-    if (allShipmentsDelivered) {
-      order.orderStatus = "delivered";
+  return deliveredQty >= Number(orderItem.requiredQuantity);
+});
 
-      order.deliveredAt = new Date();
-    }
+if (allItemsFullyDelivered) {
+  order.orderStatus = "delivered";
+  order.deliveredAt = new Date();
+}
 
     await order.save();
     /* =========================
@@ -1486,13 +1470,6 @@ export const submitTransportQuote = async (req, res) => {
       shipment.transportStatus = "quotes_received";
     }
 
-    /* =========================
-       UPDATE ORDER STATUS
-    ========================= */
-
-    if (["seller_confirmed", "partially_shipped"].includes(order.orderStatus)) {
-      order.orderStatus = "transport_processing";
-    }
 
     /* =========================
        SAVE ORDER
@@ -3119,13 +3096,6 @@ export const assignTransporterToShipment = async (req, res) => {
       },
     });
 
-    /* =========================
-       UPDATE ORDER STATUS
-    ========================= */
-
-    if (["seller_confirmed", "partially_shipped"].includes(order.orderStatus)) {
-      order.orderStatus = "transport_processing";
-    }
 
     /* =========================
        SAVE ORDER
@@ -3458,14 +3428,105 @@ export const markShipmentShippedByAdmin = async (req, res) => {
     ========================= */
     shipment.shipmentStatus = "shipped";
     shipment.pickedUpAt = new Date();
+    /* =========================
+   PARTIALLY SHIPPED
+========================= */
+
+const hasShippedShipments = order.shipments.some((item) =>
+  ["shipped", "in_transit", "delivered", "completed"].includes(
+    item.shipmentStatus,
+  ),
+);
+
+if (
+  hasShippedShipments &&
+  !["delivered", "completed"].includes(order.orderStatus)
+) {
+  order.orderStatus = "partially_shipped";
+}
+
+/* =========================
+   CHECK FULL SHIPPED QUANTITY
+========================= */
+
+const allItemsFullyShipped = order.orderItems.every((orderItem) => {
+  const shippedQty = order.shipments
+    .filter(
+      (shipment) =>
+        shipment.selectedItem?.trim().toLowerCase() ===
+          orderItem.productName?.trim().toLowerCase() &&
+        ["shipped", "in_transit", "delivered", "completed"].includes(
+          shipment.shipmentStatus,
+        ),
+    )
+    .reduce(
+      (total, shipment) => total + Number(shipment.shippedQuantity || 0),
+      0,
+    );
+
+  return shippedQty >= Number(orderItem.requiredQuantity);
+});
+
+if (allItemsFullyShipped) {
+  order.orderStatus = "shipped";
+  order.shippedAt = new Date();
+}
 
     await order.save();
+    /* =========================
+   UPDATED ORDER
+========================= */
+
+const updatedOrder = await Order.findById(orderId)
+  .populate(
+    "buyer",
+    `
+    fullName
+    email
+    `,
+  )
+  .populate(
+    "shipments.assignedTransporter",
+    `
+    fullName
+    email
+    `,
+  );
+
+const updatedShipment = updatedOrder.shipments.id(shipmentId);
+
+/* =========================
+   SEND BUYER EMAIL
+========================= */
+
+if (updatedOrder?.buyer?.email) {
+  sendShipmentShippedEmail({
+    buyerEmail: updatedOrder.buyer.email,
+
+    buyerName: updatedOrder.buyer.fullName,
+
+    orderId: updatedOrder.orderId,
+
+    shipmentInvoiceId: updatedShipment.shipmentInvoiceId,
+
+    productName: updatedShipment.selectedItem,
+
+    shippedQuantity: updatedShipment.shippedQuantity,
+
+    shipmentFrom: updatedShipment.shipmentFrom,
+
+    shipmentTo: updatedShipment.shipmentTo,
+
+    transporterName:
+      updatedShipment.assignedTransporter?.fullName || "Transport Partner",
+  }).catch(console.error);
+}
 
     return res.status(200).json({
-      success: true,
-      message: "Shipment marked as shipped",
-      order,
-    });
+  success: true,
+  message: "Shipment marked as shipped",
+  order: updatedOrder,
+});
   } catch (error) {
     console.error("Admin Mark Shipment Shipped Error:", error);
 
@@ -4006,23 +4067,95 @@ export const markShipmentDeliveredByAdmin = async (req, res) => {
     }
 
     /* =========================
-       MARK SINGLE SHIPMENT
-    ========================= */
-    shipment.shipmentStatus = "delivered";
-    shipment.deliveredAt = new Date();
+   MARK SINGLE SHIPMENT
+========================= */
 
-    // ... (rest of your logic for allItemsDelivered and email)
-    
-    await order.save();
+shipment.shipmentStatus = "delivered";
 
-    // ... (email logic and response)
-    
-    return res.status(200).json({
-      success: true,
-      message: "Shipment marked as delivered",
-      order,
-      shipment,
-    });
+shipment.deliveredAt = new Date();
+
+/* =========================
+   CHECK ALL ORDER ITEMS FULLY DELIVERED
+========================= */
+
+const allItemsDelivered = order.orderItems.every((orderItem) => {
+  const deliveredQty = order.shipments
+    .filter(
+      (shipmentItem) =>
+        shipmentItem.selectedItem?.trim()?.toLowerCase() ===
+          orderItem.productName?.trim()?.toLowerCase() &&
+        ["delivered", "completed"].includes(
+          shipmentItem.shipmentStatus,
+        ),
+    )
+    .reduce(
+      (total, shipmentItem) =>
+        total + Number(shipmentItem.shippedQuantity || 0),
+      0,
+    );
+
+  return deliveredQty >= Number(orderItem.requiredQuantity);
+});
+
+/* =========================
+   UPDATE MAIN ORDER STATUS
+========================= */
+
+if (allItemsDelivered) {
+  order.orderStatus = "delivered";
+
+  order.deliveredAt = new Date();
+}
+
+/* =========================
+   SAVE ORDER
+========================= */
+
+await order.save();
+
+/* =========================
+   SEND BUYER EMAIL
+========================= */
+
+const updatedShipment = order.shipments.id(shipmentId);
+
+if (order?.buyer?.email) {
+  sendShipmentDeliveredEmail({
+    buyerEmail: order.buyer.email,
+
+    buyerName: order.buyer.fullName,
+
+    orderId: order.orderId,
+
+    shipmentInvoiceId: updatedShipment.shipmentInvoiceId,
+
+    productName: updatedShipment.selectedItem,
+
+    shippedQuantity: updatedShipment.shippedQuantity,
+
+    shipmentFrom: updatedShipment.shipmentFrom,
+
+    shipmentTo: updatedShipment.shipmentTo,
+
+    transporterName:
+      updatedShipment.assignedTransporter?.fullName ||
+      "Transport Partner",
+  }).catch(console.error);
+}
+
+/* =========================
+   RESPONSE
+========================= */
+
+return res.status(200).json({
+  success: true,
+
+  message: "Shipment marked as delivered",
+
+  order,
+
+  shipment,
+});
   } catch (error) {
     console.log("Mark Delivered Error:", error);
     return res.status(500).json({
@@ -4353,12 +4486,10 @@ export const getBuyerOrders = async (req, res) => {
       orders = orders.filter((order) => {
         const shipments = (order.shipments || []).filter(
           (shipment) =>
-            shipment.shipmentStatus === "packed" ||
-            shipment.shipmentStatus === "assigned" ||
             shipment.shipmentStatus === "shipped" ||
             shipment.shipmentStatus === "in_transit" ||
             shipment.shipmentStatus === "delivered" ||
-            shipment.shipmentStatus === "completed",
+            shipment.shipmentStatus === "completed"
         );
 
         const totalPackedQuantity = shipments.reduce(
@@ -4406,8 +4537,7 @@ export const getBuyerOrders = async (req, res) => {
 
           return (
             order.orderStatus === "pending" ||
-            order.orderStatus === "seller_confirmed" ||
-            (order.orderStatus === "transport_processing" && !shipmentStarted)
+            order.orderStatus === "seller_confirmed"
           );
         }
 
@@ -4724,7 +4854,6 @@ export const uploadBuyerPayment = async (req, res) => {
         "seller_confirmed",
         "partially_shipped",
         "shipped",
-        "transport_processing",
         "delivered",
         "completed",
       ].includes(order.orderStatus)
