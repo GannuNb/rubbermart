@@ -14,18 +14,24 @@ const AdminBuyerDetailsCard = ({ order }) => {
   
   const buyer = order?.buyer || {};
   const businessProfile = buyer?.businessProfile || {};
-  const firstAddress = buyer?.addresses?.[0] || {};
+  
+  // 1. Check order-specific shipping address first, fallback to user profile first address
+  const shippingAddress = order?.shippingAddress || buyer?.addresses?.[0] || {};
 
+  // 2. Build full address string dynamically handling both schema structures
   const fullAddress = [
-    firstAddress?.flatHouse,
-    firstAddress?.areaStreet,
-    firstAddress?.landmark,
-    firstAddress?.city,
-    firstAddress?.state,
-    firstAddress?.pincode,
+    shippingAddress?.flatHouse,
+    shippingAddress?.areaStreet,
+    shippingAddress?.landmark,
+    shippingAddress?.city,
+    shippingAddress?.state,
+    shippingAddress?.pincode,
   ]
     .filter(Boolean)
     .join(", ");
+
+  // 3. Fallback if shippingAddress is saved as a plain text string (e.g. legacy or business profile format)
+  const finalAddressDisplay = fullAddress || shippingAddress?.fullAddress || "-";
 
   return (
     <div className={styles.infoCard}>
@@ -77,7 +83,7 @@ const AdminBuyerDetailsCard = ({ order }) => {
                 <span>Phone Number</span>
               </div>
               <p className={styles.infoValue}>
-                {businessProfile?.phoneNumber || "-"}
+                {businessProfile?.phoneNumber || shippingAddress?.mobileNumber || buyer?.phoneNumber || "-"}
               </p>
             </div>
 
@@ -99,7 +105,7 @@ const AdminBuyerDetailsCard = ({ order }) => {
                 <span>Delivery Address</span>
               </div>
               <p className={styles.infoValue}>
-                {fullAddress || "-"}
+                {finalAddressDisplay}
               </p>
             </div>
           </div>

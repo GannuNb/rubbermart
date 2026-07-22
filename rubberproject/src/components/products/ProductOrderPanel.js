@@ -45,7 +45,7 @@ function ProductOrderPanel({ singleProduct }) {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
 
       const data = await response.json();
@@ -57,12 +57,9 @@ function ProductOrderPanel({ singleProduct }) {
           ...address,
           fullAddress:
             address.fullAddress ||
-            `${address.flatHouse || ""}${
-              address.areaStreet ? `, ${address.areaStreet}` : ""
-            }${address.landmark ? `, ${address.landmark}` : ""}${
-              address.city ? `, ${address.city}` : ""
-            }${address.state ? `, ${address.state}` : ""}${
-              address.pincode ? ` - ${address.pincode}` : ""
+            `${address.flatHouse || ""}${address.areaStreet ? `, ${address.areaStreet}` : ""
+            }${address.landmark ? `, ${address.landmark}` : ""}${address.city ? `, ${address.city}` : ""
+            }${address.state ? `, ${address.state}` : ""}${address.pincode ? ` - ${address.pincode}` : ""
             }`,
         }));
 
@@ -71,7 +68,7 @@ function ProductOrderPanel({ singleProduct }) {
         if (
           shippingAddress &&
           !allAddresses.some(
-            (address) => address.fullAddress === shippingAddress,
+            (address) => address.fullAddress === shippingAddress
           )
         ) {
           allAddresses = [
@@ -117,11 +114,43 @@ function ProductOrderPanel({ singleProduct }) {
     fetchBuyerAddresses();
   }, []);
 
-  const handleInputChange = (e) => {
-    setAddressForm({
-      ...addressForm,
-      [e.target.name]: e.target.value,
-    });
+  const handleInputChange = async (e) => {
+    const { name, value } = e.target;
+
+    // 1. Update the input field state immediately and reset city/state if pincode changes
+    setAddressForm((prev) => ({
+      ...prev,
+      [name]: value,
+      ...(name === "pincode" ? { city: "", state: "" } : {}),
+    }));
+
+    // 2. If the field is pincode and exactly 6 digits, trigger API call
+    if (name === "pincode" && value.length === 6) {
+      try {
+        const response = await fetch(`https://api.postalpincode.in/pincode/${value}`);
+        const data = await response.json();
+
+        if (data && data[0]?.Status === "Success") {
+          const postalInfo = data[0].PostOffice[0];
+
+          // postalInfo.Name gives the exact area/sub-office (e.g., Dharmavaram)
+          // postalInfo.District gives the broader district (e.g., Anantapur)
+          const exactArea = postalInfo.Name;
+          const district = postalInfo.District;
+
+          setAddressForm((prev) => ({
+            ...prev,
+            // You can combine them or use exactArea as the primary city field
+            city: `${exactArea}, ${district}`,
+            state: postalInfo.State || "",
+          }));
+        } else {
+          console.log("Invalid Pincode");
+        }
+      } catch (error) {
+        console.log("Error fetching location by pincode:", error);
+      }
+    }
   };
 
   const handleSaveAddress = async () => {
@@ -139,7 +168,7 @@ function ProductOrderPanel({ singleProduct }) {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(addressForm),
-        },
+        }
       );
 
       const data = await response.json();
@@ -181,19 +210,16 @@ function ProductOrderPanel({ singleProduct }) {
 
     if (!selectedAddress) {
       alert("Please select delivery address");
-
       return;
     }
 
     if (!quantity || quantity <= 0) {
       alert("Please enter valid quantity");
-
       return;
     }
 
     if (quantity > Number(singleProduct.quantity)) {
       alert("Required quantity cannot exceed available stock");
-
       return;
     }
 
@@ -202,30 +228,24 @@ function ProductOrderPanel({ singleProduct }) {
       Number(singleProduct.quantity) <= 0
     ) {
       alert("This product is currently out of stock");
-
       return;
     }
 
     const selectedAddressObject =
       buyerAddresses.find(
-        (address) => address.fullAddress?.trim() === selectedAddress?.trim(),
+        (address) => address.fullAddress?.trim() === selectedAddress?.trim()
       ) || buyerAddresses[0];
 
     if (!selectedAddressObject) {
       alert("Selected address not found");
-
       return;
     }
 
     const orderData = {
       sellerId: singleProduct.seller?._id || "",
-
       sellerName: singleProduct.seller?.businessProfile?.companyName || "",
-
       shippingAddress: selectedAddressObject,
-
       buyerGstNumber: buyerProfile?.businessProfile?.gstNumber || "",
-
       businessProfile: buyerProfile?.businessProfile || {},
       buyerEmail:
         buyerProfile?.email || buyerProfile?.businessProfile?.email || "",
@@ -233,50 +253,21 @@ function ProductOrderPanel({ singleProduct }) {
       orderItems: [
         {
           product: singleProduct._id || "",
-
           seller: singleProduct.seller?._id || "",
-
           category: singleProduct.category || "",
-
           application: singleProduct.application || "",
-
           requiredQuantity: quantity,
-
           pricePerMT: Number(singleProduct.pricePerMT || 0),
-
           subtotal: quantity * Number(singleProduct.pricePerMT || 0),
-
           loadingLocation: singleProduct.loadingLocation || "",
-
           hsnCode: singleProduct.hsnCode || "",
-
-          /*
-        ---------------------------------------
-        KEEP IMAGE
-        ---------------------------------------
-        */
-
           productImage: singleProduct.images?.[0]?.image || "",
-
           availableQuantity: Number(singleProduct.quantity || 0),
         },
       ],
     };
 
-    /*
-  ---------------------------------------
-  SAVE TO REDUX
-  ---------------------------------------
-  */
-
     dispatch(setOrderSummary(orderData));
-
-    /*
-  ---------------------------------------
-  NAVIGATE WITHOUT STATE
-  ---------------------------------------
-  */
-
     navigate("/order-summary");
   };
 
@@ -285,17 +276,6 @@ function ProductOrderPanel({ singleProduct }) {
       <div className={styles.sidePanelWrapper}>
         <div className={styles.businessCard}>
           <h3>Seller Information</h3>
-
-          {/* <div className={styles.businessBox}>
-            <FaBuilding className={styles.cardIcon} />
-            <div>
-              <span>Company Name</span>
-              <h4>
-                {singleProduct.seller?.businessProfile?.companyName ||
-                  "Not Available"}
-              </h4>
-            </div>
-          </div> */}
 
           <div className={styles.businessBox}>
             <FaBarcode className={styles.cardIcon} />
@@ -418,7 +398,7 @@ function ProductOrderPanel({ singleProduct }) {
             }
           >
             {singleProduct.stockStatus !== "available" ||
-            Number(singleProduct.quantity) <= 0
+              Number(singleProduct.quantity) <= 0
               ? "Currently Unavailable"
               : "Continue To Order"}
           </button>
