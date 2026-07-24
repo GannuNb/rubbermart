@@ -16,6 +16,7 @@ import styles from "./HowItWorksSection.module.css";
 function HowItWorksSection() {
   const navigate = useNavigate();
   const sectionRef = useRef(null);
+  const revealRefs = useRef([]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -26,11 +27,12 @@ function HowItWorksSection() {
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
-    const elements = sectionRef.current?.querySelectorAll(`.${styles.revealOnScroll}`);
-    elements?.forEach((el) => observer.observe(el));
+    revealRefs.current.forEach((el) => {
+      if (el) observer.observe(el);
+    });
 
     return () => observer.disconnect();
   }, []);
@@ -75,7 +77,10 @@ function HowItWorksSection() {
 
       <div className="container px-xl-4 px-lg-3 px-2">
         {/* HEADER */}
-        <div className={`${styles.headerSection} ${styles.revealOnScroll}`}>
+        <div
+          ref={(el) => (revealRefs.current[0] = el)}
+          className={`${styles.headerSection} ${styles.revealOnScroll}`}
+        >
           <div className={styles.topBadge}>
             <Sparkles size={14} className={styles.badgeIcon} />
             <span>SIMPLE, SECURE & TRANSPARENT</span>
@@ -87,7 +92,11 @@ function HowItWorksSection() {
         </div>
 
         {/* HORIZONTAL TRACK */}
-        <div className={`${styles.trackWrapper} ${styles.revealOnScroll}`} style={{ transitionDelay: "150ms" }}>
+        <div
+          ref={(el) => (revealRefs.current[1] = el)}
+          className={`${styles.trackWrapper} ${styles.revealOnScroll}`}
+          style={{ transitionDelay: "150ms" }}
+        >
           <div className={styles.trackLine}></div>
 
           {steps.map((step, index) => (
@@ -108,7 +117,11 @@ function HowItWorksSection() {
         </div>
 
         {/* GUIDE CARDS */}
-        <div className={`${styles.guideWrapper} ${styles.revealOnScroll}`} style={{ transitionDelay: "300ms" }}>
+        <div
+          ref={(el) => (revealRefs.current[2] = el)}
+          className={`${styles.guideWrapper} ${styles.revealOnScroll}`}
+          style={{ transitionDelay: "300ms" }}
+        >
           {/* BUYER */}
           <div className={styles.guideCard}>
             <div className={styles.guideLeft}>
@@ -137,7 +150,10 @@ function HowItWorksSection() {
               </div>
               <div className={styles.guideText}>
                 <h5 className={styles.greenText}>Seller Guide</h5>
-                <p>Learn how to expand your rubber business and reach buyers across India.</p>
+                <p>
+                  Learn how to expand your rubber business and reach buyers
+                  across India.
+                </p>
               </div>
             </div>
             <button
