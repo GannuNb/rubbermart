@@ -191,16 +191,13 @@ function OrderSummary() {
   return (
     <div className={styles.pageWrapper}>
       {/* HEADER */}
-
       <div className={styles.headerSection}>
         <div className={styles.headerTop}>
           <div className={styles.headerIcon}>
             <FaClipboardList />
           </div>
-
-          <div>
+          <div className={styles.headerText}>
             <h1>Order Summary</h1>
-
             <p>Review selected products before placing your order.</p>
           </div>
         </div>
@@ -217,7 +214,7 @@ function OrderSummary() {
               <FaStore />
             </div>
 
-            <h3>Information</h3>
+            <h3>Business Information</h3>
           </div>
 
           <div className={styles.infoRow}>
@@ -284,7 +281,7 @@ function OrderSummary() {
               <FaMapMarkerAlt />
             </div>
 
-            <h3>Delivery Address</h3>
+            <h3>Delivery Details</h3>
           </div>
 
           <div className={styles.infoRow}>

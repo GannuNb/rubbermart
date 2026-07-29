@@ -10,16 +10,43 @@
 HEADER
 ========================================= */
 
+
+
 .headerSection {
-  padding-bottom: 24px;
-  border-bottom: 1px solid #e5e7eb;
+  background: #ffffff;
+  border: 1px solid #ebe7f2;
+  border-radius: 20px;
+  padding: 10px 32px;
   margin-bottom: 32px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04), 0 2px 8px rgba(15, 23, 42, 0.03);
+  display: flex;
+  justify-content: center;
 }
 
 .headerTop {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 16px;
+}
+
+.headerText {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.headerSection h1 {
+  font-size: 28px;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.3px;
+  margin-bottom: 6px;
+}
+
+.headerSection p {
+  font-size: 16px;
+  color: #6b7280;
 }
 
 .headerIcon {
@@ -35,17 +62,7 @@ HEADER
   flex-shrink: 0;
 }
 
-.headerSection h1 {
-  font-size: 22px;
-  font-weight: 700;
-  color: #111827;
-  margin-bottom: 4px;
-}
 
-.headerSection p {
-  font-size: 15px;
-  color: #6b7280;
-}
 
 /* =========================================
 TOP GRID
@@ -86,8 +103,8 @@ TOP GRID
   align-items: center;
   gap: 16px;
 
-  padding-bottom: 18px;
-  margin-bottom: 26px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
 
   border-bottom: 1px solid #f1f1f1;
 }
@@ -143,7 +160,7 @@ INFO ROWS
 
   align-items: center;
 
-  padding: 16px 0;
+  padding: 8px 0;
 
   border-bottom: 1px dashed #ececec;
 }
@@ -283,12 +300,13 @@ PRODUCT CARD
 .quantityInput {
   width: 90px;
   height: 36px;
-  border: 1px solid #d1d5db;
+  border: 2px solid #7d3cb5; /* Highlights the border */
   border-radius: 8px;
   padding: 6px 10px;
   font-size: 15px;
   outline: none;
-  background: #ffffff;
+  background: #fdf8f6; /* Soft background highlight */
+  box-shadow: 0 0 0 3px rgba(125, 60, 181, 0.15); /* Glowing effect */
 }
 
 .quantityInput:focus {
