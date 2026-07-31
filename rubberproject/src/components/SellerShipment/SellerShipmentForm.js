@@ -187,9 +187,21 @@ const SellerShipmentForm = ({ selectedOrder }) => {
     });
   };
 
+  /* =========================
+   FULL PAYMENT CHECK
+========================= */
+
+  const isSellerFullyPaid =
+    Number(selectedOrder.sellerPendingAmount || 0) === 0 &&
+    selectedOrder.sellerPaymentStatus === "completed";
+
+  console.log("isSellerFullyPaid =", isSellerFullyPaid);
+
   return (
     <div className={styles.section}>
-      <h2 className={styles.heading}>Raise Package Details for Transport Quote</h2>
+      <h2 className={styles.heading}>
+        Raise Package Details for Transport Quote
+      </h2>
 
       {shipmentSuccess && (
         <div className={styles.success}>{shipmentSuccess}</div>
@@ -234,16 +246,19 @@ const SellerShipmentForm = ({ selectedOrder }) => {
         disabled={
           shipmentLoading ||
           (selectedOrderItem && remainingQuantity <= 0) ||
-          selectedOrder.orderStatus === "pending"
+          selectedOrder.orderStatus === "pending" ||
+          !isSellerFullyPaid
         }
       >
         {shipmentLoading
           ? "Submitting..."
           : selectedOrder.orderStatus === "pending"
             ? "Please Accept Order Before Shipment"
-            : selectedOrderItem && remainingQuantity <= 0
-              ? "Fully Shipped"
-              : "Submit Package Details"}
+            : !isSellerFullyPaid
+              ? "Waiting for Full Payment"
+              : selectedOrderItem && remainingQuantity <= 0
+                ? "Fully Shipped"
+                : "Submit Package Details"}
       </button>
     </div>
   );

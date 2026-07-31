@@ -33,8 +33,8 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(285px, 1fr));
+  gap: 22px;
   align-items: start;
 }
 
@@ -54,7 +54,7 @@
 
 .imageWrapper {
   position: relative;
-  height: 220px;
+  height: 180px;
 }
 
 .imageWrapper img {
@@ -85,7 +85,7 @@
 }
 
 .cardBody {
-  padding: 20px;
+  padding: 16px;
 }
 
 .category {
@@ -102,7 +102,7 @@
 .cardBody h3 {
   margin: 0 0 14px;
   color: #182848;
-  font-size: 20px;
+  font-size: 18px;
   line-height: 1.4;
 }
 
@@ -111,13 +111,13 @@
   align-items: center;
   gap: 10px;
   color: #5e6d7c;
-  margin-bottom: 12px;
-  font-size: 16px;
+  margin-bottom: 8px;
+  font-size: 15px;
 }
 
 .bottomRow {
-  margin-top: 22px;
-  padding-top: 18px;
+  margin-top: 16px;
+  padding-top: 14px;
   border-top: 1px solid #edf0f5;
   display: flex;
   justify-content: space-between;
@@ -133,15 +133,15 @@
 .bottomRow h4 {
   margin: 0;
   color: #182848;
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .detailsBtn {
   border: none;
   background: linear-gradient(135deg, #182848, #4b6cb7);
   color: white;
-  padding: 12px 16px;
-  border-radius: 12px;
+  padding: 10px 14px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   gap: 8px;

@@ -10,28 +10,47 @@ export const startCancelExpiredOrdersCron = () => {
     try {
       /* =====================================
           FIND ORDERS OLDER THAN 48 HOURS
-      ===================================== */
+         ===================================== */
 
-      const expiryTime = new Date(
-        Date.now() - 48 * 60 * 60 * 1000
-      );
+      const expiryTime = new Date(Date.now() - 48 * 60 * 60 * 1000);
+      
 
       const expiredOrders = await Order.find({
         orderStatus: "seller_confirmed",
         sellerConfirmedAt: {
           $lte: expiryTime,
         },
-        paymentUploadedAt: {
-          $exists: false,
-        },
         isDeleted: false,
       });
 
       /* =====================================
           CANCEL EXPIRED ORDERS
-      ===================================== */
+         ===================================== */
 
       for (const order of expiredOrders) {
+        /*  =====================================
+             CHECK TOTAL UPLOADED BUYER PAYMENT
+            ===================================== */
+
+        const totalUploadedAmount = order.buyerPaymentReceipts.reduce(
+          (total, receipt) => total + Number(receipt.amount || 0),
+          0,
+        );
+
+        /* =====================================
+             BUYER ALREADY UPLOADED FULL PAYMENT
+           ===================================== */
+
+        if (totalUploadedAmount >= Number(order.totalAmount)) {
+          continue;
+        }
+        /* =====================================
+              SHIPMENT ALREADY CREATED
+          ===================================== */
+
+          if ((order.shipments || []).length > 0) {
+            continue;
+          }
         order.orderStatus = "cancelled";
         order.cancelledAt = new Date();
         order.cancellationReason =

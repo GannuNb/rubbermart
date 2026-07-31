@@ -572,6 +572,20 @@ export const addShipmentToOrder = async (req, res) => {
         message: "Order not found",
       });
     }
+    /* =========================
+   SELLER PAYMENT VALIDATION
+========================= */
+
+if (
+  order.sellerPaymentStatus !== "completed" ||
+  Number(order.sellerPendingAmount) > 0
+) {
+  return res.status(400).json({
+    success: false,
+    message:
+      "You cannot create a shipment until you receive the full payment from the admin.",
+  });
+}
 
     /* =========================
        EXISTING SHIPPED QUANTITY
