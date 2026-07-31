@@ -166,7 +166,7 @@ export const getProgressLabels = (order) => {
   if (order.orderStatus === "seller_confirmed") {
   return [
     "Placed Order",
-    "Confirmed Order",
+    "Seller Confirmed the Order✅",
     "Shipment Pending",
     "Delivery Pending",
   ];
@@ -174,7 +174,7 @@ export const getProgressLabels = (order) => {
 
   return [
     "Placed Order",
-    "Waiting for Seller",
+    "Waiting for Seller Order Confirmation",
     "Shipment Pending",
     "Delivery Pending",
   ];
