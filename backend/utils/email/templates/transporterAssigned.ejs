@@ -32,19 +32,24 @@ border:1px solid #e5e7eb;
 <tr>
 <td
 style="
-background:#198754;
-padding:30px;
+background:#8751e4;
+color:#ffffff;
+padding:32px;
 text-align:center;
-color:white;
+border-bottom:5px solid #6d3fd4;
 ">
 
-<h1 style="margin:0;">
-🚚 Rubber Scrap Mart
-</h1>
+<h1
+style="
+margin:0;
+font-size:28px;
+font-weight:700;
+letter-spacing:1px;
+">
 
-<p style="margin-top:10px;">
-Shipment Assigned Successfully
-</p>
+SHIPMENT ASSIGNED
+
+</h1>
 
 </td>
 </tr>
@@ -124,11 +129,12 @@ border-radius:8px;
 
 <p style="margin-bottom:0;line-height:1.8;">
 
-Please log in to your Rubber Scrap Mart transporter account and
-accept the shipment assignment.
+Please arrange the pickup of the shipment from the seller's location
+and transport it safely to the buyer's delivery address.
 
-After accepting, you can coordinate pickup,
-update shipment status, and complete the delivery process.
+After the shipment is dispatched, keep the shipment status updated in
+your dashboard until the delivery is completed successfully.
+
 
 </p>
 
@@ -141,7 +147,7 @@ text-align:center;
 ">
 
 <a
-href="<%= frontendUrl %>/transporter/pending-assignments"
+href="<%= frontendUrl %>/transporter-assigned-shipments"
 style="
 background:#198754;
 color:white;

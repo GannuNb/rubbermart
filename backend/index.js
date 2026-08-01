@@ -15,7 +15,8 @@ import testInvoiceRoute from "./routes/testInvoiceRoute.js";
 import contactRoutes from "./routes/contactRoutes.js";
 import sellerDashboardRoutes from "./routes/sellerDashboardRoutes.js";
 import adminDashboardRoutes from "./routes/adminDashboardRoutes.js";
-// 🟢 IMPORTED: Transporter Dashboard Router Module
+import testMailRoute from "./routes/testMailRoute.js";
+
 import transporterDashboardRoutes from "./routes/transporterDashboardRoutes.js";
 import { startCancelExpiredOrdersCron } from "./cron/cancelExpiredOrders.js";
 
@@ -62,6 +63,7 @@ app.use("/api/seller-dashboard",  sellerDashboardRoutes);
 app.use("/api/admin-dashboard", adminDashboardRoutes);
 // 🟢 REGISTERED: Main API entry point mount configuration 
 app.use("/api/transporter-dashboard", transporterDashboardRoutes);
+app.use("/api/test-mail", testMailRoute);
 
 app.use(uploadDocumentsErrorHandler);
 

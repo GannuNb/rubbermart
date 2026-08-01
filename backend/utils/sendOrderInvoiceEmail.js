@@ -1,5 +1,4 @@
 import nodemailer from "nodemailer";
-import path from "path";
 
 const sendOrderInvoiceEmail = async ({
   buyerEmail,
@@ -49,60 +48,27 @@ const sendOrderInvoiceEmail = async ({
             <!-- HEADER -->
 
             <div style="
-              background:#111827;
-              padding:24px 32px;
-              border-bottom:4px solid #7cc576;
+              background:#8751e4;
+              padding:28px 36px;
+              border-bottom:5px solid #6d3fd4;
             ">
 
-              <table width="100%" cellpadding="0" cellspacing="0">
-                <tr>
+              <div style="
+                  text-align:center;
+                ">
 
-                  <!-- LOGO -->
+                  <h1 style="
+                    margin:0;
+                    color:#ffffff;
+                    font-size:28px;
+                    font-weight:700;
+                    letter-spacing:1px;
+                  ">
+                    PROFORMA INVOICE
+                  </h1>
 
-                  <td style="width:110px; vertical-align:middle;">
+                </div>
 
-                    <img
-                      src="cid:rsmLogo"
-                      alt="Rubber Scrap Mart"
-                      style="
-                            width:88px;
-                            height:88px;
-                            object-fit:contain;
-                            display:block;
-                            border-radius:16px;
-                            background:white;
-                            padding:10px;
-                          "
-                    />
-
-                  </td>
-
-                  <!-- TITLE -->
-
-                  <td style="vertical-align:middle; padding-left:16px;">
-
-                    <h1 style="
-                      color:#ffffff;
-                      margin:0;
-                      font-size:28px;
-                      font-weight:700;
-                      letter-spacing:0.3px;
-                    ">
-                      Rubber Scrap Mart
-                    </h1>
-
-                    <p style="
-                      color:#cbd5e1;
-                      margin-top:8px;
-                      font-size:14px;
-                    ">
-                      Proforma Invoice
-                    </p>
-
-                  </td>
-
-                </tr>
-              </table>
 
             </div>
 
@@ -264,16 +230,6 @@ const sendOrderInvoiceEmail = async ({
           contentType: "application/pdf",
         },
 
-        {
-          filename: "rsm_logo.png",
-
-          path: path.join(
-            process.cwd(),
-            "../rubberproject/public/rsm_logo.png",
-          ),
-
-          cid: "rsmLogo",
-        },
       ],
     });
 
