@@ -12,7 +12,7 @@ import { createOrder,getSellerOrders,  getSellerSingleOrder,  confirmSellerOrder
     assignTransporterToShipment,adminDirectAssignTransporter,getAllTransporters,getTransporterPendingAssignments,
      transporterAcceptAssignment,transporterRejectAssignment,markShipmentShippedBySeller,   
     getTransporterAssignedShipments,getTransporterCompletedDeliveries, markShipmentShippedByTransporter,markShipmentShippedByAdmin,
-    uploadTransportPaymentReceipt,uploadAdminTransportPayment,verifyBuyerTransportPayment,getTransporterPaymentHistory ,
+    uploadTransportPaymentReceipt,uploadAdminTransportPayment,verifyBuyerTransportPayment,getTransporterPaymentHistory ,rejectBuyerPayment,
      uploadShipmentProofs, downloadOrderHistoryPdf,} from "../controllers/orderController.js";
 
 import { submitOrderReview } from "../controllers/reviewController.js";
@@ -55,6 +55,7 @@ router.get("/admin/:orderId/invoice-data", protectUser, protectAdmin, getOrderDe
 router.get(  "/admin/:orderId/order-history",  protectUser,  protectAdmin,  downloadOrderHistoryPdf,);
 
 router.put("/admin/:orderId/payment/:paymentId/approve",  protectUser,  protectAdmin,  approveBuyerPayment);
+router.put(  "/admin/:orderId/payment/:paymentId/reject",  protectUser,  protectAdmin,  rejectBuyerPayment);
 router.post("/admin/:orderId/seller-payment",  protectUser,  protectAdmin,  uploadDocuments.single("file"),  uploadAdminToSellerPayment);
 // router.put(  "/admin/:orderId/shipment/:shipmentId/approve",  protectUser,  protectAdmin,  approveShipmentByAdmin);
 router.put(  "/admin/:orderId/shipment/:shipmentId/delivered",  protectUser,  protectAdmin,  markShipmentDeliveredByAdmin);

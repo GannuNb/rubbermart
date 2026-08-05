@@ -34,8 +34,9 @@ const ShipmentItemsSection = ({ shipment, order }) => {
       );
     }
 
-    return `data:${matchedItem.productImage.contentType || "image/jpeg"
-      };base64,${base64}`;
+    return `data:${
+      matchedItem.productImage.contentType || "image/jpeg"
+    };base64,${base64}`;
   };
 
   /* =========================
@@ -95,7 +96,10 @@ const ShipmentItemsSection = ({ shipment, order }) => {
       {/* =========================
            PRODUCT TABLE CARD
       ========================= */}
-      <div className={styles.itemsCard} style={{ padding: "0", overflow: "hidden" }}>
+      <div
+        className={styles.itemsCard}
+        style={{ padding: "0", overflow: "hidden" }}
+      >
         {/* HEADER ARRANGE */}
         <div
           className={styles.cardAccordionHeader}
@@ -109,7 +113,6 @@ const ShipmentItemsSection = ({ shipment, order }) => {
             <FaBoxOpen className={styles.itemsIcon} />
             <h3 className={styles.sectionTitle}>Product Invoice</h3>
           </div>
-
         </div>
 
         {/* CONTAINER WORK */}
@@ -130,52 +133,81 @@ const ShipmentItemsSection = ({ shipment, order }) => {
                 </>
               )}
               <div>Total Amount</div>
+              <div>Payment Status</div>
             </div>
 
             <div className={styles.tableRow}>
               <div className={styles.itemDetails}>
-                <img src={getImage()} alt="product" className={styles.itemImage} />
+                <img
+                  src={getImage()}
+                  alt="product"
+                  className={styles.itemImage}
+                />
                 <div>
                   <h4>{shipment?.selectedItem || "-"}</h4>
                   <p>{matchedItem?.loadingLocation || "-"}</p>
                 </div>
               </div>
 
-              <div className={styles.centerCell}>{matchedItem?.requiredQuantity || 0} MT</div>
-              <div className={styles.centerCell}>{shippedQty} MT</div>
-              <div className={styles.centerCell}>₹ {pricePerMT.toLocaleString("en-IN")}</div>
               <div className={styles.centerCell}>
-                ₹ {productTaxable.toLocaleString("en-IN", { maximumFractionDigits: 2 })}
+                {matchedItem?.requiredQuantity || 0} MT
+              </div>
+              <div className={styles.centerCell}>{shippedQty} MT</div>
+              <div className={styles.centerCell}>
+                ₹ {pricePerMT.toLocaleString("en-IN")}
+              </div>
+              <div className={styles.centerCell}>
+                ₹{" "}
+                {productTaxable.toLocaleString("en-IN", {
+                  maximumFractionDigits: 2,
+                })}
               </div>
 
               {productGSTType === "igst" ? (
                 <div className={styles.centerCell}>
-                  ₹ {productIGST.toLocaleString("en-IN", { maximumFractionDigits: 2 })}
+                  ₹{" "}
+                  {productIGST.toLocaleString("en-IN", {
+                    maximumFractionDigits: 2,
+                  })}
                 </div>
               ) : (
                 <>
                   <div className={styles.centerCell}>
-                    ₹ {productCGST.toLocaleString("en-IN", { maximumFractionDigits: 2 })}
+                    ₹{" "}
+                    {productCGST.toLocaleString("en-IN", {
+                      maximumFractionDigits: 2,
+                    })}
                   </div>
                   <div className={styles.centerCell}>
-                    ₹ {productSGST.toLocaleString("en-IN", { maximumFractionDigits: 2 })}
+                    ₹{" "}
+                    {productSGST.toLocaleString("en-IN", {
+                      maximumFractionDigits: 2,
+                    })}
                   </div>
                 </>
               )}
 
               <div className={styles.totalAmountCell}>
-                ₹ {productTotal.toLocaleString("en-IN", { maximumFractionDigits: 2 })}
+                ₹{" "}
+                {productTotal.toLocaleString("en-IN", {
+                  maximumFractionDigits: 2,
+                })}
+              </div>
+              <div className={styles.paymentStatusCell}>
+                <span className={styles.paidBadge}>✅ Paid</span>
               </div>
             </div>
           </div>
         </div>
-
       </div>
 
       {/* =========================
            TRANSPORT TABLE CARD
       ========================= */}
-      <div className={styles.itemsCard} style={{ padding: "0", overflow: "hidden" }}>
+      <div
+        className={styles.itemsCard}
+        style={{ padding: "0", overflow: "hidden" }}
+      >
         {/* HEADER ARRANGE */}
         <div
           className={styles.cardAccordionHeader}
@@ -186,7 +218,7 @@ const ShipmentItemsSection = ({ shipment, order }) => {
             justifyContent: "space-between",
             padding: "22px",
             cursor: "pointer",
-            userSelect: "none"
+            userSelect: "none",
           }}
         >
           <div className={styles.itemsHeader} style={{ margin: "0" }}>
@@ -194,7 +226,9 @@ const ShipmentItemsSection = ({ shipment, order }) => {
             <h3 className={styles.sectionTitle}>Transport Invoice</h3>
           </div>
 
-          <div className={`${styles.toggleIconBtn} ${isTransportOpen ? styles.activeToggle : ""}`}>
+          <div
+            className={`${styles.toggleIconBtn} ${isTransportOpen ? styles.activeToggle : ""}`}
+          >
             {isTransportOpen ? "−" : "+"}
           </div>
         </div>
@@ -222,23 +256,39 @@ const ShipmentItemsSection = ({ shipment, order }) => {
               <div className={styles.tableRow}>
                 <div className={styles.transportDetails}>
                   <h4>Transportation Charges</h4>
-                  <p>{shipment?.shipmentFrom} → {shipment?.shipmentTo}</p>
+                  <p>
+                    {shipment?.shipmentFrom} → {shipment?.shipmentTo}
+                  </p>
                 </div>
 
-                <div className={styles.centerCell}>{shipment?.transportHSNCode || "9965"}</div>
-                <div className={styles.centerCell}>{transportGSTType === "igst" ? "IGST" : "CGST + SGST"}</div>
-                <div className={styles.centerCell}>₹ {transportPrice.toLocaleString("en-IN")}</div>
+                <div className={styles.centerCell}>
+                  {shipment?.transportHSNCode || "9965"}
+                </div>
+                <div className={styles.centerCell}>
+                  {transportGSTType === "igst" ? "IGST" : "CGST + SGST"}
+                </div>
+                <div className={styles.centerCell}>
+                  ₹ {transportPrice.toLocaleString("en-IN")}
+                </div>
 
                 {transportGSTType === "igst" ? (
-                  <div className={styles.centerCell}>₹ {transportIGST.toLocaleString("en-IN")}</div>
+                  <div className={styles.centerCell}>
+                    ₹ {transportIGST.toLocaleString("en-IN")}
+                  </div>
                 ) : (
                   <>
-                    <div className={styles.centerCell}>₹ {transportCGST.toLocaleString("en-IN")}</div>
-                    <div className={styles.centerCell}>₹ {transportSGST.toLocaleString("en-IN")}</div>
+                    <div className={styles.centerCell}>
+                      ₹ {transportCGST.toLocaleString("en-IN")}
+                    </div>
+                    <div className={styles.centerCell}>
+                      ₹ {transportSGST.toLocaleString("en-IN")}
+                    </div>
                   </>
                 )}
 
-                <div className={styles.totalAmountCell}>₹ {transportTotal.toLocaleString("en-IN")}</div>
+                <div className={styles.totalAmountCell}>
+                  ₹ {transportTotal.toLocaleString("en-IN")}
+                </div>
               </div>
             </div>
           </div>
@@ -248,7 +298,10 @@ const ShipmentItemsSection = ({ shipment, order }) => {
       {/* =========================
            FINAL SUMMARY CARD
       ========================= */}
-      <div className={styles.invoiceSummaryCard} style={{ padding: "0", overflow: "hidden" }}>
+      <div
+        className={styles.invoiceSummaryCard}
+        style={{ padding: "0", overflow: "hidden" }}
+      >
         {/* HEADER ARRANGE */}
         <div
           className={styles.cardAccordionHeader}
@@ -259,31 +312,39 @@ const ShipmentItemsSection = ({ shipment, order }) => {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <FaFileInvoiceDollar style={{ fontSize: "17px", color: "#6d28d9" }} />
-            <h3 style={{ margin: "0", fontSize: "20px", fontWeight: "700", color: "#101113" }}>
+            <FaFileInvoiceDollar
+              style={{ fontSize: "17px", color: "#6d28d9" }}
+            />
+            <h3
+              style={{
+                margin: "0",
+                fontSize: "20px",
+                fontWeight: "700",
+                color: "#101113",
+              }}
+            >
               Invoice Summary
             </h3>
           </div>
         </div>
 
         {/* CONTAINER WORK */}
-          <div style={{ padding: "0 24px 24px 24px" }}>
-            <div className={styles.summaryRow}>
-              <span>Product Total</span>
-              <span>₹ {productTotal.toLocaleString("en-IN")}</span>
-            </div>
-
-            <div className={styles.summaryRow}>
-              <span>Transport Total</span>
-              <span>₹ {transportTotal.toLocaleString("en-IN")}</span>
-            </div>
-
-            <div className={styles.finalTotalRow}>
-              <span>Grand Total</span>
-              <span>₹ {grandTotal.toLocaleString("en-IN")}</span>
-            </div>
+        <div style={{ padding: "0 24px 24px 24px" }}>
+          <div className={styles.summaryRow}>
+            <span>Product Total</span>
+            <span>₹ {productTotal.toLocaleString("en-IN")}</span>
           </div>
-        
+
+          <div className={styles.summaryRow}>
+            <span>Transport Total</span>
+            <span>₹ {transportTotal.toLocaleString("en-IN")}</span>
+          </div>
+
+          <div className={styles.finalTotalRow}>
+            <span>Grand Total</span>
+            <span>₹ {grandTotal.toLocaleString("en-IN")}</span>
+          </div>
+        </div>
       </div>
     </div>
   );

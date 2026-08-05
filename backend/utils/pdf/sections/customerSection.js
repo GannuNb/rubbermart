@@ -13,7 +13,14 @@ export const drawCustomerSection = (doc, order, startY) => {
   // widths
   const detailsWidth = 90;
   const billToWidth = 190;
+  // Content padding
+  const contentIndent = 38; // adjust this value
+
+  const billContentX = billToX + contentIndent;
+  const shipContentX = shipToX + contentIndent;
   const shipToWidth = 190;
+  const detailsLabelX = detailsX + 26;
+  const colonX = detailsX + 92;
 
   const headerHeight = 25;
 
@@ -22,19 +29,13 @@ export const drawCustomerSection = (doc, order, startY) => {
   ========================= */
 
   // Details Header
-  doc
-    .rect(detailsX, currentY, detailsWidth, headerHeight)
-    .fill("#F2F2F7");
+  doc.rect(detailsX, currentY, detailsWidth, headerHeight).fill("#F2F2F7");
 
   // Bill To Header
-  doc
-    .rect(billToX, currentY, billToWidth, headerHeight)
-    .fill(primaryPurple);
+  doc.rect(billToX, currentY, billToWidth, headerHeight).fill(primaryPurple);
 
   // Ship To Header
-  doc
-    .rect(shipToX, currentY, shipToWidth, headerHeight)
-    .fill(primaryPurple);
+  doc.rect(shipToX, currentY, shipToWidth, headerHeight).fill(primaryPurple);
 
   // Header Text
   doc
@@ -46,18 +47,15 @@ export const drawCustomerSection = (doc, order, startY) => {
       align: "center",
     });
 
-  doc
-    .fillColor("#ffffff")
-    .text("Bill To", billToX, currentY + 8, {
-      width: billToWidth,
-      align: "center",
-    });
+  doc.fillColor("#ffffff").text("Bill To", billToX, currentY + 8, {
+    width: billToWidth,
+    align: "center",
+  });
 
-  doc
-    .text("Ship To", shipToX, currentY + 8, {
-      width: shipToWidth,
-      align: "center",
-    });
+  doc.text("Ship To", shipToX, currentY + 8, {
+    width: shipToWidth,
+    align: "center",
+  });
 
   // reduced from 38 → 32
   currentY += 32;
@@ -66,14 +64,7 @@ export const drawCustomerSection = (doc, order, startY) => {
      DATA
   ========================= */
 
-  const labels = [
-    "Name",
-    "Company",
-    "Address",
-    "Phone",
-    "E-mail",
-    "GSTN",
-  ];
+  const labels = ["Name", "Company", "Address", "Phone", "E-mail", "GSTN"];
 
   const buyerData = [
     order.buyer?.fullName || "-",
@@ -134,23 +125,27 @@ export const drawCustomerSection = (doc, order, startY) => {
       .fillColor(darkText)
       .font("Helvetica-Bold")
       .fontSize(8.5) // slightly smaller
-      .text(label, detailsX + 5, rowStartY, {
-        width: 60,
+      .text(label, detailsLabelX, rowStartY, {
+        width: 55,
+        align: "left",
       });
 
-    doc.text(":", detailsX + 68, rowStartY);
+    doc.text(":", colonX, rowStartY, {
+      width: 10,
+      align: "center",
+    });
 
     // Bill To Column
     doc
       .font("Helvetica")
       .fontSize(7.5) // slightly smaller
-      .text(buyerData[i], billToX, rowStartY, {
-        width: billToWidth,
+      .text(buyerData[i], billContentX, rowStartY, {
+        width: billToWidth - contentIndent,
       });
 
     // Ship To Column
-    doc.text(shipData[i], shipToX, rowStartY, {
-      width: shipToWidth,
+    doc.text(shipData[i], shipContentX, rowStartY, {
+      width: shipToWidth - contentIndent,
     });
 
     currentY += rowHeight;

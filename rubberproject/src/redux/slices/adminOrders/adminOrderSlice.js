@@ -5,6 +5,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { getAdminAllOrders } from "./adminOrderThunk";
 import { getAdminSingleOrderDetails } from "./adminSingleOrderThunk";
 import { approveBuyerPayment } from "./approveBuyerPaymentThunk";
+import { rejectBuyerPayment } from "./rejectBuyerPaymentThunk";
 import { uploadAdminToSellerPayment } from "./uploadAdminToSellerPaymentThunk";
 import { markShipmentDeliveredByAdmin } from "./markShipmentDeliveredThunk";
 import { getShipmentQuotes } from "./adminShipmentQuotesThunk";
@@ -217,6 +218,26 @@ const adminOrderSlice = createSlice({
 
       .addCase(approveBuyerPayment.rejected, (state, action) => {
         state.approvePaymentLoading = false;
+        state.approvePaymentError = action.payload;
+      })
+
+      /* =========================
+         Reject BUYER PAYMENT
+      ========================= */
+
+      .addCase(rejectBuyerPayment.pending, (state) => {
+        state.approvePaymentLoading = true;
+        state.approvePaymentError = null;
+      })
+
+      .addCase(rejectBuyerPayment.fulfilled, (state, action) => {
+        state.approvePaymentLoading = false;
+        state.singleOrder = action.payload.order || null;
+      })
+
+      .addCase(rejectBuyerPayment.rejected, (state, action) => {
+        state.approvePaymentLoading = false;
+
         state.approvePaymentError = action.payload;
       })
 

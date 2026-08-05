@@ -32,14 +32,24 @@
             <td
               align="center"
               style="
-                background: #111827;
-                padding: 30px;
-                color: white;
+                background:#8751e4;
+                color:#ffffff;
+                padding:32px;
+                border-bottom:5px solid #6d3fd4;
               "
             >
-              <h1 style="margin: 0">
-                Rubber Scrap Mart
+
+              <h1
+                style="
+                  margin:0;
+                  font-size:28px;
+                  font-weight:700;
+                  letter-spacing:1px;
+                "
+              >
+                NEW PRODUCT AVAILABLE
               </h1>
+
             </td>
           </tr>
 
@@ -49,24 +59,22 @@
             <td style="padding: 40px 30px">
               <h2
                 style="
-                  margin-top: 0;
-                  color: #7e22ce;
+                  margin-top:0;
+                  color:#111827;
+                  font-size:24px;
                 "
               >
-                New Product Added 🚀
+                Hello <%= userName %>,
               </h2>
 
-              <p>
-                Hello
-                <strong>
-                  <%= userName %>
-                </strong>,
+              <p style="line-height:1.8;">
+                A new product matching your interests has been added to the
+                Rubber Scrap Mart marketplace.
               </p>
 
-              <p>
-                A new product matching your
-                interests has been added to
-                Rubber Scrap Mart marketplace.
+              <p style="line-height:1.8;">
+                You can review the product details and contact the seller if it
+                meets your requirements.
               </p>
 
               <div
@@ -79,11 +87,12 @@
               >
                 <p
                   style="
-                    margin: 0 0 10px 0;
-                    color: #6b7280;
+                    margin:0 0 10px 0;
+                    color:#6b7280;
+                    font-weight:600;
                   "
                 >
-                  Product Name
+                  Newly Added Product
                 </p>
 
                 <h3
@@ -100,7 +109,7 @@
                 <a
                   href="<%= productLink %>"
                   style="
-                    background: #7e22ce;
+                    background:#8751e4;
                     color: white;
                     padding: 14px 24px;
                     text-decoration: none;

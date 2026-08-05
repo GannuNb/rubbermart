@@ -30,11 +30,11 @@ function PaymentUploadCard({ order, onPaymentUploaded }) {
       return;
     }
 
-    const verifiedPaid = (order.buyerPaymentReceipts || [])
-      .filter((r) => r.status === "verified")
+    const reservedAmount = (order.buyerPaymentReceipts || [])
+      .filter((r) => r.status === "verified" || r.status === "pending")
       .reduce((sum, r) => sum + Number(r.amount || 0), 0);
 
-    const remaining = order.totalAmount - verifiedPaid;
+    const remaining = order.totalAmount - reservedAmount;
 
     if (Number(amount) > remaining) {
       setAlert({
@@ -65,7 +65,7 @@ function PaymentUploadCard({ order, onPaymentUploaded }) {
             Authorization: `Bearer ${token}`,
           },
           body: formData,
-        }
+        },
       );
 
       const data = await response.json();
@@ -122,15 +122,14 @@ function PaymentUploadCard({ order, onPaymentUploaded }) {
       )}
 
       {/* Clickable Header Toggle */}
-<div 
-  className={styles.dropdownHeader} 
-  onClick={() => setIsOpen(!isOpen)}
->
-  <h3 className={styles.cardTitle}>Upload Payment</h3>
-  <span className={`${styles.toggleIcon} ${isOpen ? styles.iconActive : ""}`}>
-    {isOpen ? "−" : "+"}
-  </span>
-</div>
+      <div className={styles.dropdownHeader} onClick={() => setIsOpen(!isOpen)}>
+        <h3 className={styles.cardTitle}>Upload Payment</h3>
+        <span
+          className={`${styles.toggleIcon} ${isOpen ? styles.iconActive : ""}`}
+        >
+          {isOpen ? "−" : "+"}
+        </span>
+      </div>
 
       {/* Conditional Rendering of Fields */}
       {isOpen && (
@@ -170,18 +169,12 @@ function PaymentUploadCard({ order, onPaymentUploaded }) {
 
           <div className={styles.formGroup}>
             <label>Note</label>
-            <textarea
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-            />
+            <textarea value={note} onChange={(e) => setNote(e.target.value)} />
           </div>
 
           <div className={styles.formGroup}>
             <label>Upload Receipt</label>
-            <input
-              type="file"
-              onChange={(e) => setFile(e.target.files[0])}
-            />
+            <input type="file" onChange={(e) => setFile(e.target.files[0])} />
           </div>
 
           <button

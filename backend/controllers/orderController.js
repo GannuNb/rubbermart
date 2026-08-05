@@ -3903,6 +3903,85 @@ export const approveBuyerPayment = async (req, res) => {
   }
 };
 
+//admin ---> rejectpayment
+export const rejectBuyerPayment = async (req, res) => {
+  try {
+    const { orderId, paymentId } = req.params;
+
+    const order = await Order.findOne({
+      _id: orderId,
+      isDeleted: false,
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    const payment = order.buyerPaymentReceipts.id(paymentId);
+
+    if (!payment) {
+      return res.status(404).json({
+        success: false,
+        message: "Payment receipt not found",
+      });
+    }
+
+    if (payment.status === "rejected") {
+      return res.status(400).json({
+        success: false,
+        message: "Payment already rejected",
+      });
+    }
+
+    if (payment.status === "verified") {
+      return res.status(400).json({
+        success: false,
+        message: "Verified payment cannot be rejected",
+      });
+    }
+
+    await Order.updateOne(
+      {
+        _id: orderId,
+        "buyerPaymentReceipts._id": paymentId,
+      },
+      {
+        $set: {
+          "buyerPaymentReceipts.$.status": "rejected",
+          "buyerPaymentReceipts.$.verifiedBy": req.user._id,
+          "buyerPaymentReceipts.$.verifiedAt": new Date(),
+        },
+      }
+    );
+
+    const updatedOrder = await Order.findById(orderId)
+      .populate("buyer", "fullName email addresses businessProfile")
+      .populate("seller", "fullName email addresses businessProfile")
+      .populate("orderItems.product", "productName category application")
+      .populate("buyerPaymentReceipts.uploadedBy", "fullName")
+      .populate("buyerPaymentReceipts.verifiedBy", "fullName")
+      .populate("sellerPaymentReceipts.uploadedBy", "fullName")
+      .populate("sellerPaymentReceipts.verifiedBy", "fullName");
+
+    return res.status(200).json({
+      success: true,
+      message: "Buyer payment rejected successfully",
+      order: updatedOrder,
+    });
+
+  } catch (error) {
+    console.log("Reject Buyer Payment Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to reject buyer payment",
+      error: error.message,
+    });
+  }
+};
 //admin ---> paymenttoseller
 export const uploadAdminToSellerPayment = async (req, res) => {
   try {
@@ -4896,11 +4975,15 @@ export const uploadBuyerPayment = async (req, res) => {
     }
 
     // ✅ calculate remaining ONLY from VERIFIED payments
-    const verifiedPaid = (order.buyerPaymentReceipts || [])
-      .filter((r) => r.status === "verified")
-      .reduce((sum, r) => sum + Number(r.amount || 0), 0);
+    const reservedAmount = (order.buyerPaymentReceipts || [])
+  .filter(
+    (r) =>
+      r.status === "verified" ||
+      r.status === "pending"
+  )
+  .reduce((sum, r) => sum + Number(r.amount || 0), 0);
 
-    const remaining = order.totalAmount - verifiedPaid;
+const remaining = order.totalAmount - reservedAmount;
 
     if (paidAmount > remaining) {
       return res.status(400).json({

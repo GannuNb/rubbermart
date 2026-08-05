@@ -8,20 +8,19 @@ const PaymentReceiptCard = ({
      FILE URL
   ========================= */
 
-  const fileUrl =
-    receipt?.file?.data?.data &&
-    receipt?.file?.contentType
-      ? `data:${receipt.file.contentType};base64,${btoa(
-          new Uint8Array(
-            receipt.file.data.data
-          ).reduce(
-            (data, byte) =>
-              data +
-              String.fromCharCode(byte),
-            ""
-          )
-        )}`
-      : null;
+  const handleViewReceipt = (file) => {
+  if (!file || !file.data) return;
+
+  const uint8Array = new Uint8Array(file.data.data);
+
+  const blob = new Blob([uint8Array], {
+    type: file.contentType,
+  });
+
+  const fileURL = window.URL.createObjectURL(blob);
+
+  window.open(fileURL, "_blank");
+};
 
   return (
     <div className={styles.card}>
@@ -81,18 +80,15 @@ const PaymentReceiptCard = ({
 
       {/* VIEW RECEIPT */}
 
-      {fileUrl && (
-        <a
-          href={fileUrl}
-          target="_blank"
-          rel="noreferrer"
-          className={
-            styles.viewButton
-          }
-        >
-          View Receipt
-        </a>
-      )}
+      {receipt?.file && (
+  <button
+    type="button"
+    className={styles.viewButton}
+    onClick={() => handleViewReceipt(receipt.file)}
+  >
+    View Receipt
+  </button>
+)}
     </div>
   );
 };

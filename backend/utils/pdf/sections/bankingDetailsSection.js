@@ -37,15 +37,16 @@ export const drawBankingDetailsSection = (doc, startY) => {
   ========================= */
 
   doc
-    .fillColor(darkText)
-    .font("Helvetica-Bold")
-    .fontSize(7)
+  .fillColor(darkText)
+  .font("Helvetica-Bold")
+  .fontSize(6.5)
 
-    .text("Bank Name", 40, currentY)
-    .text("Account Name", 125, currentY)
-    .text("Account Number", 235, currentY)
-    .text("IFSC Code", 360, currentY)
-    .text("Account Type", 440, currentY);
+  .text("Bank Name", 40, currentY)
+  .text("Account Name", 120, currentY)
+  .text("Account Number", 220, currentY)
+  .text("IFSC Code", 330, currentY)
+  .text("Account Type", 410, currentY)
+  .text("Branch", 500, currentY);
 
   currentY += 16;
 
@@ -53,33 +54,21 @@ export const drawBankingDetailsSection = (doc, startY) => {
      ALL VALUES IN ONE ROW
   ========================= */
 
-  doc
-    .font("Helvetica")
-    .fontSize(7)
-
-    .text("IDFC FIRST BANK", 40, currentY)
-    .text("VIKAH RUBBERS", 125, currentY)
-    .text("10113716761", 235, currentY)
-    .text("IDFB0040132", 360, currentY)
-    .text("CURRENT A/C", 440, currentY);
-
-  currentY += 18;
-
-  /* =========================
-     BRANCH ROW
-  ========================= */
-
-  doc
-    .font("Helvetica-Bold")
-    .fontSize(7)
-    .text("Branch", 40, currentY);
-
-  doc
-    .font("Helvetica")
-    .fontSize(7)
-    .text("NERUL BRANCH", 85, currentY);
-
   currentY += 15;
+
+doc
+  .font("Helvetica")
+  .fontSize(6.5)
+
+  .text("IDFC FIRST BANK", 40, currentY)
+  .text("VIKAH RUBBERS", 120, currentY)
+  .text("10113716761", 220, currentY)
+  .text("IDFB0040132", 330, currentY)
+  .text("CURRENT A/C", 410, currentY)
+  .text("NERUL BRANCH", 500, currentY);
+
+currentY += 15;
+
 
   return currentY + 5;
 };

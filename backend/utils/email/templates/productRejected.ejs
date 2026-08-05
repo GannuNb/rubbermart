@@ -31,48 +31,68 @@
             <td
               align="center"
               style="
-                background: #111827;
-                padding: 30px;
-                color: white;
+                background:#8751e4;
+                color:#ffffff;
+                padding:32px;
+                border-bottom:5px solid #6d3fd4;
               "
             >
-              <h1 style="margin: 0">Rubber Scrap Mart</h1>
+
+              <h1
+                style="
+                  margin:0;
+                  font-size:28px;
+                  font-weight:700;
+                  letter-spacing:1px;
+                "
+              >
+                PRODUCT REJECTED
+              </h1>
+
             </td>
           </tr>
 
           <!-- CONTENT -->
           <tr>
             <td style="padding: 40px 30px">
-              <h2 style="margin-top: 0; color: #dc2626">
-                Product Rejected ❌
-              </h2>
+              <h2
+              style="
+                margin-top:0;
+                color:#111827;
+                font-size:24px;
+              "
+            >
+              Hello <%= sellerName %>,
+            </h2>
 
-              <p>Hello <%= sellerName %>,</p>
-
-              <p>
-                Your product
-                <strong><%= productName %></strong>
-                was reviewed by our admin team but could not be approved.
+              <p style="line-height:1.8;">
+                We reviewed your product
+                <strong><%= productName %></strong>, but unfortunately it could not be approved at this time.
               </p>
 
-              <p>
-                Please review your product details and upload again if needed.
+              <p style="line-height:1.8;">
+                Please review the product details, make the necessary corrections, and submit it again for approval.
               </p>
 
-              <div style="
-                background:#fef2f2;
-                border:1px solid #fecaca;
-                padding:16px;
-                border-radius:8px;
-                margin:24px 0;
-                color:#991b1b;
-              ">
-                Make sure:
-                <ul>
-                  <li>Product information is accurate</li>
-                  <li>Images are clear</li>
-                  <li>Pricing and quantity are valid</li>
-                </ul>
+              <div
+                style="
+                  background:#fef2f2;
+                  border:1px solid #fecaca;
+                  padding:16px;
+                  border-radius:8px;
+                  margin:24px 0;
+                  color:#991b1b;
+                "
+              >
+
+              <strong>Before Resubmitting</strong>
+
+              <ul>
+                <li>Product information is accurate</li>
+                <li>Images are clear</li>
+                <li>Pricing and quantity are valid</li>
+              </ul>
+
               </div>
 
               <div style="margin: 30px 0">
