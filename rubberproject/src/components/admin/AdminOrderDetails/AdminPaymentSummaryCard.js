@@ -62,6 +62,13 @@ const AdminPaymentSummaryCard = ({ order }) => {
                 ₹ {order?.buyerPendingAmount || 0}
               </strong>
             </div>
+            <div className={styles.row}>
+              <span>Refunded Amount</span>
+
+              <strong>
+                ₹ {order?.buyerRefundedAmount || 0}
+              </strong>
+            </div>
 
             <div className={styles.statusRow}>
               <span>Status</span>

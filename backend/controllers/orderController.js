@@ -3982,6 +3982,207 @@ export const rejectBuyerPayment = async (req, res) => {
     });
   }
 };
+//admin--->refundtobuyer
+
+export const refundBuyerPayment = async (req, res) => {
+  try {
+    const { orderId, paymentId } = req.params;
+    const { refundNote = "" } = req.body;
+
+    const order = await Order.findOne({
+      _id: orderId,
+      isDeleted: false,
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    /* =========================
+       ORDER MUST BE CANCELLED
+    ========================= */
+
+    if (order.orderStatus !== "cancelled") {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Refund is allowed only for cancelled orders.",
+      });
+    }
+
+    /* =========================
+       FIND PAYMENT
+    ========================= */
+
+    const payment = order.buyerPaymentReceipts.id(paymentId);
+
+    if (!payment) {
+      return res.status(404).json({
+        success: false,
+        message: "Payment receipt not found",
+      });
+    }
+
+    /* =========================
+       ALREADY REFUNDED
+    ========================= */
+
+    if (payment.isRefunded) {
+      return res.status(400).json({
+        success: false,
+        message: "Payment already refunded",
+      });
+    }
+
+    /* =========================
+       PENDING PAYMENT
+    ========================= */
+
+    if (payment.status === "pending") {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Pending payment cannot be refunded. Please verify or reject it first.",
+      });
+    }
+
+    /* =========================
+       REJECTED PAYMENT
+    ========================= */
+
+    if (payment.status === "rejected") {
+      return res.status(400).json({
+        success: false,
+        message: "Rejected payment cannot be refunded.",
+      });
+    }
+
+    /* =========================
+       ONLY VERIFIED PAYMENT
+    ========================= */
+
+    if (payment.status !== "verified") {
+      return res.status(400).json({
+        success: false,
+        message: "Only verified payments can be refunded.",
+      });
+    }
+
+    /* =========================
+       REFUND PAYMENT
+    ========================= */
+
+    payment.isRefunded = true;
+    payment.refundedAmount = payment.amount;
+    payment.refundedAt = new Date();
+    payment.refundedBy = req.user._id;
+    payment.refundNote = refundNote;
+
+    /* =========================
+       RECALCULATE SUMMARY
+    ========================= */
+
+    const verifiedPaid = order.buyerPaymentReceipts
+      .filter(
+        (receipt) =>
+          receipt.status === "verified" &&
+          !receipt.isRefunded
+      )
+      .reduce(
+        (sum, receipt) =>
+          sum + Number(receipt.amount || 0),
+        0
+      );
+
+    const refundedAmount = order.buyerPaymentReceipts
+      .filter((receipt) => receipt.isRefunded)
+      .reduce(
+        (sum, receipt) =>
+          sum + Number(receipt.refundedAmount || 0),
+        0
+      );
+
+    order.buyerPaidAmount = verifiedPaid;
+
+    order.buyerRefundedAmount = refundedAmount;
+
+    order.buyerPendingAmount = Math.max(
+      Number(order.totalAmount) - verifiedPaid,
+      0
+    );
+
+    if (verifiedPaid <= 0) {
+      order.buyerPaymentStatus = "pending";
+    } else if (
+      verifiedPaid >= Number(order.totalAmount)
+    ) {
+      order.buyerPaymentStatus = "completed";
+    } else {
+      order.buyerPaymentStatus = "partial";
+    }
+
+    await order.save();
+
+    /* =========================
+       RETURN UPDATED ORDER
+    ========================= */
+
+    const updatedOrder = await Order.findById(orderId)
+      .populate(
+        "buyer",
+        "fullName email addresses businessProfile"
+      )
+      .populate(
+        "seller",
+        "fullName email addresses businessProfile"
+      )
+      .populate(
+        "orderItems.product",
+        "productName category application"
+      )
+      .populate(
+        "buyerPaymentReceipts.uploadedBy",
+        "fullName"
+      )
+      .populate(
+        "buyerPaymentReceipts.verifiedBy",
+        "fullName"
+      )
+      .populate(
+        "buyerPaymentReceipts.refundedBy",
+        "fullName"
+      )
+      .populate(
+        "sellerPaymentReceipts.uploadedBy",
+        "fullName"
+      )
+      .populate(
+        "sellerPaymentReceipts.verifiedBy",
+        "fullName"
+      );
+
+    return res.status(200).json({
+      success: true,
+      message: "Buyer payment refunded successfully.",
+      order: updatedOrder,
+    });
+  } catch (error) {
+    console.log(
+      "Refund Buyer Payment Error:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to refund buyer payment.",
+      error: error.message,
+    });
+  }
+};
+
 //admin ---> paymenttoseller
 export const uploadAdminToSellerPayment = async (req, res) => {
   try {

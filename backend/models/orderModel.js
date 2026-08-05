@@ -84,6 +84,10 @@ const orderSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    buyerRefundedAmount: {
+      type: Number,
+      default: 0,
+    },
 
     sellerPaidAmount: {
       type: Number,

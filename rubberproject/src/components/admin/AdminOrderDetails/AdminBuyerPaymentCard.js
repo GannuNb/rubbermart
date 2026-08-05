@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 
 import { approveBuyerPayment } from "../../../redux/slices/adminOrders/approveBuyerPaymentThunk";
 import { rejectBuyerPayment } from "../../../redux/slices/adminOrders/rejectBuyerPaymentThunk";
+import { refundBuyerPayment } from "../../../redux/slices/adminOrders/refundBuyerPaymentThunk";
 
 import styles from "../../../styles/Admin/AdminBuyerPaymentCard.module.css";
 
@@ -21,6 +22,7 @@ const AdminBuyerPaymentCard = ({ order }) => {
 
   const [approvingPaymentId, setApprovingPaymentId] = useState(null);
   const [rejectingPaymentId, setRejectingPaymentId] = useState(null);
+  const [refundingPaymentId, setRefundingPaymentId] = useState(null);
 
   /* =========================
      VIEW RECEIPT
@@ -93,6 +95,24 @@ const AdminBuyerPaymentCard = ({ order }) => {
       console.log(error);
     } finally {
       setRejectingPaymentId(null);
+    }
+  };
+  const handleRefundPayment = async (paymentId) => {
+    if (!paymentId) return;
+
+    try {
+      setRefundingPaymentId(paymentId);
+
+      await dispatch(
+        refundBuyerPayment({
+          orderId: order?._id,
+          paymentId,
+        }),
+      ).unwrap();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setRefundingPaymentId(null);
     }
   };
 
@@ -188,8 +208,24 @@ const AdminBuyerPaymentCard = ({ order }) => {
                         View Receipt
                       </button>
 
-                      {payment?.status === "verified" ? (
-                        <button className={styles.approvedBtn}>Approved</button>
+                      {payment?.isRefunded ? (
+                        <button className={styles.lightBtn}>Refunded</button>
+                      ) : payment?.status === "verified" ? (
+                        order?.orderStatus === "cancelled" ? (
+                          <button
+                            className={styles.primaryBtn}
+                            onClick={() => handleRefundPayment(payment?._id)}
+                            disabled={refundingPaymentId === payment?._id}
+                          >
+                            {refundingPaymentId === payment?._id
+                              ? "Refunding..."
+                              : "Refund Payment"}
+                          </button>
+                        ) : (
+                          <button className={styles.approvedBtn}>
+                            Approved
+                          </button>
+                        )
                       ) : payment?.status === "rejected" ? (
                         <button className={styles.lightBtn}>Rejected</button>
                       ) : (

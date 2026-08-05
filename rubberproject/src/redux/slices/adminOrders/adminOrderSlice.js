@@ -13,6 +13,7 @@ import { assignTransporterToShipment } from "./assignTransporterThunk";
 import { getAllTransporters } from "./getAllTransportersThunk";
 import { adminDirectAssignTransporter } from "./adminDirectAssignTransporterThunk";
 import { markShipmentShippedByAdminThunk } from "./markShipmentShippedByAdminThunk";
+import { refundBuyerPayment } from "./refundBuyerPaymentThunk";
 
 const initialState = {
   /* =========================
@@ -240,6 +241,18 @@ const adminOrderSlice = createSlice({
 
         state.approvePaymentError = action.payload;
       })
+      .addCase(refundBuyerPayment.pending, (state) => {
+  state.approvePaymentLoading = true;
+})
+
+.addCase(refundBuyerPayment.fulfilled, (state, action) => {
+  state.approvePaymentLoading = false;
+  state.singleOrder = action.payload.order || null;
+})
+
+.addCase(refundBuyerPayment.rejected, (state) => {
+  state.approvePaymentLoading = false;
+})
 
       /* =========================
          ADMIN → SELLER PAYMENT

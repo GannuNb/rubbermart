@@ -96,7 +96,33 @@ const paymentReceiptSchema = new mongoose.Schema(
     verifiedAt: {
       type: Date,
     },
+/* =========================
+   REFUND
+========================= */
 
+isRefunded: {
+  type: Boolean,
+  default: false,
+},
+
+refundedAmount: {
+  type: Number,
+  default: 0,
+},
+
+refundedBy: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "User",
+},
+
+refundedAt: {
+  type: Date,
+},
+
+refundNote: {
+  type: String,
+  default: "",
+},
     /* =========================
        PAYMENT CALCULATION
     ========================= */

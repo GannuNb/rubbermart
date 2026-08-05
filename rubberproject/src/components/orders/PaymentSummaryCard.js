@@ -6,13 +6,11 @@ function PaymentSummaryCard({ order }) {
   const receipts = order?.buyerPaymentReceipts || [];
 
   // ✅ ONLY VERIFIED
-  const verifiedReceipts = receipts.filter(
-    (r) => r.status === "verified"
-  );
+  const verifiedReceipts = receipts.filter((r) => r.status === "verified");
 
   const totalPaid = verifiedReceipts.reduce(
     (sum, r) => sum + Number(r.amount || 0),
-    0
+    0,
   );
 
   const remaining = Number(order.totalAmount) - totalPaid;
@@ -20,12 +18,11 @@ function PaymentSummaryCard({ order }) {
   return (
     <div className={styles.paymentSummaryCard}>
       {/* Clickable Header Toggle */}
-      <div 
-        className={styles.dropdownHeader} 
-        onClick={() => setIsOpen(!isOpen)}
-      >
+      <div className={styles.dropdownHeader} onClick={() => setIsOpen(!isOpen)}>
         <h3 className={styles.cardTitle}>Transactions</h3>
-        <span className={`${styles.toggleIcon} ${isOpen ? styles.iconActive : ""}`}>
+        <span
+          className={`${styles.toggleIcon} ${isOpen ? styles.iconActive : ""}`}
+        >
           {isOpen ? "−" : "+"}
         </span>
       </div>
@@ -40,17 +37,24 @@ function PaymentSummaryCard({ order }) {
               <h4>₹{totalPaid.toLocaleString()}</h4>
             </div>
 
-            <div>
-              <p className={styles.label}>Remaining Amount</p>
-              <h4>₹{remaining.toLocaleString()}</h4>
-            </div>
+            {order?.orderStatus === "cancelled" ? (
+              <div>
+                <p className={styles.label}>Refunded Amount</p>
+                <h4>
+                  ₹{Number(order?.buyerRefundedAmount || 0).toLocaleString()}
+                </h4>
+              </div>
+            ) : (
+              <div>
+                <p className={styles.label}>Remaining Amount</p>
+                <h4>₹{remaining.toLocaleString()}</h4>
+              </div>
+            )}
           </div>
 
           {/* STATUS */}
           {remaining === 0 && (
-            <div className={styles.paidFullBox}>
-              Paid in Full ✅
-            </div>
+            <div className={styles.paidFullBox}>Paid in Full ✅</div>
           )}
 
           {/* HISTORY */}
@@ -60,20 +64,22 @@ function PaymentSummaryCard({ order }) {
             ) : (
               receipts.map((r, i) => (
                 <div key={i} className={styles.historyItem}>
-                  <div>
-                    ₹{Number(r.amount).toLocaleString()}
-                  </div>
+                  <div>₹{Number(r.amount).toLocaleString()}</div>
 
                   <div
                     className={`${styles.statusBadge} ${
-                      r.status === "verified"
-                        ? styles.verified
-                        : r.status === "rejected"
-                        ? styles.rejected
-                        : styles.pending
+                      r.isRefunded
+                        ? styles.refunded
+                        : r.status === "verified"
+                          ? styles.verified
+                          : r.status === "rejected"
+                            ? styles.rejected
+                            : styles.pending
                     }`}
                   >
-                    {r.status || "pending"}
+                    {r.isRefunded
+                      ? `Refunded (₹${r.refundedAmount || 0})`
+                      : r.status || "pending"}
                   </div>
                 </div>
               ))
