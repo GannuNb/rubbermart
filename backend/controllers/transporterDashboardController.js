@@ -12,6 +12,9 @@ const COMPLETED_STATUSES = ["delivered", "completed"];
 export const getTransporterDashboardStats = async (req, res) => {
     try {
         const transporterId = req.user._id;
+        const myQuotesCount = await ShipmentTransportQuote.countDocuments({
+            transporter: transporterId,
+        });
 
         const stats = await Order.aggregate([
             {
@@ -83,6 +86,7 @@ export const getTransporterDashboardStats = async (req, res) => {
             success: true,
             stats: {
                 ...result,
+                 myQuotes: myQuotesCount,
                 revenue: `₹${result.revenue.toLocaleString()}`
             }
         });

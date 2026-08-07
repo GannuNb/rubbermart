@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FiTruck, FiFileText, FiLayers, FiCheckCircle } from "react-icons/fi";
+import { FiTruck, FiFileText, FiLayers, FiCheckCircle  } from "react-icons/fi";
 import { BiRupee } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import styles from "./StatsCardsSection.module.css";
+import {  FaBoxOpen,} from "react-icons/fa";
 
 function StatsCardsSection() {
   const [stats, setStats] = useState({
-    openShipments: 0,
-    pendingRequests: 0,
-    assignedShipments: 0,
-    completedShipments: 0,
-    revenue: "₹0",
-  });
+  openShipments: 0,
+  myQuotes: 0,
+  pendingRequests: 0,
+  assignedShipments: 0,
+  completedShipments: 0,
+  revenue: "₹0",
+});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -41,6 +43,7 @@ function StatsCardsSection() {
 // Change this in StatsCardsSection.js
 const cards = [
   { label: "Open Shipments", val: stats.openShipments, icon: <FiFileText />, color: styles.purpleIcon, path: "/transporter-shipments" },
+  { label: "My Quotes", val: stats.myQuotes, icon: <FaBoxOpen />, color: styles.purpleIcon, path: "/transporter-my-quotes" },
   { label: "Admin Quote Requests", val: stats.adminPending, icon: <FiLayers />, color: styles.orangeIcon, path: "/transporter-pending-assignments" },
   { label: "Assigned", val: stats.assignedShipments, icon: <FiLayers />, color: styles.purpleIcon, path: "/transporter-assigned-shipments" },
   { label: "Completed", val: stats.completedShipments, icon: <FiCheckCircle />, color: styles.purpleIcon, path: "/transporter-completed-deliveries" },

@@ -166,17 +166,17 @@ export const transporterLinks = [
     icon: FaClipboardList,
   },
 
-  {
-    label: "My Quotes",
-    path: "/transporter-my-quotes",
-    icon: FaBoxOpen,
-  },
+  // {
+  //   label: "My Quotes",
+  //   path: "/transporter-my-quotes",
+  //   icon: FaBoxOpen,
+  // },
 
-  {
-    label: "Requests",
-    path: "/transporter-pending-assignments",
-    icon: FaClock,
-  },
+  // {
+  //   label: "Requests",
+  //   path: "/transporter-pending-assignments",
+  //   icon: FaClock,
+  // },
 
   {
     label: "Assigned",
