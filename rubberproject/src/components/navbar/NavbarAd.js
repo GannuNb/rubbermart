@@ -3,7 +3,7 @@ import styles from "../../styles/Navbar/NavbarAd.module.css";
 
 // Images
 import VikahLogo from "../../assests/VikahLogo.png";
-import RST4000 from "../../assests/RST4000.jpg";
+import RST4000 from "../../assests/R4.png";
 import Tyrebaler from "../../assests/TyreBaler.png";
 
 function NavbarAd() {

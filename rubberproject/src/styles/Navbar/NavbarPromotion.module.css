@@ -1,1212 +1,706 @@
-/* =====================================================
-   PROMOTION CARD
-===================================================== */
+/* =========================================================
+   NAVBAR PROMOTION
+========================================================= */
 
 .promotion {
-  display: flex;
-  align-items: center;
-
   width: 100%;
-  max-width: 400px;
-  min-height: 285px;
+  height: 100%;
 
-  padding: 22px 26px;
-
-  box-sizing: border-box;
-
-  border: 2px solid rgba(96, 165, 250, 0.32);
-
-  border-radius: 22px;
-
-  background:
-    linear-gradient(
-      135deg,
-      rgba(239, 248, 255, 0.98),
-      rgba(220, 239, 253, 0.96)
-    );
-
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-
-  box-shadow:
-    0 12px 30px rgba(30, 64, 175, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
-
-  text-decoration: none;
-
-  position: relative;
-
-  overflow: hidden;
-
-  margin-bottom: 18px;
+  opacity: 0;
+  transform: translateY(8px);
 
   transition:
-    opacity 0.35s ease,
-    transform 0.35s ease,
-    box-shadow 0.3s ease,
-    background 0.3s ease;
+    opacity 0.4s ease,
+    transform 0.4s ease;
 }
-
-
-/* =====================================================
-   DECORATIVE LIGHT CIRCLE
-===================================================== */
-
-.promotion::before {
-  content: "";
-
-  position: absolute;
-
-  width: 140px;
-  height: 140px;
-
-  top: -70px;
-  right: -45px;
-
-  background: rgba(59, 130, 246, 0.10);
-
-  border-radius: 50%;
-
-  pointer-events: none;
-}
-
-
-/* =====================================================
-   LIGHT GLASS EFFECT
-===================================================== */
-
-.promotion::after {
-  content: "";
-
-  position: absolute;
-
-  inset: 0;
-
-  background:
-    linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.28),
-      rgba(255, 255, 255, 0.04)
-    );
-
-  pointer-events: none;
-}
-
-
-/* =====================================================
-   SLIDE STATES
-===================================================== */
 
 .visible {
   opacity: 1;
-
-  transform:
-    translateX(0)
-    scale(1);
-
-  pointer-events: auto;
+  transform: translateY(0);
 }
 
 .hidden {
   opacity: 0;
-
-  transform:
-    translateX(18px)
-    scale(0.98);
-
-  pointer-events: none;
+  transform: translateY(-8px);
 }
 
 
-/* =====================================================
-   HOVER
-===================================================== */
+/* =========================================================
+   PROMOTION CARD
+========================================================= */
 
-.promotion:hover {
-  background:
-    linear-gradient(
-      135deg,
-      rgba(237, 247, 255, 1),
-      rgba(214, 236, 252, 0.98)
-    );
-
-  box-shadow:
-    0 20px 40px rgba(30, 64, 175, 0.17),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95);
-
-  transform: translateY(-3px);
-}
-
-
-/* =====================================================
-   PROMOTION LINK
-===================================================== */
 
 .promotionLink {
   position: relative;
 
-  z-index: 2;
-
-  display: flex;
-
-  /*
-   IMPORTANT:
-   Keep this as column for the main content.
-   The side image is positioned absolutely.
-  */
-  flex-direction: column;
-
-  align-items: flex-start;
+  display: block;
 
   width: 100%;
-
   height: 100%;
 
-  min-width: 0;
+  padding: 24px 24px;
+
+  box-sizing: border-box;
 
   text-decoration: none;
+  text-decoration-line: none;
 
+  color: inherit;
+
+  overflow: hidden;
+
+  border-radius: 22px;
+
+  background: linear-gradient( 135deg, #e5f4ff 0%, #a6d6f3 100% );
+
+  border: 2px solid #b5d9ff;
+
+  box-shadow:
+    0 8px 22px rgba(59, 130, 246, 0.08);
+
+  cursor: pointer;
+}
+
+/* =========================================================
+   REMOVE LINK UNDERLINE IN ALL STATES
+========================================================= */
+
+.promotionLink:link,
+.promotionLink:visited,
+.promotionLink:hover,
+.promotionLink:active,
+.promotionLink:focus {
+  text-decoration: none;
+  text-decoration-line: none;
   color: inherit;
 }
 
 
-/* =====================================================
-   MAIN LOGO
-===================================================== */
+/* =========================================================
+   DECORATIVE CIRCLE
+========================================================= */
+
+.promotionLink::after {
+  content: "";
+
+  position: absolute;
+
+  width: 130px;
+  height: 130px;
+
+  top: -55px;
+  right: -35px;
+
+  border-radius: 50%;
+
+  background: rgba(147, 197, 253, 0.16);
+
+  pointer-events: none;
+
+  z-index: 1;
+}
+
+
+/* =========================================================
+   LOGO
+========================================================= */
 
 .logoWrapper {
+  position: relative;
+
   width: 100%;
 
   display: flex;
-
   align-items: center;
 
-  justify-content: flex-start;
+  margin-bottom: 12px;
 
-  margin-bottom: 18px;
+  z-index: 2;
 }
 
 .logo {
-  width: 115px;
-  height: 55px;
+  display: block;
+
+  width: auto;
+  height: 45px;
+
+  max-width: 145px;
 
   object-fit: contain;
-
-  display: block;
 }
 
 
-/* =====================================================
+/* =========================================================
    CONTENT
-===================================================== */
+========================================================= */
 
 .content {
-  display: flex;
+  position: relative;
 
-  flex-direction: column;
+  z-index: 2;
+
+  /*
+    Keep the content wide.
+
+    Padding on the right gives the image its own space
+    without making the whole content column too narrow.
+  */
 
   width: 100%;
 
-  min-width: 0;
-
-  overflow: hidden;
-
-  /*
-   Reserve space on the right for the side image.
-   This prevents text from touching the image.
-  */
-  padding-right: 105px;
+  padding-right: 72px;
 
   box-sizing: border-box;
 }
 
 
-/* =====================================================
+/* =========================================================
    TITLE
-===================================================== */
+========================================================= */
 
 .title {
-  color: #2563eb;
+  display: block;
 
-  font-size: 25px;
+  margin: 0 0 7px 0;
+
+  font-size: 27px;
+
+  line-height: 1.12;
 
   font-weight: 800;
 
-  line-height: 1.2;
+  color: #2864d7;
+
+  letter-spacing: -0.4px;
+
+  /*
+    Keep heading on one line.
+  */
 
   white-space: nowrap;
 
-  overflow: hidden;
+  overflow: visible;
 
-  text-overflow: ellipsis;
-
-  /*
-   Extra safety so title does not collide
-   with the right-side image.
-  */
-  padding-right: 10px;
+  text-overflow: clip;
 }
 
 
-/* =====================================================
+/* =========================================================
    SUBTITLE
-===================================================== */
+========================================================= */
 
 .subtitle {
-  color: #475569;
+  display: block;
 
-  font-size: 13px;
+  margin: 0 0 12px 0;
+
+  font-size: 14px;
+
+  line-height: 1.4;
 
   font-weight: 600;
 
-  margin-top: 6px;
+  color: #40536d;
 
-  white-space: nowrap;
+  white-space: normal;
 
-  overflow: hidden;
+  overflow: visible;
 
-  text-overflow: ellipsis;
+  word-break: normal;
 
-  padding-right: 10px;
+  overflow-wrap: normal;
 }
 
 
-/* =====================================================
+/* =========================================================
    DESCRIPTION
-===================================================== */
+========================================================= */
 
 .description {
-  color: #64748b;
+  margin: 0;
 
   font-size: 13px;
 
   line-height: 1.55;
 
-  margin: 12px 0 0;
+  font-weight: 400;
 
-  max-width: 330px;
+  color: #58708e;
 
-  padding-right: 0;
+  /*
+    Full text remains visible.
+  */
+
+  white-space: normal;
+
+  overflow: visible;
+
+  word-break: normal;
+
+  overflow-wrap: normal;
 }
 
 
-/* =====================================================
-   RIGHT-SIDE IMAGE WRAPPER
-===================================================== */
-
-/*
-   IMPORTANT FIX:
-
-   The image is now absolutely positioned
-   on the RIGHT SIDE of the card.
-
-   It will NOT come underneath the content.
-*/
+/* =========================================================
+   RIGHT SIDE IMAGE
+========================================================= */
 
 .sideImageWrapper {
   position: absolute;
 
-  right: 20px;
+  right: 14px;
 
   top: 50%;
 
   transform: translateY(-50%);
 
-  width: 82px;
-
-  height: 82px;
+  width: 72px;
+  height: 95px;
 
   display: flex;
 
   align-items: center;
-
   justify-content: center;
 
-  flex-shrink: 0;
-
-  margin: 0;
+  z-index: 3;
 
   /*
-   No background
+    IMPORTANT:
+    No background
+    No border
+    No shadow
   */
+
   background: transparent;
 
-  /*
-   No border
-  */
   border: none;
 
-  /*
-   No shadow
-  */
   box-shadow: none;
 
-  /*
-   Keep it above the decorative effects.
-  */
-  z-index: 5;
-
   pointer-events: none;
-
-  transition:
-    transform 0.25s ease;
 }
 
 
-/* =====================================================
-   RIGHT-SIDE IMAGE
-===================================================== */
+/* =========================================================
+   RIGHT SIDE IMAGE ITSELF
+========================================================= */
 
 .sideImage {
-  width: 78px;
+  display: block;
 
-  height: 78px;
+  width: 100%;
+  height: 100%;
 
   object-fit: contain;
 
-  display: block;
-
-  /*
-   Completely transparent image area.
-  */
   background: transparent;
 
-  /*
-   NO BORDER
-  */
   border: none;
 
-  /*
-   NO SHADOW
-  */
-  box-shadow: none;
-
-  /*
-   NO RADIUS
-  */
   border-radius: 0;
 
-  pointer-events: none;
-}
-
-
-/* =====================================================
-   RIGHT IMAGE HOVER
-===================================================== */
-
-.promotion:hover .sideImageWrapper {
-  transform:
-    translateY(-50%)
-    scale(1.05);
-
-  /*
-   Keep image completely transparent.
-  */
-  background: transparent;
-
   box-shadow: none;
 }
 
 
-/* =====================================================
-   LAPTOP
-===================================================== */
+/* =========================================================
+   LARGE DESKTOP
+   1400px+
+========================================================= */
 
-@media (max-width: 1200px) {
+@media (min-width: 1400px) {
 
-  .promotion {
-    width: 100%;
-
-    max-width: 360px;
-
-    min-height: 265px;
-
-    padding: 20px 22px;
-
-    border-radius: 20px;
-
-    margin-bottom: 16px;
+  .promotionLink {
+    padding: 28px 28px;
   }
-
 
   .logoWrapper {
-    margin-bottom: 15px;
+    margin-bottom: 14px;
   }
-
 
   .logo {
-    width: 105px;
     height: 50px;
+    max-width: 155px;
   }
-
 
   .content {
-    padding-right: 82px;
+    width: 100%;
+    padding-right: 88px;
   }
-
 
   .title {
-    font-size: 22px;
+    font-size: 28px;
+    line-height: 1.12;
 
-    padding-right: 5px;
+    white-space: nowrap;
   }
-
 
   .subtitle {
-    font-size: 12px;
+    font-size: 14px;
 
-    padding-right: 5px;
+    line-height: 1.4;
+
+    margin-bottom: 13px;
   }
-
 
   .description {
-    font-size: 12px;
+    font-size: 13px;
 
-    line-height: 1.5;
-
-    margin-top: 10px;
+    line-height: 1.6;
   }
-
-
-  /* ===================================================
-     LAPTOP RIGHT-SIDE IMAGE
-  =================================================== */
 
   .sideImageWrapper {
-    width: 68px;
-
-    height: 68px;
-
     right: 16px;
 
-    top: 50%;
-
-    transform: translateY(-50%);
-  }
-
-
-  .sideImage {
-    width: 64px;
-
-    height: 64px;
-  }
-
-
-  .promotion:hover .sideImageWrapper {
-    transform:
-      translateY(-50%)
-      scale(1.05);
-
-    background: transparent;
-
-    box-shadow: none;
+    width: 82px;
+    height: 108px;
   }
 }
 
 
-/* =====================================================
-   TABLET
-===================================================== */
+/* =========================================================
+   NORMAL LAPTOP
+   1200px - 1399px
+========================================================= */
 
-@media (max-width: 991px) {
+@media (min-width: 1200px) and (max-width: 1399px) {
 
-  .promotion {
-    width: min(420px, 90vw);
-
-    max-width: 420px;
-
-    min-height: 270px;
-
-    padding: 22px 24px;
-
-    border-radius: 20px;
-
-    margin-bottom: 18px;
+  .promotionLink {
+    padding: 24px 24px;
   }
 
+  .logoWrapper {
+    margin-bottom: 12px;
+  }
 
   .logo {
-    width: 110px;
+    height: 43px;
 
-    height: 55px;
+    max-width: 140px;
   }
-
 
   .content {
-    padding-right: 75px;
-  }
+    width: 100%;
 
+    padding-right: 76px;
+  }
 
   .title {
     font-size: 24px;
 
-    padding-right: 5px;
-  }
+    line-height: 1.12;
 
+    white-space: nowrap;
+  }
 
   .subtitle {
     font-size: 13px;
 
-    padding-right: 5px;
+    line-height: 1.35;
+
+    margin-bottom: 11px;
   }
-
-
-  .description {
-    font-size: 13px;
-
-    line-height: 1.55;
-  }
-
-
-  /* ===================================================
-     TABLET RIGHT-SIDE IMAGE
-  =================================================== */
-
-  .sideImageWrapper {
-    width: 62px;
-
-    height: 62px;
-
-    right: 16px;
-
-    top: 50%;
-
-    transform: translateY(-50%);
-  }
-
-
-  .sideImage {
-    width: 58px;
-
-    height: 58px;
-  }
-
-
-  .promotion:hover .sideImageWrapper {
-    transform:
-      translateY(-50%)
-      scale(1.05);
-
-    background: transparent;
-
-    box-shadow: none;
-  }
-}
-
-
-/* =====================================================
-   MOBILE
-===================================================== */
-
-@media (max-width: 576px) {
-
-  .promotion {
-    width: calc(100vw - 32px);
-
-    max-width: none;
-
-    min-height: 250px;
-
-    padding: 20px;
-
-    border-radius: 19px;
-
-    margin-bottom: 16px;
-  }
-
-
-  .logoWrapper {
-    margin-bottom: 15px;
-  }
-
-
-  .logo {
-    width: 100px;
-
-    height: 50px;
-  }
-
-
-  .content {
-    padding-right: 65px;
-  }
-
-
-  .title {
-    font-size: 21px;
-
-    padding-right: 5px;
-  }
-
-
-  .subtitle {
-    font-size: 13px;
-
-    padding-right: 5px;
-  }
-
 
   .description {
     font-size: 12px;
 
     line-height: 1.55;
-
-    margin-top: 10px;
-
-    padding-right: 0;
   }
-
-
-  /* ===================================================
-     MOBILE RIGHT-SIDE IMAGE
-  =================================================== */
 
   .sideImageWrapper {
-    width: 52px;
-
-    height: 52px;
-
     right: 13px;
 
-    top: 50%;
-
-    transform: translateY(-50%);
-
-    border-radius: 0;
-
-    background: transparent;
-
-    border: none;
-
-    box-shadow: none;
-  }
-
-
-  .sideImage {
-    width: 48px;
-
-    height: 48px;
-
-    object-fit: contain;
-
-    background: transparent;
-
-    border: none;
-
-    box-shadow: none;
-
-    border-radius: 0;
-  }
-
-
-  .promotion:hover .sideImageWrapper {
-    transform:
-      translateY(-50%)
-      scale(1.05);
-
-    background: transparent;
-
-    box-shadow: none;
+    width: 70px;
+    height: 92px;
   }
 }
 
 
-/* =====================================================
-   NAVBAR COMPACT PROMOTION
-   Keep navbar small and separate
-===================================================== */
-
-.compactPromotion {
-  width: 230px !important;
-
-  min-height: 48px !important;
-
-  height: 48px !important;
-
-  padding: 6px 12px !important;
-
-  border-radius: 10px !important;
-
-  display: flex;
-
-  align-items: center;
-
-  box-sizing: border-box;
-
-  background: rgba(255, 255, 255, 0.78);
-
-  border: 1px solid rgba(125, 60, 181, 0.15);
-
-  box-shadow:
-    0 4px 12px rgba(79, 46, 120, 0.08);
-
-  overflow: hidden;
-}
-
-
-/* =====================================================
-   NAVBAR COMPACT LINK
-===================================================== */
-
-.compactPromotion .promotionLink {
-  width: 100%;
-
-  height: 100%;
-
-  display: flex;
-
-  flex-direction: row;
-
-  align-items: center;
-
-  gap: 8px;
-
-  overflow: hidden;
-}
-
-
-/* =====================================================
-   NAVBAR COMPACT LOGO
-===================================================== */
-
-.compactPromotion .logoWrapper {
-  width: 42px;
-
-  min-width: 42px;
-
-  height: 32px;
-
-  margin: 0;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-}
-
-
-.compactPromotion .logo {
-  width: 42px;
-
-  height: 30px;
-
-  object-fit: contain;
-}
-
-
-/* =====================================================
-   NAVBAR COMPACT CONTENT
-===================================================== */
-
-.compactPromotion .content {
-  flex: 1;
-
-  width: auto;
-
-  min-width: 0;
-
-  overflow: hidden;
-
-  display: flex;
-
-  flex-direction: column;
-
-  justify-content: center;
-
-  gap: 1px;
-
-  /*
-   Reset the large-card right padding.
-  */
-  padding-right: 0;
-}
-
-
-/* =====================================================
-   NAVBAR COMPACT TITLE
-===================================================== */
-
-.compactPromotion .title {
-  font-size: 11px;
-
-  line-height: 1.1;
-
-  font-weight: 800;
-
-  white-space: nowrap;
-
-  overflow: hidden;
-
-  text-overflow: ellipsis;
-
-  color: #6f35a8;
-
-  padding-right: 0;
-}
-
-
-/* =====================================================
-   NAVBAR COMPACT SUBTITLE
-===================================================== */
-
-.compactPromotion .subtitle {
-  font-size: 8px;
-
-  line-height: 1.1;
-
-  font-weight: 600;
-
-  margin: 0;
-
-  white-space: nowrap;
-
-  overflow: hidden;
-
-  text-overflow: ellipsis;
-
-  color: #64748b;
-
-  padding-right: 0;
-}
-
-
-/* =====================================================
-   HIDE DESCRIPTION IN NAVBAR
-===================================================== */
-
-.compactPromotion .description {
-  display: none;
-}
-
-
-/* =====================================================
-   NAVBAR COMPACT SIDE IMAGE
-===================================================== */
-
-.compactPromotion .sideImageWrapper {
-  position: static;
-
-  transform: none;
-
-  width: 32px;
-
-  min-width: 32px;
-
-  height: 32px;
-
-  margin-left: 2px;
-
-  border-radius: 0;
-
-  border: none;
-
-  background: transparent;
-
-  box-shadow: none;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-}
-
-
-.compactPromotion .sideImage {
-  width: 32px;
-
-  height: 32px;
-
-  object-fit: contain;
-
-  background: transparent;
-
-  border: none;
-
-  box-shadow: none;
-
-  border-radius: 0;
-}
-
-
-/* =====================================================
-   NAVBAR COMPACT HOVER
-===================================================== */
-
-.compactPromotion:hover {
-  transform: none;
-
-  box-shadow:
-    0 6px 16px rgba(79, 46, 120, 0.12);
-}
-
-
-.compactPromotion:hover .sideImageWrapper {
-  transform: scale(1.04);
-
-  background: transparent;
-
-  box-shadow: none;
-}
-
-
-/* =====================================================
-   DISABLE LARGE GLASS DECORATION
-   FOR NAVBAR
-===================================================== */
-
-.compactPromotion::before {
-  width: 70px;
-
-  height: 70px;
-
-  top: -35px;
-
-  right: -25px;
-
-  background: rgba(125, 60, 181, 0.05);
-}
-
-
-.compactPromotion::after {
-  background:
-    linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.12),
-      rgba(255, 255, 255, 0.01)
-    );
-}
-
-/* =====================================================
-   LAPTOP PROMOTION CARD
-   1025px - 1200px
-===================================================== */
-
-@media (max-width: 1200px) and (min-width: 1025px) {
-
-  /* ===================================================
-     MAIN CARD
-  =================================================== */
-
-  .promotion {
-    width: 100%;
-    height: 250px;
-
-    box-sizing: border-box;
-
-    overflow: hidden;
-
-    border-radius: 20px;
-  }
-
-
-  /* ===================================================
-     CARD LINK
-  =================================================== */
+/* =========================================================
+   LAPTOP
+   1024px - 1199px
+========================================================= */
+
+@media (min-width: 1024px) and (max-width: 1199px) {
 
   .promotionLink {
-    width: 100%;
-    height: 100%;
-
-    box-sizing: border-box;
-
-    padding: 18px 18px;
-
-    display: grid;
-
-    /*
-      Left side = content
-      Right side = image
-    */
-    grid-template-columns: minmax(0, 1fr) 48px;
-
-    grid-template-rows: auto 1fr;
-
-    column-gap: 8px;
-
-    align-items: center;
-
-    overflow: hidden;
+    padding: 20px 20px;
   }
-
-
-  /* ===================================================
-     LOGO
-  =================================================== */
 
   .logoWrapper {
-    grid-column: 1 / -1;
-
-    width: 100%;
-
-    height: 42px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: flex-start;
-
-    margin-bottom: 3px;
-
-    overflow: hidden;
+    margin-bottom: 10px;
   }
-
 
   .logo {
-    width: auto;
-    max-width: 110px;
+    height: 36px;
 
-    height: auto;
-    max-height: 38px;
-
-    object-fit: contain;
-
-    display: block;
+    max-width: 120px;
   }
-
-
-  /* ===================================================
-     CONTENT
-  =================================================== */
 
   .content {
-    min-width: 0;
-
     width: 100%;
 
-    max-width: 100%;
-
-    overflow: hidden;
+    padding-right: 62px;
   }
 
-
-  /* ===================================================
-     TITLE
-  =================================================== */
-
   .title {
-    display: block;
+    font-size: 20px;
 
+    line-height: 1.15;
+
+    letter-spacing: -0.2px;
+
+    white-space: nowrap;
+  }
+
+  .subtitle {
+    font-size: 11.5px;
+
+    line-height: 1.35;
+
+    margin-bottom: 9px;
+  }
+
+  .description {
+    font-size: 10.5px;
+
+    line-height: 1.5;
+  }
+
+  .sideImageWrapper {
+    right: 10px;
+
+    width: 58px;
+    height: 78px;
+  }
+}
+
+
+/* =========================================================
+   TABLET
+   768px - 1023px
+========================================================= */
+
+@media (min-width: 768px) and (max-width: 1023px) {
+
+  .promotionLink {
+    padding: 19px 18px;
+  }
+
+  .logoWrapper {
+    margin-bottom: 9px;
+  }
+
+  .logo {
+    height: 34px;
+
+    max-width: 110px;
+  }
+
+  .content {
     width: 100%;
 
-    margin: 0;
+    padding-right: 54px;
+  }
 
+  .title {
+    font-size: 19px;
+
+    line-height: 1.15;
+
+    white-space: nowrap;
+  }
+
+  .subtitle {
+    font-size: 11px;
+
+    line-height: 1.35;
+
+    margin-bottom: 8px;
+  }
+
+  .description {
+    font-size: 10px;
+
+    line-height: 1.45;
+  }
+
+  .sideImageWrapper {
+    right: 8px;
+
+    width: 52px;
+    height: 70px;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+   MAX 767px
+========================================================= */
+
+@media (max-width: 767px) {
+
+  .promotionLink {
+    padding: 17px;
+  }
+
+  .logoWrapper {
+    margin-bottom: 9px;
+  }
+
+  .logo {
+    height: 31px;
+
+    max-width: 105px;
+  }
+
+  .content {
+    width: 100%;
+
+    padding-right: 48px;
+  }
+
+  .title {
     font-size: 18px;
 
     line-height: 1.15;
 
-    font-weight: 800;
-
-    /*
-      IMPORTANT:
-      Remove ellipsis completely.
-    */
-    white-space: normal;
-
-    overflow: visible;
-
-    text-overflow: clip;
-
-    word-break: normal;
-
-    overflow-wrap: normal;
+    white-space: nowrap;
   }
 
-
-  /* ===================================================
-     SUBTITLE
-  =================================================== */
-
   .subtitle {
-    display: block;
+    font-size: 10.5px;
 
+    line-height: 1.35;
+
+    margin-bottom: 7px;
+  }
+
+  .description {
+    font-size: 10px;
+
+    line-height: 1.45;
+  }
+
+  .sideImageWrapper {
+    right: 7px;
+
+    width: 46px;
+    height: 62px;
+  }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   MAX 480px
+========================================================= */
+
+@media (max-width: 480px) {
+
+  .promotionLink {
+    padding: 15px;
+  }
+
+  .logoWrapper {
+    margin-bottom: 8px;
+  }
+
+  .logo {
+    height: 28px;
+
+    max-width: 95px;
+  }
+
+  .content {
     width: 100%;
 
-    margin-top: 5px;
+    padding-right: 43px;
+  }
 
-    font-size: 10.5px;
+  .title {
+    font-size: 17px;
+
+    line-height: 1.15;
+
+    white-space: nowrap;
+  }
+
+  .subtitle {
+    font-size: 10px;
 
     line-height: 1.3;
 
-    font-weight: 600;
-
-    white-space: normal;
-
-    overflow: visible;
-
-    text-overflow: clip;
+    margin-bottom: 7px;
   }
-
-
-  /* ===================================================
-     DESCRIPTION
-  =================================================== */
 
   .description {
-    display: block;
+    font-size: 9.5px;
 
-    width: 100%;
-
-    margin-top: 8px;
-
-    font-size: 10px;
-
-    line-height: 1.5;
-
-    /*
-      Do NOT use line-clamp here.
-      Let the text naturally fit.
-    */
-    white-space: normal;
-
-    overflow: hidden;
-
-    text-overflow: clip;
-
-    word-break: normal;
-
-    overflow-wrap: break-word;
+    line-height: 1.4;
   }
-
-
-  /* ===================================================
-     RIGHT SIDE IMAGE
-  =================================================== */
 
   .sideImageWrapper {
-    width: 48px;
-    height: 75px;
+    right: 6px;
 
-    display: flex;
+    width: 40px;
+    height: 56px;
+  }
+}
 
-    align-items: center;
-    justify-content: center;
 
-    align-self: center;
+/* =========================================================
+   VERY SMALL DEVICES
+   MAX 380px
+========================================================= */
 
-    overflow: hidden;
+@media (max-width: 380px) {
 
-    background: transparent;
-
-    border: none;
-
-    box-shadow: none;
+  .promotionLink {
+    padding: 13px;
   }
 
+  .logoWrapper {
+    margin-bottom: 7px;
+  }
 
-  .sideImage {
-    width: 45px;
-    height: 70px;
+  .logo {
+    height: 26px;
 
-    object-fit: contain;
+    max-width: 90px;
+  }
 
-    display: block;
+  .content {
+    width: 100%;
 
-    background: transparent;
+    padding-right: 38px;
+  }
 
-    border: none;
+  .title {
+    font-size: 15px;
 
-    box-shadow: none;
+    line-height: 1.15;
+
+    white-space: nowrap;
+  }
+
+  .subtitle {
+    font-size: 9.5px;
+
+    line-height: 1.3;
+  }
+
+  .description {
+    font-size: 9px;
+
+    line-height: 1.4;
+  }
+
+  .sideImageWrapper {
+    right: 5px;
+
+    width: 36px;
+    height: 50px;
   }
 }

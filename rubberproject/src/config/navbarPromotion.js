@@ -1,5 +1,5 @@
 import VikahLogo from "../assests/VikahLogo.png";
-import RST4000Image from "../assests/RST4000.jpg";
+import RST4000Image from "../assests/R4.png";
 import TyreBalerImage from "../assests/TyreBaler.png";
 
 export const navbarPromotions = [
