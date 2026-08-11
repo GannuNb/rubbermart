@@ -36,7 +36,7 @@
   left: 0;
   height: 0.25rem;
   width: 100%;
-  animation: progressBar 3s linear forwards;
+  animation: progressBar var(--alert-duration) linear forwards;
 }
 
 .iconWrapper {

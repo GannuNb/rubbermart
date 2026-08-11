@@ -8,7 +8,7 @@ function NavbarLogo({ logoPath = "/" }) {
     <div className={styles.logoSection}>
       <Link to={logoPath} className={styles.logoLink}>
         <img
-          src="/rsm_logo.png"
+          src="/rubber scrap mart.png"
           alt="Rubber Scrap Mart"
           className={styles.logoImage}
         />

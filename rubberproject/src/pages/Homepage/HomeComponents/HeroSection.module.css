@@ -1,87 +1,301 @@
-/* HeroSection.module.css */
+/* =====================================================
+   MAIN HERO WRAPPER
+===================================================== */
 
 .heroSection {
   width: 100%;
   min-height: 82vh;
-  background: #9c82e2;
-  position: relative;
-  overflow: hidden;
+
   display: flex;
-  align-items: center;
-  padding: 25px 0 40px;
+
+  background: #f8f5fc;
+
+  overflow: hidden;
+
+  padding: 0;
+  margin: 0;
+
+  gap: 0;
 }
 
-/* =========================
-   FULL BACKGROUND IMAGE
-========================= */
 
-.backgroundWrapper {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
+/* =====================================================
+   LEFT HERO SECTION
+   75%
+===================================================== */
+
+.leftHeroSection {
+  width: 75%;
+  min-height: 82vh;
+
+  position: relative;
+
   overflow: hidden;
+
+  display: flex;
+  align-items: center;
+
+  border-radius: 0 28px 28px 0;
+
+  z-index: 2;
+}
+
+
+/* =====================================================
+   LEFT BACKGROUND IMAGE
+===================================================== */
+
+.leftBackground {
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 1;
+
+  overflow: hidden;
+
+  border-radius: inherit;
 }
 
 .backgroundImage {
   width: 100%;
   height: 100%;
+
   object-fit: cover;
+
   object-position: center;
-  opacity: 1;
+
+  display: block;
 }
 
-/* OVERLAY */
 
-.backgroundWrapper::after {
+/* =====================================================
+   LEFT BACKGROUND OVERLAY
+===================================================== */
+
+.leftBackground::after {
   content: "";
+
   position: absolute;
+
   inset: 0;
 
   background: linear-gradient(
     90deg,
     rgb(231, 221, 247) 0%,
-    rgba(223, 212, 245, 0.82) 28%,
-    rgba(182, 114, 241, 0.1) 55%,
-    rgba(125, 60, 181, 0.03) 75%,
-    rgba(125, 60, 181, 0) 100%
+    rgba(223, 212, 245, 0.88) 32%,
+    rgba(196, 165, 238, 0.45) 65%,
+    rgba(145, 92, 205, 0.10) 100%
   );
+
+  pointer-events: none;
 }
 
-/* =========================
-   CONTENT
-========================= */
 
-.heroContent {
+/* =====================================================
+   LEFT CONTENT WRAPPER
+===================================================== */
+
+.leftOverlay {
   position: relative;
+
   z-index: 5;
 
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
   width: 100%;
-  min-height: 80vh;
+
+  min-height: 82vh;
+
+  display: flex;
+
+  align-items: center;
 }
 
-.leftSection {
+
+/* =====================================================
+   LEFT CONTENT
+===================================================== */
+
+.leftContent {
   width: 100%;
-  max-width: 760px;
+
+  max-width: 950px;
+
+  padding:
+    45px
+    55px
+    50px
+    clamp(30px, 5vw, 80px);
+
+  box-sizing: border-box;
+}
+
+
+/* =====================================================
+   RIGHT PROMOTION SECTION
+   25%
+===================================================== */
+
+.rightPromotionSection {
+  width: 25%;
+  min-height: 82vh;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f3f8ff 0%,
+      #eef5ff 45%,
+      #f7f4ff 100%
+    );
+
+  border-left: 1px solid rgba(125, 60, 181, 0.08);
+
+  display: flex;
+
+  align-items: flex-start;
+
+  justify-content: center;
 
   position: relative;
-  top: -20px;
+
+  z-index: 1;
+
+  overflow: hidden;
+
+  border-radius: 28px 0 0 28px;
 }
 
-.rightSection {
-  flex: 1;
+
+/* =====================================================
+   RIGHT PROMOTION INNER
+===================================================== */
+
+.promotionInner {
+  width: 100%;
+
+  max-width: 520px;
+
+  /*
+    Reduced vertical padding so
+    promotion area does not become tall.
+  */
+  padding: 32px 20px 28px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  box-sizing: border-box;
 }
 
-/* =========================
+
+/* =====================================================
+   PROMOTION HEADER
+===================================================== */
+
+.promotionHeader {
+  width: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 8px;
+
+  margin-bottom: 16px;
+}
+
+.promotionHeading {
+  color: #6f35a8;
+
+  font-size: 14px;
+
+  font-weight: 800;
+
+  white-space: nowrap;
+
+  text-align: center;
+}
+
+.promotionLine {
+  width: 28px;
+
+  height: 1px;
+
+  background: rgba(111, 53, 168, 0.22);
+
+  flex-shrink: 0;
+}
+
+
+/* =====================================================
+   PROMOTION SLIDER
+===================================================== */
+
+.promotionSlider {
+  width: 100%;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: flex-start;
+
+  /*
+    Prevent cards from becoming too wide.
+  */
+  max-width: 390px;
+}
+
+
+/* =====================================================
+   IMPORTANT
+   NAVBAR PROMOTION CARDS
+
+   These rules target the cards INSIDE
+   NavbarPromotion without changing JSX.
+===================================================== */
+
+.promotionSlider > div {
+  width: 100%;
+}
+
+
+/*
+   If NavbarPromotion has a direct card element,
+   keep it compact.
+*/
+
+.promotionSlider :global(.promotion-card),
+.promotionSlider :global(.promotionCard),
+.promotionSlider :global(.navbar-promotion-card),
+.promotionSlider :global(.navbarPromotionCard) {
+  width: 100%;
+
+  max-width: 390px;
+
+  min-height: 0;
+
+  padding: 18px;
+
+  border-radius: 20px;
+
+  box-sizing: border-box;
+}
+
+
+/* =====================================================
    BADGE
-========================= */
+===================================================== */
 
 .badge {
   display: inline-flex;
+
   align-items: center;
+
   gap: 8px;
 
   padding: 11px 20px;
@@ -95,17 +309,23 @@
   color: #7d3cb5;
 
   font-size: 14px;
+
   font-weight: 700;
 
   margin-bottom: 28px;
 }
 
-/* =========================
+
+/* =====================================================
    HEADING
-========================= */
+===================================================== */
 
 .heading {
-  font-size: clamp(52px, 6vw, 82px);
+  font-size: clamp(
+    52px,
+    5.5vw,
+    82px
+  );
 
   line-height: 0.95;
 
@@ -125,18 +345,25 @@
 
   margin-top: 10px;
 
-  background: linear-gradient( 90deg, #5b54e7, #8751e4 );
+  background: linear-gradient(
+    90deg,
+    #5b54e7,
+    #8751e4
+  );
 
   background-clip: text;
+
   -webkit-background-clip: text;
 
   color: transparent;
+
   -webkit-text-fill-color: transparent;
 }
 
-/* =========================
+
+/* =====================================================
    SUBTEXT
-========================= */
+===================================================== */
 
 .subText {
   max-width: 580px;
@@ -152,17 +379,25 @@
   font-weight: 500;
 }
 
-/* =========================
+
+/* =====================================================
    BUTTONS
-========================= */
+===================================================== */
 
 .buttonGroup {
   display: flex;
+
   align-items: center;
+
   gap: 18px;
 
   margin-bottom: 55px;
 }
+
+
+/* =====================================================
+   PRIMARY BUTTON
+===================================================== */
 
 .primaryBtn {
   border: none;
@@ -180,30 +415,50 @@
   border-radius: 14px;
 
   display: flex;
+
   align-items: center;
+
   justify-content: center;
+
   gap: 10px;
 
   font-weight: 700;
 
-  transition: 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 
   cursor: pointer;
 
   box-shadow:
-    0 10px 30px rgba(124, 58, 237, 0.25);
+    0 10px 30px
+    rgba(124, 58, 237, 0.25);
 }
 
 .primaryBtn:hover {
   transform: translateY(-3px);
+
+  box-shadow:
+    0 14px 35px
+    rgba(124, 58, 237, 0.32);
 }
 
+
+/* =====================================================
+   SECONDARY BUTTON
+===================================================== */
+
 .secondaryBtn {
-  background: rgba(255, 255, 255, 0.75);
+  background:
+    rgba(255, 255, 255, 0.75);
 
   backdrop-filter: blur(10px);
 
-  border: 1px solid rgba(124, 58, 237, 0.25);
+  -webkit-backdrop-filter: blur(10px);
+
+  border:
+    1px solid
+    rgba(124, 58, 237, 0.25);
 
   color: #4f46e5;
 
@@ -212,13 +467,18 @@
   border-radius: 14px;
 
   display: flex;
+
   align-items: center;
+
   justify-content: center;
+
   gap: 10px;
 
   font-weight: 700;
 
-  transition: 0.3s ease;
+  transition:
+    background 0.3s ease,
+    transform 0.3s ease;
 
   cursor: pointer;
 }
@@ -229,13 +489,16 @@
   transform: translateY(-3px);
 }
 
-/* =========================
+
+/* =====================================================
    STATS
-========================= */
+===================================================== */
 
 .statsRow {
   display: flex;
+
   align-items: center;
+
   gap: 42px;
 
   flex-wrap: nowrap;
@@ -243,18 +506,23 @@
 
 .statCard {
   display: flex;
+
   align-items: center;
+
   gap: 14px;
 }
 
 .iconBox {
   width: 48px;
+
   height: 48px;
 
   border-radius: 14px;
 
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 
   flex-shrink: 0;
@@ -284,13 +552,30 @@
   white-space: nowrap;
 }
 
-/* =========================
+
+/* =====================================================
    LAPTOP
-========================= */
+   1200px
+===================================================== */
 
 @media (max-width: 1200px) {
+
+  .leftHeroSection {
+    width: 73%;
+  }
+
+  .rightPromotionSection {
+    width: 27%;
+  }
+
+  .leftContent {
+    padding-left: 40px;
+
+    padding-right: 30px;
+  }
+
   .heading {
-    font-size: 72px;
+    font-size: 68px;
   }
 
   .subText {
@@ -298,35 +583,126 @@
   }
 
   .statsRow {
-    gap: 28px;
+    gap: 25px;
+
     flex-wrap: wrap;
+  }
+
+  .promotionInner {
+    padding:
+      28px
+      14px
+      24px;
+  }
+
+  .promotionSlider {
+    max-width: 350px;
+  }
+
+  .leftHeroSection {
+    border-radius: 0 24px 24px 0;
+  }
+
+  .rightPromotionSection {
+    border-radius: 24px 0 0 24px;
   }
 }
 
-/* =========================
+
+/* =====================================================
    TABLET
-========================= */
+   991px
+===================================================== */
 
 @media (max-width: 991px) {
+
   .heroSection {
+    flex-direction: column;
+
     min-height: auto;
-    padding: 70px 0 50px;
+
+    overflow: hidden;
   }
 
-  .heroContent {
+
+  /* ===================================================
+     LEFT
+  =================================================== */
+
+  .leftHeroSection {
+    width: 100%;
+
     min-height: auto;
-    justify-content: center;
+
+    display: block;
+
+    border-radius: 0 0 24px 24px;
   }
 
-  .leftSection {
+  .leftBackground {
+    border-radius: inherit;
+  }
+
+  .leftOverlay {
+    min-height: auto;
+  }
+
+  .leftContent {
     max-width: 100%;
+
+    padding:
+      70px
+      30px
+      55px;
 
     text-align: center;
   }
 
+
+  /* ===================================================
+     RIGHT
+  =================================================== */
+
+  .rightPromotionSection {
+    width: 100%;
+
+    min-height: auto;
+
+    border-left: none;
+
+    border-top:
+      1px solid
+      rgba(125, 60, 181, 0.08);
+
+    border-radius: 24px 24px 0 0;
+  }
+
+  .promotionInner {
+    max-width: 500px;
+
+    padding:
+      30px
+      20px
+      35px;
+  }
+
+  .promotionSlider {
+    max-width: 420px;
+  }
+
+
+  /* ===================================================
+     BADGE
+  =================================================== */
+
   .badge {
     margin-inline: auto;
   }
+
+
+  /* ===================================================
+     HEADING
+  =================================================== */
 
   .heading {
     font-size: 62px;
@@ -338,11 +714,21 @@
     margin-inline: auto;
   }
 
+
+  /* ===================================================
+     BUTTONS
+  =================================================== */
+
   .buttonGroup {
     justify-content: center;
 
     flex-wrap: wrap;
   }
+
+
+  /* ===================================================
+     STATS
+  =================================================== */
 
   .statsRow {
     justify-content: center;
@@ -351,24 +737,25 @@
 
     flex-wrap: wrap;
   }
-
-  .backgroundWrapper::after {
-    background: linear-gradient(
-      180deg,
-      rgba(231, 224, 245, 0.95) 0%,
-      rgba(213, 206, 243, 0.75) 35%,
-      rgba(130, 130, 230, 0.35) 100%
-    );
-  }
 }
 
-/* =========================
+
+/* =====================================================
    MOBILE
-========================= */
+   576px
+===================================================== */
 
 @media (max-width: 576px) {
-  .heroSection {
-    padding: 50px 0 40px;
+
+  .leftHeroSection {
+    border-radius: 0 0 20px 20px;
+  }
+
+  .leftContent {
+    padding:
+      50px
+      20px
+      40px;
   }
 
   .heading {
@@ -383,6 +770,11 @@
     line-height: 1.7;
   }
 
+
+  /* ===================================================
+     BUTTONS
+  =================================================== */
+
   .buttonGroup {
     flex-direction: column;
 
@@ -394,6 +786,11 @@
     width: 100%;
   }
 
+
+  /* ===================================================
+     STATS
+  =================================================== */
+
   .statsRow {
     gap: 22px;
 
@@ -403,10 +800,143 @@
   }
 
   .statCard {
-    width: calc(50% - 11px);
+    width:
+      calc(50% - 11px);
   }
 
   .statCard h4 {
     font-size: 24px;
+  }
+
+
+  /* ===================================================
+     PROMOTION
+  =================================================== */
+
+  .rightPromotionSection {
+    border-radius: 20px 20px 0 0;
+  }
+
+  .promotionInner {
+    padding:
+      28px
+      15px
+      32px;
+  }
+
+  .promotionHeading {
+    font-size: 13px;
+  }
+
+  .promotionLine {
+    width: 20px;
+  }
+
+  .promotionSlider {
+    max-width: 100%;
+  }
+}
+
+/* =====================================================
+   LAPTOP SCREEN FIX
+   1025px - 1200px
+===================================================== */
+
+@media (max-width: 1200px) and (min-width: 1025px) {
+
+  /* ===================================================
+     HERO MAIN LAYOUT
+  =================================================== */
+
+  .heroSection {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    width: 100%;
+  }
+
+
+  /* ===================================================
+     LEFT HERO
+  =================================================== */
+
+  .leftHeroSection {
+    min-width: 0;
+    width: 100%;
+  }
+
+
+  .leftContent {
+    max-width: 100%;
+  }
+
+
+  /* ===================================================
+     RIGHT SPONSORED SECTION
+  =================================================== */
+
+  .rightPromotionSection {
+    width: 300px;
+    min-width: 300px;
+
+    box-sizing: border-box;
+
+    padding: 0 14px 20px;
+  }
+
+
+  .promotionInner {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+
+  /* ===================================================
+     SPONSORED HEADER
+  =================================================== */
+
+  .promotionHeader {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    margin-bottom: 18px;
+  }
+
+
+  .promotionHeading {
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+
+  .promotionLine {
+    flex: 1;
+    max-width: 35px;
+  }
+
+
+  /* ===================================================
+     PROMOTION SLIDER
+  =================================================== */
+
+  .promotionSlider {
+    width: 100%;
+
+    margin-bottom: 16px;
+
+    box-sizing: border-box;
+  }
+
+
+  /* ===================================================
+     PROMOTION CARD
+  =================================================== */
+
+  .promotionSlider > div {
+    width: 100%;
   }
 }

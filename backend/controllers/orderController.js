@@ -424,7 +424,8 @@ export const confirmSellerOrder = async (req, res) => {
       buyerEmail: updatedOrder.buyer.email,
       buyerName: updatedOrder.buyer.fullName,
       orderId: updatedOrder.orderId,
-      sellerName: updatedOrder.seller.fullName,
+      // sellerName: updatedOrder.seller.fullName,
+      sellerCompanyId: updatedOrder.seller.businessProfile.companyId,
       totalAmount: updatedOrder.totalAmount,
     }).catch(console.error);
 
@@ -523,7 +524,7 @@ export const rejectSellerOrder = async (req, res) => {
       buyerEmail: updatedOrder.buyer.email,
       buyerName: updatedOrder.buyer.fullName,
       orderId: updatedOrder.orderId,
-      sellerName: updatedOrder.seller.fullName,
+      sellerCompanyId: updatedOrder.seller.businessProfile.companyId,
       cancellationReason:
         updatedOrder.cancellationReason || "Rejected by seller",
     }).catch(console.error);

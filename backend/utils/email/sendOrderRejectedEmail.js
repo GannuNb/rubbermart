@@ -5,14 +5,14 @@ export const sendOrderRejectedEmail = async ({
   buyerEmail,
   buyerName,
   orderId,
-  sellerName,
+  sellerCompanyId,
   cancellationReason,
 }) => {
   try {
     const html = await renderTemplate("orderRejected.ejs", {
       buyerName,
       orderId,
-      sellerName,
+      sellerCompanyId,
       cancellationReason,
       frontendUrl: process.env.FRONTEND_URL,
     });

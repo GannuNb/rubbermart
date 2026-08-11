@@ -49,6 +49,18 @@
   max-width: 580px;
   display: block;
 }
+.searchAndPromotion {
+  flex: 1;
+  max-width: 780px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.searchAndPromotion .desktopSearchBox {
+  flex: 1;
+  max-width: 580px;
+}
 
 /* RIGHT SECTION & LOGOUT SEPARATION */
 .rightSection {
@@ -132,7 +144,7 @@
 
 /* Tablet & Mobile Screens */
 @media (max-width: 1024px) {
-  .desktopSearchBox, .desktopLogoutContainer, .bottomNavbarDesktop, .desktopDashboardLinks, .desktopGuestActions {
+   .searchAndPromotion, .desktopSearchBox, .desktopLogoutContainer, .bottomNavbarDesktop, .desktopDashboardLinks, .desktopGuestActions {
     display: none !important;
   }
   
@@ -149,6 +161,17 @@
 
   .headerMainRow { gap: 12px; }
   .navInner { padding: 0 16px; }
+}
+
+@media (max-width: 1200px) and (min-width: 1025px) {
+  .searchAndPromotion {
+    gap: 8px;
+    max-width: 700px;
+  }
+
+  .searchAndPromotion .desktopSearchBox {
+    max-width: 470px;
+  }
 }
 
 /* Small Phones */
@@ -170,4 +193,9 @@
 .userGreetingLink:hover {
   opacity: 0.8;
   text-decoration: none !important;
+}
+.desktopPromotionBox {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
 }

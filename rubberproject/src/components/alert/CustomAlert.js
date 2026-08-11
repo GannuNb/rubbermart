@@ -10,7 +10,7 @@ function CustomAlert({
   title,
   message,
   onClose,
-  duration = 3000,
+  duration = 5000,
 }) {
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -29,7 +29,10 @@ function CustomAlert({
 
   return (
     <div className={styles.alertOverlay}>
-      <div className={`${styles.alert} ${styles[type]}`}>
+      <div
+        className={`${styles.alert} ${styles[type]}`}
+        style={{ "--alert-duration": `${duration}ms` }}
+      >
         <div className={styles.progress}></div>
 
         {/* Logo */}
@@ -38,9 +41,7 @@ function CustomAlert({
         </div>
 
         {/* Alert Icon */}
-        <div className={styles.iconWrapper}>
-          {icons[type]}
-        </div>
+        <div className={styles.iconWrapper}>{icons[type]}</div>
 
         {/* Content */}
         <div className={styles.content}>

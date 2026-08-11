@@ -5,14 +5,14 @@ export const sendOrderConfirmedEmail = async ({
   buyerEmail,
   buyerName,
   orderId,
-  sellerName,
+  sellerCompanyId,
   totalAmount,
 }) => {
   try {
     const html = await renderTemplate("orderConfirmed.ejs", {
       buyerName,
       orderId,
-      sellerName,
+      sellerCompanyId,
       totalAmount,
       frontendUrl: process.env.FRONTEND_URL,
     });

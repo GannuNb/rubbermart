@@ -21,6 +21,8 @@ import NavbarLogo from "./NavbarLogo";
 
 import useNavbarRole from "../../hooks/useNavbarRole";
 import useAutoLogout from "../../hooks/useAutoLogout";
+import NavbarAd from "./NavbarAd";
+
 
 function RoleNavbar() {
   const navigate = useNavigate();
@@ -87,11 +89,17 @@ function RoleNavbar() {
             </div>
 
             {/* MIDDLE: Laptop Search (Hidden on Mobile) */}
-            {(isGuest || isBuyer) && (
-              <div className={styles.desktopSearchBox}>
-                <NavbarSearch />
-              </div>
-            )}
+            {/* MIDDLE: Laptop Search */}
+{(isGuest || isBuyer) && (
+  <div className={styles.desktopSearchBox}>
+    <NavbarSearch />
+  </div>
+)}
+
+{/* SMALL PERMANENT NAVBAR AD */}
+{(isGuest || isBuyer) && (
+  <NavbarAd />
+)}
 
             {/* RIGHT: User Context & Actions */}
             <div className={styles.rightSection}>
