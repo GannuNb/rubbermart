@@ -329,7 +329,7 @@
   }
 
   .title {
-    font-size: 28px;
+    font-size: 25px;
     line-height: 1.12;
 
     white-space: nowrap;
@@ -344,7 +344,7 @@
   }
 
   .description {
-    font-size: 13px;
+    font-size: 12px;
 
     line-height: 1.6;
   }
