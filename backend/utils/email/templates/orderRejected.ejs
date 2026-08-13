@@ -31,30 +31,80 @@
         >
 
           <!-- Header -->
-            <tr>
-              <td
-                style="
-                  background:#8751e4;
-                  color:#ffffff;
-                  padding:32px;
-                  text-align:center;
-                  border-bottom:5px solid #6d3fd4;
-                "
-              >
+<!-- HEADER -->
 
-                <h1
-                  style="
-                    margin:0;
-                    font-size:28px;
-                    font-weight:700;
-                    letter-spacing:1px;
-                  "
-                >
-                  ORDER REJECTED
-                </h1>
+<tr>
+  <td
+    style="
+      background:linear-gradient(
+        90deg,
+        #d8c7ff 0%,
+        #c9b3ff 35%,
+        #b99af8 70%,
+        #aa82ee 100%
+      );
+      padding:28px 36px;
+      border-bottom:5px solid #6d3fd4;
+    "
+  >
 
-              </td>
-            </tr>
+    <table
+      width="100%"
+      cellpadding="0"
+      cellspacing="0"
+      border="0"
+    >
+      <tr>
+
+        <!-- LOGO -->
+
+        <td
+          style="
+            width:190px;
+            vertical-align:middle;
+            text-align:left;
+          "
+        >
+          <img
+            src="<%= process.env.CLIENT_URL_ONLINE %>/invoice_logo.png"
+            alt="Rubber Scrap Mart"
+            style="
+              display:block;
+              width:220px;
+              height:auto;
+              max-height:150px;
+            "
+          />
+        </td>
+
+        <!-- HEADING -->
+
+        <td
+          style="
+            vertical-align:middle;
+            text-align:left;
+            padding-left:10px;
+          "
+        >
+          <h1
+            style="
+              margin:0;
+              color:#24113f;
+              font-size:32px;
+              font-weight:700;
+              letter-spacing:1px;
+              white-space:nowrap;
+            "
+          >
+            ORDER REJECTED
+          </h1>
+        </td>
+
+      </tr>
+    </table>
+
+  </td>
+</tr>
 
           <!-- Body -->
           <tr>

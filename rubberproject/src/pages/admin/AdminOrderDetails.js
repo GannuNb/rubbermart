@@ -12,6 +12,7 @@ import AdminToSellerPaymentCard from "../../components/admin/AdminOrderDetails/A
 import AdminSellerPaymentHistoryCard from "../../components/admin/AdminOrderDetails/AdminSellerPaymentHistoryCard";
 import AdminPaymentSummaryCard from "../../components/admin/AdminOrderDetails/AdminPaymentSummaryCard";
 import { getAdminSingleOrderDetails } from "../../redux/slices/adminOrders/adminSingleOrderThunk";
+import AdminSellerPackingPermissionCard from "../../components/admin/AdminOrderDetails/AdminSellerPackingPermissionCard";
 
 import styles from "../../styles/Admin/AdminOrderDetails.module.css";
 
@@ -91,12 +92,15 @@ const AdminOrderDetails = () => {
 
           {/* Admin → Seller Payment */}
           <AdminToSellerPaymentCard order={singleOrder} />
+          <AdminSellerPackingPermissionCard order={singleOrder} />
 
           {/* Seller Payment History */}
           <AdminSellerPaymentHistoryCard order={singleOrder} />
 
           {/* Final Payment Summary */}
           <AdminPaymentSummaryCard order={singleOrder} />
+
+          
         </div>
       </div>
     </div>

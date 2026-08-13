@@ -13,7 +13,7 @@ import { createOrder,getSellerOrders,  getSellerSingleOrder,  confirmSellerOrder
      transporterAcceptAssignment,transporterRejectAssignment,markShipmentShippedBySeller,   
     getTransporterAssignedShipments,getTransporterCompletedDeliveries, markShipmentShippedByTransporter,markShipmentShippedByAdmin,
     uploadTransportPaymentReceipt,uploadAdminTransportPayment,verifyBuyerTransportPayment,getTransporterPaymentHistory ,rejectBuyerPayment,
-     uploadShipmentProofs, downloadOrderHistoryPdf,refundBuyerPayment,} from "../controllers/orderController.js";
+     uploadShipmentProofs, downloadOrderHistoryPdf,refundBuyerPayment,updateSellerPackingPermission,} from "../controllers/orderController.js";
 
 import { submitOrderReview } from "../controllers/reviewController.js";
 
@@ -66,6 +66,7 @@ router.put(  "/admin/:orderId/shipment/:shipmentId/direct-assign",  protectUser,
 router.put(  "/admin/:orderId/shipment/:shipmentId/shipped",  protectUser,  protectAdmin,  markShipmentShippedByAdmin,);
 router.put(  "/admin/orders/:orderId/shipment/:shipmentId/transport-payment/:receiptId/verify",  protectUser,  protectAdmin,  verifyBuyerTransportPayment,);
 router.post(  "/admin/orders/:orderId/shipment/:shipmentId/transport-payment", protectUser,protectAdmin,  uploadDocuments.single("receipt"),  uploadAdminTransportPayment,);
+router.put(  "/admin/:orderId/packing-permission",  protectUser,  protectAdmin,  updateSellerPackingPermission,);
 
 
 //transporter

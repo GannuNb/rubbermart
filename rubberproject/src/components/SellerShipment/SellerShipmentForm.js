@@ -192,8 +192,13 @@ const SellerShipmentForm = ({ selectedOrder }) => {
 ========================= */
 
   const isSellerFullyPaid =
-    Number(selectedOrder.sellerPendingAmount || 0) === 0 &&
-    selectedOrder.sellerPaymentStatus === "completed";
+    Number(selectedOrder?.sellerPendingAmount || 0) === 0 &&
+    selectedOrder?.sellerPaymentStatus === "completed";
+
+  const hasAdminPackingPermission =
+    selectedOrder?.sellerPackingPermission === true;
+
+  const canSellerPack = isSellerFullyPaid || hasAdminPackingPermission;
 
   console.log("isSellerFullyPaid =", isSellerFullyPaid);
 
@@ -247,15 +252,15 @@ const SellerShipmentForm = ({ selectedOrder }) => {
           shipmentLoading ||
           (selectedOrderItem && remainingQuantity <= 0) ||
           selectedOrder.orderStatus === "pending" ||
-          !isSellerFullyPaid
+          !canSellerPack
         }
       >
         {shipmentLoading
           ? "Submitting..."
           : selectedOrder.orderStatus === "pending"
             ? "Please Accept Order Before Shipment"
-            : !isSellerFullyPaid
-              ? "Waiting for Full Payment"
+            : !canSellerPack
+              ? "Waiting for Full Payment or Admin Approval"
               : selectedOrderItem && remainingQuantity <= 0
                 ? "Fully Shipped"
                 : "Submit Package Details"}

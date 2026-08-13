@@ -63,12 +63,12 @@ export const drawHeader = (doc, pageWidth, pageHeight, order) => {
 
   const logoPath = path.join(
     process.cwd(),
-    "../rubberproject/public/rsm_logo.png"
+    "../rubberproject/public/invoice_logo.png"
   );
 
   const fallbackLogoPath = path.join(
     process.cwd(),
-    "rubberproject/public/rsm_logo.png"
+    "rubberproject/public/invoice_logo.png"
   );
 
   const finalLogo = fs.existsSync(logoPath)

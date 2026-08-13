@@ -577,14 +577,25 @@ export const addShipmentToOrder = async (req, res) => {
    SELLER PAYMENT VALIDATION
 ========================= */
 
-if (
-  order.sellerPaymentStatus !== "completed" ||
-  Number(order.sellerPendingAmount) > 0
-) {
+/* =========================
+   SELLER PACKING VALIDATION
+========================= */
+
+const isSellerFullyPaid =
+  order.sellerPaymentStatus === "completed" &&
+  Number(order.sellerPendingAmount || 0) <= 0;
+
+const hasAdminPackingPermission =
+  order.sellerPackingPermission === true;
+
+const canSellerPack =
+  isSellerFullyPaid || hasAdminPackingPermission;
+
+if (!canSellerPack) {
   return res.status(400).json({
     success: false,
     message:
-      "You cannot create a shipment until you receive the full payment from the admin.",
+      "You cannot create a shipment until the seller payment is completed or the admin approves packing.",
   });
 }
 
@@ -4320,6 +4331,53 @@ export const uploadAdminToSellerPayment = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Failed to upload seller payment",
+      error: error.message,
+    });
+  }
+};
+
+// admin ---> update seller packing permission
+export const updateSellerPackingPermission = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { sellerPackingPermission } = req.body;
+
+    if (typeof sellerPackingPermission !== "boolean") {
+      return res.status(400).json({
+        success: false,
+        message: "sellerPackingPermission must be true or false",
+      });
+    }
+
+    const order = await Order.findOne({
+      _id: orderId,
+      isDeleted: false,
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    order.sellerPackingPermission = sellerPackingPermission;
+
+    await order.save();
+
+    return res.status(200).json({
+      success: true,
+      message: sellerPackingPermission
+        ? "Seller packing permission enabled"
+        : "Seller packing permission disabled",
+      order,
+    });
+  } catch (error) {
+    console.log("Update Seller Packing Permission Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update seller packing permission",
       error: error.message,
     });
   }

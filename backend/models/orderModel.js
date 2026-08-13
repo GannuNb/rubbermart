@@ -110,6 +110,10 @@ const orderSchema = new mongoose.Schema(
       enum: ["pending", "partial", "completed"],
       default: "pending",
     },
+    sellerPackingPermission: {
+      type: Boolean,
+      default: false,
+    },
 
     buyerPaymentReceipts: [paymentReceiptSchema],
 
@@ -132,6 +136,9 @@ const orderSchema = new mongoose.Schema(
     },
 
     sellerConfirmedAt: {
+      type: Date,
+    },
+    buyerPaymentReminderSentAt: {
       type: Date,
     },
 

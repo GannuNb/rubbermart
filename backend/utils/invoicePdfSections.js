@@ -58,12 +58,12 @@ export const drawHeader = (doc, pageWidth, pageHeight, order) => {
 
   const logoPath = path.join(
     process.cwd(),
-    "../rubberproject/public/logo_vk.png"
+    "../rubberproject/public/invoice_logo.png"
   );
 
   const fallbackLogoPath = path.join(
     process.cwd(),
-    "rubberproject/public/logo_vk.png"
+    "rubberproject/public/invoice_logo.png"
   );
 
   if (fs.existsSync(logoPath)) {

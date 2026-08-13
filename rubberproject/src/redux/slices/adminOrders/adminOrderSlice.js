@@ -14,6 +14,7 @@ import { getAllTransporters } from "./getAllTransportersThunk";
 import { adminDirectAssignTransporter } from "./adminDirectAssignTransporterThunk";
 import { markShipmentShippedByAdminThunk } from "./markShipmentShippedByAdminThunk";
 import { refundBuyerPayment } from "./refundBuyerPaymentThunk";
+import { updateSellerPackingPermission } from "./updateSellerPackingPermissionThunk";
 
 const initialState = {
   /* =========================
@@ -57,6 +58,13 @@ const initialState = {
 
   uploadSellerPaymentLoading: false,
   uploadSellerPaymentError: null,
+
+  /* =========================
+   SELLER PACKING PERMISSION
+========================= */
+
+sellerPackingPermissionLoading: false,
+sellerPackingPermissionError: null,
 
   /* =========================
      SHIPMENT ACTIONS
@@ -275,6 +283,25 @@ const adminOrderSlice = createSlice({
 
         state.uploadSellerPaymentError = action.payload;
       })
+      /* =========================
+          SELLER PACKING PERMISSION
+        ========================= */
+
+        .addCase(updateSellerPackingPermission.pending, (state) => {
+          state.sellerPackingPermissionLoading = true;
+          state.sellerPackingPermissionError = null;
+        })
+
+        .addCase(updateSellerPackingPermission.fulfilled, (state, action) => {
+          state.sellerPackingPermissionLoading = false;
+
+          state.singleOrder = action.payload.order || null;
+        })
+
+        .addCase(updateSellerPackingPermission.rejected, (state, action) => {
+          state.sellerPackingPermissionLoading = false;
+          state.sellerPackingPermissionError = action.payload;
+        })
 
       /* =========================
             GET SHIPMENT QUOTES

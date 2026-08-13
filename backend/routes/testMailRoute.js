@@ -9,7 +9,7 @@ router.get("/invoice-mail", async (req, res) => {
     const pdfBuffer = Buffer.from("Test PDF");
 
     await sendOrderInvoiceEmail({
-      buyerEmail: "ganesh-XVTD@srv1.mail-tester.com",
+      buyerEmail: "test@example.com",
       buyerName: "Ganesh",
       orderId: "RSM-TEST-0001",
       invoicePdfBuffer: pdfBuffer,

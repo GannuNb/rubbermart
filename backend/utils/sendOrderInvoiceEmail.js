@@ -7,22 +7,32 @@ const sendOrderInvoiceEmail = async ({
   invoicePdfBuffer,
 }) => {
   try {
+
     const transporter = nodemailer.createTransport({
-      host: "smtp.hostinger.com",
+  host: "smtp.hostinger.com",
+  port: 465,
+  secure: true,
 
-      port: 465,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
-      secure: true,
+//     const transporter = nodemailer.createTransport({
+//   host: process.env.MAIL_HOST,
+//   port: Number(process.env.MAIL_PORT),
+//   secure: false,
 
-      auth: {
-        user: process.env.EMAIL_USER,
-
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+//   auth: {
+//     user: process.env.MAIL_USER,
+//     pass: process.env.MAIL_PASS,
+//   },
+// });
 
     await transporter.sendMail({
       from: `"Rubber Scrap Mart" <${process.env.EMAIL_USER}>`,
+      // from: `"Rubber Scrap Mart" <${process.env.MAIL_USER}>`,
 
       to: buyerEmail,
 
@@ -47,30 +57,72 @@ const sendOrderInvoiceEmail = async ({
 
             <!-- HEADER -->
 
-            <div style="
-              background:#8751e4;
-              padding:28px 36px;
-              border-bottom:5px solid #6d3fd4;
-            ">
+<div style="
+  background:linear-gradient(
+  90deg,
+  #d8c7ff 0%,
+  #c9b3ff 35%,
+  #b99af8 70%,
+  #aa82ee 100%
+);
+  padding:28px 36px;
+  border-bottom:5px solid #6d3fd4;
+">
 
-              <div style="
-                  text-align:center;
-                ">
+  <table
+    width="100%"
+    cellpadding="0"
+    cellspacing="0"
+    border="0"
+  >
+    <tr>
 
-                  <h1 style="
-                    margin:0;
-                    color:#ffffff;
-                    font-size:28px;
-                    font-weight:700;
-                    letter-spacing:1px;
-                  ">
-                    PROFORMA INVOICE
-                  </h1>
+<!-- LOGO -->
 
-                </div>
+<td
+  style="
+    width:190px;
+    vertical-align:middle;
+    text-align:left;
+  "
+>
+  <img
+    src="${process.env.CLIENT_URL_ONLINE}/invoice_logo.png"
+    alt="Rubber Scrap Mart"
+    style="
+      display:block;
+      width:220px;
+      height:auto;
+      max-height:150px;
+    "
+  />
+</td>
 
+      <!-- HEADING -->
 
-            </div>
+      <td
+        style="
+          vertical-align:middle;
+          text-align:left;
+          padding-left:10px;
+        "
+      >
+        <h1 style="
+          margin:0;
+          color:#24113f;
+          font-size:32px;
+          font-weight:700;
+          letter-spacing:1px;
+          white-space:nowrap;
+        ">
+          PROFORMA INVOICE
+        </h1>
+      </td>
+
+    </tr>
+  </table>
+
+</div>
 
             <!-- BODY -->
 
