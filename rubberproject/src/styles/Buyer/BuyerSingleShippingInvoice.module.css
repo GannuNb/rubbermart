@@ -1279,3 +1279,163 @@
     font-size:13px;
     font-weight:600;
 }
+
+/* =========================
+   PAYMENT BREAKDOWN
+========================= */
+
+.paymentBreakdown {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.paymentBreakdownTitle {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+
+/* =========================
+   TWO COLUMN LAYOUT
+========================= */
+
+.paymentBreakdownGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+
+/* =========================
+   PAYMENT CARD
+========================= */
+
+.paymentCard {
+  border: 1px solid #ebe7f7;
+  border-radius: 10px;
+  background: #faf9ff;
+  overflow: hidden;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.paymentCardHeader {
+  width: 100%;
+  border: none;
+  background: transparent;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 11px 14px;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+  color: #111827;
+}
+
+.paymentCardHeader:hover {
+  background: #f5f2ff;
+}
+
+
+/* =========================
+   + / -
+========================= */
+
+.paymentToggle {
+  width: 22px;
+  height: 22px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #eee9ff;
+  color: #6d28d9;
+
+  font-size: 16px;
+  font-weight: 700;
+}
+
+
+/* =========================
+   BODY
+========================= */
+
+.paymentCardBody {
+  padding: 0 14px 8px;
+}
+
+
+/* =========================
+   ROW
+========================= */
+
+.paymentRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 8px 0;
+
+  font-size: 13px;
+
+  border-top: 1px dashed #ddd8eb;
+}
+
+.paymentRow span:last-child {
+  font-weight: 600;
+  color: #111827;
+}
+
+@media (max-width: 768px) {
+  .paymentBreakdownGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.paymentValueGroup {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.paidBadge,
+.partialBadge,
+.dueBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 7px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.paidBadge {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.partialBadge {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.dueBadge {
+  background: #fee2e2;
+  color: #dc2626;
+}

@@ -4,10 +4,13 @@ import { FaBoxOpen, FaTruck, FaFileInvoiceDollar } from "react-icons/fa";
 import styles from "../../../styles/Buyer/BuyerSingleShippingInvoice.module.css";
 
 const ShipmentItemsSection = ({ shipment, order }) => {
+
   const matchedItem = order?.orderItems?.find(
     (item) => item.productName === shipment?.selectedItem,
   );
 
+  const [showProductPayment, setShowProductPayment] = useState(true);
+const [showTransportPayment, setShowTransportPayment] = useState(true);
   /* =========================
       ACCORDION STATES
   ========================= */
@@ -63,6 +66,57 @@ const ShipmentItemsSection = ({ shipment, order }) => {
   const productTotal = productTaxable + productIGST + productCGST + productSGST;
 
   /* =========================
+   PRODUCT PAYMENT ALLOCATION
+========================= */
+
+const totalOrderAmount = Number(order?.totalAmount || 0);
+
+const verifiedBuyerPaid = Number(order?.buyerPaidAmount || 0);
+
+
+  const allShipments = [...(order?.shipments || [])].sort(
+    (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+  );
+
+  const currentShipmentIndex = allShipments.findIndex(
+    (item) => item?._id?.toString() === shipment?._id?.toString(),
+  );
+
+  const previousShipmentsTotal = allShipments
+    .slice(0, currentShipmentIndex)
+    .reduce((total, item) => {
+      const itemData = order?.orderItems?.find(
+        (orderItem) => orderItem.productName === item?.selectedItem,
+      );
+
+      const quantity = Number(item?.shippedQuantity || 0);
+      const price = Number(itemData?.pricePerMT || 0);
+
+      const taxable = quantity * price;
+
+      let gst = 0;
+
+      if (order?.gstType === "igst") {
+        gst = taxable * 0.18;
+      }
+
+      if (order?.gstType === "cgst_sgst") {
+        gst = taxable * 0.18;
+      }
+
+      return total + taxable + gst;
+    }, 0);
+
+  const paymentAvailableForShipment = Math.max(
+    verifiedBuyerPaid - previousShipmentsTotal,
+    0,
+  );
+
+  const productPaid = Math.min(productTotal, paymentAvailableForShipment);
+
+  const productDue = Math.max(productTotal - productPaid, 0);
+
+  /* =========================
       TRANSPORT VALUES
   ========================= */
   const transportPrice = Number(shipment?.transportPrice || 0);
@@ -90,6 +144,15 @@ const ShipmentItemsSection = ({ shipment, order }) => {
       GRAND TOTAL
   ========================= */
   const grandTotal = Number((productTotal + transportTotal).toFixed(2));
+  /* =========================
+   TRANSPORT PAYMENT
+========================= */
+
+  const transportPaid = (shipment?.transportPaymentReceipts || [])
+    .filter((receipt) => receipt?.status === "verified")
+    .reduce((total, receipt) => total + Number(receipt?.amount || 0), 0);
+
+  const transportDue = Math.max(transportTotal - transportPaid, 0);
 
   return (
     <div className={styles.itemsWrapper}>
@@ -194,7 +257,17 @@ const ShipmentItemsSection = ({ shipment, order }) => {
                 })}
               </div>
               <div className={styles.paymentStatusCell}>
-                <span className={styles.paidBadge}>✅ Paid</span>
+                {productDue === 0 ? (
+                  <span className={styles.paidBadge}>✅ Fully Paid</span>
+                ) : productPaid > 0 ? (
+                  <span className={styles.partialBadge}>
+                    🟠 ₹ {productDue.toLocaleString("en-IN")} Due
+                  </span>
+                ) : (
+                  <span className={styles.dueBadge}>
+                    🔴 ₹ {productDue.toLocaleString("en-IN")} Due
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -330,20 +403,189 @@ const ShipmentItemsSection = ({ shipment, order }) => {
 
         {/* CONTAINER WORK */}
         <div style={{ padding: "0 24px 24px 24px" }}>
+          {/* =========================
+      NORMAL INVOICE TOTALS
+  ========================= */}
+
           <div className={styles.summaryRow}>
             <span>Product Total</span>
+
             <span>₹ {productTotal.toLocaleString("en-IN")}</span>
           </div>
 
           <div className={styles.summaryRow}>
             <span>Transport Total</span>
+
             <span>₹ {transportTotal.toLocaleString("en-IN")}</span>
           </div>
 
           <div className={styles.finalTotalRow}>
             <span>Grand Total</span>
+
             <span>₹ {grandTotal.toLocaleString("en-IN")}</span>
           </div>
+{/* =========================
+    PAYMENT BREAKDOWN
+========================= */}
+
+<div className={styles.paymentBreakdown}>
+  <h4 className={styles.paymentBreakdownTitle}>
+    Payment Breakdown
+  </h4>
+
+  <div className={styles.paymentBreakdownGrid}>
+
+    {/* =========================
+        PRODUCT PAYMENT
+    ========================= */}
+{/* =========================
+    PRODUCT PAYMENT
+========================= */}
+
+<div className={styles.paymentCard}>
+  <button
+    type="button"
+    className={styles.paymentCardHeader}
+    onClick={() =>
+      setShowProductPayment((prev) => !prev)
+    }
+  >
+    <span>Product Payment</span>
+
+    <span className={styles.paymentToggle}>
+      {showProductPayment ? "−" : "+"}
+    </span>
+  </button>
+
+  {showProductPayment && (
+    <div className={styles.paymentCardBody}>
+
+      {/* TOTAL ORDER AMOUNT */}
+
+      <div className={styles.paymentRow}>
+        <span>Total Order Amount</span>
+
+        <span>
+          ₹ {totalOrderAmount.toLocaleString("en-IN")}
+        </span>
+      </div>
+
+      {/* CURRENT SHIPMENT PRODUCT TOTAL */}
+
+      <div className={styles.paymentRow}>
+        <span>This Shipment</span>
+
+        <span>
+          ₹ {productTotal.toLocaleString("en-IN")}
+        </span>
+      </div>
+
+{/* =========================
+    PAID
+========================= */}
+
+<div className={styles.paymentRow}>
+  <span>Paid</span>
+
+  <span className={styles.paymentValueGroup}>
+    ₹ {productPaid.toLocaleString("en-IN")}
+
+    <span
+      className={
+        productPaid > 0 && productDue > 0
+          ? styles.partialBadge
+          : productPaid > 0
+            ? styles.paidBadge
+            : styles.dueBadge
+      }
+    >
+      {productPaid > 0 && productDue > 0
+        ? "PARTIALLY PAID"
+        : productPaid > 0
+          ? "PAID"
+          : "DUE"}
+    </span>
+  </span>
+</div>
+
+{/* =========================
+    DUE
+========================= */}
+
+<div className={styles.paymentRow}>
+  <span>Due</span>
+
+  <span className={styles.paymentValueGroup}>
+    ₹ {productDue.toLocaleString("en-IN")}
+
+    <span
+      className={
+        productDue > 0
+          ? styles.dueBadge
+          : styles.paidBadge
+      }
+    >
+      {productDue > 0 ? "DUE" : "PAID"}
+    </span>
+  </span>
+</div>
+
+    </div>
+  )}
+</div>
+
+    {/* =========================
+        TRANSPORT PAYMENT
+    ========================= */}
+
+    <div className={styles.paymentCard}>
+      <button
+        type="button"
+        className={styles.paymentCardHeader}
+        onClick={() =>
+          setShowTransportPayment((prev) => !prev)
+        }
+      >
+        <span>Transport Payment</span>
+
+        <span className={styles.paymentToggle}>
+          {showTransportPayment ? "−" : "+"}
+        </span>
+      </button>
+
+      {showTransportPayment && (
+        <div className={styles.paymentCardBody}>
+
+          <div className={styles.paymentRow}>
+            <span>Total</span>
+
+            <span>
+              ₹ {transportTotal.toLocaleString("en-IN")}
+            </span>
+          </div>
+
+          <div className={styles.paymentRow}>
+            <span>Paid</span>
+
+            <span>
+              ₹ {transportPaid.toLocaleString("en-IN")}
+            </span>
+          </div>
+
+          <div className={styles.paymentRow}>
+            <span>Due</span>
+
+            <span>
+              ₹ {transportDue.toLocaleString("en-IN")}
+            </span>
+          </div>
+
+        </div>
+      )}
+    </div>
+
+  </div>
+</div>
         </div>
       </div>
     </div>
