@@ -13,7 +13,8 @@ import { createOrder,getSellerOrders,  getSellerSingleOrder,  confirmSellerOrder
      transporterAcceptAssignment,transporterRejectAssignment,markShipmentShippedBySeller,   
     getTransporterAssignedShipments,getTransporterCompletedDeliveries, markShipmentShippedByTransporter,markShipmentShippedByAdmin,
     uploadTransportPaymentReceipt,uploadAdminTransportPayment,verifyBuyerTransportPayment,getTransporterPaymentHistory ,rejectBuyerPayment,
-     uploadShipmentProofs, downloadOrderHistoryPdf,refundBuyerPayment,updateSellerPackingPermission,} from "../controllers/orderController.js";
+     uploadShipmentProofs, downloadOrderHistoryPdf,refundBuyerPayment,updateSellerPackingPermission,
+    downloadTransporterPaymentHistoryPdf} from "../controllers/orderController.js";
 
 import { submitOrderReview } from "../controllers/reviewController.js";
 
@@ -75,6 +76,7 @@ router.post("/transporter/:orderId/shipment/:shipmentId/quote", protectUser, sub
 router.get( "/transporter/my-quotes",protectUser,getTransporterQuotes,);
 router.get(  "/transporter/pending-assignments",  protectUser,  getTransporterPendingAssignments,);
 router.get(  "/transporter/payment-history",  protectUser,  getTransporterPaymentHistory,);
+router.get(  "/transporter/payment-history/pdf",  protectUser,  downloadTransporterPaymentHistoryPdf);
 router.get(  "/transporter/assigned-shipments",  protectUser,  getTransporterAssignedShipments,);
 router.get(  "/transporter/completed-deliveries",  protectUser,  getTransporterCompletedDeliveries,);
 router.put(  "/transporter/:orderId/shipment/:shipmentId/accept-assignment",  protectUser,  transporterAcceptAssignment,);

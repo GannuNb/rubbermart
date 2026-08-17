@@ -17,6 +17,7 @@ import { sendNewShipmentAvailableEmail } from "../utils/email/sendNewShipmentAva
 import { sendTransporterAssignedEmail } from "../utils/email/sendTransporterAssignedEmail.js";
 import { sendShipmentShippedEmail } from "../utils/email/sendShipmentShippedEmail.js";
 import { sendShipmentDeliveredEmail } from "../utils/email/sendShipmentDeliveredEmail.js";
+import generateTransporterPaymentReportPdf from "../utils/pdf/transporterPaymentReport/generateTransporterPaymentReportPdf.js";
 
 //buyer---> MAIN BUYER buyerordercreation
 export const createOrder = async (req, res) => {
@@ -2901,6 +2902,302 @@ export const getTransporterPaymentHistory = async (req, res) => {
       success: false,
 
       message: "Failed to fetch transporter payments",
+
+      error: error.message,
+    });
+  }
+};
+
+// ======================================================
+// TRANSPORTER → DOWNLOAD PAYMENT HISTORY PDF
+// ======================================================
+
+export const downloadTransporterPaymentHistoryPdf = async (req, res) => {
+  try {
+    /*
+    ======================================================
+    TRANSPORTER ID
+    ======================================================
+    */
+
+    const transporterId = req.user._id;
+
+    /*
+    ======================================================
+    FIND ORDERS
+    ======================================================
+    */
+
+    const orders = await Order.find({
+      "shipments.assignedTransporter": transporterId,
+    })
+      .populate(
+        "buyer",
+        `
+          fullName
+          businessProfile.companyName
+        `,
+      )
+      .populate(
+        "seller",
+        `
+          fullName
+          businessProfile.companyName
+        `,
+      );
+
+    /*
+    ======================================================
+    TRANSPORTER DETAILS
+    ======================================================
+    */
+
+    const transporterDetails = {
+      fullName: req.user?.fullName || "-",
+
+      companyName:
+        req.user?.businessProfile?.companyName || "-",
+    };
+
+    /*
+    ======================================================
+    BUILD TRANSPORTER SHIPMENTS
+    ======================================================
+    */
+
+    const transporterShipments = [];
+
+    orders.forEach((order) => {
+      /*
+      ----------------------------------------------------
+      SAFETY CHECK
+      ----------------------------------------------------
+      */
+
+      if (!Array.isArray(order?.shipments)) {
+        return;
+      }
+
+      order.shipments.forEach((shipment) => {
+        /*
+        --------------------------------------------------
+        ONLY THIS TRANSPORTER'S SHIPMENTS
+        --------------------------------------------------
+        */
+
+        if (
+          shipment?.assignedTransporter?.toString() !==
+          transporterId.toString()
+        ) {
+          return;
+        }
+
+        /*
+        ==================================================
+        VERIFIED ADMIN PAYMENTS ONLY
+        ==================================================
+        */
+
+        const verifiedPayments = (
+          shipment?.adminTransportPaymentReceipts || []
+        ).filter(
+          (payment) => payment?.status === "verified",
+        );
+
+        /*
+        ==================================================
+        TOTAL RECEIVED
+        ==================================================
+        */
+
+        const totalReceived = verifiedPayments.reduce(
+          (sum, payment) => {
+            return sum + Number(payment?.amount || 0);
+          },
+          0,
+        );
+
+        /*
+        ==================================================
+        TRANSPORT AMOUNT
+        ==================================================
+        */
+
+        const transportAmount = Number(
+          shipment?.transportFinalAmount || 0,
+        );
+
+        /*
+        ==================================================
+        REMAINING AMOUNT
+        ==================================================
+        */
+
+        const remainingAmount = Math.max(
+          transportAmount - totalReceived,
+          0,
+        );
+
+        /*
+        ==================================================
+        PUSH SHIPMENT
+        ==================================================
+        */
+
+        transporterShipments.push({
+          orderId: order?._id,
+
+          orderNumber: order?.orderId || "-",
+
+          buyer:
+            order?.buyer?.businessProfile?.companyName ||
+            order?.buyer?.fullName ||
+            "-",
+
+          seller:
+            order?.seller?.businessProfile?.companyName ||
+            order?.seller?.fullName ||
+            "-",
+
+          shipmentId: shipment?._id,
+
+          shipmentInvoiceId:
+            shipment?.shipmentInvoiceId || "-",
+
+          selectedItem:
+            shipment?.selectedItem || "-",
+
+          transportAmount,
+
+          totalReceived,
+
+          remainingAmount,
+
+          payments: verifiedPayments,
+
+          shipmentStatus:
+            shipment?.shipmentStatus || "-",
+
+          pickedUpAt:
+            shipment?.pickedUpAt || null,
+
+          deliveredAt:
+            shipment?.deliveredAt || null,
+        });
+      });
+    });
+
+    /*
+    ======================================================
+    CALCULATE REPORT SUMMARY
+    ======================================================
+    */
+
+    const totalTransportAmount =
+      transporterShipments.reduce(
+        (sum, shipment) =>
+          sum + Number(shipment?.transportAmount || 0),
+        0,
+      );
+
+    const totalReceived =
+      transporterShipments.reduce(
+        (sum, shipment) =>
+          sum + Number(shipment?.totalReceived || 0),
+        0,
+      );
+
+    const totalRemaining =
+      transporterShipments.reduce(
+        (sum, shipment) =>
+          sum + Number(shipment?.remainingAmount || 0),
+        0,
+      );
+
+    /*
+    ======================================================
+    REPORT DATA
+    ======================================================
+    */
+
+    const reportData = {
+      transporterId,
+
+      transporter: transporterDetails,
+
+      generatedAt: new Date(),
+
+      /*
+      ----------------------------------------------------
+      SUMMARY
+      ----------------------------------------------------
+      */
+
+      summary: {
+        totalTransportAmount,
+        totalReceived,
+        totalRemaining,
+      },
+
+      /*
+      ----------------------------------------------------
+      SHIPMENTS
+      ----------------------------------------------------
+      */
+
+      shipments: transporterShipments,
+    };
+
+    /*
+    ======================================================
+    GENERATE PDF
+    ======================================================
+    */
+
+    const pdfBuffer =
+      await generateTransporterPaymentReportPdf(
+        reportData,
+      );
+
+    /*
+    ======================================================
+    PDF RESPONSE HEADERS
+    ======================================================
+    */
+
+    res.setHeader(
+      "Content-Type",
+      "application/pdf",
+    );
+
+    res.setHeader(
+      "Content-Disposition",
+      'attachment; filename="transporter-payment-history.pdf"',
+    );
+
+    res.setHeader(
+      "Content-Length",
+      pdfBuffer.length,
+    );
+
+    /*
+    ======================================================
+    SEND PDF
+    ======================================================
+    */
+
+    return res.status(200).send(pdfBuffer);
+  } catch (error) {
+    console.error(
+      "Download Transporter Payment History PDF Error:",
+      error,
+    );
+
+    return res.status(500).json({
+      success: false,
+
+      message:
+        "Failed to generate transporter payment history PDF",
 
       error: error.message,
     });

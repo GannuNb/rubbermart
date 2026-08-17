@@ -513,3 +513,42 @@
     width: 100%;
   }
 }
+
+.downloadPaymentReportButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  padding: 10px 18px;
+
+  border: none;
+  border-radius: 6px;
+
+  background: #4b1d95;
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.downloadPaymentReportButton:hover {
+  background: #3d167d;
+  transform: translateY(-1px);
+}
+
+.downloadPaymentReportButton:active {
+  transform: translateY(0);
+}
+
+.downloadPaymentReportIcon {
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1;
+}
