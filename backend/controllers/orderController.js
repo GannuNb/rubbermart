@@ -13,11 +13,14 @@ import ShipmentTransportQuote from "../models/ShipmentTransportQuote.js";
 import generateOrderHistoryPdf from "../utils/pdf/orderHistory/generateOrderHistoryPdf.js";
 import { sendOrderConfirmedEmail } from "../utils/email/sendOrderConfirmedEmail.js";
 import { sendOrderRejectedEmail } from "../utils/email/sendOrderRejectedEmail.js";
+import { sendNewOrderToSellerEmail } from "../utils/email/sendNewOrderToSellerEmail.js";
 import { sendNewShipmentAvailableEmail } from "../utils/email/sendNewShipmentAvailableEmail.js";
 import { sendTransporterAssignedEmail } from "../utils/email/sendTransporterAssignedEmail.js";
+import { sendTransporterAssignedToSellerEmail } from "../utils/email/sendTransporterAssignedToSellerEmail.js";
 import { sendShipmentShippedEmail } from "../utils/email/sendShipmentShippedEmail.js";
 import { sendShipmentDeliveredEmail } from "../utils/email/sendShipmentDeliveredEmail.js";
 import generateTransporterPaymentReportPdf from "../utils/pdf/transporterPaymentReport/generateTransporterPaymentReportPdf.js";
+import { sendBuyerPaymentUploadedToAdminEmail } from "../utils/email/sendBuyerPaymentUploadedToAdminEmail.js";
 
 //buyer---> MAIN BUYER buyerordercreation
 export const createOrder = async (req, res) => {
@@ -181,19 +184,29 @@ REDUCE PRODUCT STOCK
       await product.save();
     }
 
-    const populatedOrder = await Order.findById(order._id).populate(
-      "buyer",
-      `
-        fullName
-        email
-        businessProfile.companyName
-        businessProfile.phoneNumber
-        businessProfile.email
-        businessProfile.gstNumber
-        businessProfile.billingAddress
-        businessProfile.shippingAddress
-      `,
-    );
+    const populatedOrder = await Order.findById(order._id)
+      .populate(
+        "buyer",
+        `
+          fullName
+          email
+          businessProfile.companyName
+          businessProfile.phoneNumber
+          businessProfile.email
+          businessProfile.gstNumber
+          businessProfile.billingAddress
+          businessProfile.shippingAddress
+        `,
+      )
+      .populate(
+        "seller",
+        `
+          fullName
+          email
+          businessProfile.companyName
+          businessProfile.email
+        `,
+      );
 
     const invoicePdfBuffer = await generateInvoicePdf(populatedOrder);
 
@@ -202,6 +215,12 @@ REDUCE PRODUCT STOCK
       buyerName: populatedOrder.buyer.fullName,
       orderId: populatedOrder.orderId,
       invoicePdfBuffer,
+    });
+    await sendNewOrderToSellerEmail({
+      sellerEmail: populatedOrder.seller.email,
+      sellerName: populatedOrder.seller.fullName,
+      orderId: populatedOrder.orderId,
+      totalAmount: populatedOrder.totalAmount,
     });
 
     return res.status(201).json({
@@ -3449,8 +3468,8 @@ export const assignTransporterToShipment = async (req, res) => {
       )
       .populate("shipments.selectedQuoteId");
       /* =========================
-   SEND EMAIL TO ASSIGNED TRANSPORTER
-========================= */
+          SEND EMAIL TO ASSIGNED TRANSPORTER
+        ========================= */
 
 const assignedShipment = updatedOrder.shipments.id(shipmentId);
 
@@ -3472,6 +3491,21 @@ if (assignedShipment?.assignedTransporter?.email) {
 
     quotedPrice: assignedShipment.transportPrice,
 
+    estimatedDeliveryDays: assignedShipment.estimatedDeliveryDays,
+  }).catch(console.error);
+}
+
+if (updatedOrder?.seller?.email) {
+  sendTransporterAssignedToSellerEmail({
+    sellerEmail: updatedOrder.seller.email,
+    sellerName: updatedOrder.seller.fullName,
+    orderId: updatedOrder.orderId,
+    shipmentInvoiceId: assignedShipment.shipmentInvoiceId,
+    transporterName: assignedShipment.assignedTransporter?.fullName,
+    productName: assignedShipment.selectedItem,
+    shipmentFrom: assignedShipment.shipmentFrom,
+    shipmentTo: assignedShipment.shipmentTo,
+    transportPrice: assignedShipment.transportPrice,
     estimatedDeliveryDays: assignedShipment.estimatedDeliveryDays,
   }).catch(console.error);
 }
@@ -5568,6 +5602,22 @@ const remaining = order.totalAmount - reservedAmount;
     // ❌ DO NOT UPDATE totals here
 
     await order.save();
+
+    const admin = await User.findOne({
+  role: "admin",
+}).select("fullName email");
+
+if (admin?.email) {
+  sendBuyerPaymentUploadedToAdminEmail({
+    adminEmail: admin.email,
+    adminName: admin.fullName,
+    buyerName: req.user.fullName,
+    orderId: order.orderId,
+    amount: paidAmount,
+    paymentMode,
+    transactionId,
+  });
+}
 
     return res.status(200).json({
       success: true,

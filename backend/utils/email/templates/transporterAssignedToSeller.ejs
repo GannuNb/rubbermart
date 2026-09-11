@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Transporter Assigned</title>
+</head>
+
+<body
+  style="
+    margin:0;
+    padding:0;
+    background:#f4f7fb;
+    font-family:Arial,Helvetica,sans-serif;
+  "
+>
+  <table width="100%" cellpadding="0" cellspacing="0">
+    <tr>
+      <td align="center">
+
+        <table
+          width="650"
+          cellpadding="0"
+          cellspacing="0"
+          style="
+            background:#ffffff;
+            margin:30px auto;
+            border-radius:12px;
+            overflow:hidden;
+            border:1px solid #e5e7eb;
+          "
+        >
+
+          <!-- HEADER -->
+          <tr>
+            <td
+              style="
+                background:linear-gradient(
+                  90deg,
+                  #d8c7ff 0%,
+                  #c9b3ff 35%,
+                  #b99af8 70%,
+                  #aa82ee 100%
+                );
+                padding:28px 36px;
+                border-bottom:5px solid #6d3fd4;
+              "
+            >
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+
+                  <td style="width:190px; vertical-align:middle;">
+                    <img
+                      src="<%= process.env.CLIENT_URL_ONLINE %>/invoice_logo.png"
+                      alt="Rubber Scrap Mart"
+                      style="
+                        display:block;
+                        width:220px;
+                        height:auto;
+                        max-height:150px;
+                      "
+                    />
+                  </td>
+
+                  <td
+                    style="
+                      vertical-align:middle;
+                      text-align:left;
+                      padding-left:10px;
+                    "
+                  >
+                    <h1
+                      style="
+                        margin:0;
+                        color:#24113f;
+                        font-size:28px;
+                      "
+                    >
+                      TRANSPORTER ASSIGNED
+                    </h1>
+                  </td>
+
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- BODY -->
+          <tr>
+            <td style="padding:35px;">
+
+              <h2 style="margin-top:0;">
+                Hello <%= sellerName %>,
+              </h2>
+
+              <p style="font-size:16px; line-height:1.7;">
+                A transporter has been assigned to your shipment
+                by the Rubber Scrap Mart admin.
+              </p>
+
+              <!-- SHIPMENT DETAILS -->
+              <table
+                width="100%"
+                cellpadding="10"
+                cellspacing="0"
+                style="
+                  margin:25px 0;
+                  border:1px solid #ddd;
+                  border-collapse:collapse;
+                "
+              >
+
+                <tr>
+                  <td><strong>Order ID</strong></td>
+                  <td><%= orderId %></td>
+                </tr>
+
+                <tr>
+                  <td><strong>Shipment Invoice ID</strong></td>
+                  <td><%= shipmentInvoiceId %></td>
+                </tr>
+
+                <tr>
+                  <td><strong>Product</strong></td>
+                  <td><%= productName %></td>
+                </tr>
+
+                <tr>
+                  <td><strong>Transporter</strong></td>
+                  <td><%= transporterName %></td>
+                </tr>
+
+                <tr>
+                  <td><strong>Shipment From</strong></td>
+                  <td><%= shipmentFrom %></td>
+                </tr>
+
+                <tr>
+                  <td><strong>Shipment To</strong></td>
+                  <td><%= shipmentTo %></td>
+                </tr>
+
+                <tr>
+                  <td><strong>Transport Price</strong></td>
+                  <td>₹ <%= transportPrice %></td>
+                </tr>
+
+                <tr>
+                  <td><strong>Estimated Delivery</strong></td>
+                  <td>
+                    <%= estimatedDeliveryDays %> day(s)
+                  </td>
+                </tr>
+
+              </table>
+
+              <p style="font-size:16px; line-height:1.7;">
+                The transporter has been successfully assigned to
+                this shipment. You can view the shipment details
+                from your seller dashboard.
+              </p>
+
+              <div style="text-align:center; margin-top:35px;">
+                <a
+                  href="<%= frontendUrl %>/seller-orders"
+                  style="
+                    background:#0b5ed7;
+                    color:#fff;
+                    text-decoration:none;
+                    padding:14px 28px;
+                    border-radius:8px;
+                    display:inline-block;
+                    font-weight:bold;
+                  "
+                >
+                  View My Orders
+                </a>
+              </div>
+
+              <div style="margin-top:40px;">
+                <p style="margin:0; font-weight:700;">
+                  Regards,
+                </p>
+
+                <p style="margin-top:10px; color:#475569;">
+                  Rubber Scrap Mart Team
+                </p>
+              </div>
+
+            </td>
+          </tr>
+
+          <!-- FOOTER -->
+          <tr>
+            <td
+              style="
+                background:#f3f4f6;
+                text-align:center;
+                padding:25px;
+                color:#666;
+                font-size:14px;
+              "
+            >
+              © <%= new Date().getFullYear() %> Rubber Scrap Mart<br>
+              This is an automated email.
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

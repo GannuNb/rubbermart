@@ -369,7 +369,7 @@ const adminOrderSlice = createSlice({
         state.transportersError = action.payload;
       })
 
-      /* =========================
+      /*  =========================
             ADMIN DIRECT ASSIGN
           ========================= */
 
@@ -450,8 +450,8 @@ const adminOrderSlice = createSlice({
       })
 
       /* =========================
-   VERIFY BUYER TRANSPORT PAYMENT
-========================= */
+            VERIFY BUYER TRANSPORT PAYMENT
+         ========================= */
 
       .addCase("adminOrders/verifyBuyerTransportPaymentPending", (state) => {
         state.verifyTransportPaymentLoading = true;
@@ -481,8 +481,8 @@ const adminOrderSlice = createSlice({
         },
       )
       /* =========================
-   UPLOAD ADMIN TRANSPORT PAYMENT
-========================= */
+          UPLOAD ADMIN TRANSPORT PAYMENT
+         ========================= */
 
       .addCase("adminOrders/uploadAdminTransportPaymentPending", (state) => {
         state.adminTransportPaymentLoading = true;

@@ -42,10 +42,11 @@ const sendOrderInvoiceEmail = async ({
         <div style="
           font-family: Arial, sans-serif;
           background:#f4f7f5;
-          padding:40px 20px;
+          padding:25px 10px;
         ">
 
           <div style="
+            width:100%;
             max-width:720px;
             margin:auto;
             background:#ffffff;
@@ -65,7 +66,7 @@ const sendOrderInvoiceEmail = async ({
   #b99af8 70%,
   #aa82ee 100%
 );
-  padding:28px 36px;
+  padding:20px 16px;
   border-bottom:5px solid #6d3fd4;
 ">
 
@@ -81,7 +82,7 @@ const sendOrderInvoiceEmail = async ({
 
 <td
   style="
-    width:190px;
+    width:40%;
     vertical-align:middle;
     text-align:left;
   "
@@ -91,7 +92,8 @@ const sendOrderInvoiceEmail = async ({
     alt="Rubber Scrap Mart"
     style="
       display:block;
-      width:220px;
+      width:100%;
+      max-width:180px;
       height:auto;
       max-height:150px;
     "
@@ -102,6 +104,7 @@ const sendOrderInvoiceEmail = async ({
 
       <td
         style="
+          width:60%;
           vertical-align:middle;
           text-align:left;
           padding-left:10px;
@@ -110,10 +113,10 @@ const sendOrderInvoiceEmail = async ({
         <h1 style="
           margin:0;
           color:#24113f;
-          font-size:32px;
+          font-size:22px;
           font-weight:700;
           letter-spacing:1px;
-          white-space:nowrap;
+          
         ">
           PROFORMA INVOICE
         </h1>
@@ -126,7 +129,7 @@ const sendOrderInvoiceEmail = async ({
 
             <!-- BODY -->
 
-            <div style="padding:38px;">
+            <div style="padding:28px 20px;">
 
               <h2 style="
                 color:#111827;
@@ -162,9 +165,11 @@ const sendOrderInvoiceEmail = async ({
               <div style="
                 background:#f0fdf4;
                 border:1px solid #bbf7d0;
-                padding:22px;
+                padding:18px;
                 border-radius:16px;
-                margin:32px 0;
+                margin:28px 0;
+                word-break:break-word;
+                overflow-wrap:break-word;
               ">
 
                 <p style="
@@ -172,6 +177,8 @@ const sendOrderInvoiceEmail = async ({
                   font-size:16px;
                   color:#166534;
                   line-height:1.8;
+                  word-break:break-word;
+                  overflow-wrap:anywhere;
                 ">
 
                   <strong>
@@ -253,7 +260,7 @@ const sendOrderInvoiceEmail = async ({
 
             <div style="
               background:#f8fafc;
-              padding:22px;
+              padding:18px 12px;
               text-align:center;
               border-top:1px solid #e2e8f0;
             ">

@@ -91,6 +91,11 @@ function BusinessProfile() {
     "Rubber Crumb Steel",
   ];
 
+  const gstRegex =
+    /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z][Z][0-9A-Z]$/;
+
+  const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
@@ -106,7 +111,7 @@ function BusinessProfile() {
           sameAsBillingAddress: checked,
           shippingAddress: checked ? prev.billingAddress : "",
         }));
-        // If syncing addresses, clear shippingAddress error if it exists
+
         if (checked && errors.shippingAddress) {
           setErrors((prev) => ({ ...prev, shippingAddress: "" }));
         }
@@ -117,11 +122,26 @@ function BusinessProfile() {
         }));
       }
     } else {
+      let updatedValue = value;
+
+      // GST and PAN should always be uppercase
+      if (name === "gstNumber") {
+        updatedValue = value
+          .toUpperCase()
+          .replace(/[^A-Z0-9]/g, "");
+      }
+
+      if (name === "panNumber") {
+        updatedValue = value
+          .toUpperCase()
+          .replace(/[^A-Z0-9]/g, "");
+      }
+
       setFormData((prev) => ({
         ...prev,
-        [name]: value,
+        [name]: updatedValue,
         ...(name === "billingAddress" && prev.sameAsBillingAddress
-          ? { shippingAddress: value }
+          ? { shippingAddress: updatedValue }
           : {}),
       }));
     }
@@ -175,11 +195,23 @@ function BusinessProfile() {
     if (!formData.phoneNumber.trim())
       validationErrors.phoneNumber = "Phone number is required";
     if (!formData.email.trim()) validationErrors.email = "Email is required";
-    if (user?.role !== "transporter" && !formData.gstNumber.trim()) {
-      validationErrors.gstNumber = "GST number is required";
+    if (user?.role !== "transporter") {
+      if (!formData.gstNumber.trim()) {
+        validationErrors.gstNumber = "GST number is required";
+      } else if (!gstRegex.test(formData.gstNumber)) {
+        validationErrors.gstNumber = "Enter a valid GST number";
+      }
+    } else if (
+      formData.gstNumber.trim() &&
+      !gstRegex.test(formData.gstNumber)
+    ) {
+      validationErrors.gstNumber = "Enter a valid GST number";
     }
-    if (!formData.panNumber.trim())
+    if (!formData.panNumber.trim()) {
       validationErrors.panNumber = "PAN number is required";
+    } else if (!panRegex.test(formData.panNumber)) {
+      validationErrors.panNumber = "Enter a valid PAN number";
+    }
     if (!formData.billingAddress.trim())
       validationErrors.billingAddress = "Billing address is required";
     if (!formData.sameAsBillingAddress && !formData.shippingAddress.trim()) {
@@ -347,8 +379,13 @@ function BusinessProfile() {
                 name="gstNumber"
                 value={formData.gstNumber}
                 onChange={handleChange}
-                placeholder="Enter GST number"
+                placeholder="Enter 15-character GST number"
+                maxLength={15}
+                inputMode="text"
               />
+              <small style={{ color: "#64748b", fontSize: "12px" }}>
+                Format: 22ABCDE1234A1Z5
+              </small>
               {errors.gstNumber && (
                 <span style={errorTextStyles}>{errors.gstNumber}</span>
               )}
@@ -361,8 +398,13 @@ function BusinessProfile() {
                 name="panNumber"
                 value={formData.panNumber}
                 onChange={handleChange}
-                placeholder="Enter PAN number"
+                placeholder="Enter 10-character PAN number"
+                maxLength={10}
+                inputMode="text"
               />
+              <small style={{ color: "#64748b", fontSize: "12px" }}>
+                Format: ABCDE1234F
+              </small>
               {errors.panNumber && (
                 <span style={errorTextStyles}>{errors.panNumber}</span>
               )}
